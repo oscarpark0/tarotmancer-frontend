@@ -1,0 +1,20 @@
+{
+  "short_name": "Tarotmancer",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon_50x50.ico",
+      "sizes": "50x50",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "favicon_64x64.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}

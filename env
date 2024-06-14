@@ -1,0 +1,8 @@
+REACT_APP_API_BASE_URL=http://localhost:8080
+AUTH0_CLIENT_SECRET=7a-1FMSxNa6Jk5i0FAaMu3fJQV5q0Qov3u01IbrhEqOP1OFqp0fsfZaQ4WneDa7O
+AUTH0_DOMAIN='dev-q868ktvw2za0engx.us.auth0.com'
+AUTH0_CLIENT_ID='8v7IDgdAgMBKQNggvgg4OKUhp63khWI0'
+MONGODB_URI='mongodb+srv://tadmin:s8oOCwCmJPIP3GGB@tarotdb.nrj6k89.mongodb.net/?retryWrites=true&w=majority&appName=tarotdb'
+
+
+

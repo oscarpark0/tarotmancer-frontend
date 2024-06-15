@@ -12,7 +12,7 @@ root.render(
     domain="dev-q868ktvw2za0engx.us.auth0.com"
     clientId="8v7IDgdAgMBKQNggvgg4OKUhp63khWI0"
     authorizationParams={{
-      redirect_uri: 'http://localhost:3000/callback',
+      redirect_uri: 'https://tarotmancer-frontend-qflo3w0k7-oscarpark0s-projects.vercel.app/callback', // Update with your frontend URL
       scope: 'openid profile email'
     }}
     useRefreshTokens={true}

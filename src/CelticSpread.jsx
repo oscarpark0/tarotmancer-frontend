@@ -55,6 +55,7 @@ const CelticSpread = () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Add this line
             },
             credentials: 'include', // Add this line
         });

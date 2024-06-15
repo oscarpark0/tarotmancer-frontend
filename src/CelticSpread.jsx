@@ -6,7 +6,7 @@ import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCardPositions } from './utils/cardPositions.js';
-import ErrorBoundary from './components/ErrorBoundary'; // Import ErrorBoundary
+import ErrorBoundary from './components/ErrorBoundary'; 
 
 const CelticSpread = () => {
   const [positions, setPositions] = useState([]);

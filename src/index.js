@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from '@auth0/auth0-react';
+import { SpeedInsights } from "@vercel/speed-insights/react"; // Import SpeedInsights
 
 const root = createRoot(document.getElementById('root'));
 root.render(
@@ -17,6 +18,7 @@ root.render(
     useRefreshTokens={true}
     cacheLocation="localstorage"
   >
+    <SpeedInsights /> {/* Wrap your app with SpeedInsights */}
     <App />
   </Auth0Provider>
 );

@@ -6,9 +6,12 @@ import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCardPositions } from './utils/cardPositions.js';
-import ErrorBoundary from './components/ErrorBoundary'; 
+import ErrorBoundary from './components/ErrorBoundary';
+import Login from './Login'; 
 
 const CelticSpread = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -55,9 +58,9 @@ const CelticSpread = () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Add this line
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`, 
             },
-            credentials: 'include', // Add this line
+            credentials: 'include', 
         });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
@@ -75,7 +78,7 @@ const CelticSpread = () => {
             (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
         ).join('\n');
         setDealCards(true);
-        console.log('dealCards:', dealCards); // Add this line
+        console.log('dealCards:', dealCards); 
         setMostCommonCards(formattedMostCommonCards);
 
         setTimeout(() => {
@@ -112,74 +115,80 @@ const CelticSpread = () => {
 
   return (
     <MagicContainer className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
-      <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
-      <div className="relative w-full h-screen overflow-hidden">
-        {isLoading ? (
-          <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
-        ) : error ? (
-          <p className="text-4xl text-red-600 text-center z-100">{error}</p>
-        ) : null}
-        <div className="flex flex-col items-center">
-          <Robot
-            dealCards={dealCards}
-            cardPositions={positions}
-            revealedCards={revealedCards}
-            finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-            onExitComplete={handleExitComplete}
-            revealCards={revealCards}
-            shouldDrawNewSpread={shouldDrawNewSpread}
-            onMonitorOutput={handleMonitorOutput}
-            drawSpread={drawSpread}
-            dealingComplete={dealingComplete}
-            mostCommonCards={mostCommonCards}
-            formRef={formRef}
-            onSubmitInput={handleSubmitInput}
-          />
-        </div>
-        {positions.length > 0 && (
-          <div className="relative z-10 w-full flex flex-col items-center">
-            <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
-              <section className="relative z-10 mb-16 w-full">
-                {isMobile ? (
-                  <ErrorBoundary>
-                    <FloatingCards
-                      dealCards={dealCards}
-                      monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
-                      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-                      onExitComplete={handleExitComplete}
-                      revealCards={revealCards}
-                      dealingComplete={dealingComplete}
-                      shouldDrawNewSpread={shouldDrawNewSpread}
-                      cards={positions.map(pos => ({
-                        name: pos.most_common_card,
-                        img: pos.most_common_card_img,
-                        orientation: pos.orientation,
-                        position_name: pos.position_name,
-                        tooltip: pos.position_name
-                      }))}
-                      isMobile={isMobile}
-                    />
-                  </ErrorBoundary>
-                ) : (
-                  <CardReveal
-                    cards={positions.map(pos => ({
-                      name: pos.most_common_card,
-                      img: pos.most_common_card_img,
-                      orientation: pos.orientation,
-                      position_name: pos.position_name,
-                      tooltip: pos.position_name
-                    }))}
-                    revealCards={revealCards}
-                    dealingComplete={dealingComplete}
-                    shouldDrawNewSpread={shouldDrawNewSpread}
-                    className="md:hidden" // Add this className to hide on larger screens
-                  />
-                )}
-              </section>
+      {!isLoggedIn ? (
+        <Login onLogin={() => setIsLoggedIn(true)} />
+      ) : (
+        <>
+          <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
+          <div className="relative w-full h-screen overflow-hidden">
+            {isLoading ? (
+              <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
+            ) : error ? (
+              <p className="text-4xl text-red-600 text-center z-100">{error}</p>
+            ) : null}
+            <div className="flex flex-col items-center">
+              <Robot
+                dealCards={dealCards}
+                cardPositions={positions}
+                revealedCards={revealedCards}
+                finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                onExitComplete={handleExitComplete}
+                revealCards={revealCards}
+                shouldDrawNewSpread={shouldDrawNewSpread}
+                onMonitorOutput={handleMonitorOutput}
+                drawSpread={drawSpread}
+                dealingComplete={dealingComplete}
+                mostCommonCards={mostCommonCards}
+                formRef={formRef}
+                onSubmitInput={handleSubmitInput}
+              />
             </div>
+            {positions.length > 0 && (
+              <div className="relative z-10 w-full flex flex-col items-center">
+                <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
+                  <section className="relative z-10 mb-16 w-full">
+                    {isMobile ? (
+                      <ErrorBoundary>
+                        <FloatingCards
+                          dealCards={dealCards}
+                          monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
+                          finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                          onExitComplete={handleExitComplete}
+                          revealCards={revealCards}
+                          dealingComplete={dealingComplete}
+                          shouldDrawNewSpread={shouldDrawNewSpread}
+                          cards={positions.map(pos => ({
+                            name: pos.most_common_card,
+                            img: pos.most_common_card_img,
+                            orientation: pos.orientation,
+                            position_name: pos.position_name,
+                            tooltip: pos.position_name
+                          }))}
+                          isMobile={isMobile}
+                        />
+                      </ErrorBoundary>
+                    ) : (
+                      <CardReveal
+                        cards={positions.map(pos => ({
+                          name: pos.most_common_card,
+                          img: pos.most_common_card_img,
+                          orientation: pos.orientation,
+                          position_name: pos.position_name,
+                          tooltip: pos.position_name
+                        }))}
+                        revealCards={revealCards}
+                        dealingComplete={dealingComplete}
+                        shouldDrawNewSpread={shouldDrawNewSpread}
+                        className="md:hidden" 
+                      />
+                    )}
+                  </section>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </MagicContainer>
   );
 };

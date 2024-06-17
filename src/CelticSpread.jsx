@@ -52,6 +52,9 @@ const CelticSpread = () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('Access token is missing');
+      }
       console.log('Access Token:', token);
 
       const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {

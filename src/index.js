@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { SpeedInsights } from "@vercel/speed-insights/react"; 
+import { Analytics } from '@vercel/analytics/react';
 
 const root = createRoot(document.getElementById('root'));
 root.render(
@@ -20,6 +21,7 @@ root.render(
   >
     <SpeedInsights /> 
     <App />
+    <Analytics />
   </Auth0Provider>
 );
 

@@ -1,0 +1,200 @@
+.robot-container {
+  align-items: center;
+  margin-top: 40px; /* Add 'px' unit */
+  position: relative;
+  top: 25vh; 
+  left: 5vw; 
+  transform: translateY(-40%);
+}
+
+@media (max-width: 768px) {
+  .robot-container {
+    top: 20vh;
+    left: 50%;
+    transform: translateX(-50%) translateY(-40%);
+  }
+}
+
+.robot-body {
+  width: 25vw; 
+  height:35vw; 
+  background: radial-gradient(circle at 10% 70%, #bdbdbd, #a9a9a9, #706f6f, #696969);
+  border-radius: 52px; 
+  outline-style: ridge;
+  outline-color: #a9a9a9;
+  outline-width: 1px;
+  display: flex; /* Add display flex */
+  flex-direction: column;
+  align-items: center;
+  padding:10px; 
+  position: relative; 
+  padding-bottom: 20px;
+  transition: transform 0.3s ease-in-out;
+  animation: ambient-light 100s infinite ease-in-out;
+  resize: both; 
+  overflow: auto; 
+}
+
+@media (max-width: 768px) {
+  .robot-body {
+    width: 100vw;
+    height: 139vw;
+  }
+}
+
+.robot-head {
+  width: 100%; 
+  height: 100%; 
+  background: linear-gradient(145deg, #d3d3d3, #a9a9a9);
+  outline-style: ridge;
+  outline-color: #a9a9a9;
+  outline-width: 0.9px;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+  padding: 11px;
+  border-radius: 52px;
+}
+
+.crt-screen {
+  width: 100%; 
+  height: 100%; 
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+  border-radius: 52px;
+  transform-style: preserve-3d;
+  position: relative;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(to bottom, #2b2b2b, #1a1a1a);
+}
+
+.crt-screen::before {
+  content: "";
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  border-radius: 52px;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+  z-index: 5;
+  overflow: hidden;
+}
+
+.screen-glass {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  border-radius: 52px;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.screen-scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  border-radius: 20px;
+  z-index: 6;
+  animation: scanlines 0.3s linear infinite;
+}
+
+.screen-content {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #161616 0%, #0c0c0c 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start; /* Corrected from 'left' to 'flex-start' */
+  position: relative;
+  border-radius: 20px;
+  padding: 13px;
+}
+
+.tarotmancer-text {
+  position: absolute;
+  bottom: 0.1px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.9rem;
+  color: #000000;
+  text-shadow: 0 0 4px rgba(248, 248, 248, 0.568);
+  z-index: 9;
+  box-shadow: 0 0 10px rgba(224, 220, 220, 0.336);
+}
+
+.monitor-output {
+  position: relative;
+  color: #9fdd0e; /* Changed to a more pleasant color for reading */
+  text-shadow: 0 0 15px #000;
+  font-size: 156px; /* Set a base font size */
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  transition: font-size 0.3s ease-in-out; /* Corrected from '0.s' to '0.3s' */
+  overflow-y: auto;
+  z-index: 210;
+  width: 100%;
+  height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+  word-wrap: break-word; /* Added to wrap long words */
+}
+
+@media (max-width: 768px) {
+  .monitor-output {
+    font-size: 16px;
+  }
+}
+
+/* Adjust font size for larger screens */
+@media (min-width: 768px) {
+  .monitor-output {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .monitor-output {
+    font-size: 24px;
+  }
+}
+
+/* Adjust font size for smaller screens */
+
+.monitor-output:empty {
+  display: none;
+}
+
+
+@keyframes ambient-light {
+  0% { -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.664); box-shadow: 0 0 10px rgba(0, 0, 0, 0.664); }
+  25% { -webkit-box-shadow: 0 0 20px rgb(0, 0, 0); box-shadow: 0 0 20px rgb(0, 0, 0); }
+  50% { -webkit-box-shadow: 0 0 26px rgba(255, 255, 255, 0.692); box-shadow: 0 0 26px rgba(255, 255, 255, 0.692); }
+  75% { -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0); box-shadow: 0 0 20px rgba(0, 0, 0, 0); }
+  100% { -webkit-box-shadow: 0 0 10px rgb(126, 126, 126); box-shadow: 0 0 10px rgb(126, 126, 126); }
+}
+

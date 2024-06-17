@@ -57,11 +57,15 @@ const CelticSpread = () => {
       }
       console.log('Access Token:', token);
 
+      const origin = window.location.origin;
+      console.log('Request Origin:', origin);
+
       const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
+          'Origin': origin,
         },
         credentials: 'include',
       });

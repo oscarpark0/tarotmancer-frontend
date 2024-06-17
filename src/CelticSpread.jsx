@@ -51,22 +51,23 @@ const CelticSpread = () => {
   const fetchCelticSpread = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        throw new Error('Access token is missing');
-      }
-      console.log('Access Token:', token);
-
       const origin = window.location.origin;
       console.log('Request Origin:', origin);
 
+      const headers = {
+        'Content-Type': 'application/json',
+        'Origin': origin,
+      };
+
+      // Check if the user is authenticated and include the access token if available
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include the access token in the Authorization header
-          'Origin': origin,
-        },
+        headers: headers,
         credentials: 'include',
       });
 

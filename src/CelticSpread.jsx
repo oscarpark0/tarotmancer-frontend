@@ -51,14 +51,19 @@ const CelticSpread = () => {
   const fetchCelticSpread = async () => {
     setIsLoading(true);
     try {
+      const token = localStorage.getItem('access_token');
+      console.log('Access Token:', token);
+
       const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          'Authorization': `Bearer ${token}`,
         },
         credentials: 'include',
       });
+
+      console.log('Request Headers:', response.headers);
 
       if (!response.ok) {
         const errorText = await response.text();

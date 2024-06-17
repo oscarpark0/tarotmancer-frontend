@@ -64,7 +64,7 @@ const CelticSpread = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`, // Include the access token in the Authorization header
           'Origin': origin,
         },
         credentials: 'include',

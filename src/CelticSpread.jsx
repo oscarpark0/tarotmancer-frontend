@@ -51,48 +51,54 @@ const CelticSpread = () => {
   const fetchCelticSpread = async () => {
     setIsLoading(true);
     try {
-        const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`, // Add this line
-            },
-            credentials: 'include', // Add this line
-        });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        const positions = generateCardPositions(data.positions.length, windowWidth, windowHeight);
-        setPositions(positions.map((pos, index) => ({
-            ...data.positions[index],
-            left: pos.left,
-            top: pos.top,
-            tooltip: data.positions[index].position_name
-        })));
+      const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        credentials: 'include',
+      });
 
-        const formattedMostCommonCards = data.positions.map(
-            (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
-        ).join('\n');
-        setDealCards(true);
-        console.log('dealCards:', dealCards); // Add this line
-        setMostCommonCards(formattedMostCommonCards);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
+      const data = await response.json();
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const positions = generateCardPositions(data.positions.length, windowWidth, windowHeight);
+      setPositions(positions.map((pos, index) => ({
+        ...data.positions[index],
+        left: pos.left,
+        top: pos.top,
+        tooltip: data.positions[index].position_name
+      })));
+
+      const formattedMostCommonCards = data.positions.map(
+        (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
+      ).join('\n');
+      setDealCards(true);
+      console.log('dealCards:', dealCards);
+      setMostCommonCards(formattedMostCommonCards);
+
+      setTimeout(() => {
+        setRevealCards(true);
+        setRevealedCards(data.positions.length);
         setTimeout(() => {
-            setRevealCards(true);
-            setRevealedCards(data.positions.length);
-            setTimeout(() => {
-                setDealingComplete(true);
-                handleSubmitInput(formattedMostCommonCards);
-            }, 750);
-        }, 1100);
+          setDealingComplete(true);
+          handleSubmitInput(formattedMostCommonCards);
+        }, 750);
+      }, 1100);
 
     } catch (error) {
-        console.error("Error drawing Celtic spread:", error);
-        setError("Failed to draw Celtic spread. Please check your network connection and try again.");
+      console.error("Error drawing Celtic spread:", error);
+      setError("Failed to draw Celtic spread. Please check your network connection and try again.");
     } finally {
-        setIsLoading(false);
-        setShouldDrawNewSpread(false);
+      setIsLoading(false);
+      setShouldDrawNewSpread(false);
     }
   };
 
@@ -172,7 +178,7 @@ const CelticSpread = () => {
                     revealCards={revealCards}
                     dealingComplete={dealingComplete}
                     shouldDrawNewSpread={shouldDrawNewSpread}
-                    className="md:hidden" // Add this className to hide on larger screens
+                    className="md:hidden"
                   />
                 )}
               </section>

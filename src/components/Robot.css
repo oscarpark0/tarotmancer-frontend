@@ -39,6 +39,7 @@
   .robot-body {
     width: 85vw;
     height: 120vw;
+    top: -10vh; /* Move up by 10vh */
   }
 }
 

@@ -6,7 +6,6 @@ import CardReveal from './CardReveal.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
-import { isMobileDevice } from '../utils/device';
 
 const debouncedAdjustFontSize = debounce(() => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -93,25 +92,16 @@ const Robot = ({
         <div className="robot-head">
           <div className="crt-screen">
             <div className="screen-content" style={{ flexGrow: 1 }}>
-              {isMobileDevice() ? (
-                <CardReveal
-                  cards={cardPositions}
-                  revealCards={revealCards}
-                  dealingComplete={dealingComplete}
-                  shouldDrawNewSpread={shouldDrawNewSpread}
-                />
-              ) : (
-                <FloatingCards
-                  dealCards={dealCards}
-                  cardPositions={cardPositions}
-                  monitorPosition={monitorPosition}
-                  finalCardPositions={finalCardPositions}
-                  revealCards={revealCards}
-                  onExitComplete={onExitComplete}
-                  shouldDrawNewSpread={shouldDrawNewSpread}
-                  dealingComplete={dealingComplete}
-                />
-              )}
+              <FloatingCards
+                dealCards={dealCards}
+                cardPositions={cardPositions}
+                monitorPosition={monitorPosition}
+                finalCardPositions={finalCardPositions}
+                revealCards={revealCards}
+                onExitComplete={onExitComplete}
+                shouldDrawNewSpread={shouldDrawNewSpread}
+                dealingComplete={dealingComplete}
+              />
               <div className="monitor-output">{monitorOutput}</div>
             </div>
             <div className="screen-overlay"></div>

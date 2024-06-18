@@ -93,7 +93,7 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
           id="terminal-input"
         />
       </form>
-      <ShimmerButton onClick={drawSpread} aria-label="Draw Cards">
+      <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw Cards">
         Draw
       </ShimmerButton>
     </div>

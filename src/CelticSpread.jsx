@@ -62,7 +62,11 @@ const CelticSpread = () => {
       };
 
       // Get the access token silently
-      const token = await getAccessTokenSilently();
+      const token = await getAccessTokenSilently({
+        authorizationParams: {
+          scope: 'openid profile email offline_access',
+        },
+      });
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }

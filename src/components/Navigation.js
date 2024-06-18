@@ -8,7 +8,11 @@ function Navigation() {
     <nav>
       {/* Other navigation items */}
       {!isAuthenticated && (
-        <button onClick={() => loginWithRedirect()}>Log In</button>
+        <button onClick={() => loginWithRedirect({
+          authorizationParams: {
+            scope: 'openid profile email offline_access',
+          },
+        })}>Log In</button>
       )}
     </nav>
   );

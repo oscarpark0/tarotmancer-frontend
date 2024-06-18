@@ -4,7 +4,11 @@ function Login() {
   const { loginWithRedirect } = useAuth0();
 
   const handleLogin = async () => {
-    await loginWithRedirect();
+    await loginWithRedirect({
+      authorizationParams: {
+        scope: 'openid profile email offline_access',
+      },
+    });
   };
 
   return <button onClick={handleLogin}>Log In</button>;

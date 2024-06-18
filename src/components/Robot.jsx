@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
-import CardReveal from './CardReveal.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';

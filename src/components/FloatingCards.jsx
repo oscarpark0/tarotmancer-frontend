@@ -43,7 +43,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               zIndex: revealCards ? 0 : 10,
               scale: revealCards ? 0.5 : 1,
               rotate: 0, 
-              transition: { duration: 1.2, delay: i * 0.15, ease: [0.43, 0.13, 0.23, 0.96] }, // Adjust timing and easing
+              transition: { duration: 1.2, delay: i * 0.15, ease: [0.43, 0.13, 0.23, 0.96] },
             }}
             transition={{
               type: 'spring',

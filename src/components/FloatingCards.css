@@ -28,14 +28,21 @@
 
 .floating-card {
   position: absolute;
-  width: 3vw;
-  height: 5vw;
+  width: 15vw; /* Adjusted from 3vw to be more responsive */
+  height: 25vh; /* Adjusted from 5vw to maintain aspect ratio */
   border-radius: 3px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 28;
   opacity: 0;
   transition: transform 2s ease-out, opacity 0.5s ease-in-out;
   animation: fly-in 0.1s linear forwards;
+}
+
+@media (max-width: 768px) {
+  .floating-card {
+    width: 30vw; /* Larger width for smaller screens */
+    height: 50vh; /* Larger height for better visibility */
+  }
 }
 
 .floating-card.fly-out {

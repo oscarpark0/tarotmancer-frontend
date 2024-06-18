@@ -13,6 +13,16 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
     setCardPositions(generateCardPositions(10, monitorPosition.width, monitorPosition.height));
   }, [monitorPosition]);
 
+  // Ensure positions are recalculated when window size changes
+  useEffect(() => {
+    const handleResize = () => {
+      setCardPositions(generateCardPositions(10, window.innerWidth, window.innerHeight));
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   useEffect(() => {
     if (shouldDrawNewSpread) {
       resetAnimation();

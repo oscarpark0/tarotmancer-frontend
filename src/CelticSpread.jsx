@@ -7,10 +7,8 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
-import { useAuth0 } from '@auth0/auth0-react'; // Import useAuth0
 
 const CelticSpread = () => {
-  const { getAccessTokenSilently } = useAuth0(); // Destructure getAccessTokenSilently
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -61,20 +59,9 @@ const CelticSpread = () => {
         'Origin': origin,
       };
 
-      // Get the access token silently
-      const token = await getAccessTokenSilently({
-        authorizationParams: {
-          scope: 'openid profile email offline_access',
-        },
-      });
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-
       const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
         method: 'GET',
         headers: headers,
-        credentials: 'include',
       });
 
       console.log('Request Headers:', response.headers);

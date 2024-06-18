@@ -162,7 +162,6 @@ const CelticSpread = () => {
                         position_name: pos.position_name,
                         tooltip: pos.position_name
                       }))}
-                      isMobile={isMobile}
                     />
                   </ErrorBoundary>
                 ) : (

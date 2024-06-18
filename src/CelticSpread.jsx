@@ -137,8 +137,8 @@ const CelticSpread = () => {
                   <FloatingCards
                     dealCards={dealCards}
                     monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
-                                       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-                                       onExitComplete={handleExitComplete}
+                    finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                    onExitComplete={handleExitComplete}
                     revealCards={revealCards}
                     dealingComplete={dealingComplete}
                     shouldDrawNewSpread={shouldDrawNewSpread}

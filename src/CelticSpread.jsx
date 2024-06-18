@@ -147,14 +147,7 @@ const CelticSpread = () => {
               <section className="relative z-10 mb-16 w-full">
                 {isMobile ? (
                   <ErrorBoundary>
-                    <FloatingCards
-                      dealCards={dealCards}
-                      monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
-                      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-                      onExitComplete={handleExitComplete}
-                      revealCards={revealCards}
-                      dealingComplete={dealingComplete}
-                      shouldDrawNewSpread={shouldDrawNewSpread}
+                    <CardReveal
                       cards={positions.map(pos => ({
                         name: pos.most_common_card,
                         img: pos.most_common_card_img,
@@ -162,11 +155,20 @@ const CelticSpread = () => {
                         position_name: pos.position_name,
                         tooltip: pos.position_name
                       }))}
-                      isMobile={isMobile}
+                      revealCards={revealCards}
+                      dealingComplete={dealingComplete}
+                      shouldDrawNewSpread={shouldDrawNewSpread}
                     />
                   </ErrorBoundary>
                 ) : (
-                  <CardReveal
+                  <FloatingCards
+                    dealCards={dealCards}
+                    monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
+                    finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                    onExitComplete={handleExitComplete}
+                    revealCards={revealCards}
+                    dealingComplete={dealingComplete}
+                    shouldDrawNewSpread={shouldDrawNewSpread}
                     cards={positions.map(pos => ({
                       name: pos.most_common_card,
                       img: pos.most_common_card_img,
@@ -174,10 +176,6 @@ const CelticSpread = () => {
                       position_name: pos.position_name,
                       tooltip: pos.position_name
                     }))}
-                    revealCards={revealCards}
-                    dealingComplete={dealingComplete}
-                    shouldDrawNewSpread={shouldDrawNewSpread}
-                    className="md:hidden"
                   />
                 )}
               </section>

@@ -40,8 +40,8 @@
 
 @media (max-width: 768px) {
   .floating-card {
-    width: 30vw; /* Larger width for smaller screens */
-    height: 50vh; /* Larger height for better visibility */
+    width: 20vw; /* Adjusted width for better visibility */
+    height: 30vh; /* Adjusted height to maintain aspect ratio */
   }
 }
 

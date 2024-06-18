@@ -4,16 +4,16 @@ import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import './CardReveal.css';
 
 const cardPositions = [
-  { top: '30%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '30%', left: '45%', transform: 'translate(-50%, -50%) rotate(90deg)', zIndex: 12 }, 
-  { top: '11%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '50%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '30%', left: '33%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '30%', left: '57%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '1%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '21%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 },
-  { top: '41%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '61%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+  { top: '30%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+  { top: '30%', left: '50%', transform: 'translate(-50%, -50%) rotate(90deg)', zIndex: 12 }, 
+  { top: '11%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+  { top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+  { top: '30%', left: '25%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+  { top: '30%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+  { top: '1%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+  { top: '21%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 },
+  { top: '41%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+  { top: '61%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
 ];
 
 const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }) => {

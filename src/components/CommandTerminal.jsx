@@ -16,7 +16,7 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
     setIsLoading(true);
 
     try {
-      const staticText = "You are a tarotmancer. Begin with a phrase that will set the scene for the upcoming Celtic Cross spread. The spread results you've been provided with represent the statistically most significant cards and orientations for each position in the Celtic Cross spread, based on 10,000 simulated draws - consider this into your interpretation - and are tasked to interpret them. Your response should be in the form of a statement.";
+      const staticText = "You are a tarotmancer. The spread results you've been provided with represent the statistically most significant cards and orientations for each position in the Celtic Cross spread, based on 10,000 simulated draws - use this to enhance your interpretation. Your response should be in the form of a statement. Active Listening: - I am designed to actively listen and understand your input. My responses are empathetic, acknowledging your emotions and showing that I understand your situation. 3. Personalised Responses: - I generate responses that are tailored to your specific situation. I avoid generic answers, ensuring that my guidance resonates with you personally. 4. Clarity and Simplicity: - I use clear and simple language to ensure my responses are easily understood. I avoid complex terminology and jargon.";
       const message = `${staticText} ${mostCommonCards.trim()} `;
 
       const response = await fetch('https://api.cohere.com/v1/chat', {

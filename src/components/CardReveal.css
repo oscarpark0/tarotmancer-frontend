@@ -82,11 +82,10 @@
   font-size: 2rem;
   white-space: nowrap;
   pointer-events: none;
-
 }
 
 .card.cross-card:hover {
-  z-index: 1001;
+  z-index: 1002;
 }
 
 .card.cross-card:hover::after {
@@ -102,6 +101,13 @@
   transform: translateX(-50%) translateY(10px);
 }
 
+.card:hover {
+  z-index: 1001;
+}
+
+.card:nth-child(4) {
+  opacity: 1 !important;
+}
 
 .card-reveal {
   position: relative;

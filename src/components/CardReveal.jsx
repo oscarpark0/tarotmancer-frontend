@@ -5,7 +5,7 @@ import './CardReveal.css';
 
 const cardPositions = [
   { top: '30%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '30%', left: '45%', transform: 'translate(-50%, -50%) rotate(90deg)', zIndex: 2 }, 
+  { top: '30%', left: '45%', transform: 'translate(-50%, -50%) rotate(90deg)', zIndex: 12 }, 
   { top: '11%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
   { top: '50%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
   { top: '30%', left: '33%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 

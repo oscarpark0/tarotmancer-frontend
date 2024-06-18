@@ -7,8 +7,10 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
+import { useAuth0 } from '@auth0/auth0-react'; // Import useAuth0
 
 const CelticSpread = () => {
+  const { getAccessTokenSilently } = useAuth0(); // Destructure getAccessTokenSilently
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -59,8 +61,8 @@ const CelticSpread = () => {
         'Origin': origin,
       };
 
-      // Check if the user is authenticated and include the access token if available
-      const token = localStorage.getItem('access_token');
+      // Get the access token silently
+      const token = await getAccessTokenSilently();
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }

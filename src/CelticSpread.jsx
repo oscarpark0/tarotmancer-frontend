@@ -19,20 +19,8 @@ const CelticSpread = () => {
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
 
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
 
   useEffect(() => {
   }, [dealCards, revealCards]);
@@ -145,27 +133,15 @@ const CelticSpread = () => {
           <div className="relative z-10 w-full flex flex-col items-center">
             <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
               <section className="relative z-10 mb-16 w-full">
-                {isMobile ? (
-                  <ErrorBoundary>
-                    <FloatingCards
-                      dealCards={dealCards}
-                      monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
-                      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-                      onExitComplete={handleExitComplete}
-                      revealCards={revealCards}
-                      dealingComplete={dealingComplete}
-                      shouldDrawNewSpread={shouldDrawNewSpread}
-                      cards={positions.map(pos => ({
-                        name: pos.most_common_card,
-                        img: pos.most_common_card_img,
-                        orientation: pos.orientation,
-                        position_name: pos.position_name,
-                        tooltip: pos.position_name
-                      }))}
-                    />
-                  </ErrorBoundary>
-                ) : (
-                  <CardReveal
+                <ErrorBoundary>
+                  <FloatingCards
+                    dealCards={dealCards}
+                    monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
+                                       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                                       onExitComplete={handleExitComplete}
+                    revealCards={revealCards}
+                    dealingComplete={dealingComplete}
+                    shouldDrawNewSpread={shouldDrawNewSpread}
                     cards={positions.map(pos => ({
                       name: pos.most_common_card,
                       img: pos.most_common_card_img,
@@ -173,12 +149,21 @@ const CelticSpread = () => {
                       position_name: pos.position_name,
                       tooltip: pos.position_name
                     }))}
-                    revealCards={revealCards}
-                    dealingComplete={dealingComplete}
-                    shouldDrawNewSpread={shouldDrawNewSpread}
-                    className="md:hidden"
                   />
-                )}
+                </ErrorBoundary>
+                <CardReveal
+                  cards={positions.map(pos => ({
+                    name: pos.most_common_card,
+                    img: pos.most_common_card_img,
+                    orientation: pos.orientation,
+                    position_name: pos.position_name,
+                    tooltip: pos.position_name
+                  }))}
+                  revealCards={revealCards}
+                  dealingComplete={dealingComplete}
+                  shouldDrawNewSpread={shouldDrawNewSpread}
+                  className="md:hidden"
+                />
               </section>
             </div>
           </div>
@@ -186,6 +171,6 @@ const CelticSpread = () => {
       </div>
     </MagicContainer>
   );
-};
+}
 
 export default CelticSpread;

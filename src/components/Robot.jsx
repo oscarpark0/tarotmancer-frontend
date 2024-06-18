@@ -47,7 +47,6 @@ const Robot = ({
   const screenContentRef = useRef(null);
 
   useEffect(() => {
-    console.log('dealCards in Robot:', dealCards);
     if (dealCards) {
       setTimeout(onExitComplete, 2000);
     }
@@ -79,8 +78,6 @@ const Robot = ({
       onSubmitInput(mostCommonCards);
     }
   }, [dealingComplete, mostCommonCards, onSubmitInput]);
-
-  console.log('cardPositions:', cardPositions); 
 
   return (
     <motion.div

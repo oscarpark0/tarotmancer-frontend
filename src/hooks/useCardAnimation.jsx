@@ -7,14 +7,12 @@ const useCardAnimation = (numCards, dealCards, revealCards) => {
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
 
   useEffect(() => {
-    console.log('dealCards in useCardAnimation:', dealCards);
     if (dealCards) {
       setIsDealing(true);
     }
   }, [dealCards]);
 
   useEffect(() => {
-    console.log('revealCards in useCardAnimation:', revealCards);
     if (revealCards) {
       const interval = setInterval(() => {
         setRevealedCards((prevRevealedCards) => prevRevealedCards + 1);

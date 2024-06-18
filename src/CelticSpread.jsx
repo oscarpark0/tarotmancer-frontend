@@ -35,8 +35,6 @@ const CelticSpread = () => {
   }, []);
 
   useEffect(() => {
-    console.log('dealCards:', dealCards);
-    console.log('revealCards:', revealCards);
   }, [dealCards, revealCards]);
 
   const handleExitComplete = useCallback(() => {
@@ -45,14 +43,12 @@ const CelticSpread = () => {
   }, []);
 
   const handleMonitorOutput = useCallback((output) => {
-    console.log('Monitor output:', output);
   }, []);
 
   const fetchCelticSpread = async () => {
     setIsLoading(true);
     try {
       const origin = window.location.origin;
-      console.log('Request Origin:', origin);
 
       const headers = {
         'Content-Type': 'application/json',
@@ -63,8 +59,6 @@ const CelticSpread = () => {
         method: 'GET',
         headers: headers,
       });
-
-      console.log('Request Headers:', response.headers);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -87,7 +81,6 @@ const CelticSpread = () => {
         (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
       ).join('\n');
       setDealCards(true);
-      console.log('dealCards:', dealCards);
       setMostCommonCards(formattedMostCommonCards);
 
       setTimeout(() => {

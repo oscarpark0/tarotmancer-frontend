@@ -37,9 +37,6 @@
   transform: rotateY(0deg) rotate(180deg);
 }
 
-.card.reversed.flipped .card-inner {
-  transform: rotateY(180deg) rotate(180deg);
-}
 
 .card.cross-card.flipped .card-inner {
   transform: rotateY(180deg) rotate(90deg);

@@ -62,7 +62,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
               className={`card ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${index === 1 ? 'cross-card' : ''}`}
               initial={{ opacity: 0, x: -200, y: -1, scale: 1 }}
               animate={{
-                opacity: 1,
+                opacity: 0,
                 x: cardPositions[index].left,
                 y: cardPositions[index].top,
                 scale: 1,

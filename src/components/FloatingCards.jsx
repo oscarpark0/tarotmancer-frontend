@@ -6,8 +6,6 @@ import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
 function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, cards = [] }) {
-  console.log('FloatingCards props:', { dealCards, monitorPosition, finalCardPositions, revealCards, dealingComplete, shouldDrawNewSpread, cards });
-  
   const [cardPositions, setCardPositions] = useState(() => generateCardPositions(cards.length, monitorPosition.width, monitorPosition.height));
   const { revealedCards, floatingCardsRemoved, isDealing, resetAnimation } = useCardAnimation(cards.length, dealCards, revealCards, shouldDrawNewSpread);
 
@@ -33,20 +31,20 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
 
   return (
     <div className={`floating-cards ${dealCards ? 'dealing' : ''}`}>
-      {!dealingComplete && cardPositions.slice(revealedCards, cardPositions.length - floatingCardsRemoved).map((position, i) => (
+      {!dealingComplete && cards.length > 0 && cardPositions.slice(revealedCards, cardPositions.length - floatingCardsRemoved).map((position, i) => (
         revealedCards <= i && (
           <motion.img
             key={i}
             src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
             alt="Tarot Card"
             className={`floating-card card-${i + 1} ${isDealing ? 'fly-out' : ''}`}
-            initial={{ 
-              opacity: 0, 
-              x: monitorPosition.x + monitorPosition.width / 2 - 50, 
-              y: monitorPosition.y + monitorPosition.height / 2, 
-              zIndex: 10, 
+            initial={{
+              opacity: 0,
+              x: monitorPosition.x + monitorPosition.width / 2 - 50,
+              y: monitorPosition.y + monitorPosition.height / 2,
+              zIndex: 10,
               scale: 0.8,
-              rotate: Math.random() * 20 - 10, 
+              rotate: Math.random() * 20 - 10,
             }}
             animate={{
               x: revealCards ? finalCardPositions[i].left : monitorPosition.x + monitorPosition.width / 1 - 50,
@@ -54,7 +52,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               opacity: revealCards ? 0 : 1,
               zIndex: revealCards ? 0 : 10,
               scale: revealCards ? 0.5 : 1,
-              rotate: 0, 
+              rotate: 0,
               transition: { duration: 1.2, delay: i * 0.15, ease: [0.43, 0.13, 0.23, 0.96] },
             }}
             transition={{

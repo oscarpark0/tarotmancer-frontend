@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
-function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, cards }) {
+function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, cards = [] }) {
   const [cardPositions, setCardPositions] = useState(() => generateCardPositions(cards.length, monitorPosition.width, monitorPosition.height));
   const { revealedCards, floatingCardsRemoved, isDealing, resetAnimation } = useCardAnimation(cards.length, dealCards, revealCards, shouldDrawNewSpread);
 

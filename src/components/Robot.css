@@ -4,7 +4,7 @@
   position: relative;
   top: 9vh;
   left: 5vw;
-  transform: translateY(-40%);
+  transform: translateY(-10%);
 }
 
 @media (max-width: 768px) {

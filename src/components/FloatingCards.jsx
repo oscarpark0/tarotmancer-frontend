@@ -5,23 +5,23 @@ import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
-function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread }) {
-  const [cardPositions, setCardPositions] = useState(() => generateCardPositions(10, monitorPosition.width, monitorPosition.height));
-  const { revealedCards, floatingCardsRemoved, isDealing, resetAnimation } = useCardAnimation(10, dealCards, revealCards, shouldDrawNewSpread);
+function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, cards }) {
+  const [cardPositions, setCardPositions] = useState(() => generateCardPositions(cards.length, monitorPosition.width, monitorPosition.height));
+  const { revealedCards, floatingCardsRemoved, isDealing, resetAnimation } = useCardAnimation(cards.length, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {
-    setCardPositions(generateCardPositions(10, monitorPosition.width, monitorPosition.height));
-  }, [monitorPosition]);
+    setCardPositions(generateCardPositions(cards.length, monitorPosition.width, monitorPosition.height));
+  }, [monitorPosition, cards.length]);
 
   // Ensure positions are recalculated when window size changes
   useEffect(() => {
     const handleResize = () => {
-      setCardPositions(generateCardPositions(10, window.innerWidth, window.innerHeight));
+      setCardPositions(generateCardPositions(cards.length, window.innerWidth, window.innerHeight));
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [cards.length]);
 
   useEffect(() => {
     if (shouldDrawNewSpread) {

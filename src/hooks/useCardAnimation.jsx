@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 
-const useCardAnimation = (numCards, dealCards, revealCards) => {
+const useCardAnimation = (numCards, dealCards, revealCards, shouldDrawNewSpread) => {
   const [revealedCards, setRevealedCards] = useState(0);
   const [floatingCardsRemoved, setFloatingCardsRemoved] = useState(0);
   const [isDealing, setIsDealing] = useState(false);
-  const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
 
   useEffect(() => {
     if (dealCards) {
@@ -27,7 +26,6 @@ const useCardAnimation = (numCards, dealCards, revealCards) => {
     if (shouldDrawNewSpread) {
       setRevealedCards(0);
       setFloatingCardsRemoved(0);
-      setShouldDrawNewSpread(false);
     }
   }, [shouldDrawNewSpread]);
 
@@ -37,8 +35,7 @@ const useCardAnimation = (numCards, dealCards, revealCards) => {
     setIsDealing(false);
   };
 
-  return { revealedCards, floatingCardsRemoved, isDealing, resetAnimation, setShouldDrawNewSpread };
+  return { revealedCards, floatingCardsRemoved, isDealing, resetAnimation };
 };
 
 export default useCardAnimation;
-

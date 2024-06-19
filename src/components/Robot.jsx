@@ -38,8 +38,7 @@ const Robot = ({
   dealingComplete,
   mostCommonCards,
   formRef,
-  onSubmitInput,
-  cards,
+  onSubmitInput
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -101,7 +100,6 @@ const Robot = ({
                 onExitComplete={onExitComplete}
                 shouldDrawNewSpread={shouldDrawNewSpread}
                 dealingComplete={dealingComplete}
-                cards={cards}
               />
               <div className="monitor-output">{monitorOutput}</div>
             </div>
@@ -137,7 +135,6 @@ Robot.propTypes = {
   mostCommonCards: PropTypes.string.isRequired,
   formRef: PropTypes.object.isRequired,
   onSubmitInput: PropTypes.func.isRequired,
-  cards: PropTypes.array.isRequired,
 };
 
 export default Robot;

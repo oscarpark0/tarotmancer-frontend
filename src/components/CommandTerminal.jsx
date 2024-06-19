@@ -80,8 +80,8 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
 
   return (
     <div className="command-terminal">
-      <div className="terminal-output" ref={terminalOutputRef}>
-        {isLoading ? 'Loading...' : ''}
+      <div className="terminal-output" ref={terminalOutputRef} style={{ minHeight: '1em' }}>
+        {isLoading ? <span>Loading...</span> : ''}
       </div>
       <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
         <input

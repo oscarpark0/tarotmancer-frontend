@@ -21,7 +21,7 @@
 @media (max-width: 768px) {
   .command-terminal {
     position: absolute;
-    bottom: -120px;
+    bottom: -105px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;

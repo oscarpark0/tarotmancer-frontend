@@ -54,7 +54,7 @@ const CardReveal = ({ cards = [], revealCards, dealingComplete, shouldDrawNewSpr
           variants={cardVariants}
         >
           <img
-            src={`${TAROT_IMAGE_BASE_URL}${card.img}`}
+            src={card.img}
             alt={card.name}
             className={`card ${card.orientation === 'reversed' ? 'reversed' : ''}`}
           />

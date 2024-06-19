@@ -6,11 +6,18 @@ import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
 function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread }) {
-  const [cardPositions, setCardPositions] = useState(() => generateCardPositions(10, monitorPosition.width, monitorPosition.height));
+  const [cardPositions, setCardPositions] = useState(() => {
+    if (monitorPosition && monitorPosition.width && monitorPosition.height) {
+      return generateCardPositions(10, monitorPosition.width, monitorPosition.height);
+    }
+    return [];
+  });
   const { revealedCards, floatingCardsRemoved, isDealing, resetAnimation } = useCardAnimation(10, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {
-    setCardPositions(generateCardPositions(10, monitorPosition.width, monitorPosition.height));
+    if (monitorPosition && monitorPosition.width && monitorPosition.height) {
+      setCardPositions(generateCardPositions(10, monitorPosition.width, monitorPosition.height));
+    }
   }, [monitorPosition]);
 
   // Ensure positions are recalculated when window size changes

@@ -136,20 +136,39 @@ const ThreeCardSpread = () => {
         {positions.length > 0 && (
           <div className="relative z-10 w-full flex flex-col items-center">
             <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
-              <FloatingCards
-                positions={positions}
-                revealedCards={revealedCards}
-                dealingComplete={dealingComplete}
-                cardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-              />
-              <ErrorBoundary>
+              <section className="relative z-10 mb-16 w-full">
+                <ErrorBoundary>
+                  <FloatingCards
+                    dealCards={dealCards}
+                    monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
+                    finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                    onExitComplete={handleExitComplete}
+                    revealCards={revealCards}
+                    dealingComplete={dealingComplete}
+                    shouldDrawNewSpread={shouldDrawNewSpread}
+                    cards={positions.map(pos => ({
+                      name: pos.most_common_card,
+                      img: pos.most_common_card_img,
+                      orientation: pos.orientation,
+                      position_name: pos.position_name,
+                      tooltip: pos.position_name
+                    }))}
+                  />
+                </ErrorBoundary>
                 <CardReveal
-                  positions={positions}
-                  revealedCards={revealedCards}
+                  cards={positions.map(pos => ({
+                    name: pos.most_common_card,
+                    img: pos.most_common_card_img,
+                    orientation: pos.orientation,
+                    position_name: pos.position_name,
+                    tooltip: pos.position_name
+                  }))}
+                  revealCards={revealCards}
                   dealingComplete={dealingComplete}
-                  cardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                  shouldDrawNewSpread={shouldDrawNewSpread}
+                  className="md:hidden"
                 />
-              </ErrorBoundary>
+              </section>
             </div>
           </div>
         )}

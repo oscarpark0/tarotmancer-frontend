@@ -69,7 +69,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
           {dealingComplete && cards.map((card, index) => (
             <motion.div
               key={index}
-              className={`card ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${index === 1 ? 'cross-card' : ''}`}
+              className={`card ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${cards.length > 3 && index === 1 ? 'cross-card' : ''}`}
               initial={{ opacity: 0, x: -200, y: -1, scale: 1 }}
               animate={{
                 opacity: 1,

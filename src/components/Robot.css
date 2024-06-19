@@ -9,7 +9,7 @@
 
 @media (max-width: 768px) {
   .robot-container {
-    top: 1vh;
+    top: -2vh;
     left: 50%;
     transform: translateX(-50%);
   }

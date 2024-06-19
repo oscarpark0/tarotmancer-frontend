@@ -3,19 +3,6 @@ import { motion } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import './CardReveal.css';
 
-const cardPositions = [
-  { top: '30%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '30%', left: '45%', transform: 'translate(-50%, -50%) rotate(90deg)', zIndex: 12 }, 
-  { top: '11%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '50%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '30%', left: '33%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '30%', left: '57%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '1%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '21%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 },
-  { top: '41%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-  { top: '61%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-];
-
 const CardReveal = ({ cards = [], revealCards, dealingComplete, shouldDrawNewSpread, className }) => {
   const [isRevealed, setIsRevealed] = useState(false);
 
@@ -54,7 +41,7 @@ const CardReveal = ({ cards = [], revealCards, dealingComplete, shouldDrawNewSpr
           variants={cardVariants}
         >
           <img
-            src={card.img}
+            src={`${TAROT_IMAGE_BASE_URL}/${card.img}`}
             alt={card.name}
             className={`card ${card.orientation === 'reversed' ? 'reversed' : ''}`}
           />

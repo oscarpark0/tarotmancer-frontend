@@ -7,6 +7,7 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
+import useCardAnimation from './hooks/useCardAnimation';
 
 const ThreeCardSpread = () => {
   const [positions, setPositions] = useState([]);
@@ -19,9 +20,13 @@ const ThreeCardSpread = () => {
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
+  const { floatingCardsRemoved, isDealing, resetAnimation } = useCardAnimation(3, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {
-  }, [dealCards, revealCards]);
+    if (dealCards) {
+      resetAnimation();
+    }
+  }, [dealCards, resetAnimation]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -29,6 +34,7 @@ const ThreeCardSpread = () => {
   }, []);
 
   const handleMonitorOutput = useCallback((output) => {
+    // Handle monitor output if needed
   }, []);
 
   const fetchThreeCardSpread = async () => {

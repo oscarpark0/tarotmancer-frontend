@@ -31,13 +31,13 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
 
   return (
     <div className={`floating-cards ${dealCards ? 'dealing' : ''}`}>
-      {!dealingComplete && cards.length > 0 && cardPositions.slice(revealedCards, cardPositions.length - floatingCardsRemoved).map((position, i) => (
-        revealedCards <= i && (
+      {!dealingComplete && cardPositions.slice(revealedCards, cardPositions.length - floatingCardsRemoved).map((position, i) => (
+        revealedCards <= i && cards[i] && (
           <motion.img
             key={i}
-            src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
-            alt="Tarot Card"
-            className={`floating-card card-${i + 1} ${isDealing ? 'fly-out' : ''}`}
+            src={cards[i].img || `${TAROT_IMAGE_BASE_URL}/cardback.webp`}
+            alt={cards[i].name || 'Tarot Card'}
+            className={`floating-card card-${i + 1} ${isDealing ? 'fly-out' : ''} ${cards[i].orientation === 'reversed' ? 'reversed' : ''}`}
             initial={{
               opacity: 0,
               x: monitorPosition.x + monitorPosition.width / 2 - 50,
@@ -65,7 +65,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               height: '10vh',
               transform: 'translate(-50%, -50%)',
             }}
-            data-tooltip={position.tooltip}
+            data-tooltip={cards[i].tooltip}
           />
         )
       ))}

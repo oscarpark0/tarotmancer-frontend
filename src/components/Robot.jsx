@@ -90,7 +90,7 @@ const Robot = ({
         <div className="tarotmancer-text">tarotmancer</div>
         <div className="robot-head">
           <div className="crt-screen">
-            <div className="screen-content" style={{ flexGrow: 1 }} ref={screenContentRef}>
+            <div className="screen-content" style={{ flexGrow: 1 }}>
               <FloatingCards
                 dealCards={dealCards}
                 cardPositions={cardPositions}
@@ -100,13 +100,6 @@ const Robot = ({
                 onExitComplete={onExitComplete}
                 shouldDrawNewSpread={shouldDrawNewSpread}
                 dealingComplete={dealingComplete}
-                cards={cardPositions.map(pos => ({
-                  name: pos.most_common_card,
-                  img: pos.most_common_card_img,
-                  orientation: pos.orientation,
-                  position_name: pos.position_name,
-                  tooltip: pos.position_name
-                }))}
               />
               <div className="monitor-output">{monitorOutput}</div>
             </div>

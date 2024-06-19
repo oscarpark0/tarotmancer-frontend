@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 
-const useCardAnimation = (numCards, dealCards, revealCards, shouldDrawNewSpread) => {
+const useCardAnimation = (numCards, dealCards, revealCards) => {
   const [revealedCards, setRevealedCards] = useState(0);
   const [floatingCardsRemoved, setFloatingCardsRemoved] = useState(0);
   const [isDealing, setIsDealing] = useState(false);
+  const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
 
   useEffect(() => {
+    console.log('dealCards in useCardAnimation:', dealCards);
     if (dealCards) {
       setIsDealing(true);
     }
   }, [dealCards]);
 
   useEffect(() => {
+    console.log('revealCards in useCardAnimation:', revealCards);
     if (revealCards) {
       const interval = setInterval(() => {
         setRevealedCards((prevRevealedCards) => prevRevealedCards + 1);
@@ -26,6 +29,7 @@ const useCardAnimation = (numCards, dealCards, revealCards, shouldDrawNewSpread)
     if (shouldDrawNewSpread) {
       setRevealedCards(0);
       setFloatingCardsRemoved(0);
+      setShouldDrawNewSpread(false);
     }
   }, [shouldDrawNewSpread]);
 
@@ -35,7 +39,7 @@ const useCardAnimation = (numCards, dealCards, revealCards, shouldDrawNewSpread)
     setIsDealing(false);
   };
 
-  return { revealedCards, floatingCardsRemoved, isDealing, resetAnimation };
+  return { revealedCards, floatingCardsRemoved, isDealing, resetAnimation, setShouldDrawNewSpread };
 };
 
 export default useCardAnimation;

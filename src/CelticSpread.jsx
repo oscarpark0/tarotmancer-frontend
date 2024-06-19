@@ -55,9 +55,11 @@ const CelticSpread = () => {
       }
 
       const data = await response.json();
+      console.log('Data fetched:', data);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateCardPositions(data.positions.length, windowWidth, windowHeight);
+      console.log('Generated positions:', positions);
       setPositions(positions.map((pos, index) => ({
         ...data.positions[index],
         left: pos.left,

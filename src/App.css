@@ -1,14 +1,14 @@
 .nav {
     background-color: #f8f9fa;
-    padding: 1rem;
+    padding: 0.1rem;
   }
   
   .nav-list {
-    list-style-type: none;
+    list-style-type: disc;
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    justify-content: left;
   }
   
   .nav-item {

@@ -10,7 +10,7 @@ export const generateCelticCrossPositions = (numCards, width, height) => {
     const angle = (i / numCards) * Math.PI * 2;
     const x = center.x + radius * Math.cos(angle);
     const y = center.y + radius * Math.sin(angle);
-    positions.push({ left: x, top: y });
+    positions.push({ left: `${x}px`, top: `${y}px` });
   }
 
   return positions;
@@ -21,9 +21,9 @@ export const generateThreeCardPositions = (numCards, width, height) => {
 
   if (numCards === 3) {
     positions.push(
-      { left: width * 0.33, top: height * 0.3 },
-      { left: width * 0.5, top: height * 0.3 },
-      { left: width * 0.67, top: height * 0.3 }
+      { left: `${width * 0.33}px`, top: `${height * 0.3}px` },
+      { left: `${width * 0.5}px`, top: `${height * 0.3}px` },
+      { left: `${width * 0.67}px`, top: `${height * 0.3}px` }
     );
   }
 

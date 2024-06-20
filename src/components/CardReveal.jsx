@@ -10,24 +10,25 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
   const [exitAnimation, setExitAnimation] = useState(false);
 
   const cardPositions = useMemo(() => {
+    const isMobile = window.innerWidth <= 768;
     if (cards.length === 3) {
       return [
-        { top: '30%', left: '33%', transform: 'translate(-50%, -50%)', zIndex: 10 },
-        { top: '30%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 },
-        { top: '30%', left: '67%', transform: 'translate(-50%, -50%)', zIndex: 10 },
+        { top: isMobile ? '20%' : '30%', left: '33%', transform: 'translate(-50%, -50%)', zIndex: 10 },
+        { top: isMobile ? '20%' : '30%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 10 },
+        { top: isMobile ? '20%' : '30%', left: '67%', transform: 'translate(-50%, -50%)', zIndex: 10 },
       ];
     } else {
       return [
-        { top: '30%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-        { top: '30%', left: '45%', transform: 'translate(-50%, -50%) rotate(90deg)', zIndex: 12 }, 
-        { top: '11%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-        { top: '50%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-        { top: '30%', left: '33%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-        { top: '30%', left: '57%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-        { top: '1%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-        { top: '21%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 },
-        { top: '41%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
-        { top: '61%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+        { top: isMobile ? '20%' : '30%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+        { top: isMobile ? '20%' : '30%', left: '45%', transform: 'translate(-50%, -50%) rotate(90deg)', zIndex: 12 }, 
+        { top: isMobile ? '5%' : '11%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+        { top: isMobile ? '40%' : '50%', left: '45%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+        { top: isMobile ? '20%' : '30%', left: '33%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+        { top: isMobile ? '20%' : '30%', left: '57%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+        { top: isMobile ? '0%' : '1%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+        { top: isMobile ? '15%' : '21%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 },
+        { top: isMobile ? '30%' : '41%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
+        { top: isMobile ? '45%' : '61%', left: '75%', transform: 'translate(-50%, -50%)', zIndex: 10 }, 
       ];
     }
   }, [cards.length]);

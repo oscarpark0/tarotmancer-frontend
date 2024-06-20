@@ -135,6 +135,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
               onSubmitInput={handleSubmitInput}
               onSpreadSelect={onSpreadSelect}
               selectedSpread={selectedSpread}
+              monitorPosition={{ width: window.screen.width, height: window.screen.height }}
             />
           </div>
           {positions.length > 0 && (

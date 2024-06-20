@@ -9,9 +9,9 @@
 
 @media (max-width: 768px) {
   .robot-container {
-    top: -2vh;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -37,8 +37,8 @@
 
 @media (max-width: 768px) {
   .robot-body {
-    width: 85vw;
-    height: 120vw;
+    width: 80vw;
+    height: 100vh;
   }
 }
 

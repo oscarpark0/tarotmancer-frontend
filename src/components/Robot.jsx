@@ -38,7 +38,9 @@ const Robot = ({
   dealingComplete,
   mostCommonCards,
   formRef,
-  onSubmitInput
+  onSubmitInput,
+  selectedSpread,
+  onSpreadSelect
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -76,6 +78,11 @@ const Robot = ({
       onSubmitInput(mostCommonCards);
     }
   }, [dealingComplete, mostCommonCards, onSubmitInput]);
+
+  useEffect(() => {
+    // Update the robot's behavior based on the selected spread
+    // ...
+  }, [selectedSpread]);
 
   return (
     <motion.div
@@ -117,6 +124,7 @@ const Robot = ({
         mostCommonCards={mostCommonCards}
         dealingComplete={dealingComplete}
         formRef={formRef}
+        onSpreadSelect={onSpreadSelect}
       />
     </motion.div>
   );
@@ -135,6 +143,8 @@ Robot.propTypes = {
   mostCommonCards: PropTypes.string.isRequired,
   formRef: PropTypes.object.isRequired,
   onSubmitInput: PropTypes.func.isRequired,
+  selectedSpread: PropTypes.string.isRequired,
+  onSpreadSelect: PropTypes.func.isRequired
 };
 
 export default Robot;

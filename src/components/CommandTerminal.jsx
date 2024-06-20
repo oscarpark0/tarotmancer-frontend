@@ -3,7 +3,7 @@ import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 
-const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete }) => {
+const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread }) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -83,6 +83,10 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
       <div className="terminal-output" ref={terminalOutputRef} style={{ minHeight: '1em' }}>
         {isLoading ? <span>Loading...</span> : ''}
       </div>
+      <div className="spread-selector">
+        <button onClick={() => onSpreadSelect('threeCard')}>3 Card</button>
+        <button onClick={() => onSpreadSelect('celtic')}>Celtic</button>
+      </div>
       <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
         <input
           type="text"
@@ -93,9 +97,13 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
           id="terminal-input"
         />
       </form>
-      <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw Cards">
-        Draw
-      </ShimmerButton>
+      <div className="draw-button-container">
+        <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw">
+          Draw
+        </ShimmerButton>
+      </div>
+
+
     </div>
   );
 };

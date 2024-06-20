@@ -7,8 +7,9 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
+import { motion } from 'framer-motion';
 
-const ThreeCardSpread = () => {
+const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,7 +22,10 @@ const ThreeCardSpread = () => {
   const formRef = useRef(null);
 
   useEffect(() => {
-  }, [dealCards, revealCards]);
+    if (selectedSpread === 'threeCard') {
+      fetchThreeCardSpread();
+    }
+  }, [selectedSpread]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -103,44 +107,62 @@ const ThreeCardSpread = () => {
   };
 
   return (
-    <MagicContainer className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
-      <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
-      <div className="relative w-full h-screen overflow-hidden">
-        {isLoading ? (
-          <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
-        ) : error ? (
-          <p className="text-4xl text-red-600 text-center z-100">{error}</p>
-        ) : null}
-        <div className="flex flex-col items-center">
-          <Robot
-            dealCards={dealCards}
-            cardPositions={positions}
-            revealedCards={revealedCards}
-            finalCardPositions={positions}
-            onExitComplete={handleExitComplete}
-            revealCards={revealCards}
-            shouldDrawNewSpread={shouldDrawNewSpread}
-            onMonitorOutput={handleMonitorOutput}
-            drawSpread={handleDrawSpread}
-            dealingComplete={dealingComplete}
-            mostCommonCards={mostCommonCards}
-            formRef={formRef}
-            onSubmitInput={handleSubmitInput}
-          />
-        </div>
-        {positions.length > 0 && (
-          <div className="relative z-10 w-full flex flex-col items-center">
-            <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
-              <section className="relative z-10 mb-16 w-full">
-                <ErrorBoundary>
-                  <FloatingCards
-                    dealCards={dealCards}
-                    monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
-                    finalCardPositions={positions}
-                    onExitComplete={handleExitComplete}
-                    revealCards={revealCards}
-                    dealingComplete={dealingComplete}
-                    shouldDrawNewSpread={shouldDrawNewSpread}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      transition={{ duration: 0.3, ease: 'easeInOut' }}
+    >
+      <MagicContainer className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
+        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
+        <div className="relative w-full h-screen overflow-hidden">
+          {isLoading ? (
+            <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
+          ) : error ? (
+            <p className="text-4xl text-red-600 text-center z-100">{error}</p>
+          ) : null}
+          <div className="flex flex-col items-center">
+            <Robot
+              dealCards={dealCards}
+              cardPositions={positions}
+              revealedCards={revealedCards}
+              finalCardPositions={positions}
+              onExitComplete={handleExitComplete}
+              revealCards={revealCards}
+              shouldDrawNewSpread={shouldDrawNewSpread}
+              onMonitorOutput={handleMonitorOutput}
+              drawSpread={handleDrawSpread}
+              dealingComplete={dealingComplete}
+              mostCommonCards={mostCommonCards}
+              formRef={formRef}
+              onSubmitInput={handleSubmitInput}
+              onSpreadSelect={onSpreadSelect}
+              selectedSpread="threeCard"
+            />
+          </div>
+          {positions.length > 0 && (
+            <div className="relative z-10 w-full flex flex-col items-center">
+              <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
+                <section className="relative z-10 mb-16 w-full">
+                  <ErrorBoundary>
+                    <FloatingCards
+                      dealCards={dealCards}
+                      monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
+                      finalCardPositions={positions}
+                      onExitComplete={handleExitComplete}
+                      revealCards={revealCards}
+                      dealingComplete={dealingComplete}
+                      shouldDrawNewSpread={shouldDrawNewSpread}
+                      cards={positions.map(pos => ({
+                        name: pos.most_common_card,
+                        img: pos.most_common_card_img,
+                        orientation: pos.orientation,
+                        position_name: pos.position_name,
+                        tooltip: pos.position_name
+                      }))}
+                    />
+                  </ErrorBoundary>
+                  <CardReveal
                     cards={positions.map(pos => ({
                       name: pos.most_common_card,
                       img: pos.most_common_card_img,
@@ -148,32 +170,19 @@ const ThreeCardSpread = () => {
                       position_name: pos.position_name,
                       tooltip: pos.position_name
                     }))}
+                    revealCards={revealCards}
+                    dealingComplete={dealingComplete}
+                    shouldDrawNewSpread={shouldDrawNewSpread}
+                    className="md:hidden"
                   />
-                </ErrorBoundary>
-                <CardReveal
-                  cards={positions.map(pos => ({
-                    name: pos.most_common_card,
-                    img: pos.most_common_card_img,
-                    orientation: pos.orientation,
-                    position_name: pos.position_name,
-                    tooltip: pos.position_name
-                  }))}
-                  revealCards={revealCards}
-                  dealingComplete={dealingComplete}
-                  shouldDrawNewSpread={shouldDrawNewSpread}
-                  className="md:hidden"
-                />
-              </section>
+                </section>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-    </MagicContainer>
+          )}
+        </div>
+      </MagicContainer>
+    </motion.div>
   );
 };
 
 export default ThreeCardSpread;
-
-
-
-

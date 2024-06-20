@@ -31,6 +31,7 @@
 
 .terminal-input-form {
   display: flex;
+  margin-bottom: 10px; 
 }
 
 .terminal-input {
@@ -57,14 +58,58 @@
   width: 10vh; 
   height: 3vh; 
   border-radius: 22px;
+  background: linear-gradient(145deg, #d1cccc88, #6b6b6b);
+  box-shadow: 0 5px 10px rgb(0, 0, 0);
+  transition: transform 0.1s ease-in-out;
+  z-index: 10;
+
+}
+
+.command-terminal button:active {
+  transform: scale(0.95);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.712);
+}
+
+.spread-selector {
+  display: flex;
+  justify-content: center;
+  margin-top: -10px;
+}
+
+.spread-selector button {
+  width: 10vh;
+  height: 3vh;
+  border-radius: 2px;
+  background: linear-gradient(145deg, #2b292988, #aaa8a8);
+  transition: transform 0.1s ease-in-out;
+  z-index: 10;
+  margin: 0 5px;
+  font-size: 0.8rem;
+}
+
+.spread-selector button:active {
+  transform: scale(0.95);
+}
+
+.draw-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: -20px;
+}
+
+.draw-button-container button {
+  width: 10vh;
+  height: 3vh;
+  border-radius: 22px;
   background: linear-gradient(145deg, #ffffff88, #aaa8a8);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.1s ease-in-out;
   z-index: 10;
   -webkit-box-reflect: below 0.01px linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(0,0,0,0.4));
+  font-size: 0.8rem;
 }
 
-.command-terminal button:active {
+.draw-button-container button:active {
   transform: scale(0.95);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }

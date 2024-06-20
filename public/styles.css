@@ -1,7 +1,6 @@
 body {
     background: radial-gradient(circle at 10% 70%, #bdbdbd, #a9a9a9, #706f6f, #696969);
-    color: #9fdd0e;
-    font-family: 'Roboto', sans-serif;
+    color: #fffffff6;
     margin: 0;
     padding: 0;
   }
@@ -51,7 +50,7 @@ body {
     background: #161616;
     border: none;
     border-radius: 5px;
-    color: #ffee00;
+    color: #7a7a0d57;
     font-size: 16px;
     margin-bottom: 10px;
     padding: 10px;

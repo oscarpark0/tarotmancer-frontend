@@ -2,17 +2,18 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
+import './App.css'; // Import the CSS file
 
 function App() {
   return (
     <Router>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Celtic Spread</Link>
+      <nav className="nav">
+        <ul className="nav-list">
+          <li className="nav-item">
+            <Link to="/" className="nav-link">Celtic Spread</Link>
           </li>
-          <li>
-            <Link to="/three-card-spread">Three Card Spread</Link>
+          <li className="nav-item">
+            <Link to="/three-card-spread" className="nav-link">Three Card Spread</Link>
           </li>
         </ul>
       </nav>
@@ -27,4 +28,3 @@ function App() {
 }
 
 export default App;
-

@@ -20,24 +20,9 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
+  const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
 
-
-
-  useEffect(() => {
-    if (selectedSpread === 'celtic') {
-      fetchCelticSpread();
-    }
-  }, [selectedSpread]);
-
-  const handleExitComplete = useCallback(() => {
-    setRevealCards(true);
-    setTimeout(() => setDealingComplete(true), 500);
-  }, []);
-
-  const handleMonitorOutput = useCallback((output) => {
-  }, []);
-
-  const fetchCelticSpread = async () => {
+  const fetchCelticSpread = useCallback(async () => {
     setIsLoading(true);
     try {
       const origin = window.location.origin;
@@ -93,7 +78,22 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (selectedSpread === 'celtic' && shouldDrawSpread) {
+      fetchCelticSpread();
+      setShouldDrawSpread(false);
+    }
+  }, [selectedSpread, fetchCelticSpread, shouldDrawSpread]);
+
+  const handleExitComplete = useCallback(() => {
+    setRevealCards(true);
+    setTimeout(() => setDealingComplete(true), 500);
+  }, []);
+
+  const handleMonitorOutput = useCallback((output) => {
+  }, []);
 
   const drawSpread = () => {
     setDealCards(false);
@@ -108,6 +108,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
       formRef.current.submitInput(value);
     }
   };
+
 
   return (
     <motion.div
@@ -140,7 +141,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
               formRef={formRef}
               onSubmitInput={handleSubmitInput}
               onSpreadSelect={onSpreadSelect}
-              selectedSpread={selectedSpread}
+              selectedSpread={selectedSpread} 
             />
           </div>
           {positions.length > 0 && (

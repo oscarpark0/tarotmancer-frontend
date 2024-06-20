@@ -73,22 +73,24 @@
 .spread-selector {
   display: flex;
   justify-content: center;
-  margin-top: -10px;
+  margin-top: 80px;
+  position: absolute;
+  left: 10%;
 }
 
-.spread-selector button {
-  width: 10vh;
+.spread-selector select {
+  width: 15vh;
   height: 3vh;
-  border-radius: 2px;
-  background: linear-gradient(145deg, #2b292988, #aaa8a8);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #666060, #000000);
   transition: transform 0.1s ease-in-out;
   z-index: 10;
   margin: 0 5px;
   font-size: 0.8rem;
 }
 
-.spread-selector button:active {
-  transform: scale(0.95);
+.spread-selector select:focus {
+  outline: none;
 }
 
 .draw-button-container {

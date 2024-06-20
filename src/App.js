@@ -1,20 +1,19 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 
 function App() {
+  const [selectedSpread, setSelectedSpread] = useState('celtic');
+
   const handleSpreadSelect = (selectedSpread) => {
-    // Handle spread selection logic here
-    console.log('Selected spread:', selectedSpread);
+    setSelectedSpread(selectedSpread);
   };
 
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<CelticSpread onSpreadSelect={handleSpreadSelect} />} />
-        <Route path="/celtic-spread" element={<CelticSpread onSpreadSelect={handleSpreadSelect} />} />
-        <Route path="/three-card-spread" element={<ThreeCardSpread onSpreadSelect={handleSpreadSelect} />} />
+        <Route path="/" element={selectedSpread === 'celtic' ? <CelticSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} /> : <ThreeCardSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />} />
       </Routes>
     </Router>
   );

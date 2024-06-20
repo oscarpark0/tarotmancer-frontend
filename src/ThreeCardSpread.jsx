@@ -20,22 +20,9 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
+  const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
 
-  useEffect(() => {
-    if (selectedSpread === 'threeCard') {
-      fetchThreeCardSpread();
-    }
-  }, [selectedSpread]);
-
-  const handleExitComplete = useCallback(() => {
-    setRevealCards(true);
-    setTimeout(() => setDealingComplete(true), 500);
-  }, []);
-
-  const handleMonitorOutput = useCallback((output) => {
-  }, []);
-
-  const fetchThreeCardSpread = async () => {
+  const fetchThreeCardSpread = useCallback(async () => {
     setIsLoading(true);
     try {
       const origin = window.location.origin;
@@ -89,8 +76,22 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  };
+  }, []);
 
+  useEffect(() => {
+    if (selectedSpread === 'threeCard' && shouldDrawSpread) {
+      fetchThreeCardSpread();
+      setShouldDrawSpread(false);
+    }
+  }, [selectedSpread, fetchThreeCardSpread, shouldDrawSpread]);
+
+  const handleExitComplete = useCallback(() => {
+    setRevealCards(true);
+    setTimeout(() => setDealingComplete(true), 500);
+  }, []);
+
+  const handleMonitorOutput = useCallback((output) => {
+  }, []);
 
   const handleSubmitInput = (value) => {
     if (formRef.current) {
@@ -103,7 +104,7 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
     setRevealCards(false);
     setDealingComplete(false);
     setShouldDrawNewSpread(true);
-    fetchThreeCardSpread();
+    setShouldDrawSpread(true);
   };
 
   return (

@@ -12,6 +12,10 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
     setInput(e.target.value);
   }, []);
 
+  const handleSpreadChange = useCallback((e) => {
+    onSpreadSelect(e.target.value);
+  }, [onSpreadSelect]);
+
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
 
@@ -83,10 +87,7 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
       <div className="terminal-output" ref={terminalOutputRef} style={{ minHeight: '1em' }}>
         {isLoading ? <span>Loading...</span> : ''}
       </div>
-      <div className="spread-selector">
-        <button onClick={() => onSpreadSelect('threeCard')}>3 Card</button>
-        <button onClick={() => onSpreadSelect('celtic')}>Celtic</button>
-      </div>
+      
       <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
         <input
           type="text"
@@ -97,13 +98,15 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
           id="terminal-input"
         />
       </form>
-      <div className="draw-button-container">
+      <div className="spread-selector">
         <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw">
           Draw
         </ShimmerButton>
+        <select value={selectedSpread} onChange={handleSpreadChange}>
+          <option value="celtic">Celtic Spread</option>
+          <option value="threeCard">3 Card Spread</option>
+        </select>
       </div>
-
-
     </div>
   );
 };

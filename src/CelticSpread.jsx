@@ -7,7 +7,6 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
-import { motion } from 'framer-motion';
 
 const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
   const [positions, setPositions] = useState([]);
@@ -81,11 +80,11 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedSpread === 'celtic' && shouldDrawSpread) {
+    if (shouldDrawSpread) {
       fetchCelticSpread();
       setShouldDrawSpread(false);
     }
-  }, [selectedSpread, fetchCelticSpread, shouldDrawSpread]);
+  }, [fetchCelticSpread, shouldDrawSpread]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -111,12 +110,6 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
 
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ duration: 0.3, ease: 'easeInOut' }}
-    >
       <MagicContainer className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
         <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
         <div className="relative w-full h-screen overflow-hidden">
@@ -141,7 +134,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
               formRef={formRef}
               onSubmitInput={handleSubmitInput}
               onSpreadSelect={onSpreadSelect}
-              selectedSpread={selectedSpread} 
+              selectedSpread={selectedSpread}
             />
           </div>
           {positions.length > 0 && (
@@ -185,7 +178,6 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
           )}
         </div>
       </MagicContainer>
-    </motion.div>
   );
 }
 

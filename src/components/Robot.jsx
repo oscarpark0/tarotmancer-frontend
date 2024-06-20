@@ -125,6 +125,7 @@ const Robot = ({
         dealingComplete={dealingComplete}
         formRef={formRef}
         onSpreadSelect={onSpreadSelect}
+        selectedSpread={selectedSpread}
       />
     </motion.div>
   );

@@ -2,10 +2,16 @@
 import React from 'react';
 
 const SpreadSelector = ({ onSpreadSelect }) => {
+  const handleChange = (event) => {
+    onSpreadSelect(event.target.value);
+  };
+
   return (
     <div className="spread-selector">
-      <button onClick={() => onSpreadSelect('threeCard')}>Three Card Spread</button>
-      <button onClick={() => onSpreadSelect('celtic')}>Celtic Spread</button>
+      <select onChange={handleChange}>
+        <option value="celtic">Celtic Spread</option>
+        <option value="threeCard">Three Card Spread</option>
+      </select>
     </div>
   );
 };

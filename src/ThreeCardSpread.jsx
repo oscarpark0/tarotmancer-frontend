@@ -7,7 +7,6 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
-import { motion } from 'framer-motion';
 
 const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
   const [positions, setPositions] = useState([]);
@@ -79,11 +78,11 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedSpread === 'threeCard' && shouldDrawSpread) {
+    if (shouldDrawSpread) {
       fetchThreeCardSpread();
       setShouldDrawSpread(false);
     }
-  }, [selectedSpread, fetchThreeCardSpread, shouldDrawSpread]);
+  }, [fetchThreeCardSpread, shouldDrawSpread]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -108,12 +107,6 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.8 }}
-      transition={{ duration: 0.3, ease: 'easeInOut' }}
-    >
       <MagicContainer className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
         <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
         <div className="relative w-full h-screen overflow-hidden">
@@ -138,7 +131,7 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
               formRef={formRef}
               onSubmitInput={handleSubmitInput}
               onSpreadSelect={onSpreadSelect}
-              selectedSpread="threeCard"
+              selectedSpread={selectedSpread}
             />
           </div>
           {positions.length > 0 && (
@@ -182,7 +175,6 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
           )}
         </div>
       </MagicContainer>
-    </motion.div>
   );
 };
 

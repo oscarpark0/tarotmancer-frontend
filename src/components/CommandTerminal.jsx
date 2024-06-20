@@ -98,14 +98,16 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
           id="terminal-input"
         />
       </form>
-      <div className="spread-selector">
+      <div className="draw-button-container">
         <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw">
           Draw
         </ShimmerButton>
-        <select value={selectedSpread} onChange={handleSpreadChange}>
-          <option value="celtic">Celtic Spread</option>
-          <option value="threeCard">3 Card Spread</option>
-        </select>
+        <div className="spread-selector">
+          <select value={selectedSpread} onChange={handleSpreadChange}>
+            <option value="celtic">Celtic Cross</option>
+            <option value="threeCard">Three Card</option>
+          </select>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router} from 'react-router-dom';
 import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 
@@ -12,9 +12,13 @@ function App() {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={selectedSpread === 'celtic' ? <CelticSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} /> : <ThreeCardSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />} />
-      </Routes>
+      <div>
+        {selectedSpread === 'celtic' ? (
+          <CelticSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
+        ) : (
+          <ThreeCardSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
+        )}
+      </div>
     </Router>
   );
 }

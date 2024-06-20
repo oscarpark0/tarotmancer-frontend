@@ -33,7 +33,7 @@ const AnimatedGridPattern = ({
   y = -1,
   strokeDasharray = 19,
   strokeOpacity = 1,
-  numCards = 55,
+  numCards = 25,
   className,
   maxOpacity = 0.9,
   duration = 6,

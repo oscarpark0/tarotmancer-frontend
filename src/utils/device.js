@@ -1,5 +1,5 @@
 export const isMobileDevice = () => {
-    return window.innerWidth <= 768; // You can adjust the width threshold as needed
+    return window.innerWidth <= 768; 
   };
 
 export default isMobileDevice;

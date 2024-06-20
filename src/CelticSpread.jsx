@@ -5,7 +5,7 @@ import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
-import { generateCardPositions } from './utils/cardPositions.js';
+import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 
 const CelticSpread = () => {
@@ -58,7 +58,7 @@ const CelticSpread = () => {
       console.log('Data fetched:', data);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      const positions = generateCardPositions(data.positions.length, windowWidth, windowHeight);
+      const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
       console.log('Generated positions:', positions);
       setPositions(positions.map((pos, index) => ({
         ...data.positions[index],

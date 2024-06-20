@@ -1,4 +1,4 @@
-export const generateCardPositions = (numCards, width, height) => {
+export const generateCelticCrossPositions = (numCards, width, height) => {
   const positions = [];
   const radius = Math.min(width, height) * 0.35; // Adjust the radius to fit the screen
   const center = {
@@ -11,6 +11,20 @@ export const generateCardPositions = (numCards, width, height) => {
     const x = center.x + radius * Math.cos(angle);
     const y = center.y + radius * Math.sin(angle);
     positions.push({ left: x, top: y });
+  }
+
+  return positions;
+};
+
+export const generateThreeCardPositions = (numCards, width, height) => {
+  const positions = [];
+
+  if (numCards === 3) {
+    positions.push(
+      { left: width * 0.33, top: height * 0.3 },
+      { left: width * 0.5, top: height * 0.3 },
+      { left: width * 0.67, top: height * 0.3 }
+    );
   }
 
   return positions;

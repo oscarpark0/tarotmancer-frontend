@@ -1,28 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
-import { generateCardPositions } from '../utils/cardPositions';
 import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
-function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread }) {
-  const [cardPositions, setCardPositions] = useState(() => generateCardPositions(10, monitorPosition.width, monitorPosition.height));
-  const { revealedCards, floatingCardsRemoved, isDealing, resetAnimation } = useCardAnimation(10, dealCards, revealCards, shouldDrawNewSpread);
+function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, numCards }) {
+  const [cardPositions, setCardPositions] = useState(finalCardPositions);
+  const { revealedCards, floatingCardsRemoved, isDealing, resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {
-    setCardPositions(generateCardPositions(10, monitorPosition.width, monitorPosition.height));
-  }, [monitorPosition]);
-
-  // Ensure positions are recalculated when window size changes
-  useEffect(() => {
-    const handleResize = () => {
-      setCardPositions(generateCardPositions(10, window.innerWidth, window.innerHeight));
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    setCardPositions(finalCardPositions);
+  }, [finalCardPositions]);
 
   useEffect(() => {
     if (shouldDrawNewSpread) {
@@ -39,21 +27,21 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
             src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
             alt="Tarot Card"
             className={`floating-card card-${i + 1} ${isDealing ? 'fly-out' : ''}`}
-            initial={{ 
-              opacity: 0, 
-              x: monitorPosition.x + monitorPosition.width / 2 - 50, 
-              y: monitorPosition.y + monitorPosition.height / 2, 
-              zIndex: 10, 
+            initial={{
+              opacity: 0,
+              x: monitorPosition.x + monitorPosition.width / 2 - 50,
+              y: monitorPosition.y + monitorPosition.height / 2,
+              zIndex: 10,
               scale: 0.8,
-              rotate: Math.random() * 20 - 10, 
+              rotate: Math.random() * 20 - 10,
             }}
             animate={{
-              x: revealCards ? finalCardPositions[i].left : monitorPosition.x + monitorPosition.width / 1 - 50,
-              y: revealCards ? finalCardPositions[i].top : monitorPosition.y + monitorPosition.height / 1,
+              x: revealCards ? position.left : monitorPosition.x + monitorPosition.width / 1 - 50,
+              y: revealCards ? position.top : monitorPosition.y + monitorPosition.height / 1,
               opacity: revealCards ? 0 : 1,
               zIndex: revealCards ? 0 : 10,
               scale: revealCards ? 0.5 : 1,
-              rotate: 0, 
+              rotate: 0,
               transition: { duration: 1.2, delay: i * 0.15, ease: [0.43, 0.13, 0.23, 0.96] },
             }}
             transition={{

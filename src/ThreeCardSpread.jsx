@@ -5,7 +5,7 @@ import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
-import { generateCardPositions } from './utils/cardPositions.js';
+import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 
 const ThreeCardSpread = () => {
@@ -29,7 +29,6 @@ const ThreeCardSpread = () => {
   }, []);
 
   const handleMonitorOutput = useCallback((output) => {
-    // Handle monitor output if needed
   }, []);
 
   const fetchThreeCardSpread = async () => {
@@ -56,7 +55,7 @@ const ThreeCardSpread = () => {
       const data = await response.json();
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      const positions = generateCardPositions(data.positions.length, windowWidth, windowHeight);
+      const positions = generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);
       setPositions(positions.map((pos, index) => ({
         ...data.positions[index],
         left: pos.left,
@@ -116,7 +115,7 @@ const ThreeCardSpread = () => {
             dealCards={dealCards}
             cardPositions={positions}
             revealedCards={revealedCards}
-            finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+            finalCardPositions={positions}
             onExitComplete={handleExitComplete}
             revealCards={revealCards}
             shouldDrawNewSpread={shouldDrawNewSpread}
@@ -136,7 +135,7 @@ const ThreeCardSpread = () => {
                   <FloatingCards
                     dealCards={dealCards}
                     monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
-                    finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                    finalCardPositions={positions}
                     onExitComplete={handleExitComplete}
                     revealCards={revealCards}
                     dealingComplete={dealingComplete}

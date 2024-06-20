@@ -28,8 +28,8 @@
 
 .floating-card {
   position: absolute;
-  width: 15vw; /* Adjusted from 3vw to be more responsive */
-  height: 25vh; /* Adjusted from 5vw to maintain aspect ratio */
+  width: 15vw; 
+  height: 25vh; 
   border-radius: 3px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 28;
@@ -40,8 +40,8 @@
 
 @media (max-width: 768px) {
   .floating-card {
-    width: 20vw; /* Adjusted width for better visibility */
-    height: 30vh; /* Adjusted height to maintain aspect ratio */
+    width: 20vw; 
+    height: 30vh; 
   }
 }
 

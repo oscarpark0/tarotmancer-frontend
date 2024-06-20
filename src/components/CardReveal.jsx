@@ -58,7 +58,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
         setExitAnimation(false);
         setRevealedCards(0);
         setFlippedCards(0);
-      }, 1000); // Duration of the exit animation
+      }, 1000);
     }
   }, [shouldDrawNewSpread]);
 
@@ -89,7 +89,8 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
                 transition: { duration: 0.5, delay: index * 0.1, ease: 'easeOut' }
               }}
               style={cardPositions[index]}
-              data-tooltip={card.tooltip}
+              data-tooltip={`${card.tooltip}`} 
+              data-name={`${card.name}`} 
             >
               <div className="card-inner">
                 <div

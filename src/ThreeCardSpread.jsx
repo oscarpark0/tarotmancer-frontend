@@ -87,18 +87,19 @@ const ThreeCardSpread = () => {
     }
   };
 
-  const drawSpread = () => {
-    setDealCards(false);
-    setRevealCards(false);
-    setDealingComplete(false);
-    setShouldDrawNewSpread(true);
-    fetchThreeCardSpread();
-  };
 
   const handleSubmitInput = (value) => {
     if (formRef.current) {
       formRef.current.submitInput(value);
     }
+  };
+
+  const handleDrawSpread = () => {
+    setDealCards(false);
+    setRevealCards(false);
+    setDealingComplete(false);
+    setShouldDrawNewSpread(true);
+    fetchThreeCardSpread();
   };
 
   return (
@@ -120,7 +121,7 @@ const ThreeCardSpread = () => {
             revealCards={revealCards}
             shouldDrawNewSpread={shouldDrawNewSpread}
             onMonitorOutput={handleMonitorOutput}
-            drawSpread={drawSpread}
+            drawSpread={handleDrawSpread}
             dealingComplete={dealingComplete}
             mostCommonCards={mostCommonCards}
             formRef={formRef}
@@ -172,3 +173,7 @@ const ThreeCardSpread = () => {
 };
 
 export default ThreeCardSpread;
+
+
+
+

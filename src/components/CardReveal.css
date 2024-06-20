@@ -71,40 +71,46 @@
 .card:hover::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: 100%;
+  bottom: 105%;
   left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
+  transform: translateX(-50%) translateY(-25px);
+  background-color: #f1e9e9;
+  color: #000000;
   padding: 0px 4px;
+  outline: 0.1vw groove;
   border-radius: 25px;
+  outline-color: #000000;
   font-size: 1.2rem;
   white-space: nowrap;
   pointer-events: none;
   display: block;
   max-width: 200px;
   text-align: center;
-  line-height: 1.4; /* Improved line spacing */
+  line-height: 1.5; 
+  z-index: 10000;
 }
 
 .card:hover::before {
   content: attr(data-name); /* New attribute for card name */
   position: absolute;
-  bottom: 100%;
+  bottom: 95%;
   left: 50%;
   transform: translateX(-50%) translateY(-15px); 
-  background-color: rgba(255, 255, 255, 0.9); 
-  color: #000;
+  background-color: rgb(255, 253, 253); 
+  color: #000000;
   padding: 0px 4px;
   border-radius: 50px;
-  font-size: 1.2rem;
-  font-weight: bold; /* Make card name bold */
+  outline-style: dashed;
+  outline-width: 0.1px;
+  border-radius: 25px;
+  outline-color: #0000009c;
+  font-size: 1.4rem;
   white-space: nowrap;
   pointer-events: none;
   display: block;
-  max-width: 200px;
+  max-width: 400px;
   text-align: center;
-  z-index: 1001; /* Ensure it's above the main tooltip */
+  z-index: 10001; /* Ensure it's above the main tooltip */
 }
 
 .card.cross-card:hover {

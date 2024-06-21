@@ -1,119 +1,93 @@
 .command-terminal {
-  width: 100%;
-  height: 130px;
   background: radial-gradient(circle at 50%, #bdbdbd, #a9a9a9, #696969);
-  border-radius: 3px;
-  border-style: inset;
+  border-radius: 30px;
+  border-style: double;
+  border-width: 2px;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  width: 80%;
+  max-width: 800px;
+  height: auto;
+  min-height: 200px;
   display: flex;
   flex-direction: column;
-  padding: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-  z-index: -500;
-  position: absolute;
-  left: 50%;
-  bottom: -130px;
-  transform: translateX(-50%);
-  outline-style: inset;
-  outline-color: #a9a9a9;
-  outline-width: 5px;
+  justify-content: space-between;
+  position: relative;
+  margin: 20px auto;
 }
 
-@media (max-width: 768px) {
-  .command-terminal {
-    position: absolute;
-    bottom: -105px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    height: 100px;
-  }
+.terminal-output {
+  background: #161616;
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  min-height: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  color: #fff;
+  font-family: monospace;
+}
+
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .terminal-input-form {
-  display: flex;
-  margin-bottom: 10px; 
+  margin-right: 15px;
 }
 
 .terminal-input {
-  flex: 1;
+  width: 100%;
   background: #161616;
-  border-style: inset;
-  padding: 0.5rem; 
-  font-size: 0.9rem; 
-  outline: ridge;
-  outline-color: #6e6e6e;
-  outline-offset: -8px;
-  outline-width: 1px;
-  resize: none;
-  overflow: hidden;
-  min-height: 50px; 
+  border: 1px solid #6e6e6e;
+  font-size: 1rem;
+  padding: 10px 15px;
   border-radius: 22px;
-  box-shadow: inset 0 2px 5px rgb(0, 0, 0);
-  z-index: -10000;
-  margin-right: 10px;
-}
-
-.command-terminal button {
-  width: 10vh; 
-  height: 3vh; 
-  border-radius: 22px;
-  background: linear-gradient(145deg, #d1cccc88, #6b6b6b);
-  box-shadow: 0 5px 10px rgb(0, 0, 0);
-  transition: transform 0.1s ease-in-out;
-  z-index: 10;
-
-}
-
-.command-terminal button:active {
-  transform: scale(0.95);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.712);
-}
-
-
-
-.draw-button-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 70px;
-  position: fixed; 
-  -webkit-box-reflect: below 0.5px linear-gradient(to bottom, rgba(0,0,0,0.0), rgba(199, 39, 39, 0.4));
-}
-
-.draw-button-container button {
-  width: 10vh;
-  height: 3vh;
-  border-radius: 22px;
-  background: linear-gradient(145deg, #ffffff88, #aaa8a8);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-  transition: transform 0.1s ease-in-out;
-  z-index: 10;
-  font-size: 0.8rem;
-}
-
-.draw-button-container button:active {
-  transform: scale(0.95);
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  outline: none;
 }
 
 .spread-selector {
-  margin-left: 10px;
+  width: 150px;
 }
 
 .spread-selector select {
-  width: 15vh;
-  height: 3vh;
+  width: 100%;
+  padding: 8px 12px;
   border-radius: 22px;
   background: linear-gradient(145deg, #666060, #000000);
-  transition: transform 0.1s ease-in-out;
-  z-index: 10;
   color: #fff;
+  border: none;
+  outline: none;
 }
 
-.spread-selector select option {
-  background-color: #333; 
-  color: #fff; 
+.draw-button-container {
+  justify-content: center;
 }
 
-.spread-selector select:focus {
-  outline: 2px solid #ffffffe0;
+.draw-button-container button {
+  width: 120px;
+  height: 40px;
+  border-radius: 22px;
+  background: linear-gradient(145deg, #ffffff88, #aaa8a8);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+}
+
+.draw-button-container button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 14px rgba(0, 0, 0, 0.4);
+}
+
+.draw-button-container button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }

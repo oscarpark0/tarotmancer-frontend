@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
+import SpreadSelector from './SpreadSelector.jsx';
 
-const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread }) => {
+const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -12,9 +13,7 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
     setInput(e.target.value);
   }, []);
 
-  const handleSpreadChange = useCallback((e) => {
-    onSpreadSelect(e.target.value);
-  }, [onSpreadSelect]);
+
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
@@ -83,34 +82,31 @@ const CommandTerminal = ({ onMonitorOutput, drawSpread, mostCommonCards, dealing
   }, [mostCommonCards, dealingComplete, handleSubmit]);
 
   return (
-    <div className="command-terminal">
-      <div className="terminal-output" ref={terminalOutputRef} style={{ minHeight: '1em' }}>
+    <div className="command-terminal" ref={ref}>
+      <div className="terminal-output" ref={terminalOutputRef}>
         {isLoading ? <span>Loading...</span> : ''}
       </div>
       
-      <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
-        <input
-          type="text"
-          value={input}
-          onChange={handleInputChange}
-          className="terminal-input"
-          placeholder="Set your focus. Press Draw to begin."
-          id="terminal-input"
-        />
-      </form>
+      <div className="input-container">
+        <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
+        <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
+          <input
+            type="text"
+            value={input}
+            onChange={handleInputChange}
+            className="terminal-input"
+            placeholder="Set your focus. Press Draw to begin."
+            id="terminal-input"
+          />
+        </form>
+      </div>
       <div className="draw-button-container">
         <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw">
           Draw
         </ShimmerButton>
-        <div className="spread-selector">
-          <select value={selectedSpread} onChange={handleSpreadChange}>
-            <option value="celtic">Celtic Cross</option>
-            <option value="threeCard">Three Card</option>
-          </select>
-        </div>
       </div>
     </div>
   );
-};
+});
 
 export default CommandTerminal;

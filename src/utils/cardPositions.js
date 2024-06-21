@@ -1,33 +1,28 @@
 export const generateCelticCrossPositions = (numCards, width, height) => {
-  const positions = [];
-  const radius = Math.min(width, height) * 0.35; // Adjust the radius to fit the screen
-  const center = {
-    x: width / 2,
-    y: height / 2,
-  };
+  const positions = [
+    { left: width * 0.45, top: height * 0.3 },
+    { left: width * 0.45, top: height * 0.3, transform: 'rotate(90deg)' },
+    { left: width * 0.45, top: height * 0 },
+    { left: width * 0.45, top: height * 0.6 },
+    { left: width * 0.32, top: height * 0.3 },
+    { left: width * 0.59, top: height * 0.3 },
+    { left: width * 0.75, top: height * -0.03 },
+    { left: width * 0.75, top: height * 0.21 },
+    { left: width * 0.75, top: height * 0.44 },
+    { left: width * 0.75, top: height * 0.68 },
+  ];
 
-  for (let i = 0; i < numCards; i++) {
-    const angle = (i / numCards) * Math.PI * 2;
-    const x = center.x + radius * Math.cos(angle);
-    const y = center.y + radius * Math.sin(angle);
-    positions.push({ left: `${x}px`, top: `${y}px` });
-  }
-
-  return positions;
+  return positions.slice(0, numCards);
 };
 
 export const generateThreeCardPositions = (numCards, width, height) => {
-  const positions = [];
+  const positions = [
+    { left: width * 0.25, top: height * 0.3 },
+    { left: width * 0.5, top: height * 0.3 },
+    { left: width * 0.75, top: height * 0.3 },
+  ];
 
-  if (numCards === 3) {
-    positions.push(
-      { left: `${width * 0.33}px`, top: `${height * 0.3}px` },
-      { left: `${width * 0.5}px`, top: `${height * 0.3}px` },
-      { left: `${width * 0.67}px`, top: `${height * 0.3}px` }
-    );
-  }
-
-  return positions;
+  return positions.slice(0, numCards);
 };
 
 export const cardPositions = [

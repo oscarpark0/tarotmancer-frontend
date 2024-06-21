@@ -78,11 +78,11 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
   }, []);
 
   useEffect(() => {
-    if (shouldDrawSpread) {
+    if (selectedSpread === 'threeCard' && shouldDrawSpread) {
       fetchThreeCardSpread();
       setShouldDrawSpread(false);
     }
-  }, [fetchThreeCardSpread, shouldDrawSpread]);
+  }, [fetchThreeCardSpread, selectedSpread, shouldDrawSpread]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -141,8 +141,8 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
                   <ErrorBoundary>
                     <FloatingCards
                       dealCards={dealCards}
-                      monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
-                      finalCardPositions={positions}
+                      monitorPosition={{ width: window.screen.width, height: window.screen.height }}
+                      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
                       onExitComplete={handleExitComplete}
                       revealCards={revealCards}
                       dealingComplete={dealingComplete}

@@ -45,6 +45,7 @@ const Robot = ({
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
   const screenContentRef = useRef(null);
+  const commandTerminalRef = useRef(null);
 
   useEffect(() => {
     if (dealCards) {
@@ -53,15 +54,27 @@ const Robot = ({
   }, [dealCards, onExitComplete]);
 
   useEffect(() => {
-    if (screenContentRef.current) {
-      const rect = screenContentRef.current.getBoundingClientRect();
+    if (screenContentRef.current && commandTerminalRef.current) {
+      const screenRect = screenContentRef.current.getBoundingClientRect();
       setMonitorPosition({
-        x: rect.x,
-        y: rect.y,
-        width: rect.width,
-        height: rect.height,
+        x: screenRect.x,
+        y: screenRect.y,
+        width: screenRect.width,
+        height: screenRect.height,
       });
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (commandTerminalRef.current) {
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const adjustMonitorOutputFontSize = useCallback(() => {
@@ -120,12 +133,13 @@ const Robot = ({
       <CommandTerminal
         onMonitorOutput={handleMonitorOutput}
         drawSpread={drawSpread}
-        onsubmitInput={onSubmitInput}
+        onSubmitInput={onSubmitInput}
         mostCommonCards={mostCommonCards}
         dealingComplete={dealingComplete}
         formRef={formRef}
         onSpreadSelect={onSpreadSelect}
         selectedSpread={selectedSpread}
+        ref={commandTerminalRef}
       />
     </motion.div>
   );

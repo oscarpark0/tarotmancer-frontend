@@ -41,14 +41,17 @@
 
 .card.reversed .card-inner {
   transform: rotateY(0deg) rotate(180deg);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
 }
 
 .card.reversed.flipped .card-inner {
   transform: rotateY(180deg) rotate(180deg);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
 }
 
 .card.cross-card.flipped .card-inner {
   transform: rotateY(180deg) rotate(90deg);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
 }
 
 .card-front,

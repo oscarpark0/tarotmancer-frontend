@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { MagicContainer } from "./components/magic-card";
 import AnimatedGridPattern from './components/AnimatedGridPattern';

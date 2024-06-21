@@ -3,8 +3,9 @@ import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
+import CardReveal from './CardReveal.jsx';
 
-const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread }, ref) => {
+const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -12,8 +13,6 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
   const handleInputChange = useCallback((e) => {
     setInput(e.target.value);
   }, []);
-
-
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
@@ -81,26 +80,49 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
     }
   }, [mostCommonCards, dealingComplete, handleSubmit]);
 
+  useEffect(() => {
+    // Adjust the max-height of the terminal output based on the content height
+    const terminalOutput = terminalOutputRef.current;
+    if (terminalOutput) {
+      const contentHeight = terminalOutput.scrollHeight;
+      terminalOutput.style.maxHeight = `${contentHeight}px`;
+    }
+  }, []); // Remove 'output' from the dependency array
+
   return (
-    <div className="command-terminal" ref={ref}>
-      <div className="terminal-output" ref={terminalOutputRef}>
-        {isLoading ? <span>Loading...</span> : ''}
-      </div>
-      
-      <div className="input-container">
-        <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
-        <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
-          <input
-            type="text"
-            value={input}
-            onChange={handleInputChange}
-            className="terminal-input"
-            placeholder="Set your focus. Press Draw to begin."
-            id="terminal-input"
-          />
-        </form>
+    <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
+      <div className="terminal-screen">
+        <div className="terminal-content">
+          <div className="terminal-output" ref={terminalOutputRef}>
+            {isLoading ? <span className="loading-text">Processing...</span> : ''}
+            {isMobile && dealingComplete && cards && cards.length > 0 && (
+              <CardReveal
+                cards={cards}
+                revealCards={revealCards}
+                dealingComplete={dealingComplete}
+                shouldDrawNewSpread={shouldDrawNewSpread}
+                isMobile={isMobile}
+              />
+            )}
+          </div>
+        </div>
+        <div className="screen-overlay"></div>
+        <div className="screen-scanline"></div>
       </div>
       <div className="draw-button-container">
+        <div className="input-container2">
+          <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
+          <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
+            <input
+              type="text"
+              value={input}
+              onChange={handleInputChange}
+              className="terminal-input"
+              placeholder="Set your focus. Press Draw to begin."
+              id="terminal-input"
+            />
+          </form>
+        </div>
         <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw">
           Draw
         </ShimmerButton>

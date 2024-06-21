@@ -1,44 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router} from 'react-router-dom';
 import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 
 function App() {
   const [selectedSpread, setSelectedSpread] = useState('celtic');
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = window.innerWidth <= 768;
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
-  const handleSpreadSelect = (selectedSpread) => {
-    setSelectedSpread(selectedSpread);
+  const handleSpreadSelect = (spread) => {
+    setSelectedSpread(spread);
   };
 
   return (
     <Router>
-      <div>
-        {isMobile ? (
-          selectedSpread === 'celtic' ? (
-            <CelticSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
-          ) : (
-            <ThreeCardSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
-          )
+      <div className="App">
+        {selectedSpread === 'celtic' ? (
+          <CelticSpread
+            onSpreadSelect={handleSpreadSelect}
+            selectedSpread={selectedSpread}
+            isMobile={isMobile}
+          />
         ) : (
-          selectedSpread === 'celtic' ? (
-            <CelticSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
-          ) : (
-            <ThreeCardSpread onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
-          )
+          <ThreeCardSpread
+            onSpreadSelect={handleSpreadSelect}
+            selectedSpread={selectedSpread}
+            isMobile={isMobile}
+          />
         )}
       </div>
     </Router>

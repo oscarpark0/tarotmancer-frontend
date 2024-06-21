@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
@@ -77,14 +78,14 @@ const Robot = ({
     };
   }, []);
 
-  const adjustMonitorOutputFontSize = useCallback(() => {
-    debouncedAdjustFontSize();
-  }, []);
-
   const handleMonitorOutput = useCallback((output) => {
+    const adjustMonitorOutputFontSize = () => {
+      debouncedAdjustFontSize();
+    };
+
     setMonitorOutput(output);
     adjustMonitorOutputFontSize();
-  }, [adjustMonitorOutputFontSize]);
+  }, []);
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { MagicContainer } from "./components/magic-card";
 import AnimatedGridPattern from './components/AnimatedGridPattern';
@@ -9,7 +8,7 @@ import { API_BASE_URL } from './utils/config';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 
-const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
+const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -119,7 +118,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
           ) : error ? (
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
           ) : null}
-          <div className="flex flex-col items-center">
+          <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             <Robot
               dealCards={dealCards}
               cardPositions={positions}
@@ -137,6 +136,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread }) => {
               onSpreadSelect={onSpreadSelect}
               selectedSpread={selectedSpread}
               monitorPosition={{ width: window.screen.width, height: window.screen.height }}
+              isMobile={isMobile}
             />
           </div>
           {positions.length > 0 && (

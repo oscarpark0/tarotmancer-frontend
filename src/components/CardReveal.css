@@ -18,10 +18,23 @@
 }
 
 @media (max-width: 768px) {
-  .card {
-    width: 20vw;
-    height: 30vh;
+  .card-reveal-container {
+    transform: scale(0.7);
+    margin-top: -50px;
   }
+
+  .card {
+    width: 90px;
+    height: 158px;
+  }
+}
+
+.card-reveal-container.mobile {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  margin-top: 20px;
 }
 
 .card-inner {

@@ -8,7 +8,7 @@ import { API_BASE_URL } from './utils/config';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 
-const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
+const ThreeCardSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -115,7 +115,7 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
           ) : error ? (
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
           ) : null}
-          <div className="flex flex-col items-center">
+          <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             <Robot
               dealCards={dealCards}
               cardPositions={positions}
@@ -132,21 +132,31 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
               onSubmitInput={handleSubmitInput}
               onSpreadSelect={onSpreadSelect}
               selectedSpread={selectedSpread}
+              isMobile={isMobile}
             />
-          </div>
-          {positions.length > 0 && (
-            <div className="relative z-10 w-full flex flex-col items-center">
-              <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
-                <section className="relative z-10 mb-16 w-full">
-                  <ErrorBoundary>
-                    <FloatingCards
-                      dealCards={dealCards}
-                      monitorPosition={{ width: window.screen.width, height: window.screen.height }}
-                      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-                      onExitComplete={handleExitComplete}
-                      revealCards={revealCards}
-                      dealingComplete={dealingComplete}
-                      shouldDrawNewSpread={shouldDrawNewSpread}
+            {positions.length > 0 && (
+              <div className="relative z-10 w-full flex flex-col items-center">
+                <div style={{ position: 'relative', zIndex: 1, marginTop: isMobile ? '10px' : '30px' }}>
+                  <section className="relative z-10 mb-16 w-full">
+                    <ErrorBoundary>
+                      <FloatingCards
+                        dealCards={dealCards}
+                        monitorPosition={{ width: window.screen.width, height: window.screen.height }}
+                        finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+                        onExitComplete={handleExitComplete}
+                        revealCards={revealCards}
+                        dealingComplete={dealingComplete}
+                        shouldDrawNewSpread={shouldDrawNewSpread}
+                        cards={positions.map(pos => ({
+                          name: pos.most_common_card,
+                          img: pos.most_common_card_img,
+                          orientation: pos.orientation,
+                          position_name: pos.position_name,
+                          tooltip: pos.position_name
+                        }))}
+                      />
+                    </ErrorBoundary>
+                    <CardReveal
                       cards={positions.map(pos => ({
                         name: pos.most_common_card,
                         img: pos.most_common_card_img,
@@ -154,25 +164,17 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread }) => {
                         position_name: pos.position_name,
                         tooltip: pos.position_name
                       }))}
+                      revealCards={revealCards}
+                      dealingComplete={dealingComplete}
+                      shouldDrawNewSpread={shouldDrawNewSpread}
+                      isMobile={isMobile}
+                      className="md:hidden"
                     />
-                  </ErrorBoundary>
-                  <CardReveal
-                    cards={positions.map(pos => ({
-                      name: pos.most_common_card,
-                      img: pos.most_common_card_img,
-                      orientation: pos.orientation,
-                      position_name: pos.position_name,
-                      tooltip: pos.position_name
-                    }))}
-                    revealCards={revealCards}
-                    dealingComplete={dealingComplete}
-                    shouldDrawNewSpread={shouldDrawNewSpread}
-                    className="md:hidden"
-                  />
-                </section>
+                  </section>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </MagicContainer>
   );

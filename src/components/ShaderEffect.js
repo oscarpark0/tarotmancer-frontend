@@ -89,10 +89,19 @@ const ShaderEffect = () => {
         const mesh = new THREE.Mesh(plane, material);
         scene.add(mesh);
 
+        let lastTime = performance.now();
+
         const animate = () => {
-            requestAnimationFrame(animate);
+            const currentTime = performance.now();
+            const deltaTime = Math.min(currentTime - lastTime, 100);
+            lastTime = currentTime;
+
             uniforms.iTime.value += 0.01;
             renderer.render(scene, camera);
+
+            setTimeout(() => {
+                requestAnimationFrame(animate);
+            }, Math.max(0, 16 - deltaTime));
         };
 
         animate();

@@ -3,12 +3,12 @@ import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
-import CardReveal from './CardReveal.jsx';
 
 const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
+  const [terminalOutput, setTerminalOutput] = useState('');
 
   const handleInputChange = useCallback((e) => {
     setInput(e.target.value);
@@ -16,6 +16,7 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
+    setTerminalOutput(''); // Clear previous output
 
     try {
       const staticText = "You are Tarotmancer. Your responses are empathetic, acknowledging the seeker's emotions and showing that you understand their situation. You generate responses that are tailored to the seeker's specific situation. You avoid generic answers, ensuring that your guidance resonates with the seeker personally. You response using clear language to ensure your responses are easily understood. Avoid complex terminology and jargon.";
@@ -36,7 +37,6 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
-      let output = '';
       let buffer = '';
 
       while (true) {
@@ -56,8 +56,11 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
             const data = JSON.parse(line);
 
             if (data.event_type === 'text-generation') {
-              output += data.text;
-              onMonitorOutput(output);
+              if (isMobile) {
+                setTerminalOutput(prevOutput => prevOutput + data.text);
+              } else {
+                onMonitorOutput(prevOutput => prevOutput + data.text);
+              }
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
@@ -66,13 +69,18 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
       }
     } catch (error) {
       console.error('Error:', error);
-      onMonitorOutput('An error occurred while processing your request.');
+      const errorMessage = 'An error occurred while processing your request.';
+      if (isMobile) {
+        setTerminalOutput(errorMessage);
+      } else {
+        onMonitorOutput(errorMessage);
+      }
     } finally {
       setIsLoading(false);
     }
 
     setInput('');
-  }, [onMonitorOutput]);
+  }, [onMonitorOutput, isMobile]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete) {
@@ -87,15 +95,18 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
       const contentHeight = terminalOutput.scrollHeight;
       terminalOutput.style.maxHeight = `${contentHeight}px`;
     }
-  }, []); // Remove 'output' from the dependency array
+  }, [terminalOutput]); // Add terminalOutput to the dependency array
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
         <div className="terminal-content">
-          <div className="monitor-output" ref={terminalOutputRef}>
-            {isLoading ? <span className="loading-text">Processing...</span> : ''}
-
+          <div className="terminal-output" ref={terminalOutputRef}>
+            {isLoading ? (
+              <span className="loading-text">Processing...</span>
+            ) : (
+              <span>{terminalOutput}</span>
+            )}
           </div>
         </div>
         <div className="screen-overlay"></div>

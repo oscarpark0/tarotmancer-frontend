@@ -14,13 +14,13 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
     const isMobile = containerWidth <= 768;
     
     const baseScale = isMobile ? 0.9 : 0.85;
-    const baseLeft = isMobile ? '15%' : '25%';
-    const spacing = isMobile ? '11vw' : '15vw';
+    const baseLeft = isMobile ? '25%' : '25%';
+    const spacing = isMobile ? '22vw' : '15vw';
     const topOffset = isMobile ? '40%' : '30%';
     
     if (cards.length === 3) {
       return [
-        { top: topOffset, left: `calc(${baseLeft} + ${spacing} * -0.5)`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: topOffset, left: `calc(${baseLeft} + ${spacing} * -0.5)`, transform: `translate(-10%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: topOffset, left: `calc(${baseLeft} + ${spacing} * 0)`, transform: `translate(-10%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: topOffset, left: `calc(${baseLeft} + ${spacing} * 0.5)`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
       ];

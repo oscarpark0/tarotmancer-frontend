@@ -15,8 +15,6 @@
   }
 }
 
-
-
 .robot-body {
   width: 400px;
   height: 500px;
@@ -40,7 +38,7 @@
 @media (max-width: 768px) {
   .robot-body {
     width: 95vw;
-    height: 50vh;
+    height: 45vh;
     transform: translateY(-45%);
   }
 }

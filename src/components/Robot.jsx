@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
-import CardReveal from './CardReveal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
+import CardReveal from './CardReveal.jsx';
 
-const debouncedAdjustFontSize = debounce(() => {
+const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
   const screenContentElement = document.querySelector('.screen-content');
 
@@ -17,15 +17,23 @@ const debouncedAdjustFontSize = debounce(() => {
 
     if (outputHeight > screenHeight) {
       let fontSize = 240;
-      monitorOutputElement.style.fontSize = `${fontSize}px`;
-
-      while (monitorOutputElement.scrollHeight > screenHeight && fontSize > 20) {
-        fontSize -= 2;
+      let step = 10;
+      
+      while (outputHeight > screenHeight && fontSize > 20) {
+        fontSize -= step;
         monitorOutputElement.style.fontSize = `${fontSize}px`;
+        if (monitorOutputElement.scrollHeight < screenHeight) {
+          fontSize += step;
+          step = Math.max(1, step / 2);
+        }
       }
+      
+      monitorOutputElement.style.fontSize = `${fontSize}px`;
     }
   }
-}, 300);
+};
+
+const debouncedAdjustFontSize = debounce(adjustFontSize, 100);
 
 const Robot = ({
   dealCards,
@@ -42,14 +50,13 @@ const Robot = ({
   onSubmitInput,
   selectedSpread,
   onSpreadSelect,
+  cards = [],
   isMobile,
-  cards
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
   const screenContentRef = useRef(null);
   const commandTerminalRef = useRef(null);
-  const [isMobileState, setIsMobileState] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     if (dealCards) {
@@ -71,7 +78,9 @@ const Robot = ({
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobileState(window.innerWidth <= 768);
+      if (commandTerminalRef.current) {
+        debouncedAdjustFontSize();
+      }
     };
 
     window.addEventListener('resize', handleResize);
@@ -81,13 +90,13 @@ const Robot = ({
   }, []);
 
   const handleMonitorOutput = useCallback((output) => {
-    const adjustMonitorOutputFontSize = () => {
-      debouncedAdjustFontSize();
-    };
-
     setMonitorOutput(output);
-    adjustMonitorOutputFontSize();
+    requestAnimationFrame(adjustFontSize);
   }, []);
+
+  useLayoutEffect(() => {
+    adjustFontSize();
+  }, [monitorOutput]);
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {
@@ -102,7 +111,7 @@ const Robot = ({
 
   return (
     <motion.div
-      className="robot-container"
+      className={`robot-container ${isMobile ? 'mobile' : ''}`}
       style={{
         alignItems: 'center',
         position: 'absolute',
@@ -113,7 +122,7 @@ const Robot = ({
         <div className="tarotmancer-text">tarotmancer</div>
         <div className="robot-head">
           <div className="crt-screen">
-            <div className="screen-content" style={{ flexGrow: 1 }}>
+            <div className="screen-content" ref={screenContentRef} style={{ flexGrow: 1 }}>
               <FloatingCards
                 dealCards={dealCards}
                 cardPositions={cardPositions}
@@ -123,17 +132,10 @@ const Robot = ({
                 onExitComplete={onExitComplete}
                 shouldDrawNewSpread={shouldDrawNewSpread}
                 dealingComplete={dealingComplete}
+                cards={cards}
+                isMobile={isMobile}
               />
-              {isMobileState ? (
-                <CardReveal
-                  cards={cards}
-                  revealCards={revealCards}
-                  dealingComplete={dealingComplete}
-                  shouldDrawNewSpread={shouldDrawNewSpread}
-                />
-              ) : (
-                <div className="monitor-output">{monitorOutput}</div>
-              )}
+              <div className="monitor-output">{monitorOutput}</div>
             </div>
             <div className="screen-overlay"></div>
             <div className="screen-glass"></div>
@@ -151,11 +153,18 @@ const Robot = ({
         formRef={formRef}
         onSpreadSelect={onSpreadSelect}
         selectedSpread={selectedSpread}
-        ref={commandTerminalRef}
         isMobile={isMobile}
         cards={cards}
         revealCards={revealCards}
         shouldDrawNewSpread={shouldDrawNewSpread}
+        ref={commandTerminalRef}
+      />
+      <CardReveal
+        cards={cards}
+        revealCards={revealCards}
+        dealingComplete={dealingComplete}
+        shouldDrawNewSpread={shouldDrawNewSpread}
+        isMobile={isMobile}
       />
     </motion.div>
   );
@@ -176,8 +185,8 @@ Robot.propTypes = {
   onSubmitInput: PropTypes.func.isRequired,
   selectedSpread: PropTypes.string.isRequired,
   onSpreadSelect: PropTypes.func.isRequired,
+  cards: PropTypes.array,
   isMobile: PropTypes.bool.isRequired,
-  cards: PropTypes.array.isRequired
 };
 
 export default Robot;

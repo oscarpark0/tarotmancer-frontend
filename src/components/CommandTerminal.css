@@ -1,6 +1,6 @@
 .command-terminal {
   position: absolute;
-  bottom: -254px;
+  bottom: -310px;
   left: 50%;
   transform: translateX(-50%);
   max-width: 600px;
@@ -30,23 +30,19 @@
 }
 
 .terminal-output {
-  min-height: 50px;
-  max-height: 150px;
+  height: 150px; /* Fixed height */
   overflow-y: auto;
-  margin-bottom: 50px;
-  transition: max-height 0.5s ease-in-out; /* Add a smooth transition for max-height */
+  margin-bottom: 10px;
 }
 
 @media (max-width: 768px) {
   .command-terminal {
-    bottom: -220px;
+    bottom: -320px;
     max-width: 120%;
   }
 
   .command-terminal .terminal-output {
-    min-height: 10px; 
-    max-height: 50vh; 
-    transition: max-height 0.5s ease-in-out;
+    height: 120px; /* Slightly smaller fixed height for mobile */
   }
 }
 
@@ -146,4 +142,16 @@
 .shimmer-button:hover {
   background-color: #33ff33;
   color: #0a0a0a;
+}
+
+.command-terminal.mobile .monitor-output {
+  height: 100px; /* Fixed height for mobile */
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 10px;
+}
+
+.command-terminal.mobile .loading-text {
+  font-size: 16px;
 }

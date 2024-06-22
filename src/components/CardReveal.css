@@ -3,7 +3,6 @@
   width: 100%;
   height: 100%;
   transform: translateX(480px);
-
 }
 
 .card-reveal-container.dealing {
@@ -11,9 +10,6 @@
   opacity: 0.9;
 }
 
-.card-reveal-container {
-  z-index: 10000000; /* Ensure cards are above the robot */
-}
 
 .card {
   position: absolute;
@@ -27,16 +23,34 @@
 
 @media (max-width: 768px) {
   .card-reveal-container {
-    transform: scale(.6);
-    margin-top: -100px;
+    transform: none;
+    margin-top: 0;
+  }
+
+  .card-container {
+    /* Ensure cards do not display behind the robot */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
   }
 
   .card {
-    width: 90px;
-    height: 180px;
+    width: 70px;
+    height: 120px;
   }
 
+  /* Add these new styles for better mobile responsiveness */
+  .card:hover::after,
+  .card:hover::before {
+    font-size: 1rem;
+    max-width: 150px;
+  }
 
+  .revealed-card {
+    width: 60px;
+    height: 102px;
+  }
 }
 
 .card-reveal-container.mobile {
@@ -120,6 +134,13 @@
   text-align: center;
   line-height: 1.5; 
   z-index: 10000;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+.card:hover::after {
+  opacity: 1;
+  transition-delay: 0.1s;
 }
 
 .card:hover::before {
@@ -143,6 +164,13 @@
   max-width: 400px;
   text-align: center;
   z-index: 10001; /* Ensure it's above the main tooltip */
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+.card:hover::before {
+  opacity: 1;
+  transition-delay: 0.2s;
 }
 
 .card.cross-card:hover {

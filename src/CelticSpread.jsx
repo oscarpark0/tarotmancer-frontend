@@ -123,6 +123,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
 
 
   return (
+    <>
       <MagicContainer className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
         <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
         <div className="relative w-full h-screen overflow-hidden">
@@ -150,7 +151,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
               selectedSpread={selectedSpread}
               monitorPosition={{ width: window.screen.width, height: window.screen.height }}
               isMobile={isMobile}
-              cards={cards} // This will now always be defined, even if it's an empty array
+              cards={cards}
             />
           </div>
           {positions.length > 0 && (
@@ -175,26 +176,28 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
                       }))}
                     />
                   </ErrorBoundary>
-                  <CardReveal
-                    cards={positions.map(pos => ({
-                      name: pos.most_common_card,
-                      img: pos.most_common_card_img,
-                      orientation: pos.orientation,
-                      position_name: pos.position_name,
-                      tooltip: pos.position_name
-                    }))}
-                    revealCards={revealCards}
-                    dealingComplete={dealingComplete}
-                    shouldDrawNewSpread={shouldDrawNewSpread}
-                    className="md:hidden"
-                  />
+                  {!isMobile && (
+                    <CardReveal
+                      cards={positions.map(pos => ({
+                        name: pos.most_common_card,
+                        img: pos.most_common_card_img,
+                        orientation: pos.orientation,
+                        position_name: pos.position_name,
+                        tooltip: pos.position_name
+                      }))}
+                      revealCards={revealCards}
+                      dealingComplete={dealingComplete}
+                      shouldDrawNewSpread={shouldDrawNewSpread}
+                    />
+                  )}
                 </section>
               </div>
             </div>
           )}
         </div>
       </MagicContainer>
+    </>
   );
-}
+};
 
 export default CelticSpread;

@@ -93,17 +93,9 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
         <div className="terminal-content">
-          <div className="terminal-output" ref={terminalOutputRef}>
+          <div className="monitor-output" ref={terminalOutputRef}>
             {isLoading ? <span className="loading-text">Processing...</span> : ''}
-            {isMobile && dealingComplete && cards && cards.length > 0 && (
-              <CardReveal
-                cards={cards}
-                revealCards={revealCards}
-                dealingComplete={dealingComplete}
-                shouldDrawNewSpread={shouldDrawNewSpread}
-                isMobile={isMobile}
-              />
-            )}
+
           </div>
         </div>
         <div className="screen-overlay"></div>

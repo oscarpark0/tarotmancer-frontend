@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
+import CardReveal from './CardReveal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
 
@@ -48,6 +49,7 @@ const Robot = ({
   const [monitorOutput, setMonitorOutput] = useState('');
   const screenContentRef = useRef(null);
   const commandTerminalRef = useRef(null);
+  const [isMobileState, setIsMobileState] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
     if (dealCards) {
@@ -69,8 +71,7 @@ const Robot = ({
 
   useEffect(() => {
     const handleResize = () => {
-      if (commandTerminalRef.current) {
-      }
+      setIsMobileState(window.innerWidth <= 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -123,7 +124,16 @@ const Robot = ({
                 shouldDrawNewSpread={shouldDrawNewSpread}
                 dealingComplete={dealingComplete}
               />
-              <div className="monitor-output">{monitorOutput}</div>
+              {isMobileState ? (
+                <CardReveal
+                  cards={cards}
+                  revealCards={revealCards}
+                  dealingComplete={dealingComplete}
+                  shouldDrawNewSpread={shouldDrawNewSpread}
+                />
+              ) : (
+                <div className="monitor-output">{monitorOutput}</div>
+              )}
             </div>
             <div className="screen-overlay"></div>
             <div className="screen-glass"></div>

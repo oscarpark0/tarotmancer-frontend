@@ -1,4 +1,3 @@
-
 .robot-container {
   align-items: center;
   margin-top: 25px;
@@ -10,8 +9,13 @@
 
 @media (max-width: 768px) {
   .robot-container {
-    transform: translateY(20%);
-    top: 9vh;
+    transform: translateY(0);
+    top: 2vh;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 
@@ -38,8 +42,8 @@
 @media (max-width: 768px) {
   .robot-body {
     width: 95vw;
-    height: 45vh;
-    transform: translateY(-45%);
+    height: 40vh;
+    transform: none;
   }
 }
 

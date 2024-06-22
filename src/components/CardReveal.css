@@ -3,6 +3,35 @@
   width: 100%;
   height: 100%;
   transform: translateX(480px);
+  z-index: 1000;
+}
+
+.card {
+  position: absolute;
+  width: 125px;
+  height: 220px;
+  perspective: 1000px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.6s, opacity 0.4s ease-in-out;
+  z-index: 1500;
+}
+
+@media (max-width: 768px) {
+  .card-reveal-container {
+    transform: none;
+    margin-top: 0;
+    z-index: 1900;
+    height: 70vh; /* Reduced from 100vh to avoid potential overflow */
+    width: 100vw;
+    position: fixed;
+    top: 5vh; /* Added to center vertically */
+    left: 0;
+  }
+
+  .card {
+    width: 70px;
+    height: 120px;
+  }
 }
 
 .card-reveal-container.dealing {
@@ -24,15 +53,14 @@
 @media (max-width: 768px) {
   .card-reveal-container {
     transform: none;
-    margin-top: 20px;
-    overflow-y: visible;
-    z-index: 19999950000000;
+    margin-top: 22px;
+    z-index: 1900;
   }
 
   .card-container {
     /* Ensure cards do not display behind the robot */
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap-revers;
     justify-content: center;
     align-items: center;
   }
@@ -55,13 +83,7 @@
   }
 }
 
-.card-reveal-container.mobile {
-  position: absolute;
-  transform: none;
-  margin-top: 30px;
-  overflow-y: visible;
-  z-index: 19999950000000;
-}
+
 
 .card-inner {
   width: 100%;
@@ -206,8 +228,6 @@
 
 .card-reveal {
   position: relative;
-  width: 100%;
-  height: 100%;
   z-index: 150000000; /* Ensure individual cards are above the robot */
 }
 
@@ -241,3 +261,4 @@
     transform: scale(0.5);
   }
 }
+

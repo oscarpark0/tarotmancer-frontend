@@ -13,10 +13,11 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
     const containerWidth = window.innerWidth;
     const isMobile = containerWidth <= 768;
     
-    const baseScale = isMobile ? 0.9 : 0.85;
-    const baseLeft = isMobile ? '25%' : '25%';
-    const spacing = isMobile ? '22vw' : '15vw';
-    const topOffset = isMobile ? '40%' : '30%';
+    const baseScale = isMobile ? 0.7 : 20; // Reduced scale for mobile
+    const baseLeft = isMobile ? '40%' : '25%';
+    const spacing = isMobile ? '20vw' : '15vw';
+    const topOffset = isMobile ? '60%' : '30%'; // Increased top offset for mobile
+    const verticalSpacing = isMobile ? '6vh' : '11vh'; // Add this line for static vertical spacing
     
     if (cards.length === 3) {
       return [
@@ -29,14 +30,14 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
       return [
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) rotate(90deg) scale(${crossCardScale})`, zIndex: 12 },
-        { top: `calc(${topOffset} - 15%)`, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + 15%)`, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${topOffset} - ${verticalSpacing})`, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${topOffset} + ${verticalSpacing})`, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: topOffset, left: `calc(${baseLeft} - 6vw)`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: topOffset, left: `calc(${baseLeft} + 6vw)`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} - 25%)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} - 5%)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + 15%)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + 35%)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${topOffset} - ${verticalSpacing} * 1.5)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${topOffset} - ${verticalSpacing} * 0.5)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${topOffset} + ${verticalSpacing} * 0.5)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${topOffset} + ${verticalSpacing} * 1.5)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
       ];
     }
   }, [cards.length]);
@@ -72,13 +73,13 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
   }, [shouldDrawNewSpread]);
 
   return (
-    <div className="fixed inset-2 overflow-hidden">
+    <div className="fixed inset-1 overflow-hidden pointer-events-none">
       <div className={`card-reveal-container ${isDealing ? 'dealing' : ''} ${dealingComplete ? 'active' : ''} ${exitAnimation ? 'exit-animation' : ''}`}>
         <div className="card-container">
           {dealingComplete && cards.map((card, index) => (
             <motion.div
               key={index}
-              className={`card ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${cards.length > 3 && index === 1 ? 'cross-card' : ''}`}
+              className={`card pointer-events-auto ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${cards.length > 3 && index === 1 ? 'cross-card' : ''}`}
               initial={{ opacity: 0, x: -200, y: -1, scale: 1 }}
               animate={{
                 opacity: 1,

@@ -56,9 +56,8 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
             const data = JSON.parse(line);
 
             if (data.event_type === 'text-generation') {
-              if (isMobile) {
-                setTerminalOutput(prevOutput => prevOutput + data.text);
-              } else {
+              // Remove the streaming to the terminal
+              if (!isMobile) {
                 onMonitorOutput(prevOutput => prevOutput + data.text);
               }
             }

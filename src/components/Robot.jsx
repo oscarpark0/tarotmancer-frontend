@@ -116,6 +116,10 @@ const Robot = ({
         alignItems: 'center',
         position: 'absolute',
         zIndex: 100,
+        top: isMobile ? '2vh' : '9vh',
+        width: isMobile ? '100%' : 'auto',
+        display: isMobile ? 'flex' : 'block',
+        flexDirection: isMobile ? 'column' : 'unset',
       }}
     >
       <div className="robot-body">
@@ -158,6 +162,7 @@ const Robot = ({
         revealCards={revealCards}
         shouldDrawNewSpread={shouldDrawNewSpread}
         ref={commandTerminalRef}
+        style={isMobile ? { width: '95vw', marginTop: '10px' } : {}}
       />
       <CardReveal
         cards={cards}
@@ -165,6 +170,7 @@ const Robot = ({
         dealingComplete={dealingComplete}
         shouldDrawNewSpread={shouldDrawNewSpread}
         isMobile={isMobile}
+        style={isMobile ? { position: 'absolute', top: '2vh', left: '2.5vw', width: '95vw', height: '85vh' } : {}}
       />
     </motion.div>
   );

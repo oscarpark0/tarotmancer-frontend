@@ -16,7 +16,7 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
-    setTerminalOutput(''); // Clear previous output
+    setTerminalOutput('Processing...'); // Set initial processing message
 
     try {
       const staticText = "You are Tarotmancer. Your responses are empathetic, acknowledging the seeker's emotions and showing that you understand their situation. You generate responses that are tailored to the seeker's specific situation. You avoid generic answers, ensuring that your guidance resonates with the seeker personally. You response using clear language to ensure your responses are easily understood. Avoid complex terminology and jargon.";
@@ -56,10 +56,8 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
             const data = JSON.parse(line);
 
             if (data.event_type === 'text-generation') {
-              // Remove the streaming to the terminal
-              if (!isMobile) {
-                onMonitorOutput(prevOutput => prevOutput + data.text);
-              }
+              // Stream the response only to the robot monitor
+              onMonitorOutput(prevOutput => prevOutput + data.text);
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
@@ -69,17 +67,15 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = 'An error occurred while processing your request.';
-      if (isMobile) {
-        setTerminalOutput(errorMessage);
-      } else {
-        onMonitorOutput(errorMessage);
-      }
+      onMonitorOutput(errorMessage);
+      setTerminalOutput(errorMessage);
     } finally {
       setIsLoading(false);
+      setTerminalOutput('Processing complete.'); // Set completion message
     }
 
     setInput('');
-  }, [onMonitorOutput, isMobile]);
+  }, [onMonitorOutput]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete) {
@@ -94,18 +90,14 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
       const contentHeight = terminalOutput.scrollHeight;
       terminalOutput.style.maxHeight = `${contentHeight}px`;
     }
-  }, [terminalOutput]); // Add terminalOutput to the dependency array
+  }, [terminalOutput]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
         <div className="terminal-content">
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? (
-              <span className="loading-text">Processing...</span>
-            ) : (
-              <span>{terminalOutput}</span>
-            )}
+            {terminalOutput}
           </div>
         </div>
         <div className="screen-overlay"></div>

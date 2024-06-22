@@ -126,7 +126,8 @@ const Robot = ({
         <div className="tarotmancer-text">tarotmancer</div>
         <div className="robot-head">
           <div className="crt-screen">
-            <div className="screen-content" ref={screenContentRef} style={{ flexGrow: 1 }}>
+            <div className="screen-content" ref={screenContentRef}>
+              <div className="monitor-output">{monitorOutput}</div>
               <FloatingCards
                 dealCards={dealCards}
                 cardPositions={cardPositions}
@@ -139,7 +140,6 @@ const Robot = ({
                 cards={cards}
                 isMobile={isMobile}
               />
-              <div className="monitor-output">{monitorOutput}</div>
             </div>
             <div className="screen-overlay"></div>
             <div className="screen-glass"></div>

@@ -1,13 +1,18 @@
 .command-terminal {
   position: absolute;
-  bottom: -294px;
+  bottom: -254px;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
   max-width: 600px;
   font-family: 'VT323', monospace;
   color: #33ff33;
   z-index: 10;
+  background: radial-gradient(circle at 50%, #bdbdbd, #a9a9a9, #696969);
+  border-radius: 9px;
+  border-style: inset;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  width: 80%;
 }
 
 .terminal-screen {
@@ -28,20 +33,21 @@
   min-height: 50px;
   max-height: 150px;
   overflow-y: auto;
-  margin-bottom: 10px;
+  margin-bottom: 50px;
   transition: max-height 0.5s ease-in-out; /* Add a smooth transition for max-height */
 }
 
-.command-terminal.mobile {
-  bottom: -370px;
-  max-width: 100%;
+@media (max-width: 768px) {
+  .command-terminal {
+    bottom: -220px;
+    max-width: 120%;
+  }
 
-}
-
-.command-terminal.mobile .terminal-output {
-  min-height: 200px; 
-  max-height: 50vh; 
-  transition: max-height 0.5s ease-in-out;
+  .command-terminal .terminal-output {
+    min-height: 200px; 
+    max-height: 50vh; 
+    transition: max-height 0.5s ease-in-out;
+  }
 }
 
 .loading-text {

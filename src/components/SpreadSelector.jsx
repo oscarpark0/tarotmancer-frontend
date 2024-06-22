@@ -1,4 +1,3 @@
-// components/SpreadSelector.jsx
 import React from 'react';
 
 const SpreadSelector = ({ onSpreadSelect, selectedSpread }) => {

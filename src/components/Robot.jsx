@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
@@ -41,7 +40,9 @@ const Robot = ({
   formRef,
   onSubmitInput,
   selectedSpread,
-  onSpreadSelect
+  onSpreadSelect,
+  isMobile,
+  cards
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -141,6 +142,10 @@ const Robot = ({
         onSpreadSelect={onSpreadSelect}
         selectedSpread={selectedSpread}
         ref={commandTerminalRef}
+        isMobile={isMobile}
+        cards={cards}
+        revealCards={revealCards}
+        shouldDrawNewSpread={shouldDrawNewSpread}
       />
     </motion.div>
   );
@@ -160,7 +165,9 @@ Robot.propTypes = {
   formRef: PropTypes.object.isRequired,
   onSubmitInput: PropTypes.func.isRequired,
   selectedSpread: PropTypes.string.isRequired,
-  onSpreadSelect: PropTypes.func.isRequired
+  onSpreadSelect: PropTypes.func.isRequired,
+  isMobile: PropTypes.bool.isRequired,
+  cards: PropTypes.array.isRequired
 };
 
 export default Robot;

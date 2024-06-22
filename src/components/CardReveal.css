@@ -1,3 +1,11 @@
+.card-reveal-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: translateX(480px);
+
+}
+
 .card-reveal-container.dealing {
   pointer-events: none;
   opacity: 0.9;
@@ -8,7 +16,7 @@
 }
 
 .card {
-  position: fixed;
+  position: absolute;
   width: 125px;
   height: 220px;
   perspective: 1000px;
@@ -19,20 +27,20 @@
 
 @media (max-width: 768px) {
   .card-reveal-container {
-    transform: scale(0.7);
-    margin-top: -50px;
+    transform: scale(.6);
+    margin-top: -100px;
   }
 
   .card {
     width: 90px;
-    height: 158px;
+    height: 180px;
   }
+
+
 }
 
 .card-reveal-container.mobile {
-  position: relative;
-  top: auto;
-  left: auto;
+  position: absolute;
   transform: none;
   margin-top: 20px;
 }

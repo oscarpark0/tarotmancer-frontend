@@ -20,6 +20,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
   const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
+  const [cards, setCards] = useState([]); // Initialize cards as an empty array
 
   const fetchCelticSpread = useCallback(async () => {
     setIsLoading(true);
@@ -48,12 +49,23 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
       const windowHeight = window.innerHeight;
       const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
       console.log('Generated positions:', positions);
-      setPositions(positions.map((pos, index) => ({
+      
+      const newPositions = positions.map((pos, index) => ({
         ...data.positions[index],
         left: pos.left,
         top: pos.top,
         tooltip: data.positions[index].position_name
-      })));
+      }));
+      
+      setPositions(newPositions);
+      const newCards = newPositions.map(pos => ({
+        name: pos.most_common_card,
+        img: pos.most_common_card_img,
+        orientation: pos.orientation,
+        position_name: pos.position_name,
+        tooltip: pos.position_name
+      }));
+      setCards(newCards);
 
       const formattedMostCommonCards = data.positions.map(
         (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
@@ -73,6 +85,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
     } catch (error) {
       console.error("Error drawing Celtic spread:", error);
       setError("Failed to draw Celtic spread. Please check your network connection and try again.");
+      setCards([]); // Reset cards to an empty array in case of error
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
@@ -137,6 +150,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
               selectedSpread={selectedSpread}
               monitorPosition={{ width: window.screen.width, height: window.screen.height }}
               isMobile={isMobile}
+              cards={cards} // This will now always be defined, even if it's an empty array
             />
           </div>
           {positions.length > 0 && (

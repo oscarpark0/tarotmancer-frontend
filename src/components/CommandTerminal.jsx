@@ -112,7 +112,7 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
               value={input}
               onChange={handleInputChange}
               className="terminal-input"
-              placeholder="Set your focus. Press Draw to begin."
+              placeholder="Set your focus."
               id="terminal-input"
             />
           </form>

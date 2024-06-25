@@ -7,11 +7,11 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
-import { useAuth0 } from '@auth0/auth0-react';
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Link } from 'react-router-dom';
 
 const CelticSpread = ({ isMobile }) => {
-  const { getAccessTokenSilently } = useAuth0();
+  const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ const CelticSpread = ({ isMobile }) => {
   const fetchCelticSpread = useCallback(async () => {
     setIsLoading(true);
     try {
-      const token = await getAccessTokenSilently();
+      const token = await getToken();
       const origin = window.location.origin;
 
       const headers = {
@@ -95,7 +95,7 @@ const CelticSpread = ({ isMobile }) => {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getAccessTokenSilently]);
+  }, [getToken]);
 
   useEffect(() => {
     if (shouldDrawSpread) {

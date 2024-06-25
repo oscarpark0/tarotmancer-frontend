@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@auth0/auth0-react": "^2.2.4",
     "@kinde-oss/kinde-auth-react": "^4.0.1",
     "@react-three/drei": "^9.106.0",
     "@react-three/fiber": "^8.16.7",

@@ -5,23 +5,21 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { SpeedInsights } from "@vercel/speed-insights/react"; 
 import { Analytics } from '@vercel/analytics/react';
-import { Auth0Provider } from '@auth0/auth0-react';
+import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 
 const root = createRoot(document.getElementById('root'));
 root.render(
-  <Auth0Provider
-    domain={process.env.REACT_APP_AUTH0_DOMAIN}
-    clientId={process.env.REACT_APP_AUTH0_CLIENT_ID}
-    authorizationParams={{
-      redirect_uri: window.location.origin,
-      audience: process.env.REACT_APP_AUTH0_AUDIENCE,
-      scope: "openid profile email"
-    }}
+  <KindeProvider
+    clientId="fb31f1e47adc4650a66f09248606487b"
+    domain="https://tarotmancer.kinde.com"
+    redirectUri="https://tarotmancer.com"
+    logoutUri="https://tarotmancer.com"
+    isDangerouslyUseLocalStorage={process.env.NODE_ENV === 'development'}
   >
     <SpeedInsights /> 
     <App />
     <Analytics />
-  </Auth0Provider>
+  </KindeProvider>
 );
 
 

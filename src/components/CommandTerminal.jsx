@@ -113,11 +113,7 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
       </div>
       <div className="draw-button-container">
         <div className="input-container2">
-          {onSpreadSelect && selectedSpread ? (
-            <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
-          ) : (
-            <p>SpreadSelector props missing</p>
-          )}
+          <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
           <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
             <input
               type="text"

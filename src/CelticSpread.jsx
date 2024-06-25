@@ -5,7 +5,7 @@ import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
-import { generateCelticCrossPositions } from './utils/cardPositions.js';
+import { generateCelticCrossPositions, generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Link } from 'react-router-dom';
@@ -27,12 +27,11 @@ const CelticSpread = ({ isMobile }) => {
   const [selectedSpread, setSelectedSpread] = useState('celtic');
 
   const handleSpreadSelect = useCallback((spread) => {
-    console.log('Spread selected:', spread); // Add this line
+    console.log('Spread selected:', spread);
     setSelectedSpread(spread);
-    // You might want to add logic here to fetch a new spread when the selection changes
   }, []);
 
-  const fetchCelticSpread = useCallback(async () => {
+  const fetchSpread = useCallback(async () => {
     setIsLoading(true);
     try {
       const token = await getToken();
@@ -44,7 +43,8 @@ const CelticSpread = ({ isMobile }) => {
         'Authorization': `Bearer ${token}`
       };
 
-      const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
+      const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
+      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: 'GET',
         headers: headers,
       });
@@ -59,8 +59,9 @@ const CelticSpread = ({ isMobile }) => {
       console.log('Data fetched:', data);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
-      console.log('Generated positions:', positions);
+      const positions = selectedSpread === 'celtic' 
+        ? generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight)
+        : generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);
       
       const newPositions = positions.map((pos, index) => ({
         ...data.positions[index],
@@ -95,21 +96,21 @@ const CelticSpread = ({ isMobile }) => {
       }, 1100);
 
     } catch (error) {
-      console.error("Error drawing Celtic spread:", error);
-      setError("Failed to draw Celtic spread. Please check your authentication and try again.");
-      setCards([]); // Reset cards to an empty array in case of error
+      console.error(`Error drawing ${selectedSpread} spread:`, error);
+      setError(`Failed to draw ${selectedSpread} spread. Please check your authentication and try again.`);
+      setCards([]);
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken]);
+  }, [getToken, selectedSpread]);
 
   useEffect(() => {
     if (shouldDrawSpread) {
-      fetchCelticSpread();
+      fetchSpread();
       setShouldDrawSpread(false);
     }
-  }, [fetchCelticSpread, shouldDrawSpread]);
+  }, [fetchSpread, shouldDrawSpread]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -124,7 +125,7 @@ const CelticSpread = ({ isMobile }) => {
     setRevealCards(false);
     setDealingComplete(false);
     setShouldDrawNewSpread(true);
-    fetchCelticSpread();
+    fetchSpread();
   };
 
   const handleSubmitInput = (value) => {

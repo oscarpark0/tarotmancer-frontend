@@ -5,7 +5,7 @@ import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
-import { generateThreeCardPositions } from './utils/cardPositions.js';
+import { generateCelticCrossPositions, generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Link } from 'react-router-dom';
@@ -24,8 +24,14 @@ const ThreeCardSpread = ({ isMobile }) => {
   const [cards, setCards] = useState([]); 
   const formRef = useRef(null);
   const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
+  const [selectedSpread, setSelectedSpread] = useState('threeCard');
 
-  const fetchThreeCardSpread = useCallback(async () => {
+  const handleSpreadSelect = useCallback((spread) => {
+    console.log('Spread selected:', spread);
+    setSelectedSpread(spread);
+  }, []);
+
+  const fetchSpread = useCallback(async () => {
     setIsLoading(true);
     try {
       const token = await getToken();
@@ -37,7 +43,8 @@ const ThreeCardSpread = ({ isMobile }) => {
         'Authorization': `Bearer ${token}`
       };
 
-      const response = await fetch(`${API_BASE_URL}/draw_three_card_spread`, {
+      const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
+      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: 'GET',
         headers: headers,
       });
@@ -51,7 +58,9 @@ const ThreeCardSpread = ({ isMobile }) => {
       const data = await response.json();
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      const positions = generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);
+      const positions = selectedSpread === 'celtic' 
+        ? generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight)
+        : generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);
       setPositions(positions.map((pos, index) => ({
         ...data.positions[index],
         left: pos.left,
@@ -83,21 +92,21 @@ const ThreeCardSpread = ({ isMobile }) => {
       }, 1100);
 
     } catch (error) {
-      console.error("Error drawing Three Card spread:", error);
-      setError("Failed to draw Three Card spread. Please check your authentication and try again.");
+      console.error(`Error drawing ${selectedSpread} spread:`, error);
+      setError(`Failed to draw ${selectedSpread} spread. Please check your authentication and try again.`);
       setCards([]); 
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken]);
+  }, [getToken, selectedSpread]);
 
   useEffect(() => {
     if (shouldDrawSpread) {
-      fetchThreeCardSpread();
+      fetchSpread();
       setShouldDrawSpread(false);
     }
-  }, [fetchThreeCardSpread, shouldDrawSpread]);
+  }, [fetchSpread, shouldDrawSpread]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -146,6 +155,8 @@ const ThreeCardSpread = ({ isMobile }) => {
               formRef={formRef}
               onSubmitInput={handleSubmitInput}
               cards={cards}
+              onSpreadSelect={handleSpreadSelect}
+              selectedSpread={selectedSpread}
             />
             {positions.length > 0 && (
               <div className="relative z-10 w-full flex flex-col items-center">

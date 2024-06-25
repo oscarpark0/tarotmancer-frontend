@@ -23,18 +23,29 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-        <Routes>
-          <Route path="/celtic-spread" element={
-            isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Navigate to="/" />
-          } />
-          <Route path="/three-card-spread" element={
-            isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Navigate to="/" />
-          } />
-          <Route path="/" element={
-            isAuthenticated ? <Navigate to="/celtic-spread" /> : <div>Welcome! Please log in or register.</div>
-          } />
-        </Routes>
+        <header className="app-header">
+          <div className="squircle">
+            <h1 className="app-title">TarotMancer</h1>
+            <div className="auth-container">
+              {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+            </div>
+          </div>
+        </header>
+        <main className="app-main">
+          <Routes>
+            <Route path="/celtic-spread" element={
+              isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Navigate to="/" />
+            } />
+            <Route path="/three-card-spread" element={
+              isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Navigate to="/" />
+            } />
+            <Route path="/" element={
+              isAuthenticated ? <Navigate to="/celtic-spread" /> : 
+              <div className="welcome-message">
+              </div>
+            } />
+          </Routes>
+        </main>
       </div>
     </Router>
   );

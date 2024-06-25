@@ -24,3 +24,59 @@
   .spread-selector select:focus {
     outline: 2px solid #000000e0;
   }
+
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+  }
+
+  .app-title {
+    font-size: 2rem;
+    margin: 0;
+  }
+
+  .auth-container {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .mystic-button {
+    background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+    border: 1px solid #3a3a3a;
+    color: #f0f0f0;
+    padding: 0.5rem 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .mystic-button:hover {
+    background: linear-gradient(145deg, #3a3a3a, #2c2c2c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+
+  .welcome-message {
+    text-align: center;
+    padding: 2rem;
+    color: #f0f0f0;
+  }
+
+  .welcome-message h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .welcome-message p {
+    font-family: 'jgs7', 'Classic Console', monospace;
+    font-size: 1.2rem;
+  }
+
+  .app-main {
+    padding: 2rem;
+  }

@@ -5,10 +5,14 @@ const LoginButton = () => {
   const { login, register } = useKindeAuth();
 
   return (
-    <>
-      <button onClick={login} type="button">Log In</button>
-      <button onClick={register} type="button">Register</button>
-    </>
+    <div className="auth-buttons">
+      <button onClick={login} className="mystic-button">
+        <span className="button-text">Login</span>
+      </button>
+      <button onClick={register} className="mystic-button">
+        <span className="button-text">Join</span>
+      </button>
+    </div>
   );
 };
 

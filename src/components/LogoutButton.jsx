@@ -5,8 +5,8 @@ const LogoutButton = () => {
   const { logout } = useKindeAuth();
 
   return (
-    <button onClick={logout} type="button">
-      Log Out
+    <button onClick={logout} className="mystic-button">
+      <span className="button-text">Leave the Realm</span>
     </button>
   );
 };

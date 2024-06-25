@@ -8,8 +8,9 @@ import { API_BASE_URL } from './utils/config';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Link } from 'react-router-dom';
 
-const ThreeCardSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
+const ThreeCardSpread = ({ isMobile }) => {
   const { getAccessTokenSilently } = useAuth0();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -92,11 +93,11 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
   }, [getAccessTokenSilently]);
 
   useEffect(() => {
-    if (selectedSpread === 'threeCard' && shouldDrawSpread) {
+    if (shouldDrawSpread) {
       fetchThreeCardSpread();
       setShouldDrawSpread(false);
     }
-  }, [fetchThreeCardSpread, selectedSpread, shouldDrawSpread]);
+  }, [fetchThreeCardSpread, shouldDrawSpread]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -144,9 +145,6 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
               mostCommonCards={mostCommonCards}
               formRef={formRef}
               onSubmitInput={handleSubmitInput}
-              onSpreadSelect={onSpreadSelect}
-              selectedSpread={selectedSpread}
-              isMobile={isMobile}
               cards={cards} // This will now always be defined, even if it's an empty array
             />
             {positions.length > 0 && (
@@ -189,6 +187,7 @@ const ThreeCardSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
                 </div>
               </div>
             )}
+            <Link to="/celtic-spread">Switch to Celtic Spread</Link>
           </div>
         </div>
       </MagicContainer>

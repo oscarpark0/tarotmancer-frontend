@@ -8,8 +8,9 @@ import { API_BASE_URL } from './utils/config';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useAuth0 } from '@auth0/auth0-react';
+import { Link } from 'react-router-dom';
 
-const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
+const CelticSpread = ({ isMobile }) => {
   const { getAccessTokenSilently } = useAuth0();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -151,9 +152,6 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
               mostCommonCards={mostCommonCards}
               formRef={formRef}
               onSubmitInput={handleSubmitInput}
-              onSpreadSelect={onSpreadSelect}
-              selectedSpread={selectedSpread}
-              monitorPosition={{ width: window.screen.width, height: window.screen.height }}
               isMobile={isMobile}
               cards={cards}
             />
@@ -200,6 +198,7 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
           )}
         </div>
       </MagicContainer>
+      <Link to="/three-card-spread">Switch to Three Card Spread</Link>
     </>
   );
 };

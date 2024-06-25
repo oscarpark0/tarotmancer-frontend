@@ -36,7 +36,9 @@ function App() {
               <Route path="/three-card-spread">
                 <ThreeCardSpread isMobile={isMobile} />
               </Route>
-              <Redirect from="/" to="/celtic-spread" />
+              <Route exact path="/">
+                <Redirect to="/celtic-spread" />
+              </Route>
             </Switch>
           </>
         ) : (

@@ -6,7 +6,7 @@ const LogoutButton = () => {
 
   return (
     <button onClick={logout} className="mystic-button">
-      <span className="button-text">Leave the Realm</span>
+      <span className="button-text">Logout</span>
     </button>
   );
 };

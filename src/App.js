@@ -31,7 +31,6 @@ function App() {
             </div>
           </div>
         </header>
-        <main className="app-main">
           <Routes>
             <Route path="/celtic-spread" element={
               isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Navigate to="/" />
@@ -42,10 +41,10 @@ function App() {
             <Route path="/" element={
               isAuthenticated ? <Navigate to="/celtic-spread" /> : 
               <div className="welcome-message">
+
               </div>
             } />
           </Routes>
-        </main>
       </div>
     </Router>
   );

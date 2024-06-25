@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { KindeProvider, useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 
-function Routes() {
+function AppRoutes() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { isAuthenticated } = useKindeAuth();
 
@@ -22,17 +22,17 @@ function Routes() {
   return (
     <div className="App">
       {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-      <Switch>
-        <Route path="/celtic-spread">
-          {isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Redirect to="/" />}
-        </Route>
-        <Route path="/three-card-spread">
-          {isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Redirect to="/" />}
-        </Route>
-        <Route exact path="/">
-          {isAuthenticated ? <Redirect to="/celtic-spread" /> : <div>Welcome! Please log in or register.</div>}
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path="/celtic-spread" element={
+          isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Navigate to="/" />
+        } />
+        <Route path="/three-card-spread" element={
+          isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Navigate to="/" />
+        } />
+        <Route path="/" element={
+          isAuthenticated ? <Navigate to="/celtic-spread" /> : <div>Welcome! Please log in or register.</div>
+        } />
+      </Routes>
     </div>
   );
 }
@@ -46,7 +46,7 @@ function App() {
       logoutUri="https://tarotmancer.com"
     >
       <Router>
-        <Routes />
+        <AppRoutes />
       </Router>
     </KindeProvider>
   );

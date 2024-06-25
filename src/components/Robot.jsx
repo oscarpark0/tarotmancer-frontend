@@ -109,6 +109,8 @@ const Robot = ({
     // ...
   }, [selectedSpread]);
 
+  console.log('Robot rendering:', { onSpreadSelect, selectedSpread });
+
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''}`}

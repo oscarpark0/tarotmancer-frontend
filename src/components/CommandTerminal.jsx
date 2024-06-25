@@ -98,6 +98,8 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
     }
   }, [terminalOutput]);
 
+  console.log('CommandTerminal rendering:', { selectedSpread, onSpreadSelect }); 
+
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
@@ -111,7 +113,11 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
       </div>
       <div className="draw-button-container">
         <div className="input-container2">
-          <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
+          {onSpreadSelect && selectedSpread ? (
+            <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
+          ) : (
+            <p>SpreadSelector props missing</p>
+          )}
           <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
             <input
               type="text"

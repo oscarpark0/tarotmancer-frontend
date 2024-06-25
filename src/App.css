@@ -1,36 +1,9 @@
-  .spread-selector-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .spread-selector {
-    display: flex;
-    justify-content: center;
-    margin-top: 80px;
-    position: absolute;
-  }
-  
-  .spread-selector select {
-    width: 15vh;
-    height: 3vh;
-    border-radius: 22px;
-    background: linear-gradient(145deg, #666060, #000000);
-    transition: transform 0.1s ease-in-out;
-    z-index: 10;
-    transform: translateY(2030%);
-      }
-  
-  .spread-selector select:focus {
-    outline: 2px solid #000000e0;
-  }
-
   .app-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background-color: #1a1a1a;
+    padding: 0.5rem;
+    background-color: #96a0ff;
     color: #f0f0f0;
   }
 

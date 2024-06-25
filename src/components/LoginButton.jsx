@@ -1,10 +1,15 @@
 import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 const LoginButton = () => {
-  const { loginWithRedirect } = useAuth0();
+  const { login, register } = useKindeAuth();
 
-  return <button onClick={() => loginWithRedirect({ appState: { returnTo: window.location.pathname } })}>Log In</button>;
+  return (
+    <>
+      <button onClick={login} type="button">Log In</button>
+      <button onClick={register} type="button">Register</button>
+    </>
+  );
 };
 
 export default LoginButton;

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
+import { KindeProvider, useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 
-function App() {
+function Routes() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { isAuthenticated } = useKindeAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -19,33 +19,36 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <Router>
-      <div className="App">
-        {isAuthenticated ? (
-          <>
-            <LogoutButton />
-            <Switch>
-              <Route path="/celtic-spread">
-                <CelticSpread isMobile={isMobile} />
-              </Route>
-              <Route path="/three-card-spread">
-                <ThreeCardSpread isMobile={isMobile} />
-              </Route>
-              <Route exact path="/">
-                <Redirect to="/celtic-spread" />
-              </Route>
-            </Switch>
-          </>
-        ) : (
-          <LoginButton />
-        )}
-      </div>
-    </Router>
+    <div className="App">
+      {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+      <Switch>
+        <Route path="/celtic-spread">
+          {isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Redirect to="/" />}
+        </Route>
+        <Route path="/three-card-spread">
+          {isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Redirect to="/" />}
+        </Route>
+        <Route exact path="/">
+          {isAuthenticated ? <Redirect to="/celtic-spread" /> : <div>Welcome! Please log in or register.</div>}
+        </Route>
+      </Switch>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <KindeProvider
+      clientId="fb31f1e47adc4650a66f09248606487b"
+      domain="https://tarotmancer.kinde.com"
+      redirectUri="https://tarotmancer.com"
+      logoutUri="https://tarotmancer.com"
+    >
+      <Router>
+        <Routes />
+      </Router>
+    </KindeProvider>
   );
 }
 

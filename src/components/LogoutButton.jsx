@@ -1,11 +1,11 @@
 import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 const LogoutButton = () => {
-  const { logout } = useAuth0();
+  const { logout } = useKindeAuth();
 
   return (
-    <button onClick={() => logout({ returnTo: window.location.origin })}>
+    <button onClick={logout} type="button">
       Log Out
     </button>
   );

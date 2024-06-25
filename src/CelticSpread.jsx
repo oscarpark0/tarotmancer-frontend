@@ -24,6 +24,12 @@ const CelticSpread = ({ isMobile }) => {
   const formRef = useRef(null);
   const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
   const [cards, setCards] = useState([]); 
+  const [selectedSpread, setSelectedSpread] = useState('celtic');
+
+  const handleSpreadSelect = (spread) => {
+    setSelectedSpread(spread);
+    // You might want to add logic here to fetch a new spread when the selection changes
+  };
 
   const fetchCelticSpread = useCallback(async () => {
     setIsLoading(true);
@@ -154,6 +160,8 @@ const CelticSpread = ({ isMobile }) => {
               onSubmitInput={handleSubmitInput}
               isMobile={isMobile}
               cards={cards}
+              onSpreadSelect={handleSpreadSelect}
+              selectedSpread={selectedSpread}
             />
           </div>
           {positions.length > 0 && (

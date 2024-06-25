@@ -18,6 +18,9 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
     setIsLoading(true);
     setTerminalOutput('Processing...'); // Set initial processing message
 
+    // Dispatch custom event to notify streaming has started
+    window.dispatchEvent(new CustomEvent('streamingStateChange', { detail: true }));
+
     try {
       const staticText = "You are Tarotmancer. Your responses are empathetic, acknowledging the seeker's emotions and showing that you understand their situation. You generate responses that are tailored to the seeker's specific situation. You avoid generic answers, ensuring that your guidance resonates with the seeker personally. You response using clear language to ensure your responses are easily understood. Avoid complex terminology and jargon.";
       const message = `${staticText} ${mostCommonCards.trim()} `;
@@ -72,6 +75,9 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
     } finally {
       setIsLoading(false);
       setTerminalOutput('Processing complete.'); // Set completion message
+      
+      // Dispatch custom event to notify streaming has ended
+      window.dispatchEvent(new CustomEvent('streamingStateChange', { detail: false }));
     }
 
     setInput('');
@@ -97,7 +103,7 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
       <div className="terminal-screen">
         <div className="terminal-content">
           <div className="terminal-output" ref={terminalOutputRef}>
-            {terminalOutput}
+            {isLoading ? 'Processing...' : terminalOutput}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -114,15 +120,16 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
               className="terminal-input"
               placeholder="Set your focus."
               id="terminal-input"
+              disabled={isLoading}
             />
           </form>
         </div>
-        <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw">
-          Draw
+        <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw" disabled={isLoading}>
+          {isLoading ? 'Processing...' : 'Draw'}
         </ShimmerButton>
       </div>
     </div>
   );
 });
 
-export default CommandTerminal;
+export default React.memo(CommandTerminal);

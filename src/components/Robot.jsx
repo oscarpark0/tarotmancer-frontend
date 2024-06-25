@@ -115,7 +115,7 @@ const Robot = ({
       style={{
         alignItems: 'center',
         position: 'absolute',
-        zIndex: 100,
+        zIndex: isMobile ? 1000 : 100,
         top: isMobile ? '2vh' : '9vh',
         width: isMobile ? '100%' : 'auto',
         display: isMobile ? 'flex' : 'block',
@@ -170,7 +170,14 @@ const Robot = ({
         dealingComplete={dealingComplete}
         shouldDrawNewSpread={shouldDrawNewSpread}
         isMobile={isMobile}
-        style={isMobile ? { position: 'absolute', top: '2vh', left: '2.5vw', width: '95vw', height: '85vh' } : {}}
+        style={isMobile ? {
+          position: 'absolute',
+          top: '45vh',
+          left: '2.5vw',
+          width: '95vw',
+          height: '50vh',
+          zIndex: 1500
+        } : {}}
       />
     </motion.div>
   );

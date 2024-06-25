@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import './CardReveal.css';
 
-const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }) => {
+const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile }) => {
   const [revealedCards, setRevealedCards] = useState(0);
   const [flippedCards, setFlippedCards] = useState(0);
   const [isDealing, setIsDealing] = useState(false);
@@ -13,17 +13,17 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
     const containerWidth = window.innerWidth;
     const isMobile = containerWidth <= 768;
     
-    const baseScale = isMobile ? 0.7 : 20; // Reduced scale for mobile
-    const baseLeft = isMobile ? '40%' : '25%';
+    const baseScale = isMobile ? 0.02 : 20; // Reduced scale for mobile
+    const baseLeft = isMobile ? '35%' : '25%';
     const spacing = isMobile ? '20vw' : '15vw';
-    const topOffset = isMobile ? '60%' : '30%'; // Increased top offset for mobile
+    const topOffset = isMobile ? '55%' : '30%'; // Increased top offset for mobile
     const verticalSpacing = isMobile ? '6vh' : '11vh'; // Add this line for static vertical spacing
     
     if (cards.length === 3) {
       return [
-        { top: topOffset, left: `calc(${baseLeft} + ${spacing} * -0.5)`, transform: `translate(-10%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: topOffset, left: `calc(${baseLeft} + ${spacing} * 0)`, transform: `translate(-10%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: topOffset, left: `calc(${baseLeft} + ${spacing} * 0.5)`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: topOffset, left: `calc(${baseLeft} + ${spacing} * -1)`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
+        { top: topOffset, left: `calc(${baseLeft})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
+        { top: topOffset, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
       ];
     } else {
       const crossCardScale = baseScale * 0.9;
@@ -73,7 +73,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread }
   }, [shouldDrawNewSpread]);
 
   return (
-    <div className="fixed inset-1 overflow-hidden pointer-events-none">
+    <div className={`fixed inset-0 overflow-hidden pointer-events-none ${isMobile ? 'z-[2000]' : ''}`}>
       <div className={`card-reveal-container ${isDealing ? 'dealing' : ''} ${dealingComplete ? 'active' : ''} ${exitAnimation ? 'exit-animation' : ''}`}>
         <div className="card-container">
           {dealingComplete && cards.map((card, index) => (

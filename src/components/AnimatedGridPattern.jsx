@@ -1,9 +1,9 @@
-
-import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState, useMemo } from 'react';
 import { cn } from '../utils';
 import { motion } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import debounce from 'lodash.debounce';
+import throttle from 'lodash.throttle';
 import './AnimatedGridPattern.css';
 
 const tarotCards = [
@@ -27,7 +27,7 @@ const debounceResizeHandler = debounce((entries, setDimensions) => {
 
 const getRandomValue = (min, max) => Math.random() * (max - min) + min;
 
-const AnimatedGridPattern = ({
+const AnimatedGridPattern = React.memo(({
   width = 22,
   height = 42,
   x = -1,
@@ -44,6 +44,10 @@ const AnimatedGridPattern = ({
   const id = useId();
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  const effectiveNumCards = isStreaming ? Math.floor(numCards / 2) : numCards;
 
   const getPos = useCallback(() => {
     return [
@@ -95,7 +99,16 @@ const AnimatedGridPattern = ({
     );
   }, [getPos]);
 
-  const cardVariants = {
+  const throttledUpdateSquarePosition = useMemo(
+    () => throttle((id) => {
+      if (!isStreaming) {
+        updateSquarePosition(id);
+      }
+    }, 1000),
+    [updateSquarePosition, isStreaming]
+  );
+
+  const cardVariants = useMemo(() => ({
     initial: { opacity: 0, rotateY: 0, scale: 1, z: 0 },
     animate: (custom) => ({
       opacity: custom.randomOpacity,
@@ -110,7 +123,13 @@ const AnimatedGridPattern = ({
         ease: [0.645, 0.045, 0.355, 1],
       },
     }),
-  };
+  }), [duration]);
+
+  useEffect(() => {
+    const handleStreamingStateChange = (e) => setIsStreaming(e.detail);
+    window.addEventListener('streamingStateChange', handleStreamingStateChange);
+    return () => window.removeEventListener('streamingStateChange', handleStreamingStateChange);
+  }, []);
 
   return (
     <svg
@@ -140,7 +159,7 @@ const AnimatedGridPattern = ({
       </defs>
       <rect width="100%" height="100%" fill={`url(#${id})`} />
       <svg x={x} y={y} className="overflow-visible">
-        {cards.map(({ pos: [x, y], id }) => {
+        {cards.slice(0, effectiveNumCards).map(({ pos: [x, y], id }) => {
           const uniqueKey = `${id}-${x}-${y}`;
           const randomScale = getRandomValue(0.5, 2.0);
           const randomOpacity = Math.random() * maxOpacity;
@@ -154,10 +173,10 @@ const AnimatedGridPattern = ({
               custom={{ id, randomOpacity, randomScale }}
               variants={cardVariants}
               initial="initial"
-              animate="animate"
+              animate={isStreaming ? "initial" : "animate"}
               onAnimationComplete={() => {
                 setTimeout(() => {
-                  updateSquarePosition(id);
+                  throttledUpdateSquarePosition(id);
                 }, 10000 + getRandomValue(0, 100));
               }}
               className="preserve-3d"
@@ -189,6 +208,6 @@ const AnimatedGridPattern = ({
       </svg>
     </svg>
   );
-};
+});
 
-export default React.memo(AnimatedGridPattern);
+export default AnimatedGridPattern;

@@ -7,8 +7,10 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
+import { useAuth0 } from '@auth0/auth0-react';
 
 const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
+  const { getAccessTokenSilently } = useAuth0();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,11 +27,13 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
   const fetchCelticSpread = useCallback(async () => {
     setIsLoading(true);
     try {
+      const token = await getAccessTokenSilently();
       const origin = window.location.origin;
 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
+        'Authorization': `Bearer ${token}`
       };
 
       const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
@@ -84,13 +88,13 @@ const CelticSpread = ({ onSpreadSelect, selectedSpread, isMobile }) => {
 
     } catch (error) {
       console.error("Error drawing Celtic spread:", error);
-      setError("Failed to draw Celtic spread. Please check your network connection and try again.");
+      setError("Failed to draw Celtic spread. Please check your authentication and try again.");
       setCards([]); // Reset cards to an empty array in case of error
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, []);
+  }, [getAccessTokenSilently]);
 
   useEffect(() => {
     if (shouldDrawSpread) {

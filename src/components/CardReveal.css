@@ -20,17 +20,17 @@
   .card-reveal-container {
     transform: none;
     margin-top: 0;
-    z-index: 1900;
-    height: 70vh; /* Reduced from 100vh to avoid potential overflow */
+    z-index: 2000;
+    height: 70vh;
     width: 100vw;
     position: fixed;
-    top: 5vh; /* Added to center vertically */
+    top: 15vh;
     left: 0;
   }
 
   .card {
-    width: 70px;
-    height: 120px;
+    width: 60px;
+    height: 100px;
   }
 }
 

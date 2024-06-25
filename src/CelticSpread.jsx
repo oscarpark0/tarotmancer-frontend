@@ -23,7 +23,7 @@ const CelticSpread = ({ isMobile }) => {
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
   const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
-  const [cards, setCards] = useState([]); // Initialize cards as an empty array
+  const [cards, setCards] = useState([]); 
 
   const fetchCelticSpread = useCallback(async () => {
     setIsLoading(true);

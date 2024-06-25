@@ -12,7 +12,7 @@ root.render(
   <KindeProvider
     clientId="fb31f1e47adc4650a66f09248606487b"
     domain="https://tarotmancer.kinde.com"
-    redirectUri="https://tarotmancer.com"
+    redirectUri="https://tarotmancer.com/celtic-spread"
     logoutUri="https://tarotmancer.com"
     isDangerouslyUseLocalStorage={process.env.NODE_ENV === 'development'}
   >

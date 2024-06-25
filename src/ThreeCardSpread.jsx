@@ -21,7 +21,7 @@ const ThreeCardSpread = ({ isMobile }) => {
   const [dealingComplete, setDealingComplete] = useState(false);
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
   const [mostCommonCards, setMostCommonCards] = useState('');
-  const [cards, setCards] = useState([]); // Initialize cards as an empty array
+  const [cards, setCards] = useState([]); 
   const formRef = useRef(null);
   const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
 
@@ -85,7 +85,7 @@ const ThreeCardSpread = ({ isMobile }) => {
     } catch (error) {
       console.error("Error drawing Three Card spread:", error);
       setError("Failed to draw Three Card spread. Please check your authentication and try again.");
-      setCards([]); // Reset cards to an empty array in case of error
+      setCards([]); 
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
@@ -145,7 +145,7 @@ const ThreeCardSpread = ({ isMobile }) => {
               mostCommonCards={mostCommonCards}
               formRef={formRef}
               onSubmitInput={handleSubmitInput}
-              cards={cards} // This will now always be defined, even if it's an empty array
+              cards={cards}
             />
             {positions.length > 0 && (
               <div className="relative z-10 w-full flex flex-col items-center">

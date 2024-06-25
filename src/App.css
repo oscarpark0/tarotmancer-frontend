@@ -3,13 +3,16 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem;
-    background-color: #96a0ff;
+    background-color: transparent;
     color: #f0f0f0;
+    position: relative;
+    z-index: 10;
   }
 
   .app-title {
     font-size: 2rem;
     margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 
   .auth-container {
@@ -18,7 +21,7 @@
   }
 
   .mystic-button {
-    background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+    background: rgba(44, 44, 44, 0.7);
     border: 1px solid #3a3a3a;
     color: #f0f0f0;
     padding: 0.5rem 2rem;
@@ -28,7 +31,7 @@
   }
 
   .mystic-button:hover {
-    background: linear-gradient(145deg, #3a3a3a, #2c2c2c);
+    background: rgba(58, 58, 58, 0.7);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   }

@@ -26,10 +26,11 @@ const CelticSpread = ({ isMobile }) => {
   const [cards, setCards] = useState([]); 
   const [selectedSpread, setSelectedSpread] = useState('celtic');
 
-  const handleSpreadSelect = (spread) => {
+  const handleSpreadSelect = useCallback((spread) => {
+    console.log('Spread selected:', spread); // Add this line
     setSelectedSpread(spread);
     // You might want to add logic here to fetch a new spread when the selection changes
-  };
+  }, []);
 
   const fetchCelticSpread = useCallback(async () => {
     setIsLoading(true);

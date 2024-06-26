@@ -14,7 +14,7 @@ import { useMediaQuery } from 'react-responsive';
 function App() {
   const kindeAuth = useKindeAuth();
   console.log('KindeAuth:', kindeAuth);
-  const isAuthenticated = kindeAuth?.isAuthenticated;
+  const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
   const user = kindeAuth?.user;
   const login = kindeAuth?.login;
 
@@ -64,17 +64,17 @@ function App() {
   useEffect(() => {
     // Handle the authentication callback
     if (window.location.search.includes('code=') && login) {
-      login();
+      login().catch(error => console.error('Login error:', error));
     }
   }, [login]);
 
   const memoizedHeader = useMemo(() => (
-    (!isMobileScreen || !user) && (
+    (!isMobileScreen || !isAuthenticated) && (
       <header className="app-header">
         <div className="header-content">
           <h1 className="app-title">TarotMancer</h1>
           <div className="auth-container">
-            {user ? (
+            {isAuthenticated ? (
               <>
                 <SubscribeButton />
                 <LogoutButton />
@@ -86,7 +86,7 @@ function App() {
         </div>
       </header>
     )
-  ), [isMobileScreen, user]);
+  ), [isMobileScreen, isAuthenticated]);
 
   const memoizedWelcomeMessage = useMemo(() => (
     <div className="welcome-message">

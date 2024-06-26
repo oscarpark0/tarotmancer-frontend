@@ -42,7 +42,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
         'Authorization': `Bearer ${token}`
       };
 
-      const response = await fetch(`${API_BASE_URL}/draw_three_card_spread`, {
+      const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
+      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: 'GET',
         headers: headers,
       });
@@ -95,7 +96,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, handleSubmitInput]);
+  }, [getToken, selectedSpread, handleSubmitInput]);
 
   useEffect(() => {
     if (shouldDrawSpread) {

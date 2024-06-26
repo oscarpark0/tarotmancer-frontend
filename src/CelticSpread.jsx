@@ -42,7 +42,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
         'Authorization': `Bearer ${token}`
       };
 
-      const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
+      const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
+      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: 'GET',
         headers: headers,
       });
@@ -91,14 +92,14 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       }, 1100);
 
     } catch (error) {
-      console.error('Error drawing celtic spread:', error);
-      setError('Failed to draw celtic spread. Please check your authentication and try again.');
+      console.error('Error drawing spread:', error);
+      setError('Failed to draw spread. Please check your authentication and try again.');
       setCards([]);
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, handleSubmitInput]);
+  }, [getToken, selectedSpread, handleSubmitInput]); // Add handleSubmitInput to the dependency array
 
   useEffect(() => {
     if (shouldDrawSpread) {

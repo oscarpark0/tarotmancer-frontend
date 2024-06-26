@@ -13,7 +13,7 @@ import { useMediaQuery } from 'react-responsive';
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { isAuthenticated, user, handleLoginCallback } = useKindeAuth();
+  const { isAuthenticated, user, login } = useKindeAuth();
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
   const [selectedSpread, setSelectedSpread] = useState('celtic');
   const [drawCount, setDrawCount] = useState(0);
@@ -59,13 +59,10 @@ function App() {
   useEffect(() => {
     // Handle the authentication callback
     if (window.location.search.includes('code=')) {
-      if (typeof handleLoginCallback === 'function') {
-        handleLoginCallback();
-      } else {
-        console.error('handleLoginCallback is not a function:', handleLoginCallback);
-      }
+      // Instead of using handleLoginCallback, use the login function
+      login();
     }
-  }, [handleLoginCallback]);
+  }, [login]);
 
   const memoizedHeader = useMemo(() => (
     (!isMobileScreen || !user) && (

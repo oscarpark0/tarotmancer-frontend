@@ -6,10 +6,12 @@ import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import './App.css';
+import { useMediaQuery } from 'react-responsive';
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { isAuthenticated } = useKindeAuth();
+  const { isAuthenticated, user } = useKindeAuth();
+  const isMobileScreen = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
     const handleResize = () => {
@@ -23,28 +25,30 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <header className="app-header">
-          <div className="squircle">
-            <h1 className="app-title">TarotMancer</h1>
-            <div className="auth-container">
-              {isAuthenticated ? <LogoutButton /> : <LoginButton />}
-            </div>
-          </div>
-        </header>
-          <Routes>
-            <Route path="/celtic-spread" element={
-              isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Navigate to="/" />
-            } />
-            <Route path="/three-card-spread" element={
-              isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Navigate to="/" />
-            } />
-            <Route path="/" element={
-              isAuthenticated ? <Navigate to="/celtic-spread" /> : 
-              <div className="welcome-message">
-
+        {(!isMobileScreen || !user) && (
+          <header className="app-header">
+            <div className="header-content">
+              <h1 className="app-title">TarotMancer</h1>
+              <div className="auth-container">
+                {user ? <LogoutButton /> : <LoginButton />}
               </div>
-            } />
-          </Routes>
+            </div>
+          </header>
+        )}
+        <Routes>
+          <Route path="/celtic-spread" element={
+            isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Navigate to="/" />
+          } />
+          <Route path="/three-card-spread" element={
+            isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Navigate to="/" />
+          } />
+          <Route path="/" element={
+            isAuthenticated ? <Navigate to="/celtic-spread" /> : 
+            <div className="welcome-message">
+
+            </div>
+          } />
+        </Routes>
       </div>
     </Router>
   );

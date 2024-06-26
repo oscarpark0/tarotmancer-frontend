@@ -1,24 +1,39 @@
   .app-header {
+    background-color: #282c34;
+    padding: 10px;
+    color: white;
+  }
+
+  .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    background-color: transparent;
-    color: #f0f0f0;
-    position: relative;
-    z-index: 10;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .app-title {
     font-size: 1.5rem;
     margin: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
 
   .auth-container {
-    display: flex;
-    gap: 1rem;
-    margin-top: 5px;
+    margin-left: 10px;
+  }
+
+  @media (max-width: 767px) {
+    .app-header {
+      padding: 5px;
+    }
+
+    .app-title {
+      font-size: 1.2rem;
+    }
+
+    .auth-container button {
+      font-size: 0.9rem;
+      padding: 5px 10px;
+    }
   }
 
   .mystic-button {

@@ -41,14 +41,6 @@
   z-index: 1100; /* Ensure the robot body is above the container */
 }
 
-.draw-count {
-  position: absolute;
-  background-color: transparent;
-  top: 10px;
-  right: 10px;
-  font-size: 1.5rem;
-  color: #000;
-}
 
 @media (max-width: 768px) {
   .robot-body {
@@ -183,4 +175,36 @@
   50% { -webkit-box-shadow: 0 0 26px rgba(255, 255, 255, 0.692); box-shadow: 0 0 26px rgba(255, 255, 255, 0.692); }
   75% { -webkit-box-shadow: 0 0 20px rgba(0, 0, 0, 0); box-shadow: 0 0 20px rgba(0, 0, 0, 0); }
   100% { -webkit-box-shadow: 0 0 10px rgb(126, 126, 126); box-shadow: 0 0 10px rgb(126, 126, 126); }
+}
+
+.tab-container {
+  display: flex;
+  justify-content: flex-start;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #33ff33;
+  padding: 5px 5px 0;
+}
+
+.tab {
+  background-color: #0a0a0a;
+  color: #33ff33;
+  border: 1px solid #33ff33;
+  border-bottom: none;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+}
+
+.tab.active {
+  background-color: #33ff33;
+  color: #0a0a0a;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
 }

@@ -40,8 +40,8 @@
     left: 0;
     transform: none;
     width: 95vw;
-    height: 45vh;
-    margin-top: 10px;
+    height: 40vh; 
+    margin-top: 5px; 
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -169,7 +169,7 @@
 }
 
 .command-terminal.mobile .monitor-output {
-  height: 300px; /* Fixed height for mobile */
+  height: 300px; 
   overflow-y: auto;
   font-size: 14px;
   line-height: 1.4;
@@ -183,7 +183,7 @@
 .spread-selector {
   margin-bottom: 10px;
   position: relative;
-  z-index: 2000; /* Ensure it's above other elements */
+  z-index: 2000; 
 }
 
 .spread-selector select {
@@ -194,7 +194,7 @@
   border: 1px solid #33ff33;
   font-family: 'VT323', monospace;
   font-size: 18px;
-  appearance: none; /* Remove default styling */
+  appearance: none; 
   -webkit-appearance: none;
   -moz-appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='%2333ff33' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
@@ -208,4 +208,10 @@
   flex-direction: column;
   width: 100%;
   margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+  .robot-container {
+    margin-top: -20px;
+  }
 }

@@ -6,6 +6,7 @@ import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
 import CardReveal from './CardReveal.jsx';
+import { v4 as uuidv4 } from 'uuid';
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -59,6 +60,8 @@ const Robot = memo(({
   const [monitorOutput, setMonitorOutput] = useState('');
   const screenContentRef = useRef(null);
   const commandTerminalRef = useRef(null);
+  const [responses, setResponses] = useState([]);
+  const [activeTab, setActiveTab] = useState(null);
 
   useEffect(() => {
     if (dealCards) {
@@ -115,6 +118,12 @@ const Robot = memo(({
 
   console.log('Current drawCount in Robot:', drawCount);
 
+  const handleNewResponse = useCallback((response) => {
+    const newResponse = { id: uuidv4(), content: response };
+    setResponses(prevResponses => [...prevResponses, newResponse]);
+    setActiveTab(newResponse.id);
+  }, []);
+
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''}`}
@@ -133,7 +142,25 @@ const Robot = memo(({
         <div className="robot-head">
           <div className="crt-screen">
             <div className="screen-content" ref={screenContentRef}>
-              <div className="monitor-output">{monitorOutput}</div>
+              <div className="tab-container">
+                {responses.map(response => (
+                  <button
+                    key={response.id}
+                    className={`tab ${activeTab === response.id ? 'active' : ''}`}
+                    onClick={() => setActiveTab(response.id)}
+                  >
+                    Response {responses.indexOf(response) + 1}
+                  </button>
+                ))}
+              </div>
+              {responses.map(response => (
+                <div
+                  key={response.id}
+                  className={`tab-content ${activeTab === response.id ? 'active' : ''}`}
+                >
+                  <div className="monitor-output">{response.content}</div>
+                </div>
+              ))}
               <FloatingCards
                 dealCards={dealCards}
                 cardPositions={cardPositions}
@@ -174,6 +201,7 @@ const Robot = memo(({
         style={isMobile ? { width: '95vw', marginTop: '10px' } : {}}
         drawCount={drawCount}
         fetchSpread={fetchSpread}
+        onNewResponse={handleNewResponse}
       />
       <CardReveal
         cards={cards}

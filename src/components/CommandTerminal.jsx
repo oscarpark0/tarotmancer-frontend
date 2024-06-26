@@ -4,7 +4,7 @@ import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 
-const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread }, ref) => {
+const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -47,6 +47,8 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
       const decoder = new TextDecoder();
       let buffer = '';
 
+      let responseContent = '';
+
       while (true) {
         const { value, done } = await reader.read();
         if (done) break;
@@ -64,19 +66,23 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
             const data = JSON.parse(line);
 
             if (data.event_type === 'text-generation') {
-              // Stream the response only to the robot monitor
-              handleMonitorOutput(prevOutput => prevOutput + data.text);
+              responseContent += data.text;
+              handleMonitorOutput(responseContent);
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
           }
         }
       }
+
+      // Call onNewResponse with the complete response
+      onNewResponse(responseContent);
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = 'An error occurred while processing your request.';
       handleMonitorOutput(errorMessage);
       setTerminalOutput(errorMessage);
+      onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
       setTerminalOutput('Processing complete.'); // Set completion message
@@ -86,7 +92,7 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
     }
 
     setInput('');
-  }, [handleMonitorOutput]);
+  }, [handleMonitorOutput, onNewResponse]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete) {

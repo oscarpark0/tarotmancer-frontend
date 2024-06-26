@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef, useLayoutEffect } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useLayoutEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
@@ -35,7 +35,7 @@ const adjustFontSize = () => {
 
 const debouncedAdjustFontSize = debounce(adjustFontSize, 100);
 
-const Robot = ({
+const Robot = memo(({
   dealCards,
   cardPositions,
   finalCardPositions,
@@ -91,8 +91,8 @@ const Robot = ({
 
   const handleMonitorOutput = useCallback((output) => {
     setMonitorOutput(output);
-    requestAnimationFrame(adjustFontSize);
-  }, []);
+    onMonitorOutput(output);
+  }, [onMonitorOutput]);
 
   useLayoutEffect(() => {
     adjustFontSize();
@@ -183,7 +183,7 @@ const Robot = ({
       />
     </motion.div>
   );
-};
+});
 
 Robot.propTypes = {
   dealCards: PropTypes.bool.isRequired,

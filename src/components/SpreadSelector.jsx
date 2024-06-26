@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 
-const SpreadSelector = ({ onSpreadSelect, selectedSpread }) => {
+const SpreadSelector = memo(({ onSpreadSelect, selectedSpread }) => {
   console.log('SpreadSelector rendering:', { selectedSpread }); 
 
   const handleChange = (event) => {
@@ -15,6 +15,6 @@ const SpreadSelector = ({ onSpreadSelect, selectedSpread }) => {
       </select>
     </div>
   );
-};
+});
 
 export default SpreadSelector;

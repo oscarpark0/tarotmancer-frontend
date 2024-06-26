@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, memo } from 'react';
 import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 
-const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread }, ref) => {
+const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -13,6 +13,11 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
   const handleInputChange = useCallback((e) => {
     setInput(e.target.value);
   }, []);
+
+  const handleMonitorOutput = useCallback((output) => {
+    setTerminalOutput(output);
+    onMonitorOutput(output);
+  }, [onMonitorOutput]);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
@@ -60,7 +65,7 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
 
             if (data.event_type === 'text-generation') {
               // Stream the response only to the robot monitor
-              onMonitorOutput(prevOutput => prevOutput + data.text);
+              handleMonitorOutput(prevOutput => prevOutput + data.text);
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
@@ -70,7 +75,7 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = 'An error occurred while processing your request.';
-      onMonitorOutput(errorMessage);
+      handleMonitorOutput(errorMessage);
       setTerminalOutput(errorMessage);
     } finally {
       setIsLoading(false);
@@ -81,7 +86,7 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
     }
 
     setInput('');
-  }, [onMonitorOutput]);
+  }, [handleMonitorOutput]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete) {
@@ -134,4 +139,4 @@ const CommandTerminal = React.forwardRef(({ onMonitorOutput, drawSpread, mostCom
   );
 });
 
-export default React.memo(CommandTerminal);
+export default CommandTerminal;

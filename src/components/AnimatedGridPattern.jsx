@@ -18,6 +18,13 @@ const tarotCards = [
   'w14.webp',
 ];
 
+const debounceResizeHandler = debounce((entries, setDimensions) => {
+  for (let entry of entries) {
+    const { width, height } = entry.contentRect;
+    setDimensions({ width, height });
+  }
+}, 200);
+
 const getRandomValue = (min, max) => Math.random() * (max - min) + min;
 
 const AnimatedGridPattern = React.memo(({
@@ -37,6 +44,7 @@ const AnimatedGridPattern = React.memo(({
   const id = useId();
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
   const [isStreaming, setIsStreaming] = useState(false);
 
   const effectiveNumCards = isStreaming ? Math.floor(numCards / 2) : numCards;
@@ -57,20 +65,20 @@ const AnimatedGridPattern = React.memo(({
 
   const [cards, setCards] = useState(() => generateCards(numCards));
 
-  const debounceResizeHandler = useMemo(() => debounce((entries) => {
-    for (let entry of entries) {
-      const { width, height } = entry.contentRect;
-      setDimensions({ width, height });
-    }
-  }, 500), []); // Increased debounce time
-
   useEffect(() => {
-    const resizeObserver = new ResizeObserver(debounceResizeHandler);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
+    const resizeObserver = new ResizeObserver((entries) => debounceResizeHandler(entries, setDimensions));
+    const currentContainer = containerRef.current;
+
+    if (currentContainer) {
+      resizeObserver.observe(currentContainer);
     }
-    return () => resizeObserver.disconnect();
-  }, [debounceResizeHandler]);
+
+    return () => {
+      if (currentContainer) {
+        resizeObserver.unobserve(currentContainer);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (dimensions.width && dimensions.height) {
@@ -81,8 +89,13 @@ const AnimatedGridPattern = React.memo(({
   const updateSquarePosition = useCallback((id) => {
     setCards((currentSquares) =>
       currentSquares.map((sq) =>
-        sq.id === id ? { ...sq, pos: getPos() } : sq
-      )
+        sq.id === id
+          ? {
+              ...sq,
+              pos: getPos(),
+            }
+          : sq,
+      ),
     );
   }, [getPos]);
 
@@ -91,7 +104,7 @@ const AnimatedGridPattern = React.memo(({
       if (!isStreaming) {
         updateSquarePosition(id);
       }
-    }, 2000), // Increased throttle time
+    }, 1000),
     [updateSquarePosition, isStreaming]
   );
 
@@ -168,22 +181,26 @@ const AnimatedGridPattern = React.memo(({
               }}
               className="preserve-3d"
               style={{
-                transform: `translate(${x * width + 1}px, ${y * height + 1}px)`,
+                transformStyle: 'preserve-3d',
+                transformOrigin: 'center',
+                perspective: '1000px',
               }}
             >
               <motion.image
                 href={tarotCardImage}
                 width={width - 1}
                 height={height - 1}
+                x={x * width + 1}
+                y={y * height + 1}
                 className="tarot-card"
-                loading="lazy"
               />
               <motion.image
                 href={cardBackImage}
                 width={width - 1}
                 height={height - 1}
+                x={x * width + 1}
+                y={y * height + 1}
                 className="tarot-card-back"
-                loading="lazy"
               />
             </motion.g>
           );

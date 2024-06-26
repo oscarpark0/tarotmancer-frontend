@@ -14,7 +14,7 @@ import { useMediaQuery } from 'react-responsive';
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { isAuthenticated, user, login, handleLoginCallback } = useKindeAuth();
+  const { isAuthenticated, user, handleLoginCallback } = useKindeAuth();
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
   const [selectedSpread, setSelectedSpread] = useState('celtic');
 

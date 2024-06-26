@@ -63,7 +63,10 @@ function App() {
   useEffect(() => {
     // Handle the authentication callback
     if (window.location.search.includes('code=') && kindeAuth?.login) {
-      kindeAuth.login().catch(error => console.error('Login error:', error));
+      kindeAuth.login().catch(error => {
+        console.error('Login error:', error);
+        // Consider displaying this error to the user
+      });
     }
   }, [kindeAuth]);
 

@@ -123,6 +123,10 @@ function App() {
                 isMobile={isMobile} 
                 onSpreadSelect={handleSpreadSelect} 
                 selectedSpread={selectedSpread} 
+                drawCount={drawCount}
+                incrementDrawCount={incrementDrawCount}
+                setDrawCount={setDrawCount}
+                setLastResetTime={setLastResetTime}
               />
             ) : <Navigate to="/" />
           } />

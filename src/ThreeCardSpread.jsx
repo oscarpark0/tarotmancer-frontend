@@ -9,7 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Link } from 'react-router-dom';
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime }) => {
   const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +31,11 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
   }, []);
 
   const fetchSpread = useCallback(async () => {
+    if (drawCount >= 10) {
+      setError('You have reached the maximum number of draws for today. Please try again tomorrow.');
+      return;
+    }
+
     setIsLoading(true);
     try {
       const token = await getToken();
@@ -75,6 +80,26 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
         (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
       ).join('\n');
 
+      // Handle rate limit headers
+      const remainingDraws = response.headers.get('X-RateLimit-Remaining');
+      const resetTime = response.headers.get('X-RateLimit-Reset');
+      
+      console.log('Received headers - Remaining draws:', remainingDraws, 'Reset time:', resetTime);
+
+      // Ensure we're working with numbers
+      const remainingDrawsNum = parseInt(remainingDraws, 10);
+      if (!isNaN(remainingDrawsNum)) {
+        console.log('Setting drawCount to:', 10 - remainingDrawsNum);
+        setDrawCount(10 - remainingDrawsNum);
+      } else {
+        console.warn('Invalid remaining draws value:', remainingDraws);
+      }
+
+      const resetTimeNum = parseInt(resetTime, 10);
+      if (!isNaN(resetTimeNum)) {
+        setLastResetTime(resetTimeNum * 1000);
+      }
+
       setPositions(newPositions);
       setCards(newCards);
       setDealCards(true);
@@ -97,7 +122,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, handleSubmitInput]);
+  }, [getToken, selectedSpread, handleSubmitInput, drawCount, setDrawCount, setLastResetTime]);
 
   useEffect(() => {
     if (shouldDrawSpread) {
@@ -118,8 +143,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
     setRevealCards(false);
     setDealingComplete(false);
     setShouldDrawNewSpread(true);
-    setShouldDrawSpread(true);
-  }, []);
+    fetchSpread();
+  }, [fetchSpread]);
 
   const memoizedRobot = useMemo(() => (
     <Robot
@@ -140,8 +165,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
       selectedSpread={selectedSpread}
       onSpreadSelect={onSpreadSelect}
       isMobile={isMobile}
+      drawCount={drawCount}
+      fetchSpread={fetchSpread}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, dealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, dealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

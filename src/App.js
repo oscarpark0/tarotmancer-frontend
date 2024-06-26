@@ -5,6 +5,7 @@ import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
+import SubscribeButton from './components/SubscribeButton';
 import AnimatedGridPattern from './components/AnimatedGridPattern';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
@@ -31,7 +32,14 @@ function App() {
             <div className="header-content">
               <h1 className="app-title">TarotMancer</h1>
               <div className="auth-container">
-                {user ? <LogoutButton /> : <LoginButton />}
+                {user ? (
+                  <>
+                    <SubscribeButton />
+                    <LogoutButton />
+                  </>
+                ) : (
+                  <LoginButton />
+                )}
               </div>
             </div>
           </header>

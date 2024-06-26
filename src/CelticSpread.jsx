@@ -92,10 +92,15 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       const remainingDraws = response.headers.get('X-RateLimit-Remaining');
       const resetTime = response.headers.get('X-RateLimit-Reset');
       
+      console.log('Received headers - Remaining draws:', remainingDraws, 'Reset time:', resetTime);
+
       // Ensure we're working with numbers
       const remainingDrawsNum = parseInt(remainingDraws, 10);
       if (!isNaN(remainingDrawsNum)) {
+        console.log('Setting drawCount to:', 10 - remainingDrawsNum);
         setDrawCount(10 - remainingDrawsNum);
+      } else {
+        console.warn('Invalid remaining draws value:', remainingDraws);
       }
 
       const resetTimeNum = parseInt(resetTime, 10);

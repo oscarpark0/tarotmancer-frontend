@@ -113,6 +113,8 @@ const Robot = memo(({
 
   console.log('Robot rendering:', { onSpreadSelect, selectedSpread });
 
+  console.log('Current drawCount in Robot:', drawCount);
+
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''}`}

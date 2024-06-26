@@ -3,6 +3,9 @@ AUTH0_CLIENT_SECRET=7a-1FMSxNa6Jk5i0FAaMu3fJQV5q0Qov3u01IbrhEqOP1OFqp0fsfZaQ4Wne
 AUTH0_DOMAIN='dev-q868ktvw2za0engx.us.auth0.com'
 AUTH0_CLIENT_ID='8v7IDgdAgMBKQNggvgg4OKUhp63khWI0'
 MONGODB_URI='mongodb+srv://tadmin:s8oOCwCmJPIP3GGB@tarotdb.nrj6k89.mongodb.net/?retryWrites=true&w=majority&appName=tarotdb'
-
+REACT_APP_KINDE_CLIENT_ID='fb31f1e47adc4650a66f09248606487b'
+REACT_APP_KINDE_DOMAIN='https://tarotmancer.kinde.com'
+REACT_APP_KINDE_REDIRECT_URI='https://tarotmancer.com/'
+REACT_APP_KINDE_LOGOUT_URI='https://tarotmancer.com'
 
 

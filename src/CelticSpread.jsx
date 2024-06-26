@@ -91,8 +91,17 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       // Handle rate limit headers
       const remainingDraws = response.headers.get('X-RateLimit-Remaining');
       const resetTime = response.headers.get('X-RateLimit-Reset');
-      setDrawCount(10 - parseInt(remainingDraws, 10));
-      setLastResetTime(parseInt(resetTime, 10) * 1000);
+      
+      // Ensure we're working with numbers
+      const remainingDrawsNum = parseInt(remainingDraws, 10);
+      if (!isNaN(remainingDrawsNum)) {
+        setDrawCount(10 - remainingDrawsNum);
+      }
+
+      const resetTimeNum = parseInt(resetTime, 10);
+      if (!isNaN(resetTimeNum)) {
+        setLastResetTime(resetTimeNum * 1000);
+      }
 
       setTimeout(() => {
         setRevealCards(true);

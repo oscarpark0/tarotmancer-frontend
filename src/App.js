@@ -5,6 +5,7 @@ import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
+import AnimatedGridPattern from './components/AnimatedGridPattern';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 
@@ -45,7 +46,12 @@ function App() {
           <Route path="/" element={
             isAuthenticated ? <Navigate to="/celtic-spread" /> : 
             <div className="welcome-message">
-
+              <AnimatedGridPattern className="absolute inset-0 z-0" />
+              <div className="relative z-10">
+                <h2>Welcome to TarotMancer</h2>
+                <p>Please log in to continue.</p>
+                <LoginButton />
+              </div>
             </div>
           } />
         </Routes>

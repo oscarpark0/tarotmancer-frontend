@@ -4,7 +4,7 @@ import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 
-const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread }, ref) => {
+const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -131,8 +131,8 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
             />
           </form>
         </div>
-        <ShimmerButton onClick={drawSpread} aria-label="Draw Cards" label="Draw" disabled={isLoading}>
-          {isLoading ? 'Processing...' : 'Draw'}
+        <ShimmerButton onClick={fetchSpread} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 10}>
+          {isLoading ? 'Processing...' : drawCount >= 10 ? 'Limit Reached' : 'Draw'}
         </ShimmerButton>
       </div>
     </div>

@@ -52,6 +52,8 @@ const Robot = memo(({
   onSpreadSelect,
   cards = [],
   isMobile,
+  drawCount,
+  fetchSpread
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -150,6 +152,9 @@ const Robot = memo(({
           </div>
         </div>
       </div>
+      <div className="draw-count">
+        Remaining draws today: {10 - drawCount}
+      </div>
       <CommandTerminal
         onMonitorOutput={handleMonitorOutput}
         drawSpread={drawSpread}
@@ -165,6 +170,8 @@ const Robot = memo(({
         shouldDrawNewSpread={shouldDrawNewSpread}
         ref={commandTerminalRef}
         style={isMobile ? { width: '95vw', marginTop: '10px' } : {}}
+        drawCount={drawCount}
+        fetchSpread={fetchSpread}
       />
       <CardReveal
         cards={cards}
@@ -202,6 +209,8 @@ Robot.propTypes = {
   onSpreadSelect: PropTypes.func.isRequired,
   cards: PropTypes.array,
   isMobile: PropTypes.bool.isRequired,
+  drawCount: PropTypes.number.isRequired,
+  fetchSpread: PropTypes.func.isRequired,
 };
 
 export default Robot;

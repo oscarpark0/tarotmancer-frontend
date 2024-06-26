@@ -16,10 +16,36 @@ function App() {
   const { isAuthenticated, user, handleLoginCallback } = useKindeAuth();
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
   const [selectedSpread, setSelectedSpread] = useState('celtic');
+  const [drawCount, setDrawCount] = useState(0);
+  const [lastResetTime, setLastResetTime] = useState(Date.now());
 
   const handleSpreadSelect = useCallback((spread) => {
     setSelectedSpread(spread);
   }, []);
+
+  useEffect(() => {
+    const storedCount = localStorage.getItem('drawCount');
+    const storedResetTime = localStorage.getItem('lastResetTime');
+    if (storedCount && storedResetTime) {
+      setDrawCount(parseInt(storedCount, 10));
+      setLastResetTime(parseInt(storedResetTime, 10));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('drawCount', drawCount.toString());
+    localStorage.setItem('lastResetTime', lastResetTime.toString());
+  }, [drawCount, lastResetTime]);
+
+  const incrementDrawCount = useCallback(() => {
+    const now = Date.now();
+    if (now - lastResetTime >= 24 * 60 * 60 * 1000) {
+      setDrawCount(1);
+      setLastResetTime(now);
+    } else {
+      setDrawCount(prevCount => prevCount + 1);
+    }
+  }, [lastResetTime]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -83,6 +109,10 @@ function App() {
                 isMobile={isMobile} 
                 onSpreadSelect={handleSpreadSelect} 
                 selectedSpread={selectedSpread} 
+                drawCount={drawCount}
+                incrementDrawCount={incrementDrawCount}
+                setDrawCount={setDrawCount}
+                setLastResetTime={setLastResetTime}
               />
             ) : <Navigate to="/" />
           } />

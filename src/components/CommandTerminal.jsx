@@ -136,8 +136,8 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
         <ShimmerButton onClick={() => {
           console.log('Draw button clicked, calling fetchSpread');
           fetchSpread();
-        }} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 10}>
-          {isLoading ? 'Processing...' : drawCount >= 10 ? 'Limit Reached' : 'Draw'}
+        }} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 100}>
+          {isLoading ? 'Processing...' : drawCount >= 100 ? 'Limit Reached' : 'Draw'}
         </ShimmerButton>
       </div>
     </div>

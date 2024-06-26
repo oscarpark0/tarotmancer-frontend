@@ -34,7 +34,7 @@ const AnimatedGridPattern = React.memo(({
   y = -1,
   strokeDasharray = 19,
   strokeOpacity = 1,
-  numCards = 25,
+  numCards = 10,
   className,
   maxOpacity = 0.9,
   duration = 6,

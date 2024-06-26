@@ -118,10 +118,32 @@ const Robot = memo(({
 
   console.log('Current drawCount in Robot:', drawCount);
 
-  const handleNewResponse = useCallback((response) => {
-    const newResponse = { id: uuidv4(), content: response };
-    setResponses(prevResponses => [...prevResponses, newResponse]);
-    setActiveTab(newResponse.id);
+  const handleNewResponse = useCallback((content) => {
+    setResponses(prevResponses => {
+      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
+        // Create a new response
+        const newResponse = { id: uuidv4(), content, complete: false };
+        setActiveTab(newResponse.id);
+        return [...prevResponses, newResponse];
+      } else {
+        // Update the last response
+        const updatedResponses = [...prevResponses];
+        const lastResponse = updatedResponses[updatedResponses.length - 1];
+        lastResponse.content = content;
+        return updatedResponses;
+      }
+    });
+  }, []);
+
+  const completeCurrentResponse = useCallback(() => {
+    setResponses(prevResponses => {
+      if (prevResponses.length > 0) {
+        const updatedResponses = [...prevResponses];
+        updatedResponses[updatedResponses.length - 1].complete = true;
+        return updatedResponses;
+      }
+      return prevResponses;
+    });
   }, []);
 
   return (
@@ -202,6 +224,7 @@ const Robot = memo(({
         drawCount={drawCount}
         fetchSpread={fetchSpread}
         onNewResponse={handleNewResponse}
+        onResponseComplete={completeCurrentResponse}
       />
       <CardReveal
         cards={cards}

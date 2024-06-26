@@ -21,9 +21,8 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
-    setTerminalOutput('Processing...'); // Set initial processing message
+    setTerminalOutput('Processing...');
 
-    // Dispatch custom event to notify streaming has started
     window.dispatchEvent(new CustomEvent('streamingStateChange', { detail: true }));
 
     try {
@@ -68,6 +67,7 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
             if (data.event_type === 'text-generation') {
               responseContent += data.text;
               handleMonitorOutput(responseContent);
+              onNewResponse(responseContent);
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
@@ -75,8 +75,6 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
         }
       }
 
-      // Call onNewResponse with the complete response
-      onNewResponse(responseContent);
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = 'An error occurred while processing your request.';
@@ -85,9 +83,7 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
       onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
-      setTerminalOutput('Processing complete.'); // Set completion message
-      
-      // Dispatch custom event to notify streaming has ended
+      setTerminalOutput('Processing complete.');
       window.dispatchEvent(new CustomEvent('streamingStateChange', { detail: false }));
     }
 

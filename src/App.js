@@ -39,8 +39,8 @@ function App() {
     const storedCount = localStorage.getItem('drawCount');
     const storedResetTime = localStorage.getItem('lastResetTime');
     if (storedCount && storedResetTime) {
-      setDrawCount(parseInt(storedCount, 10));
-      setLastResetTime(parseInt(storedResetTime, 10));
+      setDrawCount(parseInt(storedCount, 100));
+      setLastResetTime(parseInt(storedResetTime, 100));
     }
   }, []);
 
@@ -101,7 +101,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <div className="App main-content">
         {memoizedHeader}
         <Routes>
           <Route path="/celtic-spread" element={

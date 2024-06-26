@@ -40,8 +40,8 @@
     left: 0;
     transform: none;
     width: 95vw;
-    height: 40vh; 
-    margin-top: 5px; 
+    height: 38vh; 
+    margin-top: 0; 
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -212,6 +212,15 @@
 
 @media (max-width: 768px) {
   .robot-container {
-    margin-top: -20px;
+    margin-top: -40px; 
+  }
+
+
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding-top: 10px; 
   }
 }

@@ -31,7 +31,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   }, []);
 
   const fetchSpread = useCallback(async () => {
-    if (drawCount >= 10) {
+    if (drawCount >= 100) {
       setError('You have reached the maximum number of draws for today. Please try again tomorrow.');
       return;
     }
@@ -87,15 +87,15 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       console.log('Received headers - Remaining draws:', remainingDraws, 'Reset time:', resetTime);
 
       // Ensure we're working with numbers
-      const remainingDrawsNum = parseInt(remainingDraws, 10);
+      const remainingDrawsNum = parseInt(remainingDraws, 100);
       if (!isNaN(remainingDrawsNum)) {
-        console.log('Setting drawCount to:', 10 - remainingDrawsNum);
+        console.log('Setting drawCount to:', 100 - remainingDrawsNum);
         setDrawCount(10 - remainingDrawsNum);
       } else {
         console.warn('Invalid remaining draws value:', remainingDraws);
       }
 
-      const resetTimeNum = parseInt(resetTime, 10);
+      const resetTimeNum = parseInt(resetTime, 100);
       if (!isNaN(resetTimeNum)) {
         setLastResetTime(resetTimeNum * 1000);
       }

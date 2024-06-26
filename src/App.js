@@ -15,7 +15,6 @@ function App() {
   const kindeAuth = useKindeAuth();
   console.log('KindeAuth:', kindeAuth);
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
-  const user = kindeAuth?.user;
   const login = kindeAuth?.login;
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -63,10 +62,10 @@ function App() {
 
   useEffect(() => {
     // Handle the authentication callback
-    if (window.location.search.includes('code=') && login) {
-      login().catch(error => console.error('Login error:', error));
+    if (window.location.search.includes('code=') && kindeAuth?.login) {
+      kindeAuth.login().catch(error => console.error('Login error:', error));
     }
-  }, [login]);
+  }, [kindeAuth]);
 
   const memoizedHeader = useMemo(() => (
     (!isMobileScreen || !isAuthenticated) && (

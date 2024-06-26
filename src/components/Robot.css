@@ -3,7 +3,7 @@
   margin-top: 25px;
   position: relative;
   top: 9vh;
-  left: 5vw;
+  left: 2vw; /* Adjusted from 5vw to 2vw */
   transform: translateY(-10%);
 }
 
@@ -140,7 +140,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  color: #9fdd0e;
+  color: #b3f811;
   text-shadow: 0 0 15px #000;
   font-size: 24px;
   border-radius: 5px;
@@ -183,6 +183,7 @@
   background-color: #1a1a1a;
   border-bottom: 1px solid #33ff33;
   padding: 5px 5px 0;
+  z-index: 1500;
 }
 
 .tab {
@@ -193,18 +194,22 @@
   padding: 5px 10px;
   margin-right: 5px;
   cursor: pointer;
-  font-family: 'VT323', monospace;
+  font-size: 0.2rem;
+  z-index: 1501; /* Increased z-index to be above the container */
 }
 
 .tab.active {
   background-color: #33ff33;
   color: #0a0a0a;
+  z-index: 1502; /* Increased z-index to be above non-active tabs */
 }
 
 .tab-content {
   display: none;
+  z-index: 1499; /* Lower z-index to be below the tabs */
 }
 
 .tab-content.active {
   display: block;
+  z-index: 1499; /* Same z-index as non-active tab content */
 }

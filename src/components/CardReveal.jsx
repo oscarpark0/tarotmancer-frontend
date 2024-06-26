@@ -13,16 +13,16 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     const containerWidth = window.innerWidth;
     const isMobile = containerWidth <= 768;
     
-    const baseScale = isMobile ? 0.02 : 20; // Reduced scale for mobile
-    const baseLeft = isMobile ? '35%' : '25%';
-    const spacing = isMobile ? '20vw' : '15vw';
-    const topOffset = isMobile ? '55%' : '30%'; // Increased top offset for mobile
-    const verticalSpacing = isMobile ? '6vh' : '11vh'; // Add this line for static vertical spacing
+    const baseScale = isMobile ? 0.02 : 20;
+    const baseLeft = isMobile ? '35%' : '40%'; // Adjusted from '25%' to '40%'
+    const spacing = isMobile ? '20vw' : '10vw'; // Adjusted from '15vw' to '10vw'
+    const topOffset = isMobile ? '55%' : '30%';
+    const verticalSpacing = isMobile ? '6vh' : '11vh';
     
     if (cards.length === 3) {
       return [
-        { top: topOffset, left: `calc(${baseLeft} + ${spacing} * -1)`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
-        { top: topOffset, left: `calc(${baseLeft})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
+        { top: topOffset, left: `calc(${baseLeft} - ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
+        { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
         { top: topOffset, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
       ];
     } else {

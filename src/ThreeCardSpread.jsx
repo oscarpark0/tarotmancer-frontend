@@ -58,24 +58,25 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);
-      setPositions(positions.map((pos, index) => ({
+      const newPositions = positions.map((pos, index) => ({
         ...data.positions[index],
         left: pos.left,
         top: pos.top,
         tooltip: data.positions[index].position_name
-      })));
-      const newCards = positions.map(pos => ({
+      }));
+      const newCards = newPositions.map(pos => ({
         name: pos.most_common_card,
         img: pos.most_common_card_img,
         orientation: pos.orientation,
         position_name: pos.position_name,
         tooltip: pos.position_name
       }));
-      setCards(newCards);
-
       const formattedMostCommonCards = data.positions.map(
         (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
       ).join('\n');
+
+      setPositions(newPositions);
+      setCards(newCards);
       setDealCards(true);
       setMostCommonCards(formattedMostCommonCards);
 

@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem;
+    padding: 10px;
     background-color: transparent;
     color: #f0f0f0;
     position: relative;
@@ -10,7 +10,7 @@
   }
 
   .app-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
@@ -18,6 +18,7 @@
   .auth-container {
     display: flex;
     gap: 1rem;
+    margin-top: 5px;
   }
 
   .mystic-button {

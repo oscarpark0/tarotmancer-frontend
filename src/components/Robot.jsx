@@ -204,7 +204,7 @@ const Robot = memo(({
         </div>
       </div>
       <div className="draw-count">
-        Remaining draws today: {isNaN(drawCount) ? 10 : Math.max(0, 100 - drawCount)}
+        Remaining draws today: {isNaN(drawCount) ? 100 : Math.max(0, 100 - drawCount)}
       </div>
       <CommandTerminal
         onMonitorOutput={handleMonitorOutput}

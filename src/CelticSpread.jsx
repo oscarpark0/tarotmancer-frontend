@@ -171,6 +171,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       onSpreadSelect={onSpreadSelect}
       drawCount={drawCount}
       fetchSpread={fetchSpread}
+      onNewResponse={(response) => {
+        // Handle the new response here if needed
+        console.log("New response received:", response);
+      }}
     />
   ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, drawCount, fetchSpread]);
 

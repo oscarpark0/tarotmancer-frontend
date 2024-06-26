@@ -13,9 +13,17 @@ import { useMediaQuery } from 'react-responsive';
 
 function App() {
   const kindeAuth = useKindeAuth();
-  console.log('KindeAuth:', kindeAuth);
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
-  const login = kindeAuth?.login;
+
+  useEffect(() => {
+    // Handle the authentication callback
+    if (window.location.search.includes('code=') && kindeAuth?.handleRedirectCallback) {
+      kindeAuth.handleRedirectCallback().catch(error => {
+        console.error('Authentication callback error:', error);
+        // Consider displaying this error to the user
+      });
+    }
+  }, [kindeAuth]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
@@ -59,16 +67,6 @@ function App() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  useEffect(() => {
-    // Handle the authentication callback
-    if (window.location.search.includes('code=') && kindeAuth?.login) {
-      kindeAuth.login().catch(error => {
-        console.error('Login error:', error);
-        // Consider displaying this error to the user
-      });
-    }
-  }, [kindeAuth]);
 
   const memoizedHeader = useMemo(() => (
     (!isMobileScreen || !isAuthenticated) && (

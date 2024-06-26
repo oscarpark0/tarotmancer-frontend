@@ -12,8 +12,13 @@ import { useMediaQuery } from 'react-responsive';
 
 
 function App() {
+  const kindeAuth = useKindeAuth();
+  console.log('KindeAuth:', kindeAuth);
+  const isAuthenticated = kindeAuth?.isAuthenticated;
+  const user = kindeAuth?.user;
+  const login = kindeAuth?.login;
+
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { isAuthenticated, user, login } = useKindeAuth();
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
   const [selectedSpread, setSelectedSpread] = useState('celtic');
   const [drawCount, setDrawCount] = useState(0);
@@ -58,8 +63,7 @@ function App() {
 
   useEffect(() => {
     // Handle the authentication callback
-    if (window.location.search.includes('code=')) {
-      // Instead of using handleLoginCallback, use the login function
+    if (window.location.search.includes('code=') && login) {
       login();
     }
   }, [login]);

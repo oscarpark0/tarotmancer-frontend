@@ -33,7 +33,11 @@ function App() {
   useEffect(() => {
     // Handle the authentication callback
     if (window.location.search.includes('code=')) {
-      handleLoginCallback();
+      if (typeof handleLoginCallback === 'function') {
+        handleLoginCallback();
+      } else {
+        console.error('handleLoginCallback is not a function:', handleLoginCallback);
+      }
     }
   }, [handleLoginCallback]);
 

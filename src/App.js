@@ -14,7 +14,7 @@ import { useMediaQuery } from 'react-responsive';
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { isAuthenticated, user } = useKindeAuth();
+  const { isAuthenticated, user, login, handleLoginCallback } = useKindeAuth();
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
   const [selectedSpread, setSelectedSpread] = useState('celtic');
 
@@ -30,6 +30,13 @@ function App() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    // Handle the authentication callback
+    if (window.location.search.includes('code=')) {
+      handleLoginCallback();
+    }
+  }, [handleLoginCallback]);
 
   const memoizedHeader = useMemo(() => (
     (!isMobileScreen || !user) && (
@@ -96,6 +103,7 @@ function App() {
                 <Navigate to={selectedSpread === 'celtic' ? "/celtic-spread" : "/three-card-spread"} />
               ) : memoizedWelcomeMessage
             } />
+            <Route path="/callback" element={<Navigate to="/" />} />
           </Routes>
         </div>
       </Router>

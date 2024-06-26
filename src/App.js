@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import CelticSpread from './CelticSpread';
@@ -24,26 +24,41 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const memoizedHeader = useMemo(() => (
+    (!isMobileScreen || !user) && (
+      <header className="app-header">
+        <div className="header-content">
+          <h1 className="app-title">TarotMancer</h1>
+          <div className="auth-container">
+            {user ? (
+              <>
+                <SubscribeButton />
+                <LogoutButton />
+              </>
+            ) : (
+              <LoginButton />
+            )}
+          </div>
+        </div>
+      </header>
+    )
+  ), [isMobileScreen, user]);
+
+  const memoizedWelcomeMessage = useMemo(() => (
+    <div className="welcome-message">
+      <AnimatedGridPattern className="absolute inset-0 z-0" />
+      <div className="relative z-10">
+        <h2>Welcome to TarotMancer</h2>
+        <p>Please log in to continue.</p>
+        <LoginButton />
+      </div>
+    </div>
+  ), []);
+
   return (
     <Router>
       <div className="App">
-        {(!isMobileScreen || !user) && (
-          <header className="app-header">
-            <div className="header-content">
-              <h1 className="app-title">TarotMancer</h1>
-              <div className="auth-container">
-                {user ? (
-                  <>
-                    <SubscribeButton />
-                    <LogoutButton />
-                  </>
-                ) : (
-                  <LoginButton />
-                )}
-              </div>
-            </div>
-          </header>
-        )}
+        {memoizedHeader}
         <Routes>
           <Route path="/celtic-spread" element={
             isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Navigate to="/" />
@@ -52,15 +67,7 @@ function App() {
             isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Navigate to="/" />
           } />
           <Route path="/" element={
-            isAuthenticated ? <Navigate to="/celtic-spread" /> : 
-            <div className="welcome-message">
-              <AnimatedGridPattern className="absolute inset-0 z-0" />
-              <div className="relative z-10">
-                <h2>Welcome to TarotMancer</h2>
-                <p>Please log in to continue.</p>
-                <LoginButton />
-              </div>
-            </div>
+            isAuthenticated ? <Navigate to="/celtic-spread" /> : memoizedWelcomeMessage
           } />
         </Routes>
       </div>

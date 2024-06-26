@@ -1,16 +1,16 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { MagicContainer } from "./components/magic-card";
 import AnimatedGridPattern from './components/AnimatedGridPattern';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
-import { generateCelticCrossPositions, generateThreeCardPositions } from './utils/cardPositions.js';
+import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Link } from 'react-router-dom';
 
-const CelticSpread = ({ isMobile }) => {
+const CelticSpread = React.memo(({ isMobile }) => {
   const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,12 +23,12 @@ const CelticSpread = ({ isMobile }) => {
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
   const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
-  const [cards, setCards] = useState([]); 
-  const [selectedSpread, setSelectedSpread] = useState('celtic');
+  const [cards, setCards] = useState([]);
 
-  const handleSpreadSelect = useCallback((spread) => {
-    console.log('Spread selected:', spread);
-    setSelectedSpread(spread);
+  const handleSubmitInput = useCallback((value) => {
+    if (formRef.current) {
+      formRef.current.submitInput(value);
+    }
   }, []);
 
   const fetchSpread = useCallback(async () => {
@@ -43,8 +43,7 @@ const CelticSpread = ({ isMobile }) => {
         'Authorization': `Bearer ${token}`
       };
 
-      const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
-      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}/draw_celtic_spreads`, {
         method: 'GET',
         headers: headers,
       });
@@ -56,12 +55,9 @@ const CelticSpread = ({ isMobile }) => {
       }
 
       const data = await response.json();
-      console.log('Data fetched:', data);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
-      const positions = selectedSpread === 'celtic' 
-        ? generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight)
-        : generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);
+      const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
       
       const newPositions = positions.map((pos, index) => ({
         ...data.positions[index],
@@ -96,14 +92,14 @@ const CelticSpread = ({ isMobile }) => {
       }, 1100);
 
     } catch (error) {
-      console.error(`Error drawing ${selectedSpread} spread:`, error);
-      setError(`Failed to draw ${selectedSpread} spread. Please check your authentication and try again.`);
+      console.error('Error drawing celtic spread:', error);
+      setError('Failed to draw celtic spread. Please check your authentication and try again.');
       setCards([]);
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread]);
+  }, [getToken, handleSubmitInput]);
 
   useEffect(() => {
     if (shouldDrawSpread) {
@@ -117,23 +113,58 @@ const CelticSpread = ({ isMobile }) => {
     setTimeout(() => setDealingComplete(true), 500);
   }, []);
 
-  const handleMonitorOutput = useCallback((output) => {
-  }, []);
+  const handleMonitorOutput = useCallback(() => {}, []);
 
-  const drawSpread = () => {
+  const drawSpread = useCallback(() => {
     setDealCards(false);
     setRevealCards(false);
     setDealingComplete(false);
     setShouldDrawNewSpread(true);
     fetchSpread();
-  };
+  }, [fetchSpread]);
 
-  const handleSubmitInput = (value) => {
-    if (formRef.current) {
-      formRef.current.submitInput(value);
-    }
-  };
+  const memoizedRobot = useMemo(() => (
+    <Robot
+      dealCards={dealCards}
+      cardPositions={positions}
+      revealedCards={revealedCards}
+      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+      onExitComplete={handleExitComplete}
+      revealCards={revealCards}
+      shouldDrawNewSpread={shouldDrawNewSpread}
+      onMonitorOutput={handleMonitorOutput}
+      drawSpread={drawSpread}
+      dealingComplete={dealingComplete}
+      mostCommonCards={mostCommonCards}
+      formRef={formRef}
+      onSubmitInput={handleSubmitInput}
+      isMobile={isMobile}
+      cards={cards}
+      selectedSpread="celtic"
+    />
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards]);
 
+  const memoizedFloatingCards = useMemo(() => (
+    <FloatingCards
+      dealCards={dealCards}
+      monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
+      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+      onExitComplete={handleExitComplete}
+      revealCards={revealCards}
+      dealingComplete={dealingComplete}
+      shouldDrawNewSpread={shouldDrawNewSpread}
+      cards={cards}
+    />
+  ), [dealCards, positions, handleExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, cards]);
+
+  const memoizedCardReveal = useMemo(() => (
+    <CardReveal
+      cards={cards}
+      revealCards={revealCards}
+      dealingComplete={dealingComplete}
+      shouldDrawNewSpread={shouldDrawNewSpread}
+    />
+  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread]);
 
   return (
     <>
@@ -146,62 +177,16 @@ const CelticSpread = ({ isMobile }) => {
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
           ) : null}
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
-            <Robot
-              dealCards={dealCards}
-              cardPositions={positions}
-              revealedCards={revealedCards}
-              finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-              onExitComplete={handleExitComplete}
-              revealCards={revealCards}
-              shouldDrawNewSpread={shouldDrawNewSpread}
-              onMonitorOutput={handleMonitorOutput}
-              drawSpread={drawSpread}
-              dealingComplete={dealingComplete}
-              mostCommonCards={mostCommonCards}
-              formRef={formRef}
-              onSubmitInput={handleSubmitInput}
-              isMobile={isMobile}
-              cards={cards}
-              onSpreadSelect={handleSpreadSelect}
-              selectedSpread={selectedSpread}
-            />
+            {memoizedRobot}
           </div>
           {positions.length > 0 && (
             <div className="relative z-10 w-full flex flex-col items-center">
               <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
                 <section className="relative z-10 mb-16 w-full">
                   <ErrorBoundary>
-                    <FloatingCards
-                      dealCards={dealCards}
-                      monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
-                      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-                      onExitComplete={handleExitComplete}
-                      revealCards={revealCards}
-                      dealingComplete={dealingComplete}
-                      shouldDrawNewSpread={shouldDrawNewSpread}
-                      cards={positions.map(pos => ({
-                        name: pos.most_common_card,
-                        img: pos.most_common_card_img,
-                        orientation: pos.orientation,
-                        position_name: pos.position_name,
-                        tooltip: pos.position_name
-                      }))}
-                    />
+                    {memoizedFloatingCards}
                   </ErrorBoundary>
-                  {!isMobile && (
-                    <CardReveal
-                      cards={positions.map(pos => ({
-                        name: pos.most_common_card,
-                        img: pos.most_common_card_img,
-                        orientation: pos.orientation,
-                        position_name: pos.position_name,
-                        tooltip: pos.position_name
-                      }))}
-                      revealCards={revealCards}
-                      dealingComplete={dealingComplete}
-                      shouldDrawNewSpread={shouldDrawNewSpread}
-                    />
-                  )}
+                  {!isMobile && memoizedCardReveal}
                 </section>
               </div>
             </div>
@@ -211,6 +196,6 @@ const CelticSpread = ({ isMobile }) => {
       <Link to="/three-card-spread">Switch to Three Card Spread</Link>
     </>
   );
-};
+});
 
 export default CelticSpread;

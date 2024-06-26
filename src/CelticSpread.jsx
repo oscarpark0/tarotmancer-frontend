@@ -10,7 +10,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Link } from 'react-router-dom';
 
-const CelticSpread = React.memo(({ isMobile }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) => {
   const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -141,8 +141,9 @@ const CelticSpread = React.memo(({ isMobile }) => {
       isMobile={isMobile}
       cards={cards}
       selectedSpread="celtic"
+      onSpreadSelect={onSpreadSelect}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, onSpreadSelect]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

@@ -10,7 +10,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Link } from 'react-router-dom';
 
-const ThreeCardSpread = React.memo(({ isMobile }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) => {
   const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

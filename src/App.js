@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import CelticSpread from './CelticSpread';
@@ -14,6 +14,11 @@ function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const { isAuthenticated, user } = useKindeAuth();
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
+  const [selectedSpread, setSelectedSpread] = useState('celtic');
+
+  const handleSpreadSelect = useCallback((spread) => {
+    setSelectedSpread(spread);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -61,10 +66,10 @@ function App() {
         {memoizedHeader}
         <Routes>
           <Route path="/celtic-spread" element={
-            isAuthenticated ? <CelticSpread isMobile={isMobile} /> : <Navigate to="/" />
+            isAuthenticated ? <CelticSpread isMobile={isMobile} onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} /> : <Navigate to="/" />
           } />
           <Route path="/three-card-spread" element={
-            isAuthenticated ? <ThreeCardSpread isMobile={isMobile} /> : <Navigate to="/" />
+            isAuthenticated ? <ThreeCardSpread isMobile={isMobile} onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} /> : <Navigate to="/" />
           } />
           <Route path="/" element={
             isAuthenticated ? <Navigate to="/celtic-spread" /> : memoizedWelcomeMessage

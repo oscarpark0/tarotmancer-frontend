@@ -10,7 +10,7 @@ import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-import { useKindeAuth   } from "@kinde-oss/kinde-auth-react";
+
 
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);

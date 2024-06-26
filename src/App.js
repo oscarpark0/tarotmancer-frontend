@@ -66,13 +66,27 @@ function App() {
         {memoizedHeader}
         <Routes>
           <Route path="/celtic-spread" element={
-            isAuthenticated ? <CelticSpread isMobile={isMobile} onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} /> : <Navigate to="/" />
+            isAuthenticated ? (
+              <CelticSpread 
+                isMobile={isMobile} 
+                onSpreadSelect={handleSpreadSelect} 
+                selectedSpread={selectedSpread} 
+              />
+            ) : <Navigate to="/" />
           } />
           <Route path="/three-card-spread" element={
-            isAuthenticated ? <ThreeCardSpread isMobile={isMobile} onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} /> : <Navigate to="/" />
+            isAuthenticated ? (
+              <ThreeCardSpread 
+                isMobile={isMobile} 
+                onSpreadSelect={handleSpreadSelect} 
+                selectedSpread={selectedSpread} 
+              />
+            ) : <Navigate to="/" />
           } />
           <Route path="/" element={
-            isAuthenticated ? <Navigate to="/celtic-spread" /> : memoizedWelcomeMessage
+            isAuthenticated ? (
+              <Navigate to={selectedSpread === 'celtic' ? "/celtic-spread" : "/three-card-spread"} />
+            ) : memoizedWelcomeMessage
           } />
         </Routes>
       </div>

@@ -140,10 +140,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       onSubmitInput={handleSubmitInput}
       isMobile={isMobile}
       cards={cards}
-      selectedSpread="celtic"
+      selectedSpread={selectedSpread}
       onSpreadSelect={onSpreadSelect}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, onSpreadSelect]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

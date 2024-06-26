@@ -136,10 +136,11 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }
       formRef={formRef}
       onSubmitInput={handleSubmitInput}
       cards={cards}
-      selectedSpread="threeCard"
+      selectedSpread={selectedSpread}
+      onSpreadSelect={onSpreadSelect}
       isMobile={isMobile}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, dealingComplete, mostCommonCards, handleSubmitInput, cards, isMobile]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, dealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

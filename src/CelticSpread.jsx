@@ -1,5 +1,4 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import { MagicContainer } from "./components/magic-card";
 import AnimatedGridPattern from './components/AnimatedGridPattern';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
@@ -169,7 +168,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
 
   return (
     <>
-      <MagicContainer className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
+      <div className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
         <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
@@ -193,7 +192,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
             </div>
           )}
         </div>
-      </MagicContainer>
+      </div>
       <Link to="/three-card-spread">Switch to Three Card Spread</Link>
     </>
   );

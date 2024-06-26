@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -9,6 +9,8 @@ declare global {
 }
 
 const SubscribeButton: React.FC = () => {
+  const [isWidgetLoaded, setIsWidgetLoaded] = useState(false);
+
   useEffect(() => {
     // Load Kinde subscribe widget scripts
     const link = document.createElement('link');
@@ -19,6 +21,13 @@ const SubscribeButton: React.FC = () => {
     const script = document.createElement('script');
     script.src = 'https://widgets.kinde.com/v1/js/subscribe.js';
     script.async = true;
+    script.onload = () => {
+      setIsWidgetLoaded(true);
+      console.log('Kinde Widget script loaded');
+    };
+    script.onerror = (error) => {
+      console.error('Error loading Kinde Widget script:', error);
+    };
     document.body.appendChild(script);
 
     return () => {
@@ -28,13 +37,16 @@ const SubscribeButton: React.FC = () => {
   }, []);
 
   const openSubscribeModal = () => {
-    if (window.KindeWidgets) {
+    if (window.KindeWidgets && isWidgetLoaded) {
+      console.log('Attempting to open subscribe modal');
       window.KindeWidgets.initSubscribeWidget();
+    } else {
+      console.error('Kinde Widgets not loaded yet');
     }
   };
 
   return (
-    <button onClick={openSubscribeModal} className="subscribe-button">
+    <button onClick={openSubscribeModal} className="subscribe-button" disabled={!isWidgetLoaded}>
       Subscribe
     </button>
   );

@@ -6,7 +6,6 @@ import reportWebVitals from './reportWebVitals';
 import { SpeedInsights } from "@vercel/speed-insights/react"; 
 import { Analytics } from '@vercel/analytics/react';
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
-import FeedbackWidget from './components/FeedbackWidget';
 
 const root = createRoot(document.getElementById('root'));
 root.render(
@@ -23,7 +22,6 @@ root.render(
     <App />
     <Analytics />
   </KindeProvider>
-  <FeedbackWidget />
   </>
 );
 

@@ -5,7 +5,7 @@ import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
-import SubscribeButton from './components/SubscribeButton';
+import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';

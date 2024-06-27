@@ -21,16 +21,21 @@
     transform: none;
     margin-top: 0;
     z-index: 2000;
-    height: 70vh;
+    height: 60vh; /* Reduced height */
     width: 100vw;
     position: fixed;
-    top: 15vh;
+    top: 20vh; /* Moved up */
     left: 0;
   }
 
   .card {
-    width: 60px;
-    height: 100px;
+    width: 50px; /* Reduced width */
+    height: 85px; /* Reduced height */
+  }
+
+  .revealed-card {
+    width: 50px; /* Reduced width */
+    height: 85px; /* Reduced height */
   }
 }
 

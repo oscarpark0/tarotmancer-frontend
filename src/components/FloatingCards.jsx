@@ -50,8 +50,8 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               damping: 320,
             }}
             style={{
-              width: '3vw',
-              height: '10vh',
+              width: 'clamp(40px, 8vw, 80px)',
+              height: 'clamp(60px, 12vw, 120px)',
               transform: 'translate(-50%, -50%)',
             }}
             data-tooltip={position.tooltip}

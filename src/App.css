@@ -57,15 +57,26 @@
     position: relative;
     height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
   }
 
-  .welcome-message h2 {
-    font-size: 2.5rem;
+  .welcome-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .animation-container {
+    height: 5rem;
     margin-bottom: 1rem;
+  }
+
+  .welcome-message h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    line-height: 5rem;
   }
 
   .welcome-message p {

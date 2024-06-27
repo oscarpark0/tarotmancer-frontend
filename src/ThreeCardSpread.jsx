@@ -7,7 +7,6 @@ import { API_BASE_URL } from './utils/config';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { Link } from 'react-router-dom';
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime }) => {
   const { getToken } = useKindeAuth();
@@ -222,7 +221,6 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
                 </div>
               </div>
             )}
-            <Link to="/celtic-spread">Switch to Celtic Spread</Link>
           </div>
         </div>
       </div>

@@ -43,24 +43,6 @@ const ShimmerButton = React.forwardRef(
         </div>
         {children}
 
-        {/* Highlight */}
-        <div
-          className={cn(
-            "insert-0 relative h-full w-full",
-
-            "rounded-0xl px-4 py-1.5 text-sm font-medium shadow-[inset_0_-2px_1px_#4b0082]",
-
-            // transition
-            "transform-gpu transition-all duration-300 ease-in-out",
-
-            // on hover
-            "group-hover:shadow-[inset_0_-6px_1px_#9932cc]",
-
-            // on click
-            "group-active:shadow-[inset_0_-10px_10px_#9932cc]",
-          )}
-        />
-
         {/* backdrop */}
         <div
           className={cn(

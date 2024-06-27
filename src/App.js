@@ -7,6 +7,7 @@ import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern';
+import TypingAnimation from './components/typing-animation.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 
@@ -39,8 +40,8 @@ function App() {
     const storedCount = localStorage.getItem('drawCount');
     const storedResetTime = localStorage.getItem('lastResetTime');
     if (storedCount && storedResetTime) {
-      setDrawCount(parseInt(storedCount, 100));
-      setLastResetTime(parseInt(storedResetTime, 100));
+      setDrawCount(parseInt(storedCount, 10));
+      setLastResetTime(parseInt(storedResetTime, 10));
     }
   }, []);
 
@@ -91,9 +92,10 @@ function App() {
   const memoizedWelcomeMessage = useMemo(() => (
     <div className="welcome-message">
       <AnimatedGridPattern className="absolute inset-0 z-0" />
-      <div className="relative z-10">
-        <h2>Welcome to TarotMancer</h2>
-        <p>Please log in to continue.</p>
+      <div className="relative z-10 welcome-content">
+        <div className="animation-container">
+          <TypingAnimation duration={100}>TarotMancer</TypingAnimation>
+        </div>
         <LoginButton />
       </div>
     </div>

@@ -136,7 +136,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
         <ShimmerButton onClick={() => {
           console.log('Draw button clicked, calling fetchSpread');
           fetchSpread();
-        }} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 10}>
+        }} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 100}>
           {isLoading ? 'Processing...' : drawCount >= 10 ? 'Limit Reached' : 'Draw'}
         </ShimmerButton>
       </div>

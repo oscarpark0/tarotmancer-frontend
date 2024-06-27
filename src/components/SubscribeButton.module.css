@@ -1,0 +1,68 @@
+.subscribeButton {
+    /* Style your subscribe button */
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 52px;
+    cursor: pointer;
+  }
+  
+  .modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background-color: rgba(255, 255, 255, 0);
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .kindeForm {
+    /* Override Kinde's default styles to ensure visibility */
+    color: #333 !important;
+  }
+  
+  .kindeForm input,
+  .kindeForm button {
+    color: #333 !important;
+    background-color: #fff !important;
+    border: 1px solid #ccc !important;
+  }
+  
+  .kindeForm button[type="submit"] {
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+  }
+  
+  .successMessage {
+    color: #4CAF50;
+    font-size: 18px;
+    text-align: center;
+    padding: 20px;
+  }

@@ -3,12 +3,16 @@ import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
+import { v4 as uuidv4 } from 'uuid';
 
-const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse }, ref) => {
+const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
   const [terminalOutput, setTerminalOutput] = useState('');
+
+  const [responses, setResponses] = useState([]);
+  const [activeTab, setActiveTab] = useState(null);
 
   const handleInputChange = useCallback((e) => {
     setInput(e.target.value);
@@ -18,6 +22,34 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
     setTerminalOutput(output);
     onMonitorOutput(output);
   }, [onMonitorOutput]);
+
+  const handleNewResponse = useCallback((content) => {
+    setResponses(prevResponses => {
+      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
+        // Create a new response
+        const newResponse = { id: uuidv4(), content, complete: false };
+        setActiveTab(newResponse.id);
+        return [...prevResponses, newResponse];
+      } else {
+        // Update the last response
+        const updatedResponses = [...prevResponses];
+        const lastResponse = updatedResponses[updatedResponses.length - 1];
+        lastResponse.content = content;
+        return updatedResponses;
+      }
+    });
+  }, []);
+
+  const completeCurrentResponse = useCallback(() => {
+    setResponses(prevResponses => {
+      if (prevResponses.length > 0) {
+        const updatedResponses = [...prevResponses];
+        updatedResponses[updatedResponses.length - 1].complete = true;
+        return updatedResponses;
+      }
+      return prevResponses;
+    });
+  }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
@@ -67,7 +99,7 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
             if (data.event_type === 'text-generation') {
               responseContent += data.text;
               handleMonitorOutput(responseContent);
-              onNewResponse(responseContent);
+              handleNewResponse(responseContent); // Use handleNewResponse here
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
@@ -80,15 +112,16 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
       const errorMessage = 'An error occurred while processing your request.';
       handleMonitorOutput(errorMessage);
       setTerminalOutput(errorMessage);
-      onNewResponse(errorMessage);
+      handleNewResponse(errorMessage); // Use handleNewResponse here
     } finally {
       setIsLoading(false);
       setTerminalOutput('Processing complete.');
       window.dispatchEvent(new CustomEvent('streamingStateChange', { detail: false }));
+      completeCurrentResponse(); // Use completeCurrentResponse here
     }
 
     setInput('');
-  }, [handleMonitorOutput, onNewResponse]);
+  }, [handleMonitorOutput, handleNewResponse, completeCurrentResponse]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete) {
@@ -114,6 +147,25 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
           <div className="terminal-output" ref={terminalOutputRef}>
             {isLoading ? 'Processing...' : terminalOutput}
           </div>
+          <div className="tab-container">
+            {responses.map(response => (
+              <button
+                key={response.id}
+                className={`tab ${activeTab === response.id ? 'active' : ''}`}
+                onClick={() => setActiveTab(response.id)}
+              >
+                Response {responses.indexOf(response) + 1}
+              </button>
+            ))}
+          </div>
+          {responses.map(response => (
+            <div
+              key={response.id}
+              className={`tab-content ${activeTab === response.id ? 'active' : ''}`}
+            >
+              <div className="response-output">{response.content}</div>
+            </div>
+          ))}
         </div>
         <div className="screen-overlay"></div>
         <div className="screen-scanline"></div>

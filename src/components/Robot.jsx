@@ -6,7 +6,7 @@ import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
 import CardReveal from './CardReveal.jsx';
-import { v4 as uuidv4 } from 'uuid';
+
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -54,14 +54,14 @@ const Robot = memo(({
   cards = [],
   isMobile,
   drawCount,
-  fetchSpread
+  fetchSpread,
+  onNewResponse,
+  onResponseComplete,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
   const screenContentRef = useRef(null);
   const commandTerminalRef = useRef(null);
-  const [responses, setResponses] = useState([]);
-  const [activeTab, setActiveTab] = useState(null);
 
   useEffect(() => {
     if (dealCards) {
@@ -118,34 +118,6 @@ const Robot = memo(({
 
   console.log('Current drawCount in Robot:', drawCount);
 
-  const handleNewResponse = useCallback((content) => {
-    setResponses(prevResponses => {
-      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
-        // Create a new response
-        const newResponse = { id: uuidv4(), content, complete: false };
-        setActiveTab(newResponse.id);
-        return [...prevResponses, newResponse];
-      } else {
-        // Update the last response
-        const updatedResponses = [...prevResponses];
-        const lastResponse = updatedResponses[updatedResponses.length - 1];
-        lastResponse.content = content;
-        return updatedResponses;
-      }
-    });
-  }, []);
-
-  const completeCurrentResponse = useCallback(() => {
-    setResponses(prevResponses => {
-      if (prevResponses.length > 0) {
-        const updatedResponses = [...prevResponses];
-        updatedResponses[updatedResponses.length - 1].complete = true;
-        return updatedResponses;
-      }
-      return prevResponses;
-    });
-  }, []);
-
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''}`}
@@ -164,25 +136,6 @@ const Robot = memo(({
         <div className="robot-head">
           <div className="crt-screen">
             <div className="screen-content" ref={screenContentRef}>
-              <div className="tab-container">
-                {responses.map(response => (
-                  <button
-                    key={response.id}
-                    className={`tab ${activeTab === response.id ? 'active' : ''}`}
-                    onClick={() => setActiveTab(response.id)}
-                  >
-                    Response {responses.indexOf(response) + 1}
-                  </button>
-                ))}
-              </div>
-              {responses.map(response => (
-                <div
-                  key={response.id}
-                  className={`tab-content ${activeTab === response.id ? 'active' : ''}`}
-                >
-                  <div className="monitor-output">{response.content}</div>
-                </div>
-              ))}
               <FloatingCards
                 dealCards={dealCards}
                 cardPositions={cardPositions}
@@ -223,8 +176,8 @@ const Robot = memo(({
         style={isMobile ? { width: '95vw', marginTop: '10px' } : {}}
         drawCount={drawCount}
         fetchSpread={fetchSpread}
-        onNewResponse={handleNewResponse}
-        onResponseComplete={completeCurrentResponse}
+        onNewResponse={onNewResponse}
+        onResponseComplete={onResponseComplete}
       />
       <CardReveal
         cards={cards}
@@ -264,6 +217,8 @@ Robot.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   drawCount: PropTypes.number.isRequired,
   fetchSpread: PropTypes.func.isRequired,
+  onNewResponse: PropTypes.func.isRequired,
+  onResponseComplete: PropTypes.func.isRequired,
 };
 
 export default Robot;

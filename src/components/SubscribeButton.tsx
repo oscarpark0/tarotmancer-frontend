@@ -10,6 +10,7 @@ declare global {
 
 const SubscribeButton: React.FC = () => {
   const [isWidgetLoaded, setIsWidgetLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     // Load Kinde subscribe widget scripts
@@ -27,6 +28,7 @@ const SubscribeButton: React.FC = () => {
     };
     script.onerror = (error) => {
       console.error('Error loading Kinde Widget script:', error);
+      setLoadError('Failed to load Kinde Widget');
     };
     document.body.appendChild(script);
 
@@ -42,12 +44,17 @@ const SubscribeButton: React.FC = () => {
       window.KindeWidgets.initSubscribeWidget();
     } else {
       console.error('Kinde Widgets not loaded yet');
+      setLoadError('Kinde Widgets not loaded yet');
     }
   };
 
+  if (loadError) {
+    return <div>Error: {loadError}</div>;
+  }
+
   return (
     <button onClick={openSubscribeModal} className="subscribe-button" disabled={!isWidgetLoaded}>
-      Subscribe
+      {isWidgetLoaded ? 'Subscribe' : 'Loading...'}
     </button>
   );
 };

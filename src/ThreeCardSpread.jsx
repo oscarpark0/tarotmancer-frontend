@@ -168,12 +168,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       drawCount={drawCount}
       fetchSpread={fetchSpread}
       onNewResponse={(response) => {
-        // Handle the new response here if needed
-        console.log("New response received:", response);
       }}
       onResponseComplete={() => {
-        // Handle response completion if needed
-        console.log("Response complete");
       }}
     />
   ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, dealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread]);
@@ -203,32 +199,34 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile]);
 
   return (
-    <div className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
-      <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
-      <div className="relative w-full h-screen overflow-hidden">
-        {isLoading ? (
-          <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
-        ) : error ? (
-          <p className="text-4xl text-red-600 text-center z-100">{error}</p>
-        ) : null}
-        <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
-          {memoizedRobot}
-          {positions.length > 0 && (
-            <div className="relative z-10 w-full flex flex-col items-center">
-              <div style={{ position: 'relative', zIndex: 1, marginTop: isMobile ? '10px' : '30px' }}>
-                <section className="relative z-10 mb-16 w-full">
-                  <ErrorBoundary>
-                    {memoizedFloatingCards}
-                  </ErrorBoundary>
-                  {memoizedCardReveal}
-                </section>
+    <ErrorBoundary>
+      <div className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
+        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
+        <div className="relative w-full h-screen overflow-hidden">
+          {isLoading ? (
+            <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
+          ) : error ? (
+            <p className="text-4xl text-red-600 text-center z-100">{error}</p>
+          ) : null}
+          <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
+            {memoizedRobot}
+            {positions.length > 0 && (
+              <div className="relative z-10 w-full flex flex-col items-center">
+                <div style={{ position: 'relative', zIndex: 1, marginTop: isMobile ? '10px' : '30px' }}>
+                  <section className="relative z-10 mb-16 w-full">
+                    <ErrorBoundary>
+                      {memoizedFloatingCards}
+                    </ErrorBoundary>
+                    {memoizedCardReveal}
+                  </section>
+                </div>
               </div>
-            </div>
-          )}
-          <Link to="/celtic-spread">Switch to Celtic Spread</Link>
+            )}
+            <Link to="/celtic-spread">Switch to Celtic Spread</Link>
+          </div>
         </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 });
 

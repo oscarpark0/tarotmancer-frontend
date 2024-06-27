@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback, memo } from 'react';
+import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
 import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 
-const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -136,8 +136,8 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
         <ShimmerButton onClick={() => {
           console.log('Draw button clicked, calling fetchSpread');
           fetchSpread();
-        }} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 100}>
-          {isLoading ? 'Processing...' : drawCount >= 100 ? 'Limit Reached' : 'Draw'}
+        }} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 10}>
+          {isLoading ? 'Processing...' : drawCount >= 10 ? 'Limit Reached' : 'Draw'}
         </ShimmerButton>
       </div>
     </div>

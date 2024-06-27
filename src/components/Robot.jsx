@@ -73,12 +73,10 @@ const Robot = memo(({
   const handleNewResponse = useCallback((content) => {
     setResponses(prevResponses => {
       if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
-        // Create a new response
         const newResponse = { id: uuidv4(), content, complete: false };
         setActiveTab(newResponse.id);
         return [...prevResponses, newResponse];
       } else {
-        // Update the last response
         const updatedResponses = [...prevResponses];
         const lastResponse = updatedResponses[updatedResponses.length - 1];
         lastResponse.content = content;
@@ -153,13 +151,8 @@ const Robot = memo(({
   }, [dealingComplete, mostCommonCards, onSubmitInput]);
 
   useEffect(() => {
-    // Update the robot's behavior based on the selected spread
-    // ...
   }, [selectedSpread]);
 
-  console.log('Robot rendering:', { onSpreadSelect, selectedSpread });
-
-  console.log('Current drawCount in Robot:', drawCount);
 
   return (
     <motion.div
@@ -203,7 +196,7 @@ const Robot = memo(({
         </div>
       </div>
       <div className="draw-count">
-        Remaining draws today: {isNaN(drawCount) ? 100 : Math.max(0, 100 - drawCount)}
+        Remaining draws today: {isNaN(drawCount) ? 10 : Math.max(0, 10 - drawCount)}
       </div>
       <CommandTerminal
         onMonitorOutput={handleMonitorOutput}

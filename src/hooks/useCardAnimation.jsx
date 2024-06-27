@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const useCardAnimation = (numCards, dealCards, revealCards) => {
   const [revealedCards, setRevealedCards] = useState(0);
@@ -17,8 +17,8 @@ const useCardAnimation = (numCards, dealCards, revealCards) => {
     console.log('revealCards in useCardAnimation:', revealCards);
     if (revealCards) {
       const interval = setInterval(() => {
-        setRevealedCards((prevRevealedCards) => prevRevealedCards + 1);
-        setFloatingCardsRemoved((prevFloatingCardsRemoved) => prevFloatingCardsRemoved + 1);
+        setRevealedCards(prev => prev + 1);
+        setFloatingCardsRemoved(prev => prev + 1);
       }, 200);
 
       return () => clearInterval(interval);
@@ -33,11 +33,11 @@ const useCardAnimation = (numCards, dealCards, revealCards) => {
     }
   }, [shouldDrawNewSpread]);
 
-  const resetAnimation = () => {
+  const resetAnimation = useCallback(() => {
     setRevealedCards(0);
     setFloatingCardsRemoved(0);
     setIsDealing(false);
-  };
+  }, []);
 
   return { revealedCards, floatingCardsRemoved, isDealing, resetAnimation, setShouldDrawNewSpread };
 };

@@ -172,12 +172,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       drawCount={drawCount}
       fetchSpread={fetchSpread}
       onNewResponse={(response) => {
-        // Handle the new response here if needed
-        console.log("New response received:", response);
       }}
       onResponseComplete={() => {
-        // Handle response completion if needed
-        console.log("Response complete");
       }}
     />
   ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, drawCount, fetchSpread]);
@@ -205,7 +201,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
   ), [cards, revealCards, dealingComplete, shouldDrawNewSpread]);
 
   return (
-    <>
+    <ErrorBoundary>
       <div className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
         <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
         <div className="relative w-full h-screen overflow-hidden">
@@ -232,7 +228,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
         </div>
       </div>
       <Link to="/three-card-spread">Switch to Three Card Spread</Link>
-    </>
+    </ErrorBoundary>
   );
 });
 

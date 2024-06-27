@@ -14,7 +14,8 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     const isMobile = containerWidth <= 768;
     
     const baseScale = isMobile ? 0.015 : 20; // Reduced scale for mobile
-    const baseLeft = isMobile ? '35%' : '40%';
+    // Adjust baseLeft to move cards to the left
+    const baseLeft = isMobile ? '50%' : '40%'; // Changed from '55%' to '40%'
     const spacing = isMobile ? '20vw' : '10vw';
     const topOffset = isMobile ? '40%' : '30%'; // Moved up for Three Card Spread
     const verticalSpacing = isMobile ? '5vh' : '11vh'; // Reduced vertical spacing for Celtic Cross

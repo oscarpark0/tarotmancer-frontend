@@ -6,6 +6,7 @@ import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
 import CardReveal from './CardReveal.jsx';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const adjustFontSize = () => {
@@ -55,13 +56,41 @@ const Robot = memo(({
   isMobile,
   drawCount,
   fetchSpread,
-  onNewResponse,
-  onResponseComplete,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
   const screenContentRef = useRef(null);
   const commandTerminalRef = useRef(null);
+  const [responses, setResponses] = useState([]);
+  const [activeTab, setActiveTab] = useState(null);
+
+  const handleNewResponse = useCallback((content) => {
+    setResponses(prevResponses => {
+      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
+        // Create a new response
+        const newResponse = { id: uuidv4(), content, complete: false };
+        setActiveTab(newResponse.id);
+        return [...prevResponses, newResponse];
+      } else {
+        // Update the last response
+        const updatedResponses = [...prevResponses];
+        const lastResponse = updatedResponses[updatedResponses.length - 1];
+        lastResponse.content = content;
+        return updatedResponses;
+      }
+    });
+  }, []);
+
+  const completeCurrentResponse = useCallback(() => {
+    setResponses(prevResponses => {
+      if (prevResponses.length > 0) {
+        const updatedResponses = [...prevResponses];
+        updatedResponses[updatedResponses.length - 1].complete = true;
+        return updatedResponses;
+      }
+      return prevResponses;
+    });
+  }, []);
 
   useEffect(() => {
     if (dealCards) {
@@ -148,6 +177,9 @@ const Robot = memo(({
                 cards={cards}
                 isMobile={isMobile}
               />
+              <div className="monitor-output">
+                {responses.length > 0 && responses[responses.length - 1].content}
+              </div>
             </div>
             <div className="screen-overlay"></div>
             <div className="screen-glass"></div>
@@ -176,8 +208,11 @@ const Robot = memo(({
         style={isMobile ? { width: '95vw', marginTop: '10px' } : {}}
         drawCount={drawCount}
         fetchSpread={fetchSpread}
-        onNewResponse={onNewResponse}
-        onResponseComplete={onResponseComplete}
+        responses={responses}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onNewResponse={handleNewResponse}
+        onResponseComplete={completeCurrentResponse}
       />
       <CardReveal
         cards={cards}
@@ -217,8 +252,6 @@ Robot.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   drawCount: PropTypes.number.isRequired,
   fetchSpread: PropTypes.func.isRequired,
-  onNewResponse: PropTypes.func.isRequired,
-  onResponseComplete: PropTypes.func.isRequired,
 };
 
 export default Robot;

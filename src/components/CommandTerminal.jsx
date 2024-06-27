@@ -5,7 +5,7 @@ import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import { v4 as uuidv4 } from 'uuid';
 
-const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
+const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -158,14 +158,6 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
               </button>
             ))}
           </div>
-          {responses.map(response => (
-            <div
-              key={response.id}
-              className={`tab-content ${activeTab === response.id ? 'active' : ''}`}
-            >
-              <div className="response-output">{response.content}</div>
-            </div>
-          ))}
         </div>
         <div className="screen-overlay"></div>
         <div className="screen-scanline"></div>

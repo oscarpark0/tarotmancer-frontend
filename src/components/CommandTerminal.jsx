@@ -3,16 +3,14 @@ import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
-import { v4 as uuidv4 } from 'uuid';
 
-const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread }, ref) => {
+const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
   const [terminalOutput, setTerminalOutput] = useState('');
 
-  const [responses, setResponses] = useState([]);
-  const [activeTab, setActiveTab] = useState(null);
+
 
   const handleInputChange = useCallback((e) => {
     setInput(e.target.value);
@@ -22,34 +20,6 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
     setTerminalOutput(output);
     onMonitorOutput(output);
   }, [onMonitorOutput]);
-
-  const handleNewResponse = useCallback((content) => {
-    setResponses(prevResponses => {
-      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
-        // Create a new response
-        const newResponse = { id: uuidv4(), content, complete: false };
-        setActiveTab(newResponse.id);
-        return [...prevResponses, newResponse];
-      } else {
-        // Update the last response
-        const updatedResponses = [...prevResponses];
-        const lastResponse = updatedResponses[updatedResponses.length - 1];
-        lastResponse.content = content;
-        return updatedResponses;
-      }
-    });
-  }, []);
-
-  const completeCurrentResponse = useCallback(() => {
-    setResponses(prevResponses => {
-      if (prevResponses.length > 0) {
-        const updatedResponses = [...prevResponses];
-        updatedResponses[updatedResponses.length - 1].complete = true;
-        return updatedResponses;
-      }
-      return prevResponses;
-    });
-  }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     setIsLoading(true);
@@ -99,7 +69,7 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
             if (data.event_type === 'text-generation') {
               responseContent += data.text;
               handleMonitorOutput(responseContent);
-              handleNewResponse(responseContent); // Use handleNewResponse here
+              onNewResponse(responseContent);
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
@@ -112,16 +82,16 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
       const errorMessage = 'An error occurred while processing your request.';
       handleMonitorOutput(errorMessage);
       setTerminalOutput(errorMessage);
-      handleNewResponse(errorMessage); // Use handleNewResponse here
+      onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
       setTerminalOutput('Processing complete.');
       window.dispatchEvent(new CustomEvent('streamingStateChange', { detail: false }));
-      completeCurrentResponse(); // Use completeCurrentResponse here
+      onResponseComplete();
     }
 
     setInput('');
-  }, [handleMonitorOutput, handleNewResponse, completeCurrentResponse]);
+  }, [handleMonitorOutput, onNewResponse, onResponseComplete]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete) {
@@ -130,7 +100,6 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
   }, [mostCommonCards, dealingComplete, handleSubmit]);
 
   useEffect(() => {
-    // Adjust the max-height of the terminal output based on the content height
     const terminalOutput = terminalOutputRef.current;
     if (terminalOutput) {
       const contentHeight = terminalOutput.scrollHeight;
@@ -138,25 +107,12 @@ const CommandTerminal = memo(({ onMonitorOutput, drawSpread, mostCommonCards, de
     }
   }, [terminalOutput]);
 
-  console.log('CommandTerminal rendering:', { selectedSpread, onSpreadSelect }); 
-
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
         <div className="terminal-content">
           <div className="terminal-output" ref={terminalOutputRef}>
             {isLoading ? 'Processing...' : terminalOutput}
-          </div>
-          <div className="tab-container">
-            {responses.map(response => (
-              <button
-                key={response.id}
-                className={`tab ${activeTab === response.id ? 'active' : ''}`}
-                onClick={() => setActiveTab(response.id)}
-              >
-                Response {responses.indexOf(response) + 1}
-              </button>
-            ))}
           </div>
         </div>
         <div className="screen-overlay"></div>

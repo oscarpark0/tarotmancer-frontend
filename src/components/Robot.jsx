@@ -56,6 +56,8 @@ const Robot = memo(({
   isMobile,
   drawCount,
   fetchSpread,
+  onNewResponse,
+  onResponseComplete,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -63,6 +65,10 @@ const Robot = memo(({
   const commandTerminalRef = useRef(null);
   const [responses, setResponses] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
+
+  const handleResponseComplete = useCallback(() => {
+    onResponseComplete();
+  }, [onResponseComplete]);
 
   const handleNewResponse = useCallback((content) => {
     setResponses(prevResponses => {
@@ -79,7 +85,9 @@ const Robot = memo(({
         return updatedResponses;
       }
     });
-  }, []);
+    setMonitorOutput(content);
+    onNewResponse(content);
+  }, [onNewResponse]);
 
   const completeCurrentResponse = useCallback(() => {
     setResponses(prevResponses => {
@@ -91,6 +99,12 @@ const Robot = memo(({
       return prevResponses;
     });
   }, []);
+
+  useEffect(() => {
+    if (dealingComplete) {
+      completeCurrentResponse();
+    }
+  }, [dealingComplete, completeCurrentResponse]);
 
   useEffect(() => {
     if (dealCards) {
@@ -178,7 +192,7 @@ const Robot = memo(({
                 isMobile={isMobile}
               />
               <div className="monitor-output">
-                {responses.length > 0 && responses[responses.length - 1].content}
+                {monitorOutput}
               </div>
             </div>
             <div className="screen-overlay"></div>
@@ -212,7 +226,7 @@ const Robot = memo(({
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onNewResponse={handleNewResponse}
-        onResponseComplete={completeCurrentResponse}
+        onResponseComplete={handleResponseComplete}
       />
       <CardReveal
         cards={cards}
@@ -252,6 +266,8 @@ Robot.propTypes = {
   isMobile: PropTypes.bool.isRequired,
   drawCount: PropTypes.number.isRequired,
   fetchSpread: PropTypes.func.isRequired,
+  onNewResponse: PropTypes.func.isRequired,
+  onResponseComplete: PropTypes.func.isRequired,
 };
 
 export default Robot;

@@ -8,7 +8,7 @@ import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, guestId, canAccessCohere, setCanAccessCohere }) => {
   const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,7 +30,12 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   }, []);
 
   const fetchSpread = useCallback(async () => {
-    if (drawCount >= 100) {
+    if (!canAccessCohere) {
+      setError('You do not have access to this feature.');
+      return;
+    }
+
+    if (drawCount >= (guestId ? 1 : 100)) {
       setError('You have reached the maximum number of draws for today. Please try again tomorrow.');
       return;
     }
@@ -43,7 +48,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'User-ID': guestId || 'anonymous'
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
@@ -121,7 +127,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, handleSubmitInput, drawCount, setDrawCount, setLastResetTime]);
+  }, [getToken, selectedSpread, handleSubmitInput, drawCount, setDrawCount, setLastResetTime, guestId, canAccessCohere]);
 
   useEffect(() => {
     if (shouldDrawSpread) {
@@ -206,6 +212,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
             <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
           ) : error ? (
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
+          ) : !canAccessCohere ? (
+            <p className="text-4xl text-red-600 text-center z-100">You do not have access to this feature.</p>
           ) : null}
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             {memoizedRobot}

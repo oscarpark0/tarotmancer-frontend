@@ -9,7 +9,7 @@ const LoginButton = () => {
       login();
     } else {
       console.error('Login function is not available');
-      // Consider showing an error message to the user
+      alert('Login is currently unavailable. Please try again later.');
     }
   };
 

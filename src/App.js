@@ -10,11 +10,21 @@ import AnimatedGridPattern from './components/AnimatedGridPattern';
 import TypingAnimation from './components/typing-animation.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-
+import GuestLoginButton from './components/GuestLoginButton.tsx';
 
 function App() {
   const kindeAuth = useKindeAuth();
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
+  const { getFlag } = useKindeAuth();
+  const [canAccessCohere, setCanAccessCohere] = useState(false);
+
+  useEffect(() => {
+    const checkCohereAccess = async () => {
+      const flag = await getFlag('cohere-api-access');
+      setCanAccessCohere(flag);
+    };
+    checkCohereAccess();
+  }, [getFlag]);
 
   useEffect(() => {
     // Handle the authentication callback
@@ -31,17 +41,33 @@ function App() {
   const [selectedSpread, setSelectedSpread] = useState('celtic');
   const [drawCount, setDrawCount] = useState(0);
   const [lastResetTime, setLastResetTime] = useState(Date.now());
+  const [guestId, setGuestId] = useState(localStorage.getItem('guestId'));
 
   const handleSpreadSelect = useCallback((spread) => {
     setSelectedSpread(spread);
   }, []);
 
   useEffect(() => {
-    const storedCount = localStorage.getItem('drawCount');
-    const storedResetTime = localStorage.getItem('lastResetTime');
-    if (storedCount && storedResetTime) {
-      setDrawCount(parseInt(storedCount, 10));
-      setLastResetTime(parseInt(storedResetTime, 10));
+    // Check for previous session data
+    const prevDrawCount = sessionStorage.getItem('prevDrawCount');
+    const prevLastResetTime = sessionStorage.getItem('prevLastResetTime');
+
+    if (prevDrawCount && prevLastResetTime) {
+      // Use the previous session data
+      setDrawCount(parseInt(prevDrawCount, 10));
+      setLastResetTime(parseInt(prevLastResetTime, 10));
+
+      // Clear the session storage
+      sessionStorage.removeItem('prevDrawCount');
+      sessionStorage.removeItem('prevLastResetTime');
+    } else {
+      // If no previous session data, check localStorage
+      const storedCount = localStorage.getItem('drawCount');
+      const storedResetTime = localStorage.getItem('lastResetTime');
+      if (storedCount && storedResetTime) {
+        setDrawCount(parseInt(storedCount, 10));
+        setLastResetTime(parseInt(storedResetTime, 10));
+      }
     }
   }, []);
 
@@ -69,6 +95,27 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleGuestLogin = useCallback(() => {
+    const newGuestId = `guest_${Date.now()}`;
+    setGuestId(newGuestId);
+    localStorage.setItem('guestId', newGuestId);
+
+    // Check for previous session data
+    const prevDrawCount = sessionStorage.getItem('prevDrawCount');
+    const prevLastResetTime = sessionStorage.getItem('prevLastResetTime');
+
+    if (prevDrawCount && prevLastResetTime) {
+      setDrawCount(parseInt(prevDrawCount, 10));
+      setLastResetTime(parseInt(prevLastResetTime, 10));
+      sessionStorage.removeItem('prevDrawCount');
+      sessionStorage.removeItem('prevLastResetTime');
+    } else {
+      // Reset draw count for new guest sessions without previous data
+      setDrawCount(0);
+      setLastResetTime(Date.now());
+    }
+  }, []);
+
   const memoizedHeader = useMemo(() => (
     (!isMobileScreen || !isAuthenticated) && (
       <header className="app-header">
@@ -80,14 +127,19 @@ function App() {
                 <SubscribeButton />
                 <LogoutButton />
               </>
+            ) : guestId && guestId.startsWith('guest_') ? (
+              <LogoutButton />
             ) : (
-              <LoginButton />
+              <>
+                <LoginButton />
+                <GuestLoginButton onGuestLogin={handleGuestLogin} />
+              </>
             )}
           </div>
         </div>
       </header>
     )
-  ), [isMobileScreen, isAuthenticated]);
+  ), [isMobileScreen, isAuthenticated, guestId, handleGuestLogin]);
 
   const memoizedWelcomeMessage = useMemo(() => (
     <div className="welcome-message">
@@ -101,13 +153,15 @@ function App() {
     </div>
   ), []);
 
+  const isGuest = useMemo(() => guestId && guestId.startsWith('guest_'), [guestId]);
+
   return (
     <Router>
       <div className="App main-content">
         {memoizedHeader}
         <Routes>
           <Route path="/celtic-spread" element={
-            isAuthenticated ? (
+            isAuthenticated || isGuest ? (
               <CelticSpread 
                 isMobile={isMobile} 
                 onSpreadSelect={handleSpreadSelect} 
@@ -116,11 +170,14 @@ function App() {
                 incrementDrawCount={incrementDrawCount}
                 setDrawCount={setDrawCount}
                 setLastResetTime={setLastResetTime}
+                guestId={guestId}
+                canAccessCohere={canAccessCohere}
+                setCanAccessCohere={setCanAccessCohere}
               />
             ) : <Navigate to="/" />
           } />
           <Route path="/three-card-spread" element={
-            isAuthenticated ? (
+            isAuthenticated || isGuest ? (
               <ThreeCardSpread 
                 isMobile={isMobile} 
                 onSpreadSelect={handleSpreadSelect} 
@@ -129,11 +186,14 @@ function App() {
                 incrementDrawCount={incrementDrawCount}
                 setDrawCount={setDrawCount}
                 setLastResetTime={setLastResetTime}
+                guestId={guestId}
+                canAccessCohere={canAccessCohere}
+                setCanAccessCohere={setCanAccessCohere}
               />
             ) : <Navigate to="/" />
           } />
           <Route path="/" element={
-            isAuthenticated ? (
+            isAuthenticated || isGuest ? (
               <Navigate to={selectedSpread === 'celtic' ? "/celtic-spread" : "/three-card-spread"} />
             ) : memoizedWelcomeMessage
           } />

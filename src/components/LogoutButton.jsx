@@ -5,8 +5,27 @@ const LogoutButton = () => {
   const { logout } = useKindeAuth();
 
   const handleLogout = () => {
-    logout();
-    window.location.href = '/'; 
+    // Store the current drawCount and lastResetTime in sessionStorage
+    const drawCount = localStorage.getItem('drawCount');
+    const lastResetTime = localStorage.getItem('lastResetTime');
+    sessionStorage.setItem('prevDrawCount', drawCount || '0');
+    sessionStorage.setItem('prevLastResetTime', lastResetTime || Date.now().toString());
+
+    if (localStorage.getItem('guestId')) {
+      localStorage.removeItem('guestId');
+    } else if (logout) {
+      logout();
+    } else {
+      console.error('Logout function is not available');
+      alert('Logout is currently unavailable. Please try again later.');
+      return;
+    }
+
+    // Clear localStorage items related to the current session
+    localStorage.removeItem('drawCount');
+    localStorage.removeItem('lastResetTime');
+
+    window.location.href = '/';
   };
 
   return (

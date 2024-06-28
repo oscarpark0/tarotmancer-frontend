@@ -28,4 +28,23 @@ const getKindeAccessToken = async () => {
   }
 };
 
-export { getKindeAccessToken };
+const testKindeConnection = async () => {
+  try {
+    const accessToken = await getKindeAccessToken();
+    const response = await axios.get(
+      `${process.env.REACT_APP_KINDE_DOMAIN}/api/v1/users`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log('Kinde API connection successful:', response.data);
+    return true;
+  } catch (error) {
+    console.error('Error testing Kinde API connection:', error);
+    return false;
+  }
+};
+
+export { getKindeAccessToken, testKindeConnection };

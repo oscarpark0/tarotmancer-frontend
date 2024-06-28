@@ -164,7 +164,7 @@
   max-width: 200px;
   text-align: center;
   line-height: 1.5; 
-  z-index: 10000;
+  z-index: 10002;
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
 }

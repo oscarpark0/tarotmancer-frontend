@@ -11,23 +11,28 @@ import TypingAnimation from './components/typing-animation.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 import GuestLoginButton from './components/GuestLoginButton.tsx';
+import { getKindeAccessToken } from './utils/kindeApi';
+import axios from 'axios';
 
 function App() {
   const kindeAuth = useKindeAuth();
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
-  const { getFlag } = useKindeAuth();
+  useKindeAuth();
   const [canAccessCohere, setCanAccessCohere] = useState(false);
 
   useEffect(() => {
     const checkCohereAccess = async () => {
       try {
-        if (getFlag) {
-          const cohereAccess = await getFlag('cohere-api-access');
-          setCanAccessCohere(cohereAccess === true);
-        } else {
-          console.warn('getFlag function is not available');
-          setCanAccessCohere(false);
-        }
+        const accessToken = await getKindeAccessToken();
+        const response = await axios.get(
+          `${process.env.REACT_APP_KINDE_DOMAIN}/api/v1/feature-flags/cohere-api-access`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setCanAccessCohere(response.data.value === true);
       } catch (error) {
         console.error('Error checking Cohere API access:', error);
         setCanAccessCohere(false);
@@ -35,7 +40,7 @@ function App() {
     };
 
     checkCohereAccess();
-  }, [getFlag]);
+  }, []);
 
   useEffect(() => {
     // Handle the authentication callback

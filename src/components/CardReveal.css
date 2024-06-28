@@ -175,7 +175,7 @@
 }
 
 .card:hover::before {
-  content: attr(data-name); /* New attribute for card name */
+  content: attr(data-name); 
   position: absolute;
   bottom: 95%;
   left: 50%;
@@ -188,11 +188,11 @@
   outline-width: 0.1px;
   border-radius: 25px;
   outline-color: #0000009c;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   white-space: nowrap;
   pointer-events: none;
   display: block;
-  max-width: 400px;
+  max-width: 200px;
   text-align: center;
   z-index: 10001; /* Ensure it's above the main tooltip */
   transition: opacity 0.3s ease-in-out;

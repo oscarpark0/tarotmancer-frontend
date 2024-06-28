@@ -20,10 +20,17 @@ function App() {
 
   useEffect(() => {
     const checkCohereAccess = async () => {
-      const flag = await getFlag('cohere-api-access');
-      setCanAccessCohere(flag);
+      try {
+        const flag = await getFlag('cohere-api-access');
+        setCanAccessCohere(!!flag); // Convert to boolean
+      } catch (error) {
+        console.error('Error checking Cohere API access:', error);
+        setCanAccessCohere(false); // Default to false if there's an error
+      }
     };
-    checkCohereAccess();
+    if (getFlag) {
+      checkCohereAccess();
+    }
   }, [getFlag]);
 
   useEffect(() => {

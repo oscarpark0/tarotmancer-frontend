@@ -17,7 +17,6 @@ import axios from 'axios';
 function App() {
   const kindeAuth = useKindeAuth();
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
-  useKindeAuth();
   const [canAccessCohere, setCanAccessCohere] = useState(false);
 
   useEffect(() => {
@@ -35,12 +34,15 @@ function App() {
         setCanAccessCohere(response.data.value === true);
       } catch (error) {
         console.error('Error checking Cohere API access:', error);
+        // Set canAccessCohere to false if there's an error
         setCanAccessCohere(false);
       }
     };
 
-    checkCohereAccess();
-  }, []);
+    if (isAuthenticated) {
+      checkCohereAccess();
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     // Handle the authentication callback

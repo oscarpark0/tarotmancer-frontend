@@ -10,8 +10,13 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
   const [terminalOutput, setTerminalOutput] = useState('');
+  const [showCards, setShowCards] = useState(false);
 
-
+  useEffect(() => {
+    if (cards.length > 0 && dealingComplete) {
+      setShowCards(true);
+    }
+  }, [cards, dealingComplete]);
 
   const handleInputChange = useCallback((e) => {
     setInput(e.target.value);
@@ -96,6 +101,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete) {
+      setShowCards(true);
       handleSubmit(mostCommonCards);
     }
   }, [mostCommonCards, dealingComplete, handleSubmit]);
@@ -112,22 +118,18 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
         <div className="terminal-content">
+          {isMobile && showCards && (
+            <CardReveal
+              cards={cards}
+              revealCards={revealCards}
+              dealingComplete={dealingComplete}
+              shouldDrawNewSpread={shouldDrawNewSpread}
+              isMobile={isMobile}
+              className="terminal-card-reveal"
+            />
+          )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? 'Processing...' : (
-              <>
-                {isMobile && (
-                  <CardReveal
-                    cards={cards}
-                    revealCards={revealCards}
-                    dealingComplete={dealingComplete}
-                    shouldDrawNewSpread={shouldDrawNewSpread}
-                    isMobile={isMobile}
-                    className="terminal-card-reveal"
-                  />
-                )}
-                {terminalOutput}
-              </>
-            )}
+            {isLoading ? 'Processing...' : terminalOutput}
           </div>
         </div>
         <div className="screen-overlay"></div>

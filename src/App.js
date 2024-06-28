@@ -22,8 +22,8 @@ function App() {
     const checkCohereAccess = async () => {
       try {
         if (getFlag) {
-          const flag = await getFlag('cohere-api-access');
-          setCanAccessCohere(!!flag);
+          const cohereAccess = await getFlag('cohere-api-access');
+          setCanAccessCohere(cohereAccess === true);
         } else {
           console.warn('getFlag function is not available');
           setCanAccessCohere(false);
@@ -33,11 +33,9 @@ function App() {
         setCanAccessCohere(false);
       }
     };
-    
-    if (isAuthenticated) {
-      checkCohereAccess();
-    }
-  }, [getFlag, isAuthenticated]);
+
+    checkCohereAccess();
+  }, [getFlag]);
 
   useEffect(() => {
     // Handle the authentication callback

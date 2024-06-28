@@ -3,6 +3,7 @@ import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
+import CardReveal from './CardReveal';
 
 const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
   const [input, setInput] = useState('');
@@ -112,7 +113,21 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       <div className="terminal-screen">
         <div className="terminal-content">
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? 'Processing...' : terminalOutput}
+            {isLoading ? 'Processing...' : (
+              <>
+                {isMobile && (
+                  <CardReveal
+                    cards={cards}
+                    revealCards={revealCards}
+                    dealingComplete={dealingComplete}
+                    shouldDrawNewSpread={shouldDrawNewSpread}
+                    isMobile={isMobile}
+                    className="terminal-card-reveal"
+                  />
+                )}
+                {terminalOutput}
+              </>
+            )}
           </div>
         </div>
         <div className="screen-overlay"></div>

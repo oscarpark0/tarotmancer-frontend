@@ -5,7 +5,6 @@ import FloatingCards from './FloatingCards.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
-import CardReveal from './CardReveal.jsx';
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -218,21 +217,6 @@ const Robot = memo(({
         setActiveTab={setActiveTab}
         onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
-      />
-      <CardReveal
-        cards={cards}
-        revealCards={revealCards}
-        dealingComplete={dealingComplete}
-        shouldDrawNewSpread={shouldDrawNewSpread}
-        isMobile={isMobile}
-        style={isMobile ? {
-          position: 'absolute',
-          top: '45vh',
-          left: '2.5vw',
-          width: '95vw',
-          height: '50vh',
-          zIndex: 1500
-        } : {}}
       />
     </motion.div>
   );

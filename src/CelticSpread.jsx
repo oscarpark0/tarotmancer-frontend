@@ -212,14 +212,14 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             {memoizedRobot}
           </div>
-          {positions.length > 0 && (
+          {positions.length > 0 && !isMobile && (
             <div className="relative z-10 w-full flex flex-col items-center">
               <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
                 <section className="relative z-10 mb-16 w-full">
                   <ErrorBoundary>
                     {memoizedFloatingCards}
                   </ErrorBoundary>
-                  {!isMobile && memoizedCardReveal}
+                  {memoizedCardReveal}
                 </section>
               </div>
             </div>

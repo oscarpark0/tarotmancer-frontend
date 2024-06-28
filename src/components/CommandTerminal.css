@@ -269,4 +269,7 @@
   overflow-y: auto;
 }
 
-
+.terminal-card-reveal {
+  margin-bottom: 1rem;
+  /* Add any additional styling to fit the cards within the terminal */
+}

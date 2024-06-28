@@ -26,16 +26,20 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
   useEffect(() => {
     const checkCohereAccess = async () => {
       try {
-        const flag = await getFlag('cohere-api-access');
-        setCanAccessCohere(!!flag); // Convert to boolean
+        if (getFlag) {
+          const flag = await getFlag('cohere-api-access');
+          setCanAccessCohere(!!flag);
+        } else {
+          console.warn('getFlag function is not available');
+          setCanAccessCohere(false);
+        }
       } catch (error) {
         console.error('Error checking Cohere API access:', error);
-        setCanAccessCohere(false); // Default to false if there's an error
+        setCanAccessCohere(false);
       }
     };
-    if (getFlag) {
-      checkCohereAccess();
-    }
+    
+    checkCohereAccess();
   }, [getFlag, setCanAccessCohere]);
 
   const handleSubmitInput = useCallback((value) => {

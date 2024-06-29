@@ -6,8 +6,10 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config.tsx';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, canAccessCohere, setCanAccessCohere, kindeAuth }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime }) => {
+  const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -19,36 +21,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [mostCommonCards, setMostCommonCards] = useState('');
   const [cards, setCards] = useState([]);
   const formRef = useRef(null);
-
-  useEffect(() => {
-    const checkCohereAccess = async () => {
-      if (!kindeAuth || !kindeAuth.isAuthenticated) {
-        console.error('User is not authenticated');
-        setCanAccessCohere(false);
-        return;
-      }
-
-      try {
-        const token = await kindeAuth.getToken();
-        const response = await fetch(`${API_BASE_URL}/api/v1/feature-flags/cohere-api-access`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setCanAccessCohere(data.value === true);
-        } else {
-          throw new Error('Failed to check Cohere API access');
-        }
-      } catch (error) {
-        console.error('Error checking Cohere API access:', error);
-        setCanAccessCohere(false);
-      }
-    };
-    
-    checkCohereAccess();
-  }, [setCanAccessCohere, kindeAuth]);
+  const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -57,32 +30,27 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   }, []);
 
   const fetchSpread = useCallback(async () => {
-    if (!canAccessCohere) {
-      setError('You do not have access to this feature.');
+    if (drawCount >= 100) {
+      setError('You have reached the maximum number of draws for today. Please try again tomorrow.');
       return;
     }
 
     setIsLoading(true);
     try {
+      const token = await getToken();
       const origin = window.location.origin;
-      const token = await kindeAuth.getToken();
 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
-        'Authorization': `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`
       };
 
-      const endpoint = 'draw_three_card_spread';
+      const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
       const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: 'GET',
         headers: headers,
       });
-
-      if (response.status === 429) {
-        setError('You have reached the maximum number of requests for today. Please try again tomorrow.');
-        return;
-      }
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -94,15 +62,12 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);
-      
       const newPositions = positions.map((pos, index) => ({
         ...data.positions[index],
         left: pos.left,
         top: pos.top,
         tooltip: data.positions[index].position_name
       }));
-      
-      setPositions(newPositions);
       const newCards = newPositions.map(pos => ({
         name: pos.most_common_card,
         img: pos.most_common_card_img,
@@ -110,11 +75,32 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         position_name: pos.position_name,
         tooltip: pos.position_name
       }));
-      setCards(newCards);
-
       const formattedMostCommonCards = data.positions.map(
         (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
       ).join('\n');
+
+      // Handle rate limit headers
+      const remainingDraws = response.headers.get('X-RateLimit-Remaining');
+      const resetTime = response.headers.get('X-RateLimit-Reset');
+      
+      console.log('Received headers - Remaining draws:', remainingDraws, 'Reset time:', resetTime);
+
+      // Ensure we're working with numbers
+      const remainingDrawsNum = parseInt(remainingDraws, 100);
+      if (!isNaN(remainingDrawsNum)) {
+        console.log('Setting drawCount to:', 100 - remainingDrawsNum);
+        setDrawCount(10 - remainingDrawsNum);
+      } else {
+        console.warn('Invalid remaining draws value:', remainingDraws);
+      }
+
+      const resetTimeNum = parseInt(resetTime, 100);
+      if (!isNaN(resetTimeNum)) {
+        setLastResetTime(resetTimeNum * 1000);
+      }
+
+      setPositions(newPositions);
+      setCards(newCards);
       setDealCards(true);
       setMostCommonCards(formattedMostCommonCards);
 
@@ -127,7 +113,6 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         }, 750);
       }, 1100);
 
-      incrementDrawCount();
     } catch (error) {
       console.error('Error drawing spread:', error);
       setError('Failed to draw spread. Please check your authentication and try again.');
@@ -136,7 +121,14 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [canAccessCohere, handleSubmitInput, incrementDrawCount, kindeAuth]);
+  }, [getToken, selectedSpread, handleSubmitInput, drawCount, setDrawCount, setLastResetTime]);
+
+  useEffect(() => {
+    if (shouldDrawSpread) {
+      fetchSpread();
+      setShouldDrawSpread(false);
+    }
+  }, [fetchSpread, shouldDrawSpread]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);
@@ -214,8 +206,6 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
             <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
           ) : error ? (
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
-          ) : !canAccessCohere ? (
-            <p className="text-4xl text-red-600 text-center z-100">You do not have access to this feature.</p>
           ) : null}
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             {memoizedRobot}

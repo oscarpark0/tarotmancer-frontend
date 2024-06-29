@@ -6,8 +6,10 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config.tsx';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, cohereRequestCount, incrementCohereRequestCount, resetCohereRequestCount, lastCohereResetTime, canAccessCohere, setCanAccessCohere, kindeAuth }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime }) => {
+  const { getToken, user } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,42 +23,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
   const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
   const [cards, setCards] = useState([]);
 
-  useEffect(() => {
-    const checkCohereAccess = async () => {
-      if (!kindeAuth || typeof kindeAuth.isAuthenticated !== 'function' || !kindeAuth.isAuthenticated()) {
-        console.warn('User is not authenticated');
-        setCanAccessCohere(false);
-        return;
-      }
-
-      try {
-        const token = await kindeAuth.getToken();
-        if (!token) {
-          console.warn('No authentication token available');
-          setCanAccessCohere(false);
-          return;
-        }
-
-        const response = await fetch(`${API_BASE_URL}/api/v1/feature-flags/cohere-api-access`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setCanAccessCohere(data.value === true);
-        } else {
-          throw new Error('Failed to check Cohere API access');
-        }
-      } catch (error) {
-        console.error('Error checking Cohere API access:', error);
-        setCanAccessCohere(false);
-      }
-    };
-    
-    checkCohereAccess();
-  }, [setCanAccessCohere, kindeAuth]);
-
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
       formRef.current.submitInput(value);
@@ -64,19 +30,21 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
   }, []);
 
   const fetchSpread = useCallback(async () => {
-    if (!canAccessCohere) {
-      setError('You do not have access to this feature.');
+    if (drawCount >= 100) {
+      setError('You have reached the maximum number of draws for today. Please try again tomorrow.');
       return;
     }
 
     setIsLoading(true);
     try {
+      const token = await getToken();
       const origin = window.location.origin;
 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
-        'Authorization': `Bearer ${kindeAuth.getToken()}`,
+        'Authorization': `Bearer ${token}`,
+        'User-ID': user?.id || 'anonymous'
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
@@ -84,11 +52,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
         method: 'GET',
         headers: headers,
       });
-
-      if (response.status === 429) {
-        setError('You have reached the maximum number of requests for today. Please try again tomorrow.');
-        return;
-      }
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -124,6 +87,26 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       setDealCards(true);
       setMostCommonCards(formattedMostCommonCards);
 
+      // Handle rate limit headers
+      const remainingDraws = response.headers.get('X-RateLimit-Remaining');
+      const resetTime = response.headers.get('X-RateLimit-Reset');
+      
+      console.log('Received headers - Remaining draws:', remainingDraws, 'Reset time:', resetTime);
+
+      // Ensure we're working with numbers
+      const remainingDrawsNum = parseInt(remainingDraws, 100);
+      if (!isNaN(remainingDrawsNum)) {
+        console.log('Setting drawCount to:', 100 - remainingDrawsNum);
+        setDrawCount(10 - remainingDrawsNum);
+      } else {
+        console.warn('Invalid remaining draws value:', remainingDraws);
+      }
+
+      const resetTimeNum = parseInt(resetTime, 100);
+      if (!isNaN(resetTimeNum)) {
+        setLastResetTime(resetTimeNum * 1000);
+      }
+
       setTimeout(() => {
         setRevealCards(true);
         setRevealedCards(data.positions.length);
@@ -142,7 +125,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [selectedSpread, handleSubmitInput, incrementDrawCount, canAccessCohere, kindeAuth]);
+  }, [getToken, selectedSpread, handleSubmitInput, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, user]);
 
   useEffect(() => {
     if (shouldDrawSpread) {
@@ -225,8 +208,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
             <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
           ) : error ? (
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
-          ) : !canAccessCohere ? (
-            <p className="text-4xl text-red-600 text-center z-100">You do not have access to this feature.</p>
           ) : null}
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             {memoizedRobot}

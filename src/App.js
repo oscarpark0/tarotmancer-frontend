@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -6,41 +7,25 @@ import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
-import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
+import AnimatedGridPattern from './components/AnimatedGridPattern';
 import TypingAnimation from './components/typing-animation.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-import axios from 'axios';
+
 
 function App() {
   const kindeAuth = useKindeAuth();
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
-  const [canAccessCohere, setCanAccessCohere] = useState(false);
-
-  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
   useEffect(() => {
-    const checkCohereAccess = async () => {
-      try {
-        const response = await axios.get(
-          `${API_URL}/api/v1/feature-flags/cohere-api-access`,
-          {
-            headers: {
-              Authorization: `Bearer ${kindeAuth.getToken()}`,
-            },
-          }
-        );
-        setCanAccessCohere(response.data.value === true);
-      } catch (error) {
-        console.error('Error checking Cohere API access:', error);
-        setCanAccessCohere(false);
-      }
-    };
-
-    if (isAuthenticated) {
-      checkCohereAccess();
+    // Handle the authentication callback
+    if (window.location.search.includes('code=') && kindeAuth?.handleRedirectCallback) {
+      kindeAuth.handleRedirectCallback().catch(error => {
+        console.error('Authentication callback error:', error);
+        // Consider displaying this error to the user
+      });
     }
-  }, [API_URL, isAuthenticated, kindeAuth]);
+  }, [kindeAuth]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
@@ -53,26 +38,11 @@ function App() {
   }, []);
 
   useEffect(() => {
-    // Check for previous session data
-    const prevDrawCount = sessionStorage.getItem('prevDrawCount');
-    const prevLastResetTime = sessionStorage.getItem('prevLastResetTime');
-
-    if (prevDrawCount && prevLastResetTime) {
-      // Use the previous session data
-      setDrawCount(parseInt(prevDrawCount, 10));
-      setLastResetTime(parseInt(prevLastResetTime, 10));
-
-      // Clear the session storage
-      sessionStorage.removeItem('prevDrawCount');
-      sessionStorage.removeItem('prevLastResetTime');
-    } else {
-      // If no previous session data, check localStorage
-      const storedCount = localStorage.getItem('drawCount');
-      const storedResetTime = localStorage.getItem('lastResetTime');
-      if (storedCount && storedResetTime) {
-        setDrawCount(parseInt(storedCount, 10));
-        setLastResetTime(parseInt(storedResetTime, 10));
-      }
+    const storedCount = localStorage.getItem('drawCount');
+    const storedResetTime = localStorage.getItem('lastResetTime');
+    if (storedCount && storedResetTime) {
+      setDrawCount(parseInt(storedCount, 10));
+      setLastResetTime(parseInt(storedResetTime, 10));
     }
   }, []);
 
@@ -147,9 +117,6 @@ function App() {
                 incrementDrawCount={incrementDrawCount}
                 setDrawCount={setDrawCount}
                 setLastResetTime={setLastResetTime}
-                canAccessCohere={canAccessCohere}
-                setCanAccessCohere={setCanAccessCohere}
-                kindeAuth={kindeAuth}
               />
             ) : <Navigate to="/" />
           } />
@@ -163,9 +130,6 @@ function App() {
                 incrementDrawCount={incrementDrawCount}
                 setDrawCount={setDrawCount}
                 setLastResetTime={setLastResetTime}
-                canAccessCohere={canAccessCohere}
-                setCanAccessCohere={setCanAccessCohere}
-                kindeAuth={kindeAuth}
               />
             ) : <Navigate to="/" />
           } />

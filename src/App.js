@@ -7,7 +7,7 @@ import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
-import AnimatedGridPattern from './components/AnimatedGridPattern';
+import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';

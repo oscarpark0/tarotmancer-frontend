@@ -1,15 +1,14 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import AnimatedGridPattern from './components/AnimatedGridPattern';
+import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { getKindeAccessToken } from './utils/kindeApi';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, guestId, cohereRequestCount, incrementCohereRequestCount, resetCohereRequestCount, lastCohereResetTime, canAccessCohere, setCanAccessCohere }) => {
-  const { getToken, user, getFlag } = useKindeAuth();
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, cohereRequestCount, incrementCohereRequestCount, resetCohereRequestCount, lastCohereResetTime, canAccessCohere, setCanAccessCohere }) => {
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -26,12 +25,17 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
   useEffect(() => {
     const checkCohereAccess = async () => {
       try {
-        if (getFlag) {
-          const flag = await getFlag('cohere-api-access');
-          setCanAccessCohere(!!flag);
+        const accessToken = await getKindeAccessToken();
+        const response = await fetch(`${API_BASE_URL}/api/v1/feature-flags/cohere-api-access`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setCanAccessCohere(data.value === true);
         } else {
-          console.warn('getFlag function is not available');
-          setCanAccessCohere(false);
+          throw new Error('Failed to check Cohere API access');
         }
       } catch (error) {
         console.error('Error checking Cohere API access:', error);
@@ -40,7 +44,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
     };
     
     checkCohereAccess();
-  }, [getFlag, setCanAccessCohere]);
+  }, [setCanAccessCohere]);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -56,14 +60,13 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
 
     setIsLoading(true);
     try {
-      const token = await getToken();
+      const accessToken = await getKindeAccessToken();
       const origin = window.location.origin;
 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
-        'Authorization': `Bearer ${token}`,
-        'User-ID': guestId || user?.id || 'anonymous'
+        'Authorization': `Bearer ${accessToken}`,
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
@@ -129,7 +132,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, handleSubmitInput, incrementDrawCount, user, guestId, canAccessCohere]);
+  }, [selectedSpread, handleSubmitInput, incrementDrawCount, canAccessCohere]);
 
   useEffect(() => {
     if (shouldDrawSpread) {

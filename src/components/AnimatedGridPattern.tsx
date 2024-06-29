@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useId, useRef, useState, useMemo } from 'react';
 import { cn } from '../utils';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import debounce from 'lodash.debounce';
 import throttle from 'lodash.throttle';
 import './AnimatedGridPattern.css';
 
-const tarotCards = [
+const tarotCards: string[] = [
   'c01.webp', 'c02.webp', 'c03.webp', 'c04.webp', 'c05.webp', 'c06.webp', 'c07.webp', 'c08.webp', 'c09.webp', 'c10.webp',
   'c11.webp', 'c12.webp', 'c13.webp', 'c14.webp', 'cardback.webp', 'm00.webp', 'm01.webp', 'm02.webp',
   'm03.webp', 'm04.webp', 'm05.webp', 'm06.webp', 'm07.webp', 'm08.webp', 'm09.webp', 'm10.webp', 'm11.webp', 'm12.webp',
@@ -18,16 +18,40 @@ const tarotCards = [
   'w14.webp',
 ];
 
-const debounceResizeHandler = debounce((entries, setDimensions) => {
+interface Dimensions {
+  width: number;
+  height: number;
+}
+
+const debounceResizeHandler = debounce((entries: ResizeObserverEntry[], setDimensions: React.Dispatch<React.SetStateAction<Dimensions>>) => {
   for (let entry of entries) {
     const { width, height } = entry.contentRect;
     setDimensions({ width, height });
   }
 }, 200);
 
-const getRandomValue = (min, max) => Math.random() * (max - min) + min;
+const getRandomValue = (min: number, max: number): number => Math.random() * (max - min) + min;
 
-const AnimatedGridPattern = React.memo(({
+interface AnimatedGridPatternProps extends React.SVGProps<SVGSVGElement> {
+  width?: number;
+  height?: number;
+  x?: number;
+  y?: number;
+  strokeDasharray?: number;
+  strokeOpacity?: number;
+  numCards?: number;
+  className?: string;
+  maxOpacity?: number;
+  duration?: number;
+  repeatDelay?: number;
+}
+
+interface Card {
+  id: number;
+  pos: [number, number];
+}
+
+const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   width = 22,
   height = 42,
   x = -1,
@@ -42,28 +66,28 @@ const AnimatedGridPattern = React.memo(({
   ...props
 }) => {
   const id = useId();
-  const containerRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const containerRef = useRef<SVGSVGElement>(null);
+  const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
 
   const [isStreaming, setIsStreaming] = useState(false);
 
   const effectiveNumCards = isStreaming ? Math.floor(numCards / 2) : numCards;
 
-  const getPos = useCallback(() => {
+  const getPos = useCallback((): [number, number] => {
     return [
       Math.floor((Math.random() * dimensions.width) / width),
       Math.floor((Math.random() * dimensions.height) / height),
     ];
   }, [dimensions.width, dimensions.height, width, height]);
 
-  const generateCards = useCallback((count) => {
+  const generateCards = useCallback((count: number): Card[] => {
     return Array.from({ length: count }, (_, i) => ({
       id: i,
       pos: getPos(),
     }));
   }, [getPos]);
 
-  const [cards, setCards] = useState(() => generateCards(numCards));
+  const [cards, setCards] = useState<Card[]>(() => generateCards(numCards));
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => debounceResizeHandler(entries, setDimensions));
@@ -86,7 +110,7 @@ const AnimatedGridPattern = React.memo(({
     }
   }, [dimensions, numCards, generateCards]);
 
-  const updateSquarePosition = useCallback((id) => {
+  const updateSquarePosition = useCallback((id: number) => {
     setCards((currentSquares) =>
       currentSquares.map((sq) =>
         sq.id === id
@@ -100,7 +124,7 @@ const AnimatedGridPattern = React.memo(({
   }, [getPos]);
 
   const throttledUpdateSquarePosition = useMemo(
-    () => throttle((id) => {
+    () => throttle((id: number) => {
       if (!isStreaming) {
         updateSquarePosition(id);
       }
@@ -108,9 +132,9 @@ const AnimatedGridPattern = React.memo(({
     [updateSquarePosition, isStreaming]
   );
 
-  const cardVariants = useMemo(() => ({
+  const cardVariants: Variants = useMemo(() => ({
     initial: { opacity: 0, rotateY: 0, scale: 1, z: 0 },
-    animate: (custom) => ({
+    animate: (custom: { id: number; randomOpacity: number; randomScale: number }) => ({
       opacity: custom.randomOpacity,
       rotateY: [0, 180],
       scale: custom.randomScale,
@@ -126,9 +150,9 @@ const AnimatedGridPattern = React.memo(({
   }), [duration]);
 
   useEffect(() => {
-    const handleStreamingStateChange = (e) => setIsStreaming(e.detail);
-    window.addEventListener('streamingStateChange', handleStreamingStateChange);
-    return () => window.removeEventListener('streamingStateChange', handleStreamingStateChange);
+    const handleStreamingStateChange = (e: CustomEvent<boolean>) => setIsStreaming(e.detail);
+    window.addEventListener('streamingStateChange', handleStreamingStateChange as EventListener);
+    return () => window.removeEventListener('streamingStateChange', handleStreamingStateChange as EventListener);
   }, []);
 
   return (
@@ -153,7 +177,7 @@ const AnimatedGridPattern = React.memo(({
           <path
             d={`M.3333 ${height}V.444H${width}`}
             fill="none"
-            strokeDasharray={strokeDasharray}
+            strokeDasharray={strokeDasharray.toString()}
           />
         </pattern>
       </defs>

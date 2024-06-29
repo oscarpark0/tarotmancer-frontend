@@ -3,7 +3,7 @@ import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
-import { API_BASE_URL } from './utils/config';
+import { API_BASE_URL } from './utils/config.tsx';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 

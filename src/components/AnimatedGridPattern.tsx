@@ -6,6 +6,7 @@ import debounce from 'lodash.debounce';
 import throttle from 'lodash.throttle';
 import './AnimatedGridPattern.css';
 
+
 const tarotCards: string[] = [
   'c01.webp', 'c02.webp', 'c03.webp', 'c04.webp', 'c05.webp', 'c06.webp', 'c07.webp', 'c08.webp', 'c09.webp', 'c10.webp',
   'c11.webp', 'c12.webp', 'c13.webp', 'c14.webp', 'cardback.webp', 'm00.webp', 'm01.webp', 'm02.webp',

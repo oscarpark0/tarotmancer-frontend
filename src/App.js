@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -32,6 +31,7 @@ function App() {
   const [selectedSpread, setSelectedSpread] = useState('celtic');
   const [drawCount, setDrawCount] = useState(0);
   const [lastResetTime, setLastResetTime] = useState(Date.now());
+  const [canAccessCohere, setCanAccessCohere] = useState(false);
 
   const handleSpreadSelect = useCallback((spread) => {
     setSelectedSpread(spread);
@@ -102,6 +102,19 @@ function App() {
     </div>
   ), []);
 
+  const spreadProps = useMemo(() => ({
+    isMobile,
+    onSpreadSelect: handleSpreadSelect,
+    selectedSpread,
+    drawCount,
+    incrementDrawCount,
+    setDrawCount,
+    setLastResetTime,
+    canAccessCohere,
+    setCanAccessCohere,
+    kindeAuth,
+  }), [isMobile, handleSpreadSelect, selectedSpread, drawCount, incrementDrawCount, canAccessCohere, kindeAuth]);
+
   return (
     <Router>
       <div className="App main-content">
@@ -109,28 +122,12 @@ function App() {
         <Routes>
           <Route path="/celtic-spread" element={
             isAuthenticated ? (
-              <CelticSpread 
-                isMobile={isMobile} 
-                onSpreadSelect={handleSpreadSelect} 
-                selectedSpread={selectedSpread} 
-                drawCount={drawCount}
-                incrementDrawCount={incrementDrawCount}
-                setDrawCount={setDrawCount}
-                setLastResetTime={setLastResetTime}
-              />
+              <CelticSpread {...spreadProps} />
             ) : <Navigate to="/" />
           } />
           <Route path="/three-card-spread" element={
             isAuthenticated ? (
-              <ThreeCardSpread 
-                isMobile={isMobile} 
-                onSpreadSelect={handleSpreadSelect} 
-                selectedSpread={selectedSpread} 
-                drawCount={drawCount}
-                incrementDrawCount={incrementDrawCount}
-                setDrawCount={setDrawCount}
-                setLastResetTime={setLastResetTime}
-              />
+              <ThreeCardSpread {...spreadProps} />
             ) : <Navigate to="/" />
           } />
           <Route path="/" element={

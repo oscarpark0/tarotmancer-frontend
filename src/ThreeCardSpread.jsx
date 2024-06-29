@@ -6,9 +6,8 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
-import { getKindeAccessToken } from './utils/kindeApi';
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, canAccessCohere, setCanAccessCohere }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, canAccessCohere, setCanAccessCohere, kindeAuth }) => {
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -24,10 +23,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   useEffect(() => {
     const checkCohereAccess = async () => {
       try {
-        const accessToken = await getKindeAccessToken();
         const response = await fetch(`${API_BASE_URL}/api/v1/feature-flags/cohere-api-access`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${kindeAuth.getToken()}`,
           },
         });
         if (response.ok) {
@@ -43,7 +41,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     };
     
     checkCohereAccess();
-  }, [setCanAccessCohere]);
+  }, [setCanAccessCohere, kindeAuth]);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -59,13 +57,12 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
 
     setIsLoading(true);
     try {
-      const accessToken = await getKindeAccessToken();
       const origin = window.location.origin;
 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
-        'Authorization': `Bearer ${accessToken}`,
+        'Authorization': `Bearer ${kindeAuth.getToken()}`,
       };
 
       const endpoint = 'draw_three_card_spread';
@@ -131,7 +128,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [canAccessCohere, handleSubmitInput, incrementDrawCount]);
+  }, [canAccessCohere, handleSubmitInput, incrementDrawCount, kindeAuth]);
 
   const handleExitComplete = useCallback(() => {
     setRevealCards(true);

@@ -10,7 +10,6 @@ import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-import { getKindeAccessToken, testKindeConnection } from './utils/kindeApi';
 import axios from 'axios';
 
 function App() {
@@ -23,12 +22,11 @@ function App() {
   useEffect(() => {
     const checkCohereAccess = async () => {
       try {
-        const accessToken = await getKindeAccessToken();
         const response = await axios.get(
           `${API_URL}/api/v1/feature-flags/cohere-api-access`,
           {
             headers: {
-              Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${kindeAuth.getToken()}`,
             },
           }
         );
@@ -42,28 +40,7 @@ function App() {
     if (isAuthenticated) {
       checkCohereAccess();
     }
-  }, [API_URL, isAuthenticated]);
-
-  useEffect(() => {
-    const testConnection = async () => {
-      const result = await testKindeConnection();
-      console.log('Kinde connection test result:', result);
-    };
-
-    if (isAuthenticated) {
-      testConnection();
-    }
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    // Handle the authentication callback
-    if (window.location.search.includes('code=') && kindeAuth?.handleRedirectCallback) {
-      kindeAuth.handleRedirectCallback().catch(error => {
-        console.error('Authentication callback error:', error);
-        // Consider displaying this error to the user
-      });
-    }
-  }, [kindeAuth]);
+  }, [API_URL, isAuthenticated, kindeAuth]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });

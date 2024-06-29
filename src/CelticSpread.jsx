@@ -6,9 +6,8 @@ import Robot from './components/Robot';
 import { API_BASE_URL } from './utils/config';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
-import { getKindeAccessToken } from './utils/kindeApi';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, cohereRequestCount, incrementCohereRequestCount, resetCohereRequestCount, lastCohereResetTime, canAccessCohere, setCanAccessCohere }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, cohereRequestCount, incrementCohereRequestCount, resetCohereRequestCount, lastCohereResetTime, canAccessCohere, setCanAccessCohere, kindeAuth }) => {
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,10 +24,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
   useEffect(() => {
     const checkCohereAccess = async () => {
       try {
-        const accessToken = await getKindeAccessToken();
         const response = await fetch(`${API_BASE_URL}/api/v1/feature-flags/cohere-api-access`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${kindeAuth.getToken()}`,
           },
         });
         if (response.ok) {
@@ -44,7 +42,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
     };
     
     checkCohereAccess();
-  }, [setCanAccessCohere]);
+  }, [setCanAccessCohere, kindeAuth]);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -60,13 +58,12 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
 
     setIsLoading(true);
     try {
-      const accessToken = await getKindeAccessToken();
       const origin = window.location.origin;
 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
-        'Authorization': `Bearer ${accessToken}`,
+        'Authorization': `Bearer ${kindeAuth.getToken()}`,
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
@@ -132,7 +129,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [selectedSpread, handleSubmitInput, incrementDrawCount, canAccessCohere]);
+  }, [selectedSpread, handleSubmitInput, incrementDrawCount, canAccessCohere, kindeAuth]);
 
   useEffect(() => {
     if (shouldDrawSpread) {

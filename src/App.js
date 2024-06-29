@@ -117,7 +117,7 @@ function App() {
 
   return (
     <Router>
-      <div className="App main-content">
+      <div className={`App main-content ${isMobileScreen ? 'mobile' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
         {memoizedHeader}
         <Routes>
           <Route path="/celtic-spread" element={

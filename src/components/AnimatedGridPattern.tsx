@@ -3,7 +3,6 @@ import { cn } from '../utils';
 import { motion } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import debounce from 'lodash.debounce';
-import throttle from 'lodash.throttle';
 import './AnimatedGridPattern.css';
 
 
@@ -25,10 +24,8 @@ interface Dimensions {
 }
 
 const debounceResizeHandler = debounce((entries: ResizeObserverEntry[], setDimensions: React.Dispatch<React.SetStateAction<Dimensions>>) => {
-  for (let entry of entries) {
-    const { width, height } = entry.contentRect;
-    setDimensions({ width, height });
-  }
+  const { width, height } = entries[0].contentRect;
+  setDimensions({ width, height });
 }, 200);
 
 const getRandomValue = (min: number, max: number): number => Math.random() * (max - min) + min;
@@ -50,6 +47,9 @@ interface AnimatedGridPatternProps extends React.SVGProps<SVGSVGElement> {
 interface Card {
   id: number;
   pos: [number, number];
+  tarotCard: string;
+  randomScale: number;
+  randomOpacity: number;
 }
 
 const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
@@ -69,73 +69,43 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   const id = useId();
   const containerRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
-
   const [isStreaming, setIsStreaming] = useState(false);
 
-  const effectiveNumCards = isStreaming ? Math.floor(numCards / 2) : numCards;
+  const getPos = useCallback((): [number, number] => [
+    Math.floor((Math.random() * dimensions.width) / width),
+    Math.floor((Math.random() * dimensions.height) / height),
+  ], [dimensions.width, dimensions.height, width, height]);
 
-  const getPos = useCallback((): [number, number] => {
-    return [
-      Math.floor((Math.random() * dimensions.width) / width),
-      Math.floor((Math.random() * dimensions.height) / height),
-    ];
-  }, [dimensions.width, dimensions.height, width, height]);
-
-  const generateCards = useCallback((count: number): Card[] => {
-    return Array.from({ length: count }, (_, i) => ({
+  const generateCards = useCallback((count: number): Card[] => 
+    Array.from({ length: count }, (_, i) => ({
       id: i,
       pos: getPos(),
-    }));
-  }, [getPos]);
+      tarotCard: tarotCards[Math.floor(Math.random() * tarotCards.length)],
+      randomScale: getRandomValue(0.5, 2.0),
+      randomOpacity: Math.random() * maxOpacity,
+    })), [getPos, maxOpacity]);
 
   const [cards, setCards] = useState<Card[]>(() => generateCards(numCards));
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => debounceResizeHandler(entries, setDimensions));
-    const currentContainer = containerRef.current;
-
-    if (currentContainer) {
-      resizeObserver.observe(currentContainer);
-    }
-
-    return () => {
-      if (currentContainer) {
-        resizeObserver.unobserve(currentContainer);
-      }
-    };
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
+    return () => resizeObserver.disconnect();
   }, []);
 
   useEffect(() => {
-    if (dimensions.width && dimensions.height) {
-      setCards(generateCards(numCards));
-    }
+    if (dimensions.width && dimensions.height) setCards(generateCards(numCards));
   }, [dimensions, numCards, generateCards]);
 
-  const updateSquarePosition = useCallback((id: number) => {
-    setCards((currentSquares) =>
-      currentSquares.map((sq) =>
-        sq.id === id
-          ? {
-              ...sq,
-              pos: getPos(),
-            }
-          : sq,
-      ),
-    );
+  const updateCardPosition = useCallback((id: number) => {
+    setCards(currentCards => currentCards.map(card => 
+      card.id === id ? { ...card, pos: getPos() } : card
+    ));
   }, [getPos]);
-
-  const throttledUpdateSquarePosition = useMemo(
-    () => throttle((id: number) => {
-      if (!isStreaming) {
-        updateSquarePosition(id);
-      }
-    }, 1000),
-    [updateSquarePosition, isStreaming]
-  );
 
   const cardVariants = useMemo(() => ({
     initial: { opacity: 0, rotateY: 0, scale: 1, z: 0 },
-    animate: (custom: { id: number; randomOpacity: number; randomScale: number }) => ({
+    animate: (custom: Card) => ({
       opacity: custom.randomOpacity,
       rotateY: [0, 180],
       scale: custom.randomScale,
@@ -156,80 +126,54 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     return () => window.removeEventListener('streamingStateChange', handleStreamingStateChange as EventListener);
   }, []);
 
+  const effectiveNumCards = isStreaming ? Math.floor(numCards / 2) : numCards;
+
   return (
     <svg
       ref={containerRef}
       aria-hidden="true"
-      className={cn(
-        'pointer-events-none relative inset-0 h-full w-full fill-gray-400/30 stroke-gray-400/30',
-        className,
-      )}
+      className={cn('pointer-events-none relative inset-0 h-full w-full fill-gray-400/30 stroke-gray-400/30', className)}
       {...props}
     >
       <defs>
-        <pattern
-          id={id}
-          width={width}
-          height={height}
-          patternUnits="userSpaceOnUse"
-          x={x}
-          y={y}
-        >
-          <path
-            d={`M.3333 ${height}V.444H${width}`}
-            fill="none"
-            strokeDasharray={strokeDasharray.toString()}
-          />
+        <pattern id={id} width={width} height={height} patternUnits="userSpaceOnUse" x={x} y={y}>
+          <path d={`M.3333 ${height}V.444H${width}`} fill="none" strokeDasharray={strokeDasharray.toString()} />
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${id})`} />
       <svg x={x} y={y} className="overflow-visible">
-        {cards.slice(0, effectiveNumCards).map(({ pos: [x, y], id }) => {
-          const uniqueKey = `${id}-${x}-${y}`;
-          const randomScale = getRandomValue(0.5, 2.0);
-          const randomOpacity = Math.random() * maxOpacity;
-          const randomTarotCard = tarotCards[Math.floor(Math.random() * tarotCards.length)];
-          const tarotCardImage = `${TAROT_IMAGE_BASE_URL}/${randomTarotCard}`;
-          const cardBackImage = `${TAROT_IMAGE_BASE_URL}/cardback.webp`;
-
-          return (
-            <motion.g
-              key={uniqueKey}
-              custom={{ id, randomOpacity, randomScale }}
-              variants={cardVariants}
-              initial="initial"
-              animate={isStreaming ? "initial" : "animate"}
-              onAnimationComplete={() => {
-                setTimeout(() => {
-                  throttledUpdateSquarePosition(id);
-                }, 10000 + getRandomValue(0, 100));
-              }}
-              className="preserve-3d"
-              style={{
-                transformStyle: 'preserve-3d',
-                transformOrigin: 'center',
-                perspective: '1000px',
-              }}
-            >
-              <motion.image
-                href={tarotCardImage}
-                width={width - 1}
-                height={height - 1}
-                x={x * width + 1}
-                y={y * height + 1}
-                className="tarot-card"
-              />
-              <motion.image
-                href={cardBackImage}
-                width={width - 1}
-                height={height - 1}
-                x={x * width + 1}
-                y={y * height + 1}
-                className="tarot-card-back"
-              />
-            </motion.g>
-          );
-        })}
+        {cards.slice(0, effectiveNumCards).map((card) => (
+          <motion.g
+            key={`${card.id}-${card.pos[0]}-${card.pos[1]}`}
+            custom={card}
+            variants={cardVariants}
+            initial="initial"
+            animate={isStreaming ? "initial" : "animate"}
+            onAnimationComplete={() => {
+              if (!isStreaming) {
+                setTimeout(() => updateCardPosition(card.id), 10000 + getRandomValue(0, 100));
+              }
+            }}
+            style={{ transformStyle: 'preserve-3d', transformOrigin: 'center', perspective: '1000px' }}
+          >
+            <motion.image
+              href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
+              width={width - 1}
+              height={height - 1}
+              x={card.pos[0] * width + 1}
+              y={card.pos[1] * height + 1}
+              className="tarot-card"
+            />
+            <motion.image
+              href={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
+              width={width - 1}
+              height={height - 1}
+              x={card.pos[0] * width + 1}
+              y={card.pos[1] * height + 1}
+              className="tarot-card-back"
+            />
+          </motion.g>
+        ))}
       </svg>
     </svg>
   );

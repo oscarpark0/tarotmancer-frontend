@@ -31,8 +31,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     setIsLoading(true);
     setTerminalOutput('Processing...');
 
-    window.dispatchEvent(new CustomEvent('streamingStateChange', { detail: true }));
-
     try {
       const staticText = "You are Tarotmancer. Your responses are empathetic, acknowledging the seeker's emotions and showing that you understand their situation. You generate responses that are tailored to the seeker's specific situation. You avoid generic answers, ensuring that your guidance resonates with the seeker personally. You response using clear language to ensure your responses are easily understood. Avoid complex terminology and jargon. Your responses are formatted in an easy to view format. Your responses are formatted in an easy to view format.";
       const message = `${staticText} ${mostCommonCards.trim()} `;
@@ -74,7 +72,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
             if (data.event_type === 'text-generation') {
               responseContent += data.text;
-              handleMonitorOutput(responseContent);
               onNewResponse(responseContent);
             }
           } catch (error) {
@@ -88,11 +85,9 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const errorMessage = 'An error occurred while processing your request.';
       handleMonitorOutput(errorMessage);
       setTerminalOutput(errorMessage);
-      onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
       setTerminalOutput('Processing complete.');
-      window.dispatchEvent(new CustomEvent('streamingStateChange', { detail: false }));
       onResponseComplete();
     }
 

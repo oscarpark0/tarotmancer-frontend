@@ -12,8 +12,28 @@
   height: 220px;
   perspective: 1000px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.6s, opacity 0.4s ease-in-out;
-  z-index: 1500;
+  transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s 0.6s;
+  z-index: 1;
+  transition: transform 0.3s ease-in-out, z-index 0s;
+}
+
+.card:hover {
+  z-index: 1000;
+  transform: scale(1.1);
+}
+
+.card.cross-card {
+  z-index: 2;
+}
+
+/* Specific style for the card under the cross card */
+.card:nth-child(2) {
+  z-index: 0;
+}
+
+.card:nth-child(2):hover {
+  z-index: 1001;
+  transform: scale(1.2) translateY(-20px);
 }
 
 @media (max-width: 768px) {
@@ -21,11 +41,11 @@
     transform: none;
     margin-top: 0;
     z-index: 2000;
-    height: 60vh; /* Reduced height */
+    height: 50vh; /* Reduced height */
     width: 100vw;
     position: fixed;
-    top: 20vh; /* Moved up */
-    left: 0;
+    top: 15vh; /* Moved up */
+    left: -100%;
   }
 
   .card {
@@ -51,7 +71,7 @@
   height: 220px;
   perspective: 1000px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.6s, opacity 0.4s ease-in-out;
+  transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s 0.6s;
   z-index: 150000000; /* Ensure individual cards are above the robot */
 }
 
@@ -164,7 +184,7 @@
   max-width: 200px;
   text-align: center;
   line-height: 1.5; 
-  z-index: 10002;
+  z-index: 1002;
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
 }
@@ -194,7 +214,7 @@
   display: block;
   max-width: 200px;
   text-align: center;
-  z-index: 10001; /* Ensure it's above the main tooltip */
+  z-index: 1002; /* Ensure it's above the main tooltip */
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
 }
@@ -205,7 +225,7 @@
 }
 
 .card.cross-card:hover {
-  z-index: 1002;
+  z-index: 2001;
 }
 
 .card.cross-card:hover::after {
@@ -224,7 +244,12 @@
 }
 
 .card:hover {
-  z-index: 1001;
+  z-index: 2000;
+  transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s;
+}
+
+.card:nth-child(1):hover {
+  transform: scale(1.05);
 }
 
 .card:nth-child(4) {

@@ -64,6 +64,7 @@ const Robot = memo(({
   const commandTerminalRef = useRef(null);
   const [responses, setResponses] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
+  const robotRef = useRef(null);
 
   const handleResponseComplete = useCallback(() => {
     onResponseComplete();
@@ -110,11 +111,12 @@ const Robot = memo(({
   }, [dealCards, onExitComplete]);
 
   useEffect(() => {
-    if (screenContentRef.current && commandTerminalRef.current) {
+    if (screenContentRef.current && robotRef.current) {
       const screenRect = screenContentRef.current.getBoundingClientRect();
+      const robotRect = robotRef.current.getBoundingClientRect();
       setMonitorPosition({
-        x: screenRect.x,
-        y: screenRect.y,
+        x: screenRect.x - robotRect.x,
+        y: screenRect.y - robotRect.y,
         width: screenRect.width,
         height: screenRect.height,
       });
@@ -152,21 +154,29 @@ const Robot = memo(({
   useEffect(() => {
   }, [selectedSpread]);
 
+  useEffect(() => {
+    if (robotRef.current) {
+      const robotHeight = robotRef.current.offsetHeight;
+      document.documentElement.style.setProperty('--robot-height', `${robotHeight}px`);
+    }
+  }, []);
 
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''}`}
       style={{
-        alignItems: 'center',
         position: 'absolute',
         zIndex: isMobile ? 1000 : 100,
-        top: isMobile ? '2vh' : '9vh',
-        width: isMobile ? '100%' : 'auto',
-        display: isMobile ? 'flex' : 'block',
-        flexDirection: isMobile ? 'column' : 'unset',
+        top: 0,
+        left: isMobile ? 0 : '20px',
+        width: isMobile ? '100%' : '400px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        height: 'auto',
       }}
     >
-      <div className="robot-body">
+      <div ref={robotRef} className="robot-body">
         <div className="tarotmancer-text">tarotmancer</div>
         <div className="robot-head">
           <div className="crt-screen">
@@ -209,7 +219,12 @@ const Robot = memo(({
         revealCards={revealCards}
         shouldDrawNewSpread={shouldDrawNewSpread}
         ref={commandTerminalRef}
-        style={isMobile ? { width: '95vw', marginTop: '10px' } : {}}
+        style={{
+          position: 'absolute',
+          width: '100%',
+          top: '100%',
+          left: 0,
+        }}
         drawCount={drawCount}
         fetchSpread={fetchSpread}
         responses={responses}

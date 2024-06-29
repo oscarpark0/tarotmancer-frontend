@@ -23,14 +23,20 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
 
   useEffect(() => {
     const checkCohereAccess = async () => {
-      if (!kindeAuth || !kindeAuth.isAuthenticated) {
-        console.error('User is not authenticated');
+      if (!kindeAuth || typeof kindeAuth.isAuthenticated !== 'function' || !kindeAuth.isAuthenticated()) {
+        console.warn('User is not authenticated');
         setCanAccessCohere(false);
         return;
       }
 
       try {
         const token = await kindeAuth.getToken();
+        if (!token) {
+          console.warn('No authentication token available');
+          setCanAccessCohere(false);
+          return;
+        }
+
         const response = await fetch(`${API_BASE_URL}/api/v1/feature-flags/cohere-api-access`, {
           headers: {
             Authorization: `Bearer ${token}`,

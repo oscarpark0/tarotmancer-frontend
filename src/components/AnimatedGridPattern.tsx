@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useId, useRef, useState, useMemo } from 'react';
 import { cn } from '../utils';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import debounce from 'lodash.debounce';
 import throttle from 'lodash.throttle';
@@ -133,7 +133,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     [updateSquarePosition, isStreaming]
   );
 
-  const cardVariants: Variants = useMemo(() => ({
+  const cardVariants = useMemo(() => ({
     initial: { opacity: 0, rotateY: 0, scale: 1, z: 0 },
     animate: (custom: { id: number; randomOpacity: number; randomScale: number }) => ({
       opacity: custom.randomOpacity,

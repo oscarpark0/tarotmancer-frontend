@@ -22,10 +22,17 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
 
   useEffect(() => {
     const checkCohereAccess = async () => {
+      if (!kindeAuth || !kindeAuth.isAuthenticated) {
+        console.error('User is not authenticated');
+        setCanAccessCohere(false);
+        return;
+      }
+
       try {
+        const token = await kindeAuth.getToken();
         const response = await fetch(`${API_BASE_URL}/api/v1/feature-flags/cohere-api-access`, {
           headers: {
-            Authorization: `Bearer ${kindeAuth.getToken()}`,
+            Authorization: `Bearer ${token}`,
           },
         });
         if (response.ok) {
@@ -58,11 +65,12 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     setIsLoading(true);
     try {
       const origin = window.location.origin;
+      const token = await kindeAuth.getToken();
 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
-        'Authorization': `Bearer ${kindeAuth.getToken()}`,
+        'Authorization': `Bearer ${token}`,
       };
 
       const endpoint = 'draw_three_card_spread';

@@ -149,6 +149,7 @@ function App() {
                 setLastResetTime={setLastResetTime}
                 canAccessCohere={canAccessCohere}
                 setCanAccessCohere={setCanAccessCohere}
+                kindeAuth={kindeAuth}
               />
             ) : <Navigate to="/" />
           } />
@@ -164,6 +165,7 @@ function App() {
                 setLastResetTime={setLastResetTime}
                 canAccessCohere={canAccessCohere}
                 setCanAccessCohere={setCanAccessCohere}
+                kindeAuth={kindeAuth}
               />
             ) : <Navigate to="/" />
           } />

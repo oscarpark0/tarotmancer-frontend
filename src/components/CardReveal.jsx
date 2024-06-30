@@ -29,7 +29,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
       const celticBaseScale = isMobile ? baseScale * 0.9 : baseScale;
       const celticBaseLeft = isMobile ? '30%' : baseLeft;
       const spacing = isMobile ? '20vw' : '15vw';
-      const verticalSpacing = isMobile ? '6vh' : '11vh';
+      const verticalSpacing = isMobile ? '6vh' : '10.5vh';
       
       return [
         { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },

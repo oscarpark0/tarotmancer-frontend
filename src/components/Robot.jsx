@@ -53,7 +53,6 @@ const Robot = memo(({
   onSpreadSelect,
   cards = [],
   isMobile,
-  drawCount,
   fetchSpread,
   onNewResponse,
   onResponseComplete,
@@ -228,7 +227,6 @@ const Robot = memo(({
           top: '100%',
           left: 0,
         }}
-        drawCount={drawCount}
         fetchSpread={fetchSpread}
         responses={responses}
         activeTab={activeTab}
@@ -257,7 +255,6 @@ Robot.propTypes = {
   onSpreadSelect: PropTypes.func.isRequired,
   cards: PropTypes.array,
   isMobile: PropTypes.bool.isRequired,
-  drawCount: PropTypes.number.isRequired,
   fetchSpread: PropTypes.func.isRequired,
   onNewResponse: PropTypes.func.isRequired,
   onResponseComplete: PropTypes.func.isRequired,

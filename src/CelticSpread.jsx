@@ -8,7 +8,7 @@ import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, incrementDrawCount, setDrawCount, setLastResetTime }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) => {
   const { getToken, user } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,11 +30,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
   }, []);
 
   const fetchSpread = useCallback(async () => {
-    if (drawCount >= 100) {
-      setError('You have reached the maximum number of draws for today. Please try again tomorrow.');
-      return;
-    }
-
     setIsLoading(true);
     try {
       const token = await getToken();
@@ -87,25 +82,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       setDealCards(true); 
       setMostCommonCards(formattedMostCommonCards);
 
-      // Handle rate limit headers
-      const remainingDraws = response.headers.get('X-RateLimit-Remaining');
-      const resetTime = response.headers.get('X-RateLimit-Reset');
-      
-      console.log('Received headers - Remaining draws:', remainingDraws, 'Reset time:', resetTime);
-
-      // Ensure we're working with numbers
-      const remainingDrawsNum = parseInt(remainingDraws, 100);
-      if (!isNaN(remainingDrawsNum)) {
-        console.log('Setting drawCount to:', 100 - remainingDrawsNum);
-        setDrawCount(10 - remainingDrawsNum);
-      } else {
-      }
-
-      const resetTimeNum = parseInt(resetTime, 100);
-      if (!isNaN(resetTimeNum)) {
-        setLastResetTime(resetTimeNum * 1000);
-      }
-
       setTimeout(() => {
         setRevealCards(true);
         setRevealedCards(data.positions.length);
@@ -114,8 +90,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
           handleSubmitInput(formattedMostCommonCards);
         }, 750);
       }, 1100);
-
-      incrementDrawCount();
     } catch (error) {
       console.error('Error drawing spread:', error);
       setError('Failed to draw spread. Please check your authentication and try again.');
@@ -124,7 +98,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, handleSubmitInput, drawCount, incrementDrawCount, setDrawCount, setLastResetTime, user]);
+  }, [getToken, selectedSpread, handleSubmitInput, user]);
 
   useEffect(() => {
     if (shouldDrawSpread) {
@@ -167,7 +141,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       cards={cards}
       selectedSpread={selectedSpread}
       onSpreadSelect={onSpreadSelect}
-      drawCount={drawCount}
       fetchSpread={fetchSpread}
       onNewResponse={(response) => {
         console.log('New response received:', response);
@@ -176,7 +149,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
         console.log('Response complete');
       }}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, drawCount, fetchSpread]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

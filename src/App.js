@@ -11,7 +11,6 @@ import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-import Plausible from 'plausible-tracker';
 
 function App() {
   const kindeAuth = useKindeAuth();
@@ -116,16 +115,13 @@ function App() {
     kindeAuth,
   }), [isMobile, handleSpreadSelect, selectedSpread, drawCount, incrementDrawCount, canAccessCohere, kindeAuth]);
 
-  const plausible = useMemo(() => Plausible({
-    domain: 'tarotmancer.com',
-    trackLocalhost: true, // Set this to false in production
-  }), []);
-
   useEffect(() => {
-    // Enable automatic page view tracking
-    const cleanup = plausible.enableAutoPageviews();
-    return () => cleanup();
-  }, [plausible]);
+    // Check if Plausible is loaded
+    if (window.plausible) {
+      // Track a custom event
+      window.plausible('appLoaded');
+    }
+  }, []);
 
   return (
     <KindeProvider

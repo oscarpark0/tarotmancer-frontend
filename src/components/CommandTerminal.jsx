@@ -9,8 +9,8 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
-  const [terminalOutput, setTerminalOutput] = useState('');
   const [showCards, setShowCards] = useState(false);
+  const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -22,14 +22,12 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     setInput(e.target.value);
   }, []);
 
-  const handleMonitorOutput = useCallback((output) => {
-    setTerminalOutput(output);
-    onMonitorOutput(output);
-  }, [onMonitorOutput]);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
+    if (!shouldRequestCohere) return;
+
     setIsLoading(true);
-    setTerminalOutput('Processing...');
+    onNewResponse(''); // Clear the previous response in the parent component
 
     try {
       const staticText = "You are Tarotmancer. Your responses are empathetic, acknowledging the seeker's emotions and showing that you understand their situation. You generate responses that are tailored to the seeker's specific situation. You avoid generic answers, ensuring that your guidance resonates with the seeker personally. You response using clear language to ensure your responses are easily understood. Avoid complex terminology and jargon. Your responses are formatted in an easy to view format. Your responses are formatted in an easy to view format.";
@@ -51,7 +49,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
-
       let responseContent = '';
 
       while (true) {
@@ -83,23 +80,27 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = 'An error occurred while processing your request.';
-      handleMonitorOutput(errorMessage);
-      setTerminalOutput(errorMessage);
+      onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
-      setTerminalOutput('Processing complete.');
       onResponseComplete();
+      setShouldRequestCohere(false);
     }
 
     setInput('');
-  }, [handleMonitorOutput, onNewResponse, onResponseComplete]);
+  }, [onNewResponse, onResponseComplete, shouldRequestCohere]);
 
   useEffect(() => {
-    if (mostCommonCards && dealingComplete) {
+    if (mostCommonCards && dealingComplete && shouldRequestCohere) {
       setShowCards(true);
       handleSubmit(mostCommonCards);
     }
-  }, [mostCommonCards, dealingComplete, handleSubmit]);
+  }, [mostCommonCards, dealingComplete, handleSubmit, shouldRequestCohere]);
+
+  const handleSpreadSelect = (newSpread) => {
+    onSpreadSelect(newSpread);
+    // Don't trigger Cohere request here
+  };
 
   useEffect(() => {
     const terminalOutput = terminalOutputRef.current;
@@ -107,7 +108,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const contentHeight = terminalOutput.scrollHeight;
       terminalOutput.style.maxHeight = `${contentHeight}px`;
     }
-  }, [terminalOutput]);
+  }, []);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
@@ -124,7 +125,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? 'Processing...' : terminalOutput}
+            {isLoading ? 'Processing...' : ''}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -132,7 +133,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       </div>
       <div className="draw-button-container">
         <div className="input-container2">
-          <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
+          <SpreadSelector onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
           <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
             <input
               type="text"
@@ -148,6 +149,8 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
         <ShimmerButton onClick={() => {
           console.log('Draw button clicked, calling fetchSpread');
           fetchSpread();
+          setShouldRequestCohere(true);
+          onNewResponse(''); // Clear the previous response in the parent component
         }} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 100}>
           {isLoading ? 'Processing...' : drawCount >= 10 ? 'Limit Reached' : 'Draw'}
         </ShimmerButton>

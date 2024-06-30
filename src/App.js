@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
@@ -116,29 +117,36 @@ function App() {
   }), [isMobile, handleSpreadSelect, selectedSpread, drawCount, incrementDrawCount, canAccessCohere, kindeAuth]);
 
   return (
-    <Router>
-      <div className={`App main-content ${isMobileScreen ? 'mobile' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
-        {memoizedHeader}
-        <Routes>
-          <Route path="/celtic-spread" element={
-            isAuthenticated ? (
-              <CelticSpread {...spreadProps} />
-            ) : <Navigate to="/" />
-          } />
-          <Route path="/three-card-spread" element={
-            isAuthenticated ? (
-              <ThreeCardSpread {...spreadProps} />
-            ) : <Navigate to="/" />
-          } />
-          <Route path="/" element={
-            isAuthenticated ? (
-              <Navigate to={selectedSpread === 'celtic' ? "/celtic-spread" : "/three-card-spread"} />
-            ) : memoizedWelcomeMessage
-          } />
-          <Route path="/callback" element={<Navigate to="/" />} />
-        </Routes>
-      </div>
-    </Router>
+    <KindeProvider
+      clientId={process.env.REACT_APP_KINDE_CLIENT_ID}
+      domain={process.env.REACT_APP_KINDE_DOMAIN}
+      redirectUri={process.env.REACT_APP_KINDE_REDIRECT_URI}
+      logoutUri={process.env.REACT_APP_KINDE_LOGOUT_URI}
+    >
+      <Router>
+        <div className={`App main-content ${isMobileScreen ? 'mobile' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
+          {memoizedHeader}
+          <Routes>
+            <Route path="/celtic-spread" element={
+              isAuthenticated ? (
+                <CelticSpread {...spreadProps} />
+              ) : <Navigate to="/" />
+            } />
+            <Route path="/three-card-spread" element={
+              isAuthenticated ? (
+                <ThreeCardSpread {...spreadProps} />
+              ) : <Navigate to="/" />
+            } />
+            <Route path="/" element={
+              isAuthenticated ? (
+                <Navigate to={selectedSpread === 'celtic' ? "/celtic-spread" : "/three-card-spread"} />
+              ) : memoizedWelcomeMessage
+            } />
+            <Route path="/callback" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
+      </Router>
+    </KindeProvider>
   );
 }
 

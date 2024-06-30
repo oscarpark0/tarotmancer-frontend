@@ -13,15 +13,32 @@
 
 .floating-card {
   position: absolute;
-  width: 15%; 
-  height: 25%; 
+  width: clamp(35px, 7vw, 70px);
+  height: clamp(52.5px, 10.5vw, 105px);
   border-radius: 3px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  object-fit: contain;
 }
 
 @media (max-width: 768px) {
   .floating-card {
-    width: 20vw; 
-    height: 30vh; 
+    width: clamp(25px, 5vw, 50px);
+    height: clamp(37.5px, 7.5vw, 75px);
   }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.floating-card {
+  animation: float 3s ease-in-out infinite;
+}
+
+.floating-cards.dealing .floating-card {
+  animation: none;
 }

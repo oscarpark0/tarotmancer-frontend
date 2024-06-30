@@ -72,6 +72,10 @@ const Robot = memo(({
 
   const handleNewResponse = useCallback((content) => {
     setResponses(prevResponses => {
+      if (content === '') {
+        // Clear all responses when an empty string is received
+        return [];
+      }
       if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
         const newResponse = { id: uuidv4(), content, complete: false };
         setActiveTab(newResponse.id);
@@ -83,8 +87,8 @@ const Robot = memo(({
         return updatedResponses;
       }
     });
-    setMonitorOutput(content);
-    onNewResponse(content);
+    setMonitorOutput(content); // This updates the Robot's display
+    onNewResponse(content); // This notifies the parent component
   }, [onNewResponse]);
 
   const completeCurrentResponse = useCallback(() => {
@@ -183,14 +187,13 @@ const Robot = memo(({
             <div className="screen-content" ref={screenContentRef}>
               <FloatingCards
                 dealCards={dealCards}
-                cardPositions={cardPositions}
                 monitorPosition={monitorPosition}
                 finalCardPositions={finalCardPositions}
                 revealCards={revealCards}
                 onExitComplete={onExitComplete}
                 shouldDrawNewSpread={shouldDrawNewSpread}
                 dealingComplete={dealingComplete}
-                cards={cards}
+                numCards={cards.length}
                 isMobile={isMobile}
               />
               <div className="monitor-output">

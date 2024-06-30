@@ -84,7 +84,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       const formattedMostCommonCards = data.positions.map(
         (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
       ).join('\n');
-      setDealCards(true);
+      setDealCards(true); 
       setMostCommonCards(formattedMostCommonCards);
 
       // Handle rate limit headers
@@ -99,7 +99,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
         console.log('Setting drawCount to:', 100 - remainingDrawsNum);
         setDrawCount(10 - remainingDrawsNum);
       } else {
-        console.warn('Invalid remaining draws value:', remainingDraws);
       }
 
       const resetTimeNum = parseInt(resetTime, 100);
@@ -171,8 +170,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, dra
       drawCount={drawCount}
       fetchSpread={fetchSpread}
       onNewResponse={(response) => {
+        console.log('New response received:', response);
       }}
       onResponseComplete={() => {
+        console.log('Response complete');
       }}
     />
   ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, drawCount, fetchSpread]);

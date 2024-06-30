@@ -5,7 +5,7 @@ import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, drawCount, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -151,8 +151,8 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
           fetchSpread();
           setShouldRequestCohere(true);
           onNewResponse(''); // Clear the previous response in the parent component
-        }} aria-label="Draw Cards" label="Draw" disabled={isLoading || drawCount >= 100}>
-          {isLoading ? 'Processing...' : drawCount >= 10 ? 'Limit Reached' : 'Draw'}
+        }} aria-label="Draw Cards" label="Draw" disabled={isLoading}>
+          {isLoading ? 'Processing...' : 'Draw'}
         </ShimmerButton>
       </div>
     </div>

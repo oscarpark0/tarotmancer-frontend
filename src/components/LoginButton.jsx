@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { LanguageContext } from './LanguageSelector';
+import { buttonTranslations } from '../utils/translations';
 
 const LoginButton = () => {
   const { login } = useKindeAuth();
+  const { selectedLanguage } = useContext(LanguageContext);
 
   const handleLogin = () => {
     if (login) {
@@ -15,7 +18,7 @@ const LoginButton = () => {
 
   return (
     <button onClick={handleLogin} className="mystic-button">
-      <span className="button-text">Login</span>
+      <span className="button-text">{buttonTranslations.login[selectedLanguage]}</span>
     </button>
   );
 };

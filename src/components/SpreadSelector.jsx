@@ -1,7 +1,6 @@
 import React, { memo } from 'react';
 
 const SpreadSelector = memo(({ onSpreadSelect, selectedSpread }) => {
-  console.log('SpreadSelector rendering:', { selectedSpread }); 
 
   const handleChange = (event) => {
     onSpreadSelect(event.target.value);

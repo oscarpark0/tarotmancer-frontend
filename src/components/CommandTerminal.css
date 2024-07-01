@@ -9,7 +9,7 @@
   border-style: inset;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
   padding: 20px;
-  width: 100%; /* Match the width of the robot container */
+  width: 500px; /* Match the width of the robot container */
   top: 100%; /* Position it directly below the robot */
   display: flex;
   flex-direction: column;
@@ -197,19 +197,58 @@
 
 .shimmer-button {
   background-color: #0a0a0a;
-  border: 1px solid #33ff33;
+  border: 2px solid #33ff33;
   color: #33ff33;
   font-family: 'VT323', monospace;
   text-transform: uppercase;
   letter-spacing: 1px;
-  padding: 8px 20px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px 20px;
+  font-size: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
   transition: all 0.3s ease;
 }
 
+.shimmer-button:hover::before {
+  left: 100%;
+}
+
 .shimmer-button:hover {
-  background-color: #33ff33;
-  color: #0a0a0a;
+  background-color: #1a1a1a;
+  box-shadow: 0 0 10px #33ff33;
+}
+
+.shimmer-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.shimmer-button.drawing {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
 .command-terminal.mobile .monitor-output {
@@ -231,7 +270,7 @@
 }
 
 .spread-selector select {
-  width: 100%;
+  width: 65%;
   padding: 1px;
   background-color: #0a0a0a;
   color: #33ff33;
@@ -252,6 +291,20 @@
   flex-direction: column;
   width: 100%;
   margin-right: 10px;
+}
+
+.language-selector {
+  margin: 5px 0 10px;
+}
+
+.language-selector select {
+  width: 50%;
+  padding: 0.5px;
+  background: #0a0a0a url("data:image/svg+xml;utf8,<svg fill='%2333ff33' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat 98% 50%;
+  color: #33ff33;
+  border: 1px solid #33ff33;
+  font: 12px;
+  appearance: none;
 }
 
 @media (max-width: 768px) {

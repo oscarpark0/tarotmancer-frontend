@@ -1,5 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import styles from './SubscribeButton.module.css';
+import { LanguageContext } from './LanguageSelector';
+import { buttonTranslations } from '../utils/translations';
 
 const loadKindeWidgetScripts = () => {
   const link = document.createElement('link');
@@ -18,13 +20,17 @@ const SubscribeButton: React.FC = () => {
   const [subscriptionStatus, setSubscriptionStatus] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const scriptLoadedRef = useRef(false);
+  const { selectedLanguage } = useContext(LanguageContext);
+
+  const getTranslation = (key: string) => {
+    return buttonTranslations[key as keyof typeof buttonTranslations][selectedLanguage as keyof (typeof buttonTranslations)[keyof typeof buttonTranslations]] || buttonTranslations[key as keyof typeof buttonTranslations]['English'];
+  };
 
   useEffect(() => {
     if (!scriptLoadedRef.current) {
       const { script, link } = loadKindeWidgetScripts();
       script.onload = () => {
         scriptLoadedRef.current = true;
-        console.log('Kinde Widget script loaded');
       };
       script.onerror = (error) => {
         console.error('Error loading Kinde Widget script:', error);
@@ -74,7 +80,7 @@ const SubscribeButton: React.FC = () => {
   return (
     <>
       <button onClick={() => setIsModalOpen(true)} className={styles.subscribeButton}>
-        Subscribe
+        {getTranslation('subscribe')}
       </button>
       {isModalOpen && (
         <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
@@ -83,7 +89,7 @@ const SubscribeButton: React.FC = () => {
               &times;
             </button>
             {isLoading ? (
-              <div className={styles.loadingMessage}>Subscribing...</div>
+              <div className={styles.loadingMessage}>{getTranslation('subscribing')}</div>
             ) : subscriptionStatus ? (
               <div className={styles.successMessage}>{subscriptionStatus}</div>
             ) : (
@@ -107,16 +113,16 @@ const SubscribeButton: React.FC = () => {
                   <fieldset>
                     <div>
                       <legend>
-                        <span className="kuiembed-heading">Updates &amp; Weekly Readings</span>
+                        <span className="kuiembed-heading">{getTranslation('updatesAndWeeklyReadings')}</span>
                         <span className="kuiembed-sub-heading">
-                        Signup to receive updates about Tarotmancer, and receive a weekly reading delivered to your email.
+                          {getTranslation('signupDescription')}
                         </span>
                       </legend>
                     </div>
                     <div className="kuiembed-form">
                       <div className="kuiembed-field">
                         <label className="kuiembed-label" data-kui-name="new_name" htmlFor="id__kui_new_name">
-                          First name
+                          {getTranslation('firstName')}
                         </label>
                         <input
                           className="kuiembed-input-field__name"
@@ -128,7 +134,7 @@ const SubscribeButton: React.FC = () => {
                       </div>
                       <div className="kuiembed-field">
                         <label className="kuiembed-label" data-kui-name="new_email" htmlFor="id__kui_new_email">
-                          Email
+                          {getTranslation('email')}
                         </label>
                         <input
                           className="kuiembed-input-field__email"
@@ -141,7 +147,7 @@ const SubscribeButton: React.FC = () => {
                       </div>
                       <div className="kuiembed-field">
                         <button type="submit" className="kuiembed-button">
-                          Sign up
+                          {getTranslation('signUp')}
                         </button>
                       </div>
                     </div>

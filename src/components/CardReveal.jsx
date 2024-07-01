@@ -29,7 +29,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
       const celticBaseScale = isMobile ? baseScale * 0.9 : baseScale;
       const celticBaseLeft = isMobile ? '30%' : baseLeft;
       const spacing = isMobile ? '20vw' : '15vw';
-      const verticalSpacing = isMobile ? '6vh' : '10.5vh';
+      const verticalSpacing = isMobile ? '5vh' : '10.5vh';
       
       return [
         { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
@@ -48,7 +48,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
 
   useEffect(() => {
     let timer;
-    if (dealingComplete && (flippedCards < cards.length || revealedCards < cards.length)) {
+    if (revealCards && (flippedCards < cards.length || revealedCards < cards.length)) {
       if (flippedCards < cards.length) {
         timer = setTimeout(() => {
           setFlippedCards(flippedCards + 1);
@@ -60,7 +60,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
       }
     }
     return () => clearTimeout(timer);
-  }, [revealedCards, flippedCards, cards.length, dealingComplete]);
+  }, [revealedCards, flippedCards, cards.length, revealCards]);
 
   useEffect(() => {
     if (shouldDrawNewSpread) {

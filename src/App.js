@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 import CelticSpread from './CelticSpread';
 import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
@@ -9,6 +8,7 @@ import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation.tsx';
+import LanguageSelector, { LanguageProvider } from './components/LanguageSelector';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 
@@ -78,11 +78,15 @@ function App() {
           <div className="auth-container">
             {isAuthenticated ? (
               <>
+                <LanguageSelector />
                 <SubscribeButton />
                 <LogoutButton />
               </>
             ) : (
-              <LoginButton />
+              <>
+                <LanguageSelector />
+                <LoginButton />
+              </>
             )}
           </div>
         </div>
@@ -124,12 +128,7 @@ function App() {
   }, []);
 
   return (
-    <KindeProvider
-      clientId={process.env.REACT_APP_KINDE_CLIENT_ID}
-      domain={process.env.REACT_APP_KINDE_DOMAIN}
-      redirectUri={process.env.REACT_APP_KINDE_REDIRECT_URI}
-      logoutUri={process.env.REACT_APP_KINDE_LOGOUT_URI}
-    >
+    <LanguageProvider>
       <Router>
         <div className={`App main-content ${isMobileScreen ? 'mobile' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
           {memoizedHeader}
@@ -153,7 +152,7 @@ function App() {
           </Routes>
         </div>
       </Router>
-    </KindeProvider>
+    </LanguageProvider>
   );
 }
 

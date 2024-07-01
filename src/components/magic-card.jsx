@@ -29,24 +29,5 @@ const MagicContainer = ({ children, className }) => {
   );
 };
 
-const MagicCard = ({
-  as: Tag = "div",
-  className,
-  children,
-  size = 2000,
-  spotlight = false,
-  spotlightColor = "255, 255, 255",
-  isolated = true,
-  background = "radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(0,0,0,1) 100%)",
-}) => {
-  return (
-    <Tag
-      className={cn("group relative flex items-center justify-center z-10", className)}
-      style={{ "--size": `${size}px`, "--bg": background, "--spotlight-color": spotlightColor, overflow: 'visible' }}
-    >
-      {children}
-    </Tag>
-  );
-};
 
-export { MagicCard, MagicContainer };
+export {MagicContainer };

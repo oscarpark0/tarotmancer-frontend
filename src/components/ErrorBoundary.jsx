@@ -1,36 +1,36 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
+const ErrorBoundary = ({ children }) => {
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const errorHandler = (error) => {
+      console.error("ErrorBoundary caught an error", error);
+      setError(error);
+    };
+
+    window.addEventListener('error', errorHandler);
+    return () => window.removeEventListener('error', errorHandler);
+  }, []);
+
+  if (error) {
+    return (
+      <div className="error-boundary">
+        <h2>Something went wrong</h2>
+        <details>
+          <summary>Error details</summary>
+          <pre>{error.toString()}</pre>
+        </details>
+      </div>
+    );
   }
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
+  return children;
+};
 
-  componentDidCatch(error, errorInfo) {
-    this.setState({ errorInfo });
-    console.error("ErrorBoundary caught an error", error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div>
-          <h2>Something went wrong.</h2>
-          <details style={{ whiteSpace: 'pre-wrap' }}>
-            {this.state.error && this.state.error.toString()}
-            <br />
-            {this.state.errorInfo && this.state.errorInfo.componentStack}
-          </details>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
+ErrorBoundary.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export default ErrorBoundary;

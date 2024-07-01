@@ -18,7 +18,20 @@
   }
 
   .auth-container {
-    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust this value to control spacing between elements */
+  }
+
+  .language-selector {
+    margin-right: 10px; /* Adds some space between the language selector and the next button */
+  }
+
+  /* If the language selector is too large, you might want to adjust its size */
+  .language-selector select {
+    padding: 1px;
+    width: 100px;
+    font-size: 14px;
   }
 
   @media (max-width: 767px) {

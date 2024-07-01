@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { LanguageContext } from './LanguageSelector';
+import { buttonTranslations } from '../utils/translations';
 
 const LogoutButton = () => {
   const { logout } = useKindeAuth();
+  const { selectedLanguage } = useContext(LanguageContext);
 
   const handleLogout = () => {
     // Store the current drawCount and lastResetTime in sessionStorage
@@ -30,7 +33,7 @@ const LogoutButton = () => {
 
   return (
     <button onClick={handleLogout} className="mystic-button">
-      <span className="button-text">Logout</span>
+      <span className="button-text">{buttonTranslations.logout[selectedLanguage]}</span>
     </button>
   );
 };

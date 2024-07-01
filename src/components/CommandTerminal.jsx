@@ -1,9 +1,12 @@
-import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useRef, useEffect, useCallback, forwardRef, useContext } from 'react';
 import './CommandTerminal.css';
 import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
+import LanguageSelector, { LanguageContext } from './LanguageSelector';
+import { buttonTranslations } from '../utils/translations';
 
 const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
   const [input, setInput] = useState('');
@@ -11,6 +14,16 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const terminalOutputRef = useRef(null);
   const [showCards, setShowCards] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
+  const { selectedLanguage } = useContext(LanguageContext);
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  const getTranslation = (key) => {
+    if (!buttonTranslations[key]) {
+      console.warn(`Translation key "${key}" not found`);
+      return key; // Return the key itself as a fallback
+    }
+    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'] || key;
+  };
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -22,16 +35,16 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     setInput(e.target.value);
   }, []);
 
-
   const handleSubmit = useCallback(async (mostCommonCards) => {
     if (!shouldRequestCohere) return;
 
     setIsLoading(true);
-    onNewResponse(''); // Clear the previous response in the parent component
+    onNewResponse(''); 
 
     try {
       const staticText = "You are Tarotmancer. Your responses are empathetic, acknowledging the seeker's emotions and showing that you understand their situation. You generate responses that are tailored to the seeker's specific situation. You avoid generic answers, ensuring that your guidance resonates with the seeker personally. You response using clear language to ensure your responses are easily understood. Avoid complex terminology and jargon. Your responses are formatted in an easy to view format. Your responses are formatted in an easy to view format.";
-      const message = `${staticText} ${mostCommonCards.trim()} `;
+      const languagePrefix = selectedLanguage !== 'English' ? `Respond in ${selectedLanguage}. ` : '';
+      const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} `;
 
       const response = await fetch('https://api.cohere.com/v1/chat', {
         method: 'POST',
@@ -49,7 +62,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
-      let responseContent = '';
 
       while (true) {
         const { value, done } = await reader.read();
@@ -68,8 +80,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
             const data = JSON.parse(line);
 
             if (data.event_type === 'text-generation') {
-              responseContent += data.text;
-              onNewResponse(responseContent);
+              onNewResponse(data.text); 
             }
           } catch (error) {
             console.error('Error parsing JSON:', error);
@@ -79,23 +90,23 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
     } catch (error) {
       console.error('Error:', error);
-      const errorMessage = 'An error occurred while processing your request.';
+      const errorMessage = getTranslation('errorMessage');
       onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
       onResponseComplete();
-      setShouldRequestCohere(false);
     }
 
     setInput('');
-  }, [onNewResponse, onResponseComplete, shouldRequestCohere]);
+  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere) {
       setShowCards(true);
       handleSubmit(mostCommonCards);
+      setShouldRequestCohere(false); // Reset the flag after initiating the request
     }
-  }, [mostCommonCards, dealingComplete, handleSubmit, shouldRequestCohere]);
+  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);
@@ -109,6 +120,20 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       terminalOutput.style.maxHeight = `${contentHeight}px`;
     }
   }, []);
+
+  const handleDrawClick = useCallback(() => {
+    if (isDrawing) return;
+    setIsDrawing(true);
+    fetchSpread();
+    setShouldRequestCohere(true);
+    onNewResponse('');
+  }, [isDrawing, fetchSpread, setShouldRequestCohere, onNewResponse]);
+
+  useEffect(() => {
+    if (dealingComplete) {
+      setIsDrawing(false);
+    }
+  }, [dealingComplete]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
@@ -125,7 +150,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? 'Processing...' : ''}
+            {isLoading ? getTranslation('processing') : ''}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -134,25 +159,29 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       <div className="draw-button-container">
         <div className="input-container2">
           <SpreadSelector onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
+          <LanguageSelector onLanguageSelect={() => {}} selectedLanguage={selectedLanguage} />
           <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
             <input
               type="text"
               value={input}
               onChange={handleInputChange}
               className="terminal-input"
-              placeholder="Set your focus."
               id="terminal-input"
               disabled={isLoading}
+              placeholder={getTranslation('inputPlaceholder')}
             />
           </form>
         </div>
-        <ShimmerButton onClick={() => {
-          console.log('Draw button clicked, calling fetchSpread');
-          fetchSpread();
-          setShouldRequestCohere(true);
-          onNewResponse(''); // Clear the previous response in the parent component
-        }} aria-label="Draw Cards" label="Draw" disabled={isLoading}>
-          {isLoading ? 'Processing...' : 'Draw'}
+        <ShimmerButton 
+          onClick={handleDrawClick}
+          aria-label={getTranslation('drawCardsAriaLabel')}
+          label={getTranslation('draw')}
+          disabled={isLoading || isDrawing}
+          className={isDrawing ? 'drawing' : ''}
+        >
+          {isLoading ? getTranslation('processing') : 
+           isDrawing ? getTranslation('drawing') : 
+           getTranslation('draw')}
         </ShimmerButton>
       </div>
     </div>

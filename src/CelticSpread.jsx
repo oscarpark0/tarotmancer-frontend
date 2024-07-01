@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
@@ -7,6 +7,7 @@ import { API_BASE_URL } from './utils/config.tsx';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+
 
 const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) => {
   const { getToken, user } = useKindeAuth();
@@ -20,8 +21,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
-  const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
   const [cards, setCards] = useState([]);
+  const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -81,15 +82,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       ).join('\n');
       setDealCards(true); 
       setMostCommonCards(formattedMostCommonCards);
-
-      setTimeout(() => {
-        setRevealCards(true);
-        setRevealedCards(data.positions.length);
-        setTimeout(() => {
-          setDealingComplete(true);
-          handleSubmitInput(formattedMostCommonCards);
-        }, 750);
-      }, 1100);
     } catch (error) {
       console.error('Error drawing spread:', error);
       setError('Failed to draw spread. Please check your authentication and try again.');
@@ -98,19 +90,21 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, handleSubmitInput, user]);
+  }, [getToken, selectedSpread, user]);
 
-  useEffect(() => {
-    if (shouldDrawSpread) {
-      fetchSpread();
-      setShouldDrawSpread(false);
-    }
-  }, [fetchSpread, shouldDrawSpread]);
+  const handleDealingComplete = useCallback(() => {
+    setDealingComplete(true);
+    handleSubmitInput(mostCommonCards);
+  }, [handleSubmitInput, mostCommonCards]);
 
   const handleExitComplete = useCallback(() => {
-    setRevealCards(true);
-    setTimeout(() => setDealingComplete(true), 500);
-  }, []);
+    setFloatingCardsComplete(true);
+    setTimeout(() => {
+      setRevealCards(true);
+      setRevealedCards(cards.length);
+      setTimeout(handleDealingComplete, 750);
+    }, 500);
+  }, [cards.length, handleDealingComplete]);
 
   const handleMonitorOutput = useCallback(() => {}, []);
 
@@ -133,7 +127,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       shouldDrawNewSpread={shouldDrawNewSpread}
       onMonitorOutput={handleMonitorOutput}
       drawSpread={drawSpread}
-      dealingComplete={dealingComplete}
+      dealingComplete={handleDealingComplete}
       mostCommonCards={mostCommonCards}
       formRef={formRef}
       onSubmitInput={handleSubmitInput}
@@ -143,13 +137,11 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       onSpreadSelect={onSpreadSelect}
       fetchSpread={fetchSpread}
       onNewResponse={(response) => {
-        console.log('New response received:', response);
       }}
       onResponseComplete={() => {
-        console.log('Response complete');
       }}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -158,20 +150,22 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
       revealCards={revealCards}
-      dealingComplete={dealingComplete}
+      dealingComplete={handleDealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
+      numCards={10}
+      isMobile={isMobile}
       cards={cards}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, cards]);
+  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
       cards={cards}
-      revealCards={revealCards}
+      revealCards={revealCards && floatingCardsComplete}
       dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
     />
-  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread]);
+  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, floatingCardsComplete]);
 
   return (
     <ErrorBoundary>

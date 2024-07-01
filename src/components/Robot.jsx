@@ -6,6 +6,7 @@ import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
+import { formatResponse } from '../utils/textFormatting';
 
 
 const adjustFontSize = () => {
@@ -72,22 +73,21 @@ const Robot = memo(({
   const handleNewResponse = useCallback((content) => {
     setResponses(prevResponses => {
       if (content === '') {
-        // Clear all responses when an empty string is received
         return [];
       }
       if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
-        const newResponse = { id: uuidv4(), content, complete: false };
+        const newResponse = { id: uuidv4(), content: formatResponse(content), complete: false };
         setActiveTab(newResponse.id);
         return [...prevResponses, newResponse];
       } else {
         const updatedResponses = [...prevResponses];
         const lastResponse = updatedResponses[updatedResponses.length - 1];
-        lastResponse.content = content;
+        lastResponse.content += formatResponse(content);
         return updatedResponses;
       }
     });
-    setMonitorOutput(content); // This updates the Robot's display
-    onNewResponse(content); // This notifies the parent component
+    setMonitorOutput(prevOutput => prevOutput + formatResponse(content));
+    onNewResponse(content);
   }, [onNewResponse]);
 
   const completeCurrentResponse = useCallback(() => {
@@ -191,7 +191,11 @@ const Robot = memo(({
                 revealCards={revealCards}
                 onExitComplete={onExitComplete}
                 shouldDrawNewSpread={shouldDrawNewSpread}
-                dealingComplete={dealingComplete}
+                dealingComplete={() => {
+                  if (typeof dealingComplete === 'function') {
+                    dealingComplete();
+                  }
+                }}
                 numCards={cards.length}
                 isMobile={isMobile}
               />
@@ -247,7 +251,7 @@ Robot.propTypes = {
   shouldDrawNewSpread: PropTypes.bool.isRequired,
   onMonitorOutput: PropTypes.func.isRequired,
   drawSpread: PropTypes.func.isRequired,
-  dealingComplete: PropTypes.bool.isRequired,
+  dealingComplete: PropTypes.func.isRequired,
   mostCommonCards: PropTypes.string.isRequired,
   formRef: PropTypes.object.isRequired,
   onSubmitInput: PropTypes.func.isRequired,

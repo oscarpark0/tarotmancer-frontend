@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
@@ -21,7 +21,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [mostCommonCards, setMostCommonCards] = useState('');
   const [cards, setCards] = useState([]);
   const formRef = useRef(null);
-  const [shouldDrawSpread, setShouldDrawSpread] = useState(false);
+  const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -83,12 +83,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       const remainingDraws = response.headers.get('X-RateLimit-Remaining');
       const resetTime = response.headers.get('X-RateLimit-Reset');
       
-      console.log('Received headers - Remaining draws:', remainingDraws, 'Reset time:', resetTime);
 
       // Ensure we're working with numbers
       const remainingDrawsNum = parseInt(remainingDraws, 100);
       if (!isNaN(remainingDrawsNum)) {
-        console.log('Setting drawCount to:', 100 - remainingDrawsNum);
         setDrawCount(10 - remainingDrawsNum);
       } else {
         console.warn('Invalid remaining draws value:', remainingDraws);
@@ -104,15 +102,6 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setDealCards(true);
       setMostCommonCards(formattedMostCommonCards);
 
-      setTimeout(() => {
-        setRevealCards(true);
-        setRevealedCards(data.positions.length);
-        setTimeout(() => {
-          setDealingComplete(true);
-          handleSubmitInput(formattedMostCommonCards);
-        }, 750);
-      }, 1100);
-
     } catch (error) {
       console.error('Error drawing spread:', error);
       setError('Failed to draw spread. Please check your authentication and try again.');
@@ -121,19 +110,21 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, handleSubmitInput, drawCount, setDrawCount, setLastResetTime]);
+  }, [getToken, selectedSpread, drawCount, setDrawCount, setLastResetTime]);
 
-  useEffect(() => {
-    if (shouldDrawSpread) {
-      fetchSpread();
-      setShouldDrawSpread(false);
-    }
-  }, [fetchSpread, shouldDrawSpread]);
+  const handleDealingComplete = useCallback(() => {
+    setDealingComplete(true);
+    handleSubmitInput(mostCommonCards);
+  }, [handleSubmitInput, mostCommonCards]);
 
   const handleExitComplete = useCallback(() => {
-    setRevealCards(true);
-    setTimeout(() => setDealingComplete(true), 500);
-  }, []);
+    setFloatingCardsComplete(true);
+    setTimeout(() => {
+      setRevealCards(true);
+      setRevealedCards(cards.length);
+      setTimeout(handleDealingComplete, 750);
+    }, 500);
+  }, [cards.length, handleDealingComplete]);
 
   const handleMonitorOutput = useCallback(() => {}, []);
 
@@ -156,7 +147,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       shouldDrawNewSpread={shouldDrawNewSpread}
       onMonitorOutput={handleMonitorOutput}
       drawSpread={handleDrawSpread}
-      dealingComplete={dealingComplete}
+      dealingComplete={handleDealingComplete}
       mostCommonCards={mostCommonCards}
       formRef={formRef}
       onSubmitInput={handleSubmitInput}
@@ -167,35 +158,37 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       drawCount={drawCount}
       fetchSpread={fetchSpread}
       onNewResponse={(response) => {
+        // Use formattedResponse as needed
       }}
       onResponseComplete={() => {
       }}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, dealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
       dealCards={dealCards}
-      monitorPosition={{ width: window.screen.width, height: window.screen.height }}
+      monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
       revealCards={revealCards}
-      dealingComplete={dealingComplete}
+      dealingComplete={handleDealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
-      cards={cards}
+      numCards={3}
+      isMobile={isMobile}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, cards]);
+  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
       cards={cards}
-      revealCards={revealCards}
+      revealCards={revealCards && floatingCardsComplete}
       dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
       isMobile={isMobile}
       className="md:hidden"
     />
-  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile]);
+  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, floatingCardsComplete]);
 
   return (
     <ErrorBoundary>

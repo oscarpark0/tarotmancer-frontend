@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+
+import { useState, useEffect, useCallback } from 'react';
 
 const useCardAnimation = (numCards, dealCards, revealCards) => {
   const [revealedCards, setRevealedCards] = useState(0);
@@ -6,49 +7,15 @@ const useCardAnimation = (numCards, dealCards, revealCards) => {
   const [isDealing, setIsDealing] = useState(false);
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
 
-  const cardPositions = useMemo(() => {
-    const isMobile = window.innerWidth <= 768;
-    const baseScale = isMobile ? 0.025 : 0.018; // Increased scale for mobile
-    const baseLeft = '50%';
-    const topOffset = isMobile ? '60%' : '10%'; // Centered vertically on mobile
-    
-    if (numCards === 3) {
-      // Three Card Spread
-      const threeCardSpacing = isMobile ? '25vw' : '10vw'; // Increased spacing for mobile
-      return [
-        { top: topOffset, left: `calc(${baseLeft} - ${threeCardSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})` },
-        { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})` },
-        { top: topOffset, left: `calc(${baseLeft} + ${threeCardSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})` },
-      ];
-    } else {
-      // Celtic Cross Spread
-      const crossCardScale = baseScale * 0.9;
-      const celticBaseScale = isMobile ? baseScale * 0.8 : baseScale;
-      const spacing = isMobile ? '30vw' : '10vw'; // Increased spacing for mobile
-      const verticalSpacing = isMobile ? '10vh' : '10h'; // Adjusted for mobile
-      
-      return [
-        { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-        { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) rotate(90deg) scale(${crossCardScale * 0.7})` },
-        { top: `calc(${topOffset} - ${verticalSpacing})`, left: baseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-        { top: `calc(${topOffset} + ${verticalSpacing})`, left: baseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-        { top: topOffset, left: `calc(${baseLeft} - 12vw)`, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-        { top: topOffset, left: `calc(${baseLeft} + 12vw)`, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-        { top: `calc(${topOffset} - ${verticalSpacing} * 1.5)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-        { top: `calc(${topOffset} - ${verticalSpacing} * 0.5)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-        { top: `calc(${topOffset} + ${verticalSpacing} * 0.5)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-        { top: `calc(${topOffset} + ${verticalSpacing} * 1.5)`, left: `calc(${baseLeft} + ${spacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
-      ];
-    }
-  }, [numCards]);
-
   useEffect(() => {
+    console.log('dealCards in useCardAnimation:', dealCards);
     if (dealCards) {
       setIsDealing(true);
     }
   }, [dealCards]);
 
   useEffect(() => {
+    console.log('revealCards in useCardAnimation:', revealCards);
     if (revealCards) {
       const interval = setInterval(() => {
         setRevealedCards(prev => prev + 1);
@@ -73,7 +40,7 @@ const useCardAnimation = (numCards, dealCards, revealCards) => {
     setIsDealing(false);
   }, []);
 
-  return { revealedCards, floatingCardsRemoved, isDealing, resetAnimation, setShouldDrawNewSpread, cardPositions };
+  return { revealedCards, floatingCardsRemoved, isDealing, resetAnimation, setShouldDrawNewSpread };
 };
 
 export default useCardAnimation;

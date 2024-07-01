@@ -43,8 +43,9 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
     try {
       const staticText = "You are Tarotmancer. Your responses are empathetic, acknowledging the seeker's emotions and showing that you understand their situation. You generate responses that are tailored to the seeker's specific situation. You avoid generic answers, ensuring that your guidance resonates with the seeker personally. You response using clear language to ensure your responses are easily understood. Avoid complex terminology and jargon. Your responses are formatted in an easy to view format. Your responses are formatted in an easy to view format.";
-      const languagePrefix = selectedLanguage !== 'English' ? `Respond in ${selectedLanguage}. ` : '';
-      const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} `;
+      const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
+      const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
+      const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
       const response = await fetch('https://api.cohere.com/v1/chat', {
         method: 'POST',
@@ -98,7 +99,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     }
 
     setInput('');
-  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete]);
+  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere) {

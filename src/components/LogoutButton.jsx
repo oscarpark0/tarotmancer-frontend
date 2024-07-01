@@ -24,9 +24,6 @@ const LogoutButton = () => {
       return;
     }
 
-    // Clear localStorage items related to the current session
-    localStorage.removeItem('drawCount');
-    localStorage.removeItem('lastResetTime');
 
     window.location.href = '/';
   };

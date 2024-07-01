@@ -1,44 +1,37 @@
+
 .floating-cards {
   position: absolute;
-  top: -10%; /* Move up by 10% of the container height */
-  left: -10%; /* Move left by 10% of the container width */
-  width: 120%; /* Increase width to compensate for left shift */
-  height: 120%; /* Increase height to compensate for upward shift */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
   pointer-events: none;
-  z-index: 1500; /* Ensure cards are above other elements */
 }
 
 .floating-card {
   position: absolute;
-  width: clamp(40px, 8vw, 80px);
-  height: clamp(60px, 12vw, 140px);
-  border-radius: 10px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  width: clamp(35px, 7vw, 70px);
+  height: clamp(52.5px, 10.5vw, 105px);
+  border-radius: 3px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   will-change: transform, opacity;
   backface-visibility: hidden;
   transform-style: preserve-3d;
   object-fit: contain;
 }
 
-@media (max-width: 768px) {
-  .floating-card {
-    width: clamp(40px, 10vw, 80px);
-    height: clamp(60px, 15vw, 120px);
-  }
-}
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-15px) rotate(-2deg); }
-  75% { transform: translateY(10px) rotate(2deg); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .floating-card {
-  animation: float 6s ease-in-out infinite;
+  animation: float 3s ease-in-out infinite;
 }
 
 .floating-cards.dealing .floating-card {

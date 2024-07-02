@@ -1,12 +1,12 @@
 .subscribeButton {
-    /* Style your subscribe button */
-    padding: 10px 20px;
-    background-color: #8796a7;
-    color: white;
-    border: none;
-    border-radius: 52px;
-    cursor: pointer;
-  }
+  /* Improved contrast */
+  padding: 10px 20px;
+  background-color: #4a5568; /* Darker shade for better contrast */
+  color: white;
+  border: none;
+  border-radius: 52px;
+  cursor: pointer;
+}
   
   .modalOverlay {
     position: fixed;
@@ -14,7 +14,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7); /* Increased opacity for better contrast */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +22,7 @@
   }
   
   .modalContent {
-    background-color: rgba(255, 255, 255, 0);
+    background-color: #ffffff; /* Solid white background for better readability */
     padding: 20px;
     border-radius: 5px;
     max-width: 500px;
@@ -44,24 +44,24 @@
   
   .kindeForm {
     /* Override Kinde's default styles to ensure visibility */
-    color: #333 !important;
+    color: #000000 !important; /* Black text for maximum contrast */
   }
   
   .kindeForm input,
   .kindeForm button {
-    color: #333 !important;
-    background-color: #fff !important;
-    border: 1px solid #ccc !important;
+    color: #000000 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #4a5568 !important; /* Darker border for better visibility */
   }
   
   .kindeForm button[type="submit"] {
-    background-color: #007bff !important;
+    background-color: #2c5282 !important; /* Darker blue for better contrast */
     color: white !important;
     border: none !important;
   }
   
   .successMessage {
-    color: #4CAF50;
+    color: #2f855a; /* Darker green for better readability */
     font-size: 18px;
     text-align: center;
     padding: 20px;

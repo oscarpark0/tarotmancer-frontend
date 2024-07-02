@@ -166,7 +166,9 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       <div className="draw-button-container">
         <div className="input-container2">
           <SpreadSelector onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
-          <LanguageSelector onLanguageSelect={() => {}} selectedLanguage={selectedLanguage} />
+          <div className="terminal-language-selector">
+            <LanguageSelector onLanguageSelect={() => {}} selectedLanguage={selectedLanguage} />
+          </div>
           <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
             <input
               type="text"

@@ -1,16 +1,18 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import CelticSpread from './CelticSpread';
-import ThreeCardSpread from './ThreeCardSpread';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation.tsx';
 import LanguageSelector, { LanguageProvider } from './components/LanguageSelector';
+import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
+
+const CelticSpread = lazy(() => import('./CelticSpread'));
+const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
 
 function App() {
   const kindeAuth = useKindeAuth();
@@ -32,6 +34,15 @@ function App() {
   const [drawCount, setDrawCount] = useState(0);
   const [lastResetTime, setLastResetTime] = useState(Date.now());
   const [canAccessCohere, setCanAccessCohere] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleDarkMode = useCallback(() => {
+    setIsDarkMode(prevMode => !prevMode);
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle('dark-mode', isDarkMode);
+  }, [isDarkMode]);
 
   const handleSpreadSelect = useCallback((spread) => {
     setSelectedSpread(spread);
@@ -76,15 +87,20 @@ function App() {
         <div className="header-content">
           <h1 className="app-title">TarotMancer</h1>
           <div className="auth-container">
+            <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
             {isAuthenticated ? (
               <>
-                <LanguageSelector />
+                <div className="header-language-selector">
+                  <LanguageSelector />
+                </div>
                 <SubscribeButton />
                 <LogoutButton />
               </>
             ) : (
               <>
-                <LanguageSelector />
+                <div className="header-language-selector">
+                  <LanguageSelector />
+                </div>
                 <LoginButton />
               </>
             )}
@@ -92,11 +108,11 @@ function App() {
         </div>
       </header>
     )
-  ), [isMobileScreen, isAuthenticated]);
+  ), [isMobileScreen, isAuthenticated, isDarkMode, toggleDarkMode]);
 
   const memoizedWelcomeMessage = useMemo(() => (
     <div className="welcome-message">
-      <AnimatedGridPattern className="absolute inset-0 z-0" />
+      <AnimatedGridPattern className="absolute inset-0 z-0" isDarkMode={isDarkMode} />
       <div className="relative z-10 welcome-content">
         <div className="animation-container">
           <TypingAnimation duration={100}>TarotMancer</TypingAnimation>
@@ -104,7 +120,7 @@ function App() {
         <LoginButton />
       </div>
     </div>
-  ), []);
+  ), [isDarkMode]);
 
   const spreadProps = useMemo(() => ({
     isMobile,
@@ -119,28 +135,25 @@ function App() {
     kindeAuth,
   }), [isMobile, handleSpreadSelect, selectedSpread, drawCount, incrementDrawCount, canAccessCohere, kindeAuth]);
 
-  useEffect(() => {
-    // Check if Plausible is loaded
-    if (window.plausible) {
-      // Track a custom event
-      window.plausible('appLoaded');
-    }
-  }, []);
 
   return (
     <LanguageProvider>
       <Router>
-        <div className={`App main-content ${isMobileScreen ? 'mobile' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
+        <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
           {memoizedHeader}
           <Routes>
             <Route path="/celtic-spread" element={
               isAuthenticated ? (
-                <CelticSpread {...spreadProps} />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <CelticSpread {...spreadProps} isDarkMode={isDarkMode} />
+                </Suspense>
               ) : <Navigate to="/" />
             } />
             <Route path="/three-card-spread" element={
               isAuthenticated ? (
-                <ThreeCardSpread {...spreadProps} />
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ThreeCardSpread {...spreadProps} isDarkMode={isDarkMode} />
+                </Suspense>
               ) : <Navigate to="/" />
             } />
             <Route path="/" element={

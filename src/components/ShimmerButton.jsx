@@ -31,7 +31,7 @@ const ShimmerButton = React.forwardRef(
         {/* spark container */}
         <div
           className={cn(
-            "-z-30 blur-[2px]",
+            "-z-30",
             "absolute inset-0 overflow-visible [container-type:size]",
           )}
         >

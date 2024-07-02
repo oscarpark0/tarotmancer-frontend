@@ -293,18 +293,21 @@
   margin-right: 10px;
 }
 
-.language-selector {
-  margin: 5px 0 10px;
+.terminal-language-selector {
+  margin: 2px 0 10px;
+  width: 100%;
 }
 
-.language-selector select {
-  width: 50%;
+.terminal-language-selector select {
+  width: 100%; /* Change this to adjust the width */
   padding: 0.5px;
   background: #0a0a0a url("data:image/svg+xml;utf8,<svg fill='%2333ff33' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat 98% 50%;
   color: #33ff33;
   border: 1px solid #33ff33;
-  font: 12px;
+  font-size: 12px;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 @media (max-width: 768px) {

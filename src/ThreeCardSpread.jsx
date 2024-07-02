@@ -8,7 +8,7 @@ import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode }) => {
   const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -167,8 +167,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       onResponseComplete={() => {
       }}
       animationsComplete={animationsComplete}
+      isDarkMode={isDarkMode}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -197,8 +198,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
 
   return (
     <ErrorBoundary>
-      <div className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
-        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
+      <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}>
+        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} isDarkMode={isDarkMode} />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
             <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>

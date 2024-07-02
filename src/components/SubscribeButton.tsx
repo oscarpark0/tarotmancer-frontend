@@ -23,7 +23,13 @@ const SubscribeButton: React.FC = () => {
   const { selectedLanguage } = useContext(LanguageContext);
 
   const getTranslation = (key: string) => {
-    return buttonTranslations[key as keyof typeof buttonTranslations][selectedLanguage as keyof (typeof buttonTranslations)[keyof typeof buttonTranslations]] || buttonTranslations[key as keyof typeof buttonTranslations]['English'];
+    if (!buttonTranslations[key as keyof typeof buttonTranslations]) {
+      console.error(`Translation key not found: ${key}`);
+      return key; // Return the key itself as a fallback
+    }
+    return buttonTranslations[key as keyof typeof buttonTranslations][selectedLanguage as keyof (typeof buttonTranslations)[keyof typeof buttonTranslations]] || 
+           buttonTranslations[key as keyof typeof buttonTranslations]['English'] ||
+           key; // Fallback to the key itself if both selected language and English are not available
   };
 
   useEffect(() => {
@@ -85,7 +91,11 @@ const SubscribeButton: React.FC = () => {
       {isModalOpen && (
         <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={() => setIsModalOpen(false)}>
+            <button 
+              className={styles.closeButton} 
+              onClick={() => setIsModalOpen(false)}
+              aria-label={getTranslation('closeModal')}
+            >
               &times;
             </button>
             {isLoading ? (

@@ -9,7 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode }) => {
   const { getToken, user } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -145,8 +145,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       onResponseComplete={() => {
       }}
       animationsComplete={animationsComplete}
+      isDarkMode={isDarkMode}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -174,8 +175,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
 
   return (
     <ErrorBoundary>
-      <div className="w-full flex flex-col justify-center fixed bg-gradient-to-br from-amber-100 via-blue to-white min-h-screen">
-        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
+      <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}>
+        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} isDarkMode={isDarkMode} />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
             <p className="text-2xl text-green-600 text-center animate-pulse z-99900">Shuffling the cards...</p>

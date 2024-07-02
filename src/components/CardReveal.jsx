@@ -90,7 +90,6 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
             y: cardPositions[index].top,
             scale: 0.1,
             zIndex: 1,
-            filter: 'blur(5px)',
             transition: { duration: 0.5, delay: index * 0.1, ease: 'easeOut' }
           }}
           style={cardPositions[index]}

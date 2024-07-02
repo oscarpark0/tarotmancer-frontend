@@ -42,6 +42,7 @@ interface AnimatedGridPatternProps extends React.SVGProps<SVGSVGElement> {
   maxOpacity?: number;
   duration?: number;
   repeatDelay?: number;
+  isDarkMode?: boolean; // Added this line
 }
 
 interface Card {
@@ -64,12 +65,14 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   maxOpacity = 0.9,
   duration = 6,
   repeatDelay = 10,
+  isDarkMode = false, // Added this line
   ...props
 }) => {
   const id = useId();
   const containerRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
   const [isStreaming, setIsStreaming] = useState(false);
+  const [isTabActive, setIsTabActive] = useState(true);
 
   const getPos = useCallback((): [number, number] => [
     Math.floor((Math.random() * dimensions.width) / width),
@@ -126,13 +129,25 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     return () => window.removeEventListener('streamingStateChange', handleStreamingStateChange as EventListener);
   }, []);
 
-  const effectiveNumCards = isStreaming ? Math.floor(numCards / 2) : numCards;
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      setIsTabActive(!document.hidden);
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
+  const effectiveNumCards = isTabActive ? (isStreaming ? Math.floor(numCards / 2) : numCards) : Math.floor(numCards / 4);
 
   return (
     <svg
       ref={containerRef}
       aria-hidden="true"
-      className={cn('pointer-events-none relative inset-0 h-full w-full fill-gray-400/30 stroke-gray-400/30', className)}
+      className={cn('pointer-events-none relative inset-0 h-full w-full', 
+        isDarkMode ? 'fill-gray-700/30 stroke-gray-700/30' : 'fill-gray-400/30 stroke-gray-400/30', 
+        className)}
       {...props}
     >
       <defs>

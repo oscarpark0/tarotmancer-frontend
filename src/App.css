@@ -1,8 +1,9 @@
   .app-header {
     background-color: #282c34;
     padding: 10px;
-    color: white;
-    z-index: -9000; /* Lower z-index for the header */
+    color: rgb(0, 0, 0);
+    z-index: -1000; 
+    width: 100%;
   }
 
   .header-content {
@@ -16,23 +17,31 @@
   .app-title {
     font-size: 1.5rem;
     margin: 0;
+    letter-spacing: 1rem;
+    text-align: left;
+    flex-grow: 1; /* Added to make the title take up available space */
   }
 
   .auth-container {
     display: flex;
     align-items: center;
-    gap: 10px; /* Adjust this value to control spacing between elements */
+    gap: 10px;
   }
 
-  .language-selector {
-    margin-right: 10px; /* Adds some space between the language selector and the next button */
+  .header-language-selector {
+    margin-right: 10px;
   }
-
-  /* If the language selector is too large, you might want to adjust its size */
-  .language-selector select {
-    padding: 1px;
-    width: 100px;
-    font-size: 14px;
+  
+  .header-language-selector select {
+    width: 100px; /* Adjust this value as needed */
+    padding: 0.5px;
+    background: #282c34 url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat 98% 50%;
+    color: #33ff33;
+    border: 1px solid #ffffff;
+    font-size: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
   }
 
   @media (max-width: 767px) {

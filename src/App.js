@@ -60,7 +60,7 @@ function App() {
     (!isMobileScreen || !isAuthenticated) && (
       <header className="app-header">
         <div className="header-content">
-          <h1 className="app-title">TarotMancer</h1>
+          <h1 className="app-title"><span>TarotMancer</span></h1>
           <div className="auth-container">
             <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
             {isAuthenticated ? (

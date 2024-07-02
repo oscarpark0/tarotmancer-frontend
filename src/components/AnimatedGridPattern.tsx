@@ -42,7 +42,7 @@ interface AnimatedGridPatternProps extends React.SVGProps<SVGSVGElement> {
   maxOpacity?: number;
   duration?: number;
   repeatDelay?: number;
-  isDarkMode?: boolean; // Added this line
+  isDarkMode?: boolean;
 }
 
 interface Card {
@@ -65,7 +65,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   maxOpacity = 0.9,
   duration = 6,
   repeatDelay = 10,
-  isDarkMode = false, // Added this line
+  isDarkMode = false,
   ...props
 }) => {
   const id = useId();

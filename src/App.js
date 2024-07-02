@@ -31,8 +31,6 @@ function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
   const [selectedSpread, setSelectedSpread] = useState('celtic');
-  const [drawCount, setDrawCount] = useState(0);
-  const [lastResetTime, setLastResetTime] = useState(Date.now());
   const [canAccessCohere, setCanAccessCohere] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -48,29 +46,6 @@ function App() {
     setSelectedSpread(spread);
   }, []);
 
-  useEffect(() => {
-    const storedCount = localStorage.getItem('drawCount');
-    const storedResetTime = localStorage.getItem('lastResetTime');
-    if (storedCount && storedResetTime) {
-      setDrawCount(parseInt(storedCount, 10));
-      setLastResetTime(parseInt(storedResetTime, 10));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('drawCount', drawCount.toString());
-    localStorage.setItem('lastResetTime', lastResetTime.toString());
-  }, [drawCount, lastResetTime]);
-
-  const incrementDrawCount = useCallback(() => {
-    const now = Date.now();
-    if (now - lastResetTime >= 24 * 60 * 60 * 1000) {
-      setDrawCount(1);
-      setLastResetTime(now);
-    } else {
-      setDrawCount(prevCount => prevCount + 1);
-    }
-  }, [lastResetTime]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -117,23 +92,22 @@ function App() {
         <div className="animation-container">
           <TypingAnimation duration={100}>TarotMancer</TypingAnimation>
         </div>
-        <LoginButton />
+        <div className="welcome-buttons">
+          <LoginButton />
+          <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+        </div>
       </div>
     </div>
-  ), [isDarkMode]);
+  ), [isDarkMode, toggleDarkMode]);
 
   const spreadProps = useMemo(() => ({
     isMobile,
     onSpreadSelect: handleSpreadSelect,
     selectedSpread,
-    drawCount,
-    incrementDrawCount,
-    setDrawCount,
-    setLastResetTime,
     canAccessCohere,
     setCanAccessCohere,
     kindeAuth,
-  }), [isMobile, handleSpreadSelect, selectedSpread, drawCount, incrementDrawCount, canAccessCohere, kindeAuth]);
+  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, kindeAuth]);
 
 
   return (

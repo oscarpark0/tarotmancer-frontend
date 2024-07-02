@@ -16,7 +16,7 @@
   position: absolute;
   width: clamp(35px, 7vw, 70px);
   height: clamp(52.5px, 10.5vw, 105px);
-  border-radius: 3px;
+  border-radius: 13px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   will-change: transform, opacity;
   backface-visibility: hidden;

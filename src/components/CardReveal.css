@@ -12,14 +12,75 @@
   height: 220px;
   perspective: 1000px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s 0.6s;
-  z-index: 1;
-  transition: transform 0.3s ease-in-out, z-index 0s;
+  transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s;
+  z-index: 2000;
 }
 
 .card:hover {
-  z-index: 1000;
+  z-index: 9999100;
   transform: scale(1.1);
+}
+
+/* Specific style for the card under the cross card */
+.card:nth-child(2) {
+  z-index: 1999; /* Just below other cards by default */
+}
+
+.card:nth-child(2):hover {
+  z-index: 2101; /* Highest z-index when hovered */
+  transform: scale(1.2) translateY(-10px); /* Move up slightly when hovered */
+}
+
+.card:hover::after,
+.card:hover::before {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+  transition-delay: 0.1s;
+}
+
+.card::after,
+.card::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 105%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(241, 233, 233, 0.9);
+  color: #000000;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  z-index: 9999992200; /* Ensure tooltips are above all cards */
+}
+
+.card::before {
+  content: attr(data-name);
+  bottom: 120%;
+  background-color: rgba(255, 253, 253, 0.9);
+}
+
+/* Adjust tooltip position for the middle card */
+.card:nth-child(2)::after,
+.card:nth-child(2)::before {
+  bottom: auto;
+  top: 105%;
+}
+
+.card:nth-child(2)::before {
+  top: 120%;
+}
+
+/* Ensure cross card doesn't interfere with tooltips */
+.card.cross-card {
+  pointer-events: none;
+}
+
+.card.cross-card .card-inner {
+  pointer-events: auto;
 }
 
 .card.cross-card {
@@ -28,7 +89,7 @@
 
 /* Specific style for the card under the cross card */
 .card:nth-child(2) {
-  z-index: 0;
+  z-index: 90;
 }
 
 .card:nth-child(2):hover {
@@ -100,6 +161,7 @@
   .card:hover::before {
     font-size: 1rem;
     max-width: 150px;
+    z-index: 2100; /* Increased z-index for tooltips */
   }
 
   .revealed-card {
@@ -184,7 +246,7 @@
   max-width: 200px;
   text-align: center;
   line-height: 1.5; 
-  z-index: 1002;
+  z-index: 2100; /* Increased z-index for tooltips */
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
 }
@@ -214,7 +276,7 @@
   display: block;
   max-width: 200px;
   text-align: center;
-  z-index: 1002; /* Ensure it's above the main tooltip */
+  z-index: 9992100; /* Increased z-index for tooltips */
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
 }
@@ -231,8 +293,19 @@
 .card.cross-card:hover::after {
   bottom: auto;
   top: 100%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) rotate(-90deg);
+  transform-origin: bottom center;
+  left: -50%;
   margin-top: 10px;
+  z-index: 1000;
+}
+
+.card.cross-card:hover::before {
+  bottom: auto;
+  top: 100%;
+  transform: translateX(-50%) rotate(-90deg);
+  transform-origin: bottom center;
+  left: -50%;
   z-index: 1000;
 }
 
@@ -292,3 +365,31 @@
   }
 }
 
+/* Specific style for the cross card tooltip */
+.card.cross-card::after,
+.card.cross-card::before {
+  transform-origin: left center;
+  left: 100%;
+  bottom: 50%;
+}
+
+.card.cross-card::after {
+  transform: translateY(50%) rotate(90deg);
+}
+
+.card.cross-card::before {
+  transform: translateY(-50%) rotate(90deg);
+}
+
+.card.cross-card:hover::after,
+.card.cross-card:hover::before {
+  opacity: 1;
+}
+
+.card.cross-card:hover::after {
+  transform: translateY(50%) rotate(90deg) translateX(5px);
+}
+
+.card.cross-card:hover::before {
+  transform: translateY(-50%) rotate(90deg) translateX(5px);
+}

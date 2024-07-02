@@ -23,6 +23,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
   const formRef = useRef(null);
   const [cards, setCards] = useState([]);
   const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
+  const [animationsComplete, setAnimationsComplete] = useState(false);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -40,7 +41,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
         'Content-Type': 'application/json',
         'Origin': origin,
         'Authorization': `Bearer ${token}`,
-        'User-ID': user?.id || 'anonymous'
+        'User-ID': user?.id,
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
@@ -102,7 +103,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
     setTimeout(() => {
       setRevealCards(true);
       setRevealedCards(cards.length);
-      setTimeout(handleDealingComplete, 750);
+      setTimeout(() => {
+        handleDealingComplete();
+        setAnimationsComplete(true);
+      }, 750);
     }, 500);
   }, [cards.length, handleDealingComplete]);
 
@@ -140,8 +144,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
       }}
       onResponseComplete={() => {
       }}
+      animationsComplete={animationsComplete}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -173,7 +178,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread }) =
         <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
-            <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
+            <p className="text-2xl text-green-600 text-center animate-pulse z-99900">Shuffling the cards...</p>
           ) : error ? (
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
           ) : null}

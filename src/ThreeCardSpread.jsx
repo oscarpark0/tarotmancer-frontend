@@ -22,6 +22,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [cards, setCards] = useState([]);
   const formRef = useRef(null);
   const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
+  const [animationsComplete, setAnimationsComplete] = useState(false);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -122,7 +123,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     setTimeout(() => {
       setRevealCards(true);
       setRevealedCards(cards.length);
-      setTimeout(handleDealingComplete, 750);
+      setTimeout(() => {
+        handleDealingComplete();
+        setAnimationsComplete(true);
+      }, 750);
     }, 500);
   }, [cards.length, handleDealingComplete]);
 
@@ -162,8 +166,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       }}
       onResponseComplete={() => {
       }}
+      animationsComplete={animationsComplete}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

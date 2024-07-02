@@ -8,7 +8,7 @@ import CardReveal from './CardReveal';
 import LanguageSelector, { LanguageContext } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -42,7 +42,13 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     onNewResponse(''); 
 
     try {
-      const staticText = "You are Tarotmancer. Your responses are empathetic, acknowledging the seeker's emotions and showing that you understand their situation. You generate responses that are tailored to the seeker's specific situation. You avoid generic answers, ensuring that your guidance resonates with the seeker personally. You response using clear language to ensure your responses are easily understood. Avoid complex terminology and jargon. Your responses are formatted in an easy to view format. Your responses are formatted in an easy to view format.";
+      const staticText = "You are Tarotmancer - an expert and intuitive tarot card reader. Address the seeker directly in your interpretation." +
+        "Information for Tarotmancer: How was this spread drawn? This spread was generated using a Monte Carlo simulation, performing 10,000 random draws to calculate the most common cards and orientations for each position, as well as overall card frequencies. This approach reveals statistical tendencies in tarot readings rather than producing a single random draw." +
+        "Begin your response with a uniquely tailored message to the seeker, incorporating the seeker's situation as described by the tarot." +
+        "Your responses are empathetic, and are crafted for each seeker's specific situation. " +
+        "Your guidance should resonate personally with the seeker. You responsd using clear language to ensure your responses are easily understood. " +
+        "Avoid complex terminology and jargon. Clearly label each position, card, and orientation. " +
+        "Conclude your reading with a empathetic and personalized message to the seeker that aids the seeker in navigating based on the information provided by the tarot.";
       const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
@@ -102,12 +108,12 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input]);
 
   useEffect(() => {
-    if (mostCommonCards && dealingComplete && shouldRequestCohere) {
+    if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
       setShowCards(true);
       handleSubmit(mostCommonCards);
-      setShouldRequestCohere(false); // Reset the flag after initiating the request
+      setShouldRequestCohere(false);
     }
-  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit]);
+  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit, animationsComplete]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);

@@ -11,13 +11,13 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     const containerWidth = window.innerWidth;
     const isMobile = containerWidth <= 768;
     
-    const baseScale = isMobile ? 0.015 : 20; // Increased scale for mobile
-    const baseLeft = isMobile ? '40%' : '40%'; // Centered horizontally on mobile
-    const topOffset = isMobile ? '30%' : '140%'; // Adjusted top position for mobile
+    const baseScale = isMobile ? 0.015 : 20; 
+    const baseLeft = isMobile ? '40%' : '40%'; 
+    const topOffset = isMobile ? '30%' : '140%'; 
     
     if (cards.length === 3) {
       // Three Card Spread
-      const threeCardSpacing = isMobile ? '13vw' : '10vw'; // Increased spacing for mobile
+      const threeCardSpacing = isMobile ? '13vw' : '10vw';
       return [
         { top: topOffset, left: `calc(${baseLeft} - ${threeCardSpacing})`, transform: `translate(-40%, -50%) scale(${baseScale})`, zIndex: 2000 },
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
@@ -96,6 +96,11 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
           style={cardPositions[index]}
           data-tooltip={`${card.tooltip}`} 
           data-name={`${card.name}`} 
+          whileHover={{
+            zIndex: cards.length > 3 && index === 0 ? 15 : cardPositions[index].zIndex,
+            scale: 1.1,
+            transition: { duration: 0.2 }
+          }}
         >
           <div className="card-inner">
             <div

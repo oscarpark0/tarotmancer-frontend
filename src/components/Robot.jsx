@@ -19,7 +19,7 @@ const adjustFontSize = () => {
 
     if (outputHeight > screenHeight) {
       let fontSize = 240;
-      let step = 10;
+      let step = 5;
       
       while (outputHeight > screenHeight && fontSize > 20) {
         fontSize -= step;
@@ -57,6 +57,7 @@ const Robot = memo(({
   fetchSpread,
   onNewResponse,
   onResponseComplete,
+  animationsComplete,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -237,6 +238,7 @@ const Robot = memo(({
         setActiveTab={setActiveTab}
         onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
+        animationsComplete={animationsComplete}
       />
     </motion.div>
   );
@@ -262,6 +264,7 @@ Robot.propTypes = {
   fetchSpread: PropTypes.func.isRequired,
   onNewResponse: PropTypes.func.isRequired,
   onResponseComplete: PropTypes.func.isRequired,
+  animationsComplete: PropTypes.bool.isRequired,
 };
 
 export default Robot;

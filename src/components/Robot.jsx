@@ -203,11 +203,11 @@ const Robot = memo(({
               <div className="monitor-output">
                 {monitorOutput}
               </div>
+              <div className="screen-overlay"></div>
+              <div className="screen-glass"></div>
+              <div className="screen-frame"></div>
+              <div className="screen-scanlines"></div>
             </div>
-            <div className="screen-overlay"></div>
-            <div className="screen-glass"></div>
-            <div className="screen-frame"></div>
-            <div className="screen-scanlines"></div>
           </div>
         </div>
       </div>

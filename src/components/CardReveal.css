@@ -293,9 +293,9 @@
 .card.cross-card:hover::after {
   bottom: auto;
   top: 100%;
-  transform: translateX(-50%) rotate(-90deg);
-  transform-origin: bottom center;
-  left: -50%;
+  transform: translateY(50%) rotate(-180deg) translateX(5px);
+  transform-origin: left center;
+  left: 110%;
   margin-top: 10px;
   z-index: 1000;
 }
@@ -303,9 +303,9 @@
 .card.cross-card:hover::before {
   bottom: auto;
   top: 100%;
-  transform: translateX(-50%) rotate(-90deg);
-  transform-origin: bottom center;
-  left: -50%;
+  transform: translateY(-50%) rotate(-90deg) translateX(5px);
+  transform-origin: left center;
+  left: 110%;
   z-index: 1000;
 }
 
@@ -369,16 +369,16 @@
 .card.cross-card::after,
 .card.cross-card::before {
   transform-origin: left center;
-  left: 100%;
+  left: 110%;
   bottom: 50%;
 }
 
 .card.cross-card::after {
-  transform: translateY(50%) rotate(90deg);
+  transform: translateY(50%) rotate(-90deg);
 }
 
 .card.cross-card::before {
-  transform: translateY(-50%) rotate(90deg);
+  transform: translateY(-50%) rotate(-90deg);
 }
 
 .card.cross-card:hover::after,
@@ -387,9 +387,9 @@
 }
 
 .card.cross-card:hover::after {
-  transform: translateY(50%) rotate(90deg) translateX(5px);
+  transform: translateY(50%) rotate(-90deg) translateX(5px);
 }
 
 .card.cross-card:hover::before {
-  transform: translateY(-50%) rotate(90deg) translateX(5px);
+  transform: translateY(-50%) rotate(-90deg) translateX(5px);
 }

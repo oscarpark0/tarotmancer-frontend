@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useCallback, useRef, useLayoutEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
@@ -59,7 +58,7 @@ const Robot = memo(({
   onNewResponse,
   onResponseComplete,
   animationsComplete,
-  onAnimationStart, // Add this new prop
+  onAnimationStart,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -205,7 +204,7 @@ const Robot = memo(({
                 }}
                 numCards={cards.length}
                 isMobile={isMobile}
-                onAnimationStart={handleAnimationStart} // Add this new prop
+                onAnimationStart={handleAnimationStart}
               />
               <div className="monitor-output">
                 {monitorOutput}
@@ -246,7 +245,7 @@ const Robot = memo(({
         onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
-        onAnimationStart={handleAnimationStart} // Add this new prop
+        onAnimationStart={handleAnimationStart}
       />
     </motion.div>
   );
@@ -273,7 +272,7 @@ Robot.propTypes = {
   onNewResponse: PropTypes.func.isRequired,
   onResponseComplete: PropTypes.func.isRequired,
   animationsComplete: PropTypes.bool.isRequired,
-  onAnimationStart: PropTypes.func.isRequired, 
+  onAnimationStart: PropTypes.func.isRequired,
 };
 
 export default Robot;

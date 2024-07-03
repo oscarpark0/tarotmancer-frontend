@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
@@ -23,7 +24,6 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const formRef = useRef(null);
   const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
   const [animationsComplete, setAnimationsComplete] = useState(false);
-  const [animationStarted, setAnimationStarted] = useState(false);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -141,10 +141,6 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     fetchSpread();
   }, [fetchSpread]);
 
-  const handleAnimationStart = useCallback(() => {
-    setAnimationStarted(true);
-  }, []);
-
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -173,9 +169,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       }}
       animationsComplete={animationsComplete}
       isDarkMode={isDarkMode}
-      onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -188,9 +183,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       shouldDrawNewSpread={shouldDrawNewSpread}
       numCards={3}
       isMobile={isMobile}
-      onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, handleAnimationStart]);
+  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
@@ -200,21 +194,13 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       shouldDrawNewSpread={shouldDrawNewSpread}
       isMobile={isMobile}
       className="md:hidden"
-      animationStarted={animationStarted}
     />
-  ), [cards, revealCards, floatingCardsComplete, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted]);
+  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, floatingCardsComplete]);
 
   return (
     <ErrorBoundary>
       <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}>
-        <AnimatedGridPattern 
-          className="absolute inset-0" 
-          color="#00ff00" 
-          fill="#000000" 
-          positions={positions} 
-          isDarkMode={isDarkMode}
-          isMobile={isMobile}
-        />
+        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} isDarkMode={isDarkMode} />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
             <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
@@ -223,7 +209,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           ) : null}
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             {memoizedRobot}
-            {positions.length > 0 && (
+            {positions.length > 0 && !isMobile && (
               <div className="relative z-10 w-full flex flex-col items-center">
                 <div style={{ position: 'relative', zIndex: 1, marginTop: isMobile ? '10px' : '30px' }}>
                   <section className="relative z-10 mb-16 w-full">

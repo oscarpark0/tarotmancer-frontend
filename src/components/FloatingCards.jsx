@@ -24,6 +24,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
 
   const cardPositions = useMemo(() => {
     const containerWidth = window.innerWidth;
+    const containerHeight = window.innerHeight;
     const isMobile = containerWidth <= 768;
     
     const baseScale = isMobile ? 0.12 : 0.02;
@@ -45,6 +46,19 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
         { top: topOffset, left: `calc(${baseLeft} - ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})` },
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})` },
         { top: topOffset, left: `calc(${baseLeft} + ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})` },
+      ];
+    } else if (numCards === 5) {
+      // Elemental Insight Spread
+      const radius = Math.min(containerWidth, containerHeight) * 0.3;
+      const centerX = containerWidth / 2;
+      const centerY = containerHeight / 2;
+      
+      return [
+        { top: `${centerY - radius}px`, left: `${centerX}px`, transform: `translate(-50%, -50%) scale(${baseScale})` },
+        { top: `${centerY}px`, left: `${centerX - radius}px`, transform: `translate(-50%, -50%) scale(${baseScale})` },
+        { top: `${centerY}px`, left: `${centerX + radius}px`, transform: `translate(-50%, -50%) scale(${baseScale})` },
+        { top: `${centerY + radius * 0.866}px`, left: `${centerX - radius * 0.5}px`, transform: `translate(-50%, -50%) scale(${baseScale})` },
+        { top: `${centerY + radius * 0.866}px`, left: `${centerX + radius * 0.5}px`, transform: `translate(-50%, -50%) scale(${baseScale})` },
       ];
     } else {
       // Celtic Cross Spread

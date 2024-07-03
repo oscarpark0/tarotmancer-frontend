@@ -204,7 +204,7 @@ const Robot = memo(({
                 }}
                 numCards={cards.length}
                 isMobile={isMobile}
-                onAnimationStart={handleAnimationStart} // Add this new prop
+                onAnimationStart={handleAnimationStart} 
               />
               <div className="monitor-output">
                 {monitorOutput}
@@ -245,7 +245,7 @@ const Robot = memo(({
         onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
-        onAnimationStart={handleAnimationStart} // Add this new prop
+        onAnimationStart={handleAnimationStart} 
       />
     </motion.div>
   );
@@ -272,7 +272,7 @@ Robot.propTypes = {
   onNewResponse: PropTypes.func.isRequired,
   onResponseComplete: PropTypes.func.isRequired,
   animationsComplete: PropTypes.bool.isRequired,
-  onAnimationStart: PropTypes.func.isRequired, // Add this new propType
+  onAnimationStart: PropTypes.func.isRequired, 
 };
 
 export default Robot;

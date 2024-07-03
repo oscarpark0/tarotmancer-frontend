@@ -9,6 +9,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
 
   const cardPositions = useMemo(() => {
     const containerWidth = window.innerWidth;
+    const containerHeight = window.innerHeight;
     const isMobile = containerWidth <= 768;
     
     const baseScale = isMobile ? 0.01 : 20; 
@@ -26,6 +27,19 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
         { top: topOffset, left: `calc(${baseLeft} - ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
         { top: topOffset, left: `calc(${baseLeft} + ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
+      ];
+    } else if (cards.length === 5) {
+      // Elemental Insight Spread
+      const radius = Math.min(containerWidth, containerHeight) * 0.3;
+      const centerX = containerWidth / 2;
+      const centerY = containerHeight / 2;
+      
+      return [
+        { top: `${centerY - radius}px`, left: `${centerX}px`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `${centerY}px`, left: `${centerX - radius}px`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `${centerY}px`, left: `${centerX + radius}px`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `${centerY + radius * 0.866}px`, left: `${centerX - radius * 0.5}px`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `${centerY + radius * 0.866}px`, left: `${centerX + radius * 0.5}px`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
       ];
     } else {
       // Celtic Cross Spread

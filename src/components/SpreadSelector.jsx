@@ -9,8 +9,9 @@ const SpreadSelector = memo(({ onSpreadSelect, selectedSpread }) => {
   return (
     <div className="spread-selector">
       <select onChange={handleChange} value={selectedSpread}>
-        <option value="celtic">Celtic Cross Spread</option>
         <option value="threeCard">Three Card Spread</option>
+        <option value="celtic">Celtic Cross Spread</option>
+        <option value="elemental-insight">Elemental Insight Spread</option>
       </select>
     </div>
   );

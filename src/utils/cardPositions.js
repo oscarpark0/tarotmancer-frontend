@@ -33,3 +33,21 @@ export const cardPositions = [
   { left: 350, top: 200 },
   { left: 250, top: 350 },
 ];
+
+export const generateElementalInsightPositions = (numCards, containerWidth, containerHeight) => {
+  const isMobile = containerWidth <= 768;
+  const baseScale = isMobile ? 0.8 : 1;
+  const centerX = containerWidth / 2;
+  const centerY = containerHeight / 2;
+  const radius = Math.min(containerWidth, containerHeight) * 0.4 * baseScale;
+  const positions = [];
+
+  for (let i = 0; i < numCards; i++) {
+    const angle = i * (Math.PI * 2) / numCards;
+    const x = centerX + radius * Math.cos(angle);
+    const y = centerY + radius * Math.sin(angle);
+    positions.push({ left: x, top: y });
+  }
+
+  return positions;
+};

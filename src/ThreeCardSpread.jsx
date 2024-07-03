@@ -21,8 +21,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [mostCommonCards, setMostCommonCards] = useState('');
   const [cards, setCards] = useState([]);
   const formRef = useRef(null);
-  const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
+  const [setFloatingCardsComplete] = useState(false);
   const [animationsComplete, setAnimationsComplete] = useState(false);
+  const [animationStarted, setAnimationStarted] = useState(false);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -128,7 +129,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         setAnimationsComplete(true);
       }, 750);
     }, 500);
-  }, [cards.length, handleDealingComplete]);
+  }, [cards.length, handleDealingComplete, setFloatingCardsComplete]);
 
   const handleMonitorOutput = useCallback(() => {}, []);
 
@@ -139,6 +140,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     setShouldDrawNewSpread(true);
     fetchSpread();
   }, [fetchSpread]);
+
+  const handleAnimationStart = useCallback(() => {
+    setAnimationStarted(true);
+  }, []);
 
   const memoizedRobot = useMemo(() => (
     <Robot
@@ -168,8 +173,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       }}
       animationsComplete={animationsComplete}
       isDarkMode={isDarkMode}
+      onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -182,24 +188,33 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       shouldDrawNewSpread={shouldDrawNewSpread}
       numCards={3}
       isMobile={isMobile}
+      onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile]);
+  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, handleAnimationStart]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
       cards={cards}
-      revealCards={revealCards && floatingCardsComplete}
+      revealCards={revealCards}
       dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
       isMobile={isMobile}
       className="md:hidden"
+      animationStarted={animationStarted}
     />
-  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, floatingCardsComplete]);
+  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted]);
 
   return (
     <ErrorBoundary>
       <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}>
-        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} isDarkMode={isDarkMode} />
+        <AnimatedGridPattern 
+          className="absolute inset-0" 
+          color="#00ff00" 
+          fill="#000000" 
+          positions={positions} 
+          isDarkMode={isDarkMode}
+          isMobile={isMobile}
+        />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
             <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>

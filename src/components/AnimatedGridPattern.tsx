@@ -43,6 +43,7 @@ interface AnimatedGridPatternProps extends React.SVGProps<SVGSVGElement> {
   duration?: number;
   repeatDelay?: number;
   isDarkMode?: boolean;
+  isMobile?: boolean;
 }
 
 interface Card {
@@ -66,6 +67,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   duration = 6,
   repeatDelay = 10,
   isDarkMode = false,
+  isMobile = false,
   ...props
 }) => {
   const id = useId();
@@ -73,6 +75,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
   const [isStreaming, setIsStreaming] = useState(false);
   const [isTabActive, setIsTabActive] = useState(true);
+  const [cards, setCards] = useState<Card[]>([]);
 
   const getPos = useCallback((): [number, number] => [
     Math.floor((Math.random() * dimensions.width) / width),
@@ -87,8 +90,6 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
       randomScale: getRandomValue(0.5, 2.0),
       randomOpacity: Math.random() * maxOpacity,
     })), [getPos, maxOpacity]);
-
-  const [cards, setCards] = useState<Card[]>(() => generateCards(numCards));
 
   useEffect(() => {
     const resizeObserver = new ResizeObserver((entries) => debounceResizeHandler(entries, setDimensions));
@@ -140,6 +141,11 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   }, []);
 
   const effectiveNumCards = isTabActive ? (isStreaming ? Math.floor(numCards / 2) : numCards) : Math.floor(numCards / 4);
+
+  // If on mobile, return null to disable the component
+  if (isMobile) {
+    return null;
+  }
 
   return (
     <svg

@@ -9,10 +9,12 @@ export const formatResponse = (text) => {
     .replace(/([.!?])\s*(?=[A-Z])/g, '$1\n\n')
     .replace(/^(-|\d+\.)\s*/gm, '  $1 ')
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(
-      /(https?:\/\/[^\s]+)/g,
-      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
-    );
+    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
+    .replace(/(\d+\.)\s+([A-Z])/g, '$1\n\n$2')  // Add line break after numbered points
+    .replace(/([A-Z][a-z]+:)/g, '\n$1')  // Add line break before card names
+    .replace(/(\w+\s*\((?:up|down)right\))/g, '<em>$1</em>')  // Italicize card orientations
+    .replace(/^Dear querent,/gm, '\n\nDear querent,')  // Add extra line break before "Dear querent"
+    .replace(/Blessed be\./g, '\n\nBlessed be.');  // Add extra line break before "Blessed be"
 };
 
 // Additional utility functions for text formatting

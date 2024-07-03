@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect, useCallback, forwardRef, useContext } from 'react';
 import './CommandTerminal.css';
-import { COHERE_API_KEY } from '../utils/config';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
 import LanguageSelector, { LanguageContext } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
+import { getMistralResponse } from '../services/mistralServices';
 
 const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete }, ref) => {
   const [input, setInput] = useState('');
@@ -42,59 +42,17 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     onNewResponse(''); 
 
     try {
-      const staticText = "You are Tarotmancer - an expert and intuitive tarot card reader. Address the seeker directly in your interpretation." +
-        "Information for Tarotmancer: How was this spread drawn? This spread was generated using a Monte Carlo simulation, performing 10,000 random draws to calculate the most common cards and orientations for each position, as well as overall card frequencies. This approach reveals statistical tendencies in tarot readings rather than producing a single random draw." +
-        "Begin your response with a uniquely tailored message to the seeker, incorporating the seeker's situation as described by the tarot." +
-        "Your responses are empathetic, and are crafted for each seeker's specific situation. " +
-        "Your guidance should resonate personally with the seeker. You responsd using clear language to ensure your responses are easily understood. " +
-        "Avoid complex terminology and jargon. Clearly label each position, card, and orientation. " +
-        "Conclude your reading with a empathetic and personalized message to the seeker that aids the seeker in navigating based on the information provided by the tarot.";
+      const staticText = "You are Tarotmancer - the soul of an ancient and powerful tarot card reader. A querent has arrived seeking your guidance." +
+        "Begin your response uniquely each time an interpretation is requested, offering a warm welcome to the querent. Interpret the proximity of cards/orientations to one another in each spread and the overall spread as a whole." +
+        "Respond with empathy and care, you are an advocate of the querent. Provide the querent with a detailed and personalized reading that is tailored to their situation as described by the tarot." +
+        "Your guidance should resonate personally with the querent. You responsd using clear language to ensure your responses are easily understood. " +
+        "Avoid complex terminology and jargon - respond un-generically. Format in a manner that allows each position, card, and orientation to be clearly labeled. " +
+        "Conclude your reading with a empathetic and personalized message to the querent that aids the querent in navigating based on the information provided by the tarot.";
       const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-      const response = await fetch('https://api.cohere.com/v1/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${COHERE_API_KEY}`,
-        },
-        body: JSON.stringify({
-          message: message,
-          model: 'command-r-plus',
-          stream: true,
-        }),
-      });
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        buffer += chunk;
-
-        const lines = buffer.split('\n');
-        buffer = lines.pop();
-
-        for (const line of lines) {
-          if (line.trim() === '') continue;
-
-          try {
-            const data = JSON.parse(line);
-
-            if (data.event_type === 'text-generation') {
-              onNewResponse(data.text); 
-            }
-          } catch (error) {
-            console.error('Error parsing JSON:', error);
-          }
-        }
-      }
-
+      await getMistralResponse(message, onNewResponse);
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = getTranslation('errorMessage');

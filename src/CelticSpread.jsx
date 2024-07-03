@@ -24,6 +24,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [cards, setCards] = useState([]);
   const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
   const [animationsComplete, setAnimationsComplete] = useState(false);
+  const [animationStarted, setAnimationStarted] = useState(false);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -120,6 +121,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     fetchSpread();
   }, [fetchSpread]);
 
+  const handleAnimationStart = useCallback(() => {
+    setAnimationStarted(true);
+  }, []);
+
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -146,8 +151,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       }}
       animationsComplete={animationsComplete}
       isDarkMode={isDarkMode}
+      onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -161,8 +167,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       numCards={10}
       isMobile={isMobile}
       cards={cards}
+      onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards]);
+  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
@@ -170,13 +177,23 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       revealCards={revealCards && floatingCardsComplete}
       dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
+      isMobile={isMobile}
+      className=""
+      animationStarted={animationStarted}
     />
-  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, floatingCardsComplete]);
+  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted, floatingCardsComplete]);
 
   return (
     <ErrorBoundary>
       <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}>
-        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} isDarkMode={isDarkMode} />
+        <AnimatedGridPattern 
+          className="absolute inset-0" 
+          color="#00ff00" 
+          fill="#000000" 
+          positions={positions} 
+          isDarkMode={isDarkMode}
+          isMobile={isMobile}
+        />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
             <p className="text-2xl text-green-600 text-center animate-pulse z-99900">Shuffling the cards...</p>

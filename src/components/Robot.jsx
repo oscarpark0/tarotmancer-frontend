@@ -58,6 +58,7 @@ const Robot = memo(({
   onNewResponse,
   onResponseComplete,
   animationsComplete,
+  onAnimationStart, // Add this new prop
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -165,6 +166,10 @@ const Robot = memo(({
     }
   }, []);
 
+  const handleAnimationStart = useCallback(() => {
+    onAnimationStart();
+  }, [onAnimationStart]);
+
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''}`}
@@ -199,6 +204,7 @@ const Robot = memo(({
                 }}
                 numCards={cards.length}
                 isMobile={isMobile}
+                onAnimationStart={handleAnimationStart} // Add this new prop
               />
               <div className="monitor-output">
                 {monitorOutput}
@@ -239,6 +245,7 @@ const Robot = memo(({
         onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
+        onAnimationStart={handleAnimationStart} // Add this new prop
       />
     </motion.div>
   );
@@ -265,6 +272,7 @@ Robot.propTypes = {
   onNewResponse: PropTypes.func.isRequired,
   onResponseComplete: PropTypes.func.isRequired,
   animationsComplete: PropTypes.bool.isRequired,
+  onAnimationStart: PropTypes.func.isRequired, // Add this new propType
 };
 
 export default Robot;

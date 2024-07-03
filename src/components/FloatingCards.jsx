@@ -28,11 +28,11 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
     const isMobile = containerWidth <= 768;
     
     const baseScale = isMobile ? 0.12 : 0.02;
-    const baseLeft = isMobile ? '80%' : '90%';
+    const baseLeft = isMobile ? '70%' : '20%';
     const topOffset = isMobile ? '2%' : '10%';
     
     // New horizontal spacing variables
-    const threeCardHorizontalSpacing = isMobile ? '25vw' : '8vw';
+    const threeCardHorizontalSpacing = isMobile ? '25vw' : '4vw';
     const celticCrossHorizontalSpacing = isMobile ? '15vw' : '4vw';
     const celticStackHorizontalSpacing = isMobile ? '30vw' : '7vw';
     const verticalSpacing = isMobile ? '9vh' : '10vh';

@@ -180,7 +180,7 @@
   transition: transform 0.6s;
   border-radius: 2px;
   transform: rotateY(0deg);
-  z-index: 150000000; /* Ensure individual cards are above the robot */
+  z-index: 1; /* Ensure individual cards are above the robot */
 }
 
 .card.flipped .card-inner {
@@ -331,7 +331,7 @@
 
 .card-reveal {
   position: relative;
-  z-index: 150000000; /* Ensure individual cards are above the robot */
+  z-index: 1000; /* Adjust this value as needed */
 }
 
 .revealed-card {

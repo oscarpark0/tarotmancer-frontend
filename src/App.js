@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -13,7 +14,6 @@ import { useMediaQuery } from 'react-responsive';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
-const ElementalInsightSpread = lazy(() => import('./ElementalInsightSpread'));
 
 function App() {
   const kindeAuth = useKindeAuth();
@@ -31,7 +31,7 @@ function App() {
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
-  const [selectedSpread, setSelectedSpread] = useState('three-card');
+  const [selectedSpread, setSelectedSpread] = useState('celtic');
   const [canAccessCohere, setCanAccessCohere] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -131,20 +131,9 @@ function App() {
                 </Suspense>
               ) : <Navigate to="/" />
             } />
-            <Route path="/elemental-insight-spread" element={
-              isAuthenticated ? (
-                <Suspense fallback={<div>Loading...</div>}>
-                  <ElementalInsightSpread {...spreadProps} isDarkMode={isDarkMode} />
-                </Suspense>
-              ) : <Navigate to="/" />
-            } />
             <Route path="/" element={
               isAuthenticated ? (
-                <Navigate to={
-                  selectedSpread === 'celtic' ? "/celtic-spread" : 
-                  selectedSpread === 'three-card' ? "/three-card-spread" : 
-                  "/elemental-insight-spread"
-                } />
+                <Navigate to={selectedSpread === 'celtic' ? "/celtic-spread" : "/three-card-spread"} />
               ) : memoizedWelcomeMessage
             } />
             <Route path="/callback" element={<Navigate to="/" />} />

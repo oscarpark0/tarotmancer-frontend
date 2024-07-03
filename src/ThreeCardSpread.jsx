@@ -21,7 +21,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [mostCommonCards, setMostCommonCards] = useState('');
   const [cards, setCards] = useState([]);
   const formRef = useRef(null);
-  const [setFloatingCardsComplete] = useState(false);
+  const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
 
@@ -129,7 +129,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         setAnimationsComplete(true);
       }, 750);
     }, 500);
-  }, [cards.length, handleDealingComplete, setFloatingCardsComplete]);
+  }, [cards.length, handleDealingComplete]);
 
   const handleMonitorOutput = useCallback(() => {}, []);
 
@@ -195,14 +195,14 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
       cards={cards}
-      revealCards={revealCards}
+      revealCards={revealCards && floatingCardsComplete}
       dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
       isMobile={isMobile}
       className="md:hidden"
       animationStarted={animationStarted}
     />
-  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted]);
+  ), [cards, revealCards, floatingCardsComplete, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted]);
 
   return (
     <ErrorBoundary>
@@ -223,7 +223,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           ) : null}
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             {memoizedRobot}
-            {positions.length > 0 && !isMobile && (
+            {positions.length > 0 && (
               <div className="relative z-10 w-full flex flex-col items-center">
                 <div style={{ position: 'relative', zIndex: 1, marginTop: isMobile ? '10px' : '30px' }}>
                   <section className="relative z-10 mb-16 w-full">

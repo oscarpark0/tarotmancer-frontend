@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useCallback, useRef, useLayoutEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
@@ -204,7 +205,7 @@ const Robot = memo(({
                 }}
                 numCards={cards.length}
                 isMobile={isMobile}
-                onAnimationStart={handleAnimationStart} 
+                onAnimationStart={handleAnimationStart} // Add this new prop
               />
               <div className="monitor-output">
                 {monitorOutput}
@@ -245,7 +246,7 @@ const Robot = memo(({
         onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
-        onAnimationStart={handleAnimationStart} 
+        onAnimationStart={handleAnimationStart} // Add this new prop
       />
     </motion.div>
   );

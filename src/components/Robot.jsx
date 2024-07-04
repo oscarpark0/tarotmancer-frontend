@@ -59,6 +59,7 @@ const Robot = memo(({
   onResponseComplete,
   animationsComplete,
   onAnimationStart,
+  onStreamingStateChange,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -67,10 +68,15 @@ const Robot = memo(({
   const [responses, setResponses] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
   const robotRef = useRef(null);
+  const [isStreaming, setIsStreaming] = useState(false);
 
   const handleResponseComplete = useCallback(() => {
     onResponseComplete();
-  }, [onResponseComplete]);
+    setIsStreaming(false);
+    if (onStreamingStateChange) {
+      onStreamingStateChange(false);
+    }
+  }, [onResponseComplete, onStreamingStateChange]);
 
   const handleNewResponse = useCallback((content) => {
     setResponses(prevResponses => {
@@ -90,7 +96,11 @@ const Robot = memo(({
     });
     setMonitorOutput(prevOutput => prevOutput + formatResponse(content));
     onNewResponse(content);
-  }, [onNewResponse]);
+    setIsStreaming(true);
+    if (onStreamingStateChange) {
+      onStreamingStateChange(true);
+    }
+  }, [onNewResponse, onStreamingStateChange]);
 
   const completeCurrentResponse = useCallback(() => {
     setResponses(prevResponses => {
@@ -170,9 +180,21 @@ const Robot = memo(({
     onAnimationStart();
   }, [onAnimationStart]);
 
+  useEffect(() => {
+    // This effect will run whenever isStreaming changes
+    // You can use it to trigger any actions that should occur when streaming starts or stops
+    if (isStreaming) {
+      console.log('Streaming started');
+      // Add any actions you want to occur when streaming starts
+    } else {
+      console.log('Streaming stopped');
+      // Add any actions you want to occur when streaming stops
+    }
+  }, [isStreaming]);
+
   return (
     <motion.div
-      className={`robot-container ${isMobile ? 'mobile' : ''}`}
+      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
       style={{
         position: 'absolute',
         zIndex: isMobile ? 1000 : 100,
@@ -246,6 +268,7 @@ const Robot = memo(({
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
+        isStreaming={isStreaming}
       />
     </motion.div>
   );
@@ -273,6 +296,7 @@ Robot.propTypes = {
   onResponseComplete: PropTypes.func.isRequired,
   animationsComplete: PropTypes.bool.isRequired,
   onAnimationStart: PropTypes.func.isRequired,
+  onStreamingStateChange: PropTypes.func.isRequired,
 };
 
 export default Robot;

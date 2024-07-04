@@ -14,6 +14,11 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s;
   z-index: 2000;
+  transition: transform 0.2s ease-out;
+}
+
+.card.hovered {
+  z-index: 9999;
 }
 
 .card:hover {
@@ -21,60 +26,66 @@
   transform: scale(1.1);
 }
 
-/* Specific style for the card under the cross card */
+
 .card:nth-child(2) {
-  z-index: 1999; /* Just below other cards by default */
+  z-index: 1999; 
 }
 
 .card:nth-child(2):hover {
-  z-index: 2101; /* Highest z-index when hovered */
-  transform: scale(1.2) translateY(-10px); /* Move up slightly when hovered */
+  z-index: 2101; 
+  transform: scale(1.2) translateY(-10px); 
 }
 
-.card:hover::after,
-.card:hover::before {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-5px);
-  transition-delay: 0.1s;
-}
-
-.card::after,
-.card::before {
-  content: attr(data-tooltip);
+.card-tooltip {
   position: absolute;
-  bottom: 105%;
+  background-color: rgba(39, 54, 88, 0.9);
+  color: #ffffff;
+  padding: 1px 7px;
+  border-radius: 22px;
+  font-size: 0.9rem;
+  white-space: normal;
+  width: 200px;
+  pointer-events: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  z-index: 9999992200;
+  backdrop-filter: blur(5px);
+  border: 10px groove rgba(255, 255, 255, 0.1);
+}
+
+.card-tooltip.scaling {
+  transform: scale(0.9090909); /* 1 / 1.1 to counteract the card's scale */
+}
+
+.card-tooltip.top {
+  bottom: calc(85% + 5px);
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(241, 233, 233, 0.9);
-  color: #000000;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-  z-index: 9999992200; /* Ensure tooltips are above all cards */
 }
 
-.card::before {
-  content: attr(data-name);
-  bottom: 120%;
-  background-color: rgba(255, 253, 253, 0.9);
+.card-tooltip.bottom {
+  top: calc(80% + 5px);
+  left: 70%;
+  transform: translateX(-90%);
 }
 
-/* Adjust tooltip position for the middle card */
-.card:nth-child(2)::after,
-.card:nth-child(2)::before {
-  bottom: auto;
-  top: 105%;
+.card-tooltip.left {
+  right: calc(80% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-.card:nth-child(2)::before {
-  top: 120%;
+.card-tooltip.right {
+  left: calc(85% + 5px);
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-/* Ensure cross card doesn't interfere with tooltips */
+/* Remove old tooltip styles */
+.card::before,
+.card::after {
+  display: none;
+}
+
 .card.cross-card {
   pointer-events: none;
 }
@@ -87,7 +98,7 @@
   z-index: 2;
 }
 
-/* Specific style for the card under the cross card */
+
 .card:nth-child(2) {
   z-index: 90;
 }
@@ -102,21 +113,51 @@
     transform: none;
     margin-top: 0;
     z-index: 2000;
-    height: 50vh; /* Reduced height */
+    height: 50vh; 
     width: 100vw;
     position: fixed;
-    top: 15vh; /* Moved up */
+    top: 15vh; 
     left: -100%;
   }
 
   .card {
-    width: 50px; /* Reduced width */
-    height: 85px; /* Reduced height */
+    width: 50px; 
+    height: 85px; 
   }
 
   .revealed-card {
-    width: 50px; /* Reduced width */
-    height: 85px; /* Reduced height */
+    width: 50px; 
+    height: 85px; 
+  }
+
+  .card-tooltip {
+    font-size: 0.7rem;
+    width: 150px;
+    padding: 1px 5px;
+    border-width: 5px;
+  }
+
+  .tooltip-title {
+    font-size: 0.8rem;
+  }
+
+  .tooltip-position {
+    font-size: 0.7rem;
+  }
+
+  .tooltip-content {
+    font-size: 0.7rem;
+  }
+
+  .card-tooltip.top,
+  .card-tooltip.bottom,
+  .card-tooltip.left,
+  .card-tooltip.right {
+    transform: scale(1) translate(-50%, -50%);
+  }
+
+  .card-tooltip.scaling {
+    transform: scale(1);
   }
 }
 
@@ -133,7 +174,7 @@
   perspective: 1000px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s 0.6s;
-  z-index: 150000000; /* Ensure individual cards are above the robot */
+  z-index: 150000000;
 }
 
 @media (max-width: 768px) {
@@ -144,7 +185,7 @@
   }
 
   .card-container {
-    /* Ensure cards do not display behind the robot */
+
     display: flex;
     flex-wrap: wrap-revers;
     justify-content: center;
@@ -156,13 +197,6 @@
     height: 120px;
   }
 
-  /* Add these new styles for better mobile responsiveness */
-  .card:hover::after,
-  .card:hover::before {
-    font-size: 1rem;
-    max-width: 150px;
-    z-index: 2100; /* Increased z-index for tooltips */
-  }
 
   .revealed-card {
     width: 60px;
@@ -180,7 +214,7 @@
   transition: transform 0.6s;
   border-radius: 2px;
   transform: rotateY(0deg);
-  z-index: 1; /* Ensure individual cards are above the robot */
+  z-index: 1; 
 }
 
 .card.flipped .card-inner {
@@ -189,17 +223,17 @@
 
 .card.reversed .card-inner {
   transform: rotateY(0deg) rotate(180deg);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
 }
 
 .card.reversed.flipped .card-inner {
   transform: rotateY(180deg) rotate(180deg);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
 }
 
 .card.cross-card.flipped .card-inner {
   transform: rotateY(180deg) rotate(90deg);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
 }
 
 .card-front,
@@ -212,7 +246,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   background-size: cover;
-  z-index: 150000000; /* Ensure individual cards are above the robot */
+  z-index: 150000000; 
 }
 
 .card-back {
@@ -246,14 +280,9 @@
   max-width: 200px;
   text-align: center;
   line-height: 1.5; 
-  z-index: 2100; /* Increased z-index for tooltips */
+  z-index: 2100; 
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
-}
-
-.card:hover::after {
-  opacity: 1;
-  transition-delay: 0.1s;
 }
 
 .card:hover::before {
@@ -276,62 +305,16 @@
   display: block;
   max-width: 200px;
   text-align: center;
-  z-index: 9992100; /* Increased z-index for tooltips */
+  z-index: 9992100; 
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
 }
 
-.card:hover::before {
-  opacity: 1;
-  transition-delay: 0.2s;
-}
 
-.card.cross-card:hover {
-  z-index: 2001;
-}
-
-.card.cross-card:hover::after {
-  bottom: auto;
-  top: 100%;
-  transform: translateY(50%) rotate(-180deg) translateX(5px);
-  transform-origin: left center;
-  left: 110%;
-  margin-top: 10px;
-  z-index: 1000;
-}
-
-.card.cross-card:hover::before {
-  bottom: auto;
-  top: 100%;
-  transform: translateY(-50%) rotate(-90deg) translateX(5px);
-  transform-origin: left center;
-  left: 110%;
-  z-index: 1000;
-}
-
-.card:nth-child(5):hover::after {
-  bottom: auto;
-  top: 100%;
-  transform: translateX(-50%);
-  margin-top: 10px;
-}
-
-.card:hover {
-  z-index: 2000;
-  transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s;
-}
-
-.card:nth-child(1):hover {
-  transform: scale(1.05);
-}
-
-.card:nth-child(4) {
-  opacity: 1 !important;
-}
 
 .card-reveal {
   position: relative;
-  z-index: 1000; /* Adjust this value as needed */
+  z-index: 1000; 
 }
 
 .revealed-card {
@@ -341,7 +324,7 @@
   backface-visibility: hidden;
   transform-style: preserve-3d;
   transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
-  z-index: 150000000; /* Ensure individual cards are above the robot */
+  z-index: 150000000; 
 }
 
 .revealed-card.flipped {
@@ -351,7 +334,7 @@
 
 .card-reveal-container.exit-animation {
   animation: exitAnimation 1s ease-out forwards;
-  z-index: 150000000; /* Ensure individual cards are above the robot */
+  z-index: 150000000; 
 }
 
 @keyframes exitAnimation {
@@ -365,31 +348,27 @@
   }
 }
 
-/* Specific style for the cross card tooltip */
-.card.cross-card::after,
-.card.cross-card::before {
-  transform-origin: left center;
-  left: 110%;
-  bottom: 50%;
+.tooltip-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #fbbf24;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.card.cross-card::after {
-  transform: translateY(50%) rotate(-90deg);
+.tooltip-position {
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-bottom: 8px;
+  color: #e2e8f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.card.cross-card::before {
-  transform: translateY(-50%) rotate(-90deg);
-}
-
-.card.cross-card:hover::after,
-.card.cross-card:hover::before {
-  opacity: 1;
-}
-
-.card.cross-card:hover::after {
-  transform: translateY(50%) rotate(-90deg) translateX(5px);
-}
-
-.card.cross-card:hover::before {
-  transform: translateY(-50%) rotate(-90deg) translateX(5px);
+.tooltip-content {
+  font-size: 0.9rem;
+  line-height: 1.4;
 }

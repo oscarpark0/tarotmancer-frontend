@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
@@ -24,6 +23,11 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const formRef = useRef(null);
   const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
   const [animationsComplete, setAnimationsComplete] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  const handleStreamingStateChange = useCallback((streaming) => {
+    setIsStreaming(streaming);
+  }, []);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -163,14 +167,17 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       drawCount={drawCount}
       fetchSpread={fetchSpread}
       onNewResponse={(response) => {
-        // Use formattedResponse as needed
+        setIsStreaming(true);
       }}
       onResponseComplete={() => {
+        setIsStreaming(false);
       }}
       animationsComplete={animationsComplete}
       isDarkMode={isDarkMode}
+      onStreamingStateChange={handleStreamingStateChange}
+      isStreaming={isStreaming}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -200,7 +207,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   return (
     <ErrorBoundary>
       <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}>
-        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} isDarkMode={isDarkMode} />
+        <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} isDarkMode={isDarkMode} isMobile={isMobile} isPaused={isStreaming} />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
             <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>

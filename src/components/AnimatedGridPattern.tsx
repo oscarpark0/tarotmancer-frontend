@@ -44,6 +44,7 @@ interface AnimatedGridPatternProps extends React.SVGProps<SVGSVGElement> {
   repeatDelay?: number;
   isDarkMode?: boolean;
   isMobile?: boolean;
+  isPaused: boolean;
 }
 
 interface Card {
@@ -68,6 +69,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   repeatDelay = 10,
   isDarkMode = false,
   isMobile = false,
+  isPaused,
   ...props
 }) => {
   const id = useId();
@@ -111,18 +113,18 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     initial: { opacity: 0, rotateY: 0, scale: 1, z: 0 },
     animate: (custom: Card) => ({
       opacity: custom.randomOpacity,
-      rotateY: [0, 180],
-      scale: custom.randomScale,
-      z: [0, 50, 0],
+      rotateY: isPaused ? 0 : [0, 180],
+      scale: isPaused ? 1 : custom.randomScale,
+      z: isPaused ? 0 : [0, 50, 0],
       transition: {
-        duration: duration + getRandomValue(0, 30),
-        repeat: Infinity,
+        duration: isPaused ? 0 : duration + getRandomValue(0, 30),
+        repeat: isPaused ? 0 : Infinity,
         delay: custom.id * getRandomValue(0.5, 1.0),
         repeatType: 'reverse',
         ease: [0.645, 0.045, 0.355, 1],
       },
     }),
-  }), [duration]);
+  }), [duration, isPaused]);
 
   useEffect(() => {
     const handleStreamingStateChange = (e: CustomEvent<boolean>) => setIsStreaming(e.detail);
@@ -147,6 +149,9 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     return null;
   }
 
+  const MemoizedMotionG = motion.g;
+  const MemoizedMotionImage = motion.image;
+
   return (
     <svg
       ref={containerRef}
@@ -164,7 +169,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
       <rect width="100%" height="100%" fill={`url(#${id})`} />
       <svg x={x} y={y} className="overflow-visible">
         {cards.slice(0, effectiveNumCards).map((card) => (
-          <motion.g
+          <MemoizedMotionG
             key={`${card.id}-${card.pos[0]}-${card.pos[1]}`}
             custom={card}
             variants={cardVariants}
@@ -177,7 +182,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
             }}
             style={{ transformStyle: 'preserve-3d', transformOrigin: 'center', perspective: '1000px' }}
           >
-            <motion.image
+            <MemoizedMotionImage
               href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
               width={width - 1}
               height={height - 1}
@@ -185,7 +190,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
               y={card.pos[1] * height + 1}
               className="tarot-card"
             />
-            <motion.image
+            <MemoizedMotionImage
               href={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
               width={width - 1}
               height={height - 1}
@@ -193,7 +198,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
               y={card.pos[1] * height + 1}
               className="tarot-card-back"
             />
-          </motion.g>
+          </MemoizedMotionG>
         ))}
       </svg>
     </svg>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import './CardReveal.css';
 
 const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, className }) => {
   const [revealedCards, setRevealedCards] = useState(0);
   const [flippedCards, setFlippedCards] = useState(0);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   const cardPositions = useMemo(() => {
     const containerWidth = window.innerWidth;
@@ -32,7 +33,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
       const crossCardScale = baseScale * 0.9;
       const celticBaseScale = isMobile ? baseScale * 0.8 : baseScale;
       const celticBaseLeft = isMobile ? '30%' : baseLeft;
-      const verticalSpacing = isMobile ? '5.9vh' : '10.5vh';
+      const verticalSpacing = isMobile ? '5.9vh' : '12.5vh';
       
       return [
         { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
@@ -48,6 +49,28 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
       ];
     }
   }, [cards.length]);
+
+  const getTooltipPosition = (index, totalCards) => {
+    if (totalCards === 3) {
+      return index === 1 ? 'bottom' : 'top';
+    } else {
+      // Celtic Cross positioning
+      if (index === 0 || index === 1) return 'bottom';
+      if (index === 2) return 'left';
+      if (index === 3) return 'left';
+      if (index === 4) return 'bottom';
+      if (index === 5) return 'top';
+      return index % 2 === 0 ? 'left' : 'left';
+    }
+  };
+
+  const handleMouseEnter = (index) => {
+    setHoveredCard(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredCard(null);
+  };
 
   useEffect(() => {
     let timer;
@@ -77,7 +100,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
       {dealingComplete && cards.map((card, index) => (
         <motion.div
           key={index}
-          className={`card pointer-events-auto ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${cards.length > 3 && index === 1 ? 'cross-card' : ''}`}
+          className={`card pointer-events-auto ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${cards.length > 3 && index === 1 ? 'cross-card' : ''} ${hoveredCard === index ? 'hovered' : ''}`}
           initial={{ opacity: 0, x: -200, y: -1, scale: 1 }}
           animate={{
             opacity: 1,
@@ -96,11 +119,11 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
             transition: { duration: 0.5, delay: index * 0.1, ease: 'easeOut' }
           }}
           style={cardPositions[index]}
-          data-tooltip={`${card.tooltip}`} 
-          data-name={`${card.name}`} 
+          onMouseEnter={() => handleMouseEnter(index)}
+          onMouseLeave={handleMouseLeave}
           whileHover={{
-            zIndex: cards.length > 3 && index === 0 ? 15 : cardPositions[index].zIndex,
             scale: 1.1,
+            zIndex: 9999,
             transition: { duration: 0.2 }
           }}
         >
@@ -120,6 +143,21 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
               }}
             ></div>
           </div>
+          <AnimatePresence>
+            {hoveredCard === index && (
+              <motion.div
+                className={`card-tooltip ${getTooltipPosition(index, cards.length)} ${isMobile ? 'mobile' : ''}`}
+                initial={{ opacity: 0, y: isMobile ? 5 : 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: isMobile ? 5 : 10 }}
+                transition={{ duration: 0.2 }}
+              >
+                <h3 className="tooltip-title">{card.name}</h3>
+                <p className="tooltip-position">{card.position}</p>
+                <p className="tooltip-content">{card.tooltip}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       ))}
     </div>

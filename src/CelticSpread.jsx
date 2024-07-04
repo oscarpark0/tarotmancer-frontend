@@ -25,6 +25,11 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  const handleStreamingStateChange = useCallback((streaming) => {
+    setIsStreaming(streaming);
+  }, []);
 
   const handleSubmitInput = useCallback((value) => {
     if (formRef.current) {
@@ -146,14 +151,18 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       onSpreadSelect={onSpreadSelect}
       fetchSpread={fetchSpread}
       onNewResponse={(response) => {
+        setIsStreaming(true);
       }}
       onResponseComplete={() => {
+        setIsStreaming(false);
       }}
       animationsComplete={animationsComplete}
       isDarkMode={isDarkMode}
       onAnimationStart={handleAnimationStart}
+      onStreamingStateChange={handleStreamingStateChange}
+      isStreaming={isStreaming}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -193,6 +202,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
           positions={positions} 
           isDarkMode={isDarkMode}
           isMobile={isMobile}
+          isPaused={isStreaming}
         />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (

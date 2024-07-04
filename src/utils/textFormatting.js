@@ -4,17 +4,20 @@ export const formatResponse = (text) => {
     return '';
   }
 
-  return text
-    .replace(/\n{3,}/g, '\n\n')
-    .replace(/([.!?])\s*(?=[A-Z])/g, '$1\n\n')
-    .replace(/^(-|\d+\.)\s*/gm, '  $1 ')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
-    .replace(/(\d+\.)\s+([A-Z])/g, '$1\n\n$2')  // Add line break after numbered points
-    .replace(/([A-Z][a-z]+:)/g, '\n$1')  // Add line break before card names
-    .replace(/(\w+\s*\((?:up|down)right\))/g, '<em>$1</em>')  // Italicize card orientations
-    .replace(/^Dear querent,/gm, '\n\nDear querent,')  // Add extra line break before "Dear querent"
-    .replace(/Blessed be\./g, '\n\nBlessed be.');  // Add extra line break before "Blessed be"
+  const replacements = [
+    [/\n{3,}/g, '\n\n'],
+    [/([.!?])\s*(?=[A-Z])/g, '$1\n\n'],
+    [/^(-|\d+\.)\s*/gm, '  $1 '],
+    [/\*\*(.*?)\*\*/g, '<strong>$1</strong>'],
+    [/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'],
+    [/(\d+\.)\s+([A-Z])/g, '$1\n\n$2'],
+    [/([A-Z][a-z]+:)/g, '\n$1'],
+    [/(\w+\s*\((?:up|down)right\))/g, '<em>$1</em>'],
+    [/^Dear querent,/gm, '\n\nDear querent,'],
+    [/Blessed be\./g, '\n\nBlessed be.']
+  ];
+
+  return replacements.reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), text);
 };
 
 // Additional utility functions for text formatting

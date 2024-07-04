@@ -39,15 +39,15 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     if (!shouldRequestCohere) return;
 
     setIsLoading(true);
-    onNewResponse(''); 
+    onNewResponse(''); // This will set isStreaming to true in the Robot component
 
     try {
-      const staticText = "You are Tarotmancer - the soul of an ancient and powerful tarot card reader." +
-        "Begin your response as you see fit. Offer detailed insight/interpretation of the seeker's spread." +
+      const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +
+        "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as it's position in relation to the other cards in the spread." +
         "Provide the querent with a detailed and personalized reading that is tailored to their situation as described by the tarot." +
-        "Your guidance should resonate personally with the querent. You responsd using clear language to ensure your responses are easily understood. " +
-        "Avoid complex terminology and jargon - respond naturally. Format your response in a manner that allows each position, card, and orientation to be clearly labeled. " +
-        "Conclude with an overview of the seeker's spread and your interpretation of it.";
+        " Responsd using clear - natural language to ensure your responses are easily understood. " +
+        "Format your response in a manner that allows each position, card, and orientation to be clearly and easily identified. " +
+        "Conclude with an overview of the querent's spread and your interpretation of it.";
       const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
@@ -59,7 +59,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
-      onResponseComplete();
+      onResponseComplete(); // This will set isStreaming to false in the Robot component
     }
 
     setInput('');

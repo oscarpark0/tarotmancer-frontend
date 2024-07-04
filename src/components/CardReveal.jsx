@@ -147,14 +147,35 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
             {hoveredCard === index && (
               <motion.div
                 className={`card-tooltip ${getTooltipPosition(index, cards.length)} ${isMobile ? 'mobile' : ''}`}
-                initial={{ opacity: 0, y: isMobile ? 5 : 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: isMobile ? 5 : 10 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <h3 className="tooltip-title">{card.name}</h3>
-                <p className="tooltip-position">{card.position}</p>
-                <p className="tooltip-content">{card.tooltip}</p>
+                <motion.h3 
+                  className="tooltip-title"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.2 }}
+                >
+                  {card.name}
+                </motion.h3>
+                <motion.p 
+                  className="tooltip-position"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.2 }}
+                >
+                  {card.position}
+                </motion.p>
+                <motion.p 
+                  className="tooltip-content"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.2 }}
+                >
+                  {card.tooltip}
+                </motion.p>
               </motion.div>
             )}
           </AnimatePresence>

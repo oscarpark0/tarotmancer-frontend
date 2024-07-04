@@ -26,7 +26,6 @@
   transform: scale(1.1);
 }
 
-
 .card:nth-child(2) {
   z-index: 1999; 
 }
@@ -38,44 +37,47 @@
 
 .card-tooltip {
   position: absolute;
-  background-color: rgba(39, 54, 88, 0.9);
-  color: #ffffff;
-  padding: 1px 7px;
-  border-radius: 22px;
-  font-size: 0.9rem;
-  white-space: normal;
-  width: 200px;
+  background-color: rgba(78, 79, 117, 0.61);
+  color: #1e559c;
+  padding: 40px -50x;
+  border-radius: 12px;
+  border-style: ridge;
+  border-color: #000000;
+  border-width: 10px;
+  font-size: 2.95rem;
+  width: 150px;
   pointer-events: none;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.2);
   z-index: 9999992200;
-  backdrop-filter: blur(5px);
-  border: 10px groove rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  text-align: center;
+  transition: all 0.3s ease-in-out;
 }
 
 .card-tooltip.scaling {
-  transform: scale(0.9090909); /* 1 / 1.1 to counteract the card's scale */
+  transform: scale(0.9090909) translateX(-50%);
 }
 
 .card-tooltip.top {
-  bottom: calc(85% + 5px);
+  bottom: calc(100% + 15px);
   left: 50%;
   transform: translateX(-50%);
 }
 
 .card-tooltip.bottom {
-  top: calc(80% + 5px);
-  left: 70%;
-  transform: translateX(-90%);
+  top: calc(100% + 15px);
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .card-tooltip.left {
-  right: calc(80% + 5px);
+  right: calc(100% + 15px);
   top: 50%;
   transform: translateY(-50%);
 }
 
 .card-tooltip.right {
-  left: calc(85% + 5px);
+  left: calc(100% + 15px);
   top: 50%;
   transform: translateY(-50%);
 }
@@ -97,7 +99,6 @@
 .card.cross-card {
   z-index: 2;
 }
-
 
 .card:nth-child(2) {
   z-index: 90;
@@ -131,22 +132,21 @@
   }
 
   .card-tooltip {
-    font-size: 0.7rem;
-    width: 150px;
-    padding: 1px 5px;
-    border-width: 5px;
+    font-size: 0.85rem;
+    width: 200px;
+    padding: 12px 15px;
   }
 
   .tooltip-title {
-    font-size: 0.8rem;
+    font-size: 1.1rem;
   }
 
   .tooltip-position {
-    font-size: 0.7rem;
+    font-size: 0.9rem;
   }
 
   .tooltip-content {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
   }
 
   .card-tooltip.top,
@@ -166,7 +166,6 @@
   opacity: 0.9;
 }
 
-
 .card {
   position: absolute;
   width: 125px;
@@ -185,7 +184,6 @@
   }
 
   .card-container {
-
     display: flex;
     flex-wrap: wrap-revers;
     justify-content: center;
@@ -197,14 +195,11 @@
     height: 120px;
   }
 
-
   .revealed-card {
     width: 60px;
     height: 102px;
   }
 }
-
-
 
 .card-inner {
   width: 100%;
@@ -273,7 +268,7 @@
   outline: 0.1vw groove;
   border-radius: 25px;
   outline-color: #000000;
-  font-size: 1.2rem;
+  font-size: 21.2rem;
   white-space: nowrap;
   pointer-events: none;
   display: block;
@@ -291,7 +286,7 @@
   bottom: 95%;
   left: 50%;
   transform: translateX(-50%) translateY(-15px); 
-  background-color: rgb(255, 253, 253); 
+  background-color: rgb(5, 2, 2); 
   color: #000000;
   padding: 0px 4px;
   border-radius: 50px;
@@ -299,7 +294,7 @@
   outline-width: 0.1px;
   border-radius: 25px;
   outline-color: #0000009c;
-  font-size: 1.2rem;
+  font-size: 21.2rem;
   white-space: nowrap;
   pointer-events: none;
   display: block;
@@ -309,8 +304,6 @@
   transition: opacity 0.3s ease-in-out;
   opacity: 0;
 }
-
-
 
 .card-reveal {
   position: relative;
@@ -349,26 +342,25 @@
 }
 
 .tooltip-title {
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   color: #fbbf24;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
 }
 
 .tooltip-position {
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-style: italic;
-  margin-bottom: 8px;
-  color: #e2e8f0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 12px;
+  color: #94a3b8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .tooltip-content {
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }

@@ -37,47 +37,38 @@
 
 .card-tooltip {
   position: absolute;
-  background-color: rgba(78, 79, 117, 0.61);
-  color: #1e559c;
-  padding: 40px -50x;
-  border-radius: 12px;
-  border-style: ridge;
-  border-color: #000000;
-  border-width: 10px;
-  font-size: 2.95rem;
-  width: 150px;
-  pointer-events: none;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999992200;
-  backdrop-filter: blur(8px);
-  text-align: center;
-  transition: all 0.3s ease-in-out;
-}
-
-.card-tooltip.scaling {
-  transform: scale(0.9090909) translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  width: 250px;
+  max-height: 400px;
+  overflow-y: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
 }
 
 .card-tooltip.top {
-  bottom: calc(100% + 15px);
+  bottom: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
 }
 
 .card-tooltip.bottom {
-  top: calc(100% + 15px);
+  top: calc(100% + 10px);
   left: 50%;
   transform: translateX(-50%);
 }
 
 .card-tooltip.left {
-  right: calc(100% + 15px);
+  right: calc(100% + 10px);
   top: 50%;
   transform: translateY(-50%);
 }
 
 .card-tooltip.right {
-  left: calc(100% + 15px);
+  left: calc(100% + 10px);
   top: 50%;
   transform: translateY(-50%);
 }
@@ -132,13 +123,17 @@
   }
 
   .card-tooltip {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     width: 200px;
-    padding: 12px 15px;
+    max-height: 300px;
   }
 
   .tooltip-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
+  }
+
+  .tooltip-subtitle {
+    font-size: 0.9rem;
   }
 
   .tooltip-position {
@@ -146,7 +141,7 @@
   }
 
   .tooltip-content {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
 
   .card-tooltip.top,
@@ -344,23 +339,31 @@
 .tooltip-title {
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 8px;
-  color: #fbbf24;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+}
+
+.tooltip-subtitle {
+  font-size: 1rem;
+  font-style: italic;
+  margin-bottom: 10px;
 }
 
 .tooltip-position {
-  font-size: 1rem;
-  font-style: italic;
-  margin-bottom: 12px;
-  color: #94a3b8;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-.tooltip-content {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: #e2e8f0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+.tooltip-keywords,
+.tooltip-meanings,
+.tooltip-fortune {
+  margin-bottom: 10px;
+}
+
+.tooltip-meanings ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.tooltip-meanings li {
+  margin-bottom: 5px;
 }

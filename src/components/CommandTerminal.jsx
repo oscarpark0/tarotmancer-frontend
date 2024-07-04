@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useRef, useEffect, useCallback, forwardRef, useContext } from 'react';
+import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
 import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
-import LanguageSelector, { LanguageContext } from './LanguageSelector';
+import LanguageSelector, { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
 
@@ -14,7 +14,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const terminalOutputRef = useRef(null);
   const [showCards, setShowCards] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
-  const { selectedLanguage } = useContext(LanguageContext);
+  const { selectedLanguage } = useLanguage();
   const [isDrawing, setIsDrawing] = useState(false);
 
   const getTranslation = (key) => {

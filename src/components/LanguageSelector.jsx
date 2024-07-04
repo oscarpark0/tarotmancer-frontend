@@ -1,7 +1,8 @@
-
 import React, { memo, createContext, useContext, useState } from 'react';
 
 export const LanguageContext = createContext();
+
+export const useLanguage = () => useContext(LanguageContext);
 
 export const LanguageProvider = ({ children }) => {
   const [selectedLanguage, setSelectedLanguage] = useState('English');
@@ -14,7 +15,7 @@ export const LanguageProvider = ({ children }) => {
 };
 
 const LanguageSelector = memo(() => {
-  const { selectedLanguage, setSelectedLanguage } = useContext(LanguageContext);
+  const { selectedLanguage, setSelectedLanguage } = useLanguage();
 
   const languages = [
     'English',

@@ -7,7 +7,7 @@ import './Robot.css';
 import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { formatResponse } from '../utils/textFormatting';
-
+import { useLanguage } from './LanguageSelector';
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -69,6 +69,8 @@ const Robot = memo(({
   const [activeTab, setActiveTab] = useState(null);
   const robotRef = useRef(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  useLanguage();
+
 
   const handleResponseComplete = useCallback(() => {
     onResponseComplete();

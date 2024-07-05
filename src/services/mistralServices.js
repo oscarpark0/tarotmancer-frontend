@@ -1,16 +1,11 @@
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
-    const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    const response = await fetch('/api/mistral', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.REACT_APP_MIST_API_KEY}`
       },
-      body: JSON.stringify({
-        model: "open-mixtral-8x22b",
-        messages: [{ role: "user", content: message }],
-        stream: true
-      })
+      body: JSON.stringify({ message }),
     });
 
     const reader = response.body.getReader();

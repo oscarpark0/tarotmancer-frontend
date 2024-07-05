@@ -24,11 +24,13 @@ export const getMistralResponse = async (message, onNewResponse) => {
       
       for (const line of lines) {
         if (line.startsWith('data: ')) {
+          const data = line.slice(5).trim();
+          if (data === '[DONE]') {
+            // Stream finished
+            break;
+          }
           try {
-            const jsonData = JSON.parse(line.slice(5));
-            if (jsonData.error) {
-              throw new Error(jsonData.error);
-            }
+            const jsonData = JSON.parse(data);
             if (jsonData.choices && jsonData.choices[0].delta.content) {
               onNewResponse(jsonData.choices[0].delta.content);
             }

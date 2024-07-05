@@ -158,8 +158,16 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.1, duration: 0.2 }}
                 >
-                  {card.name}
+                  {card.name} ({card.number})
                 </motion.h3>
+                <motion.p 
+                  className="tooltip-subtitle"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.15, duration: 0.2 }}
+                >
+                  {card.arcana} - {card.suit}
+                </motion.p>
                 <motion.p 
                   className="tooltip-position"
                   initial={{ y: -5, opacity: 0 }}
@@ -168,14 +176,34 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                 >
                   {card.position}
                 </motion.p>
-                <motion.p 
-                  className="tooltip-content"
+                <motion.div 
+                  className="tooltip-keywords"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.25, duration: 0.2 }}
+                >
+                  <strong>Keywords:</strong> {card.keywords.join(", ")}
+                </motion.div>
+                <motion.div 
+                  className="tooltip-meanings"
                   initial={{ y: -5, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.2 }}
                 >
-                  {card.tooltip}
-                </motion.p>
+                  <strong>Meanings:</strong>
+                  <ul>
+                    <li><strong>Light:</strong> {card.meanings.light[0]}</li>
+                    <li><strong>Shadow:</strong> {card.meanings.shadow[0]}</li>
+                  </ul>
+                </motion.div>
+                <motion.div 
+                  className="tooltip-fortune"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.35, duration: 0.2 }}
+                >
+                  <strong>Fortune:</strong> {card.fortune_telling[0]}
+                </motion.div>
               </motion.div>
             )}
           </AnimatePresence>

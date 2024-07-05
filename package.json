@@ -13,6 +13,7 @@
     "ajv": "^8.16.0",
     "axios": "^1.6.7",
     "chart.js": "^4.4.3",
+    "eventsource-parser": "^1.1.2",
     "jsonpointer": "^5.0.1",
     "lodash.throttle": "^4.1.1",
     "react": "^18.2.0",

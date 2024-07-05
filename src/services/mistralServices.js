@@ -6,7 +6,7 @@ export const getMistralResponse = async (message, onNewResponse) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${MIST_API_KEY}`
+        'Authorization': `Bearer ${process.env.REACT_APP_MIST_API_KEY}`
       },
       body: JSON.stringify({
         model: "open-mixtral-8x22b",

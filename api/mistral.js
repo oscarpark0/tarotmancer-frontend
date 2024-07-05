@@ -1,12 +1,15 @@
-import { NextResponse } from 'next/server';
+export async function handler(event, context) {
+  // Check if it's a POST request
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: 'This endpoint requires a POST request' }),
+      headers: { 'Content-Type': 'application/json' },
+    };
+  }
 
-export async function GET(req) {
-  return new NextResponse('This endpoint requires a POST request', { status: 405 });
-}
-
-export async function POST(req) {
   try {
-    const { message } = await req.json();
+    const { message } = JSON.parse(event.body);
 
     if (!process.env.MIST_API_KEY) {
       console.error('MIST_API_KEY is not set');
@@ -32,19 +35,24 @@ export async function POST(req) {
       throw new Error(`Mistral API error: ${response.status} ${errorText}`);
     }
 
-    return new NextResponse(response.body, {
-      status: response.status,
+    // For streaming responses in a serverless environment, you might need to adjust this part
+    const responseBody = await response.text();
+
+    return {
+      statusCode: response.status,
+      body: responseBody,
       headers: {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
       },
-    });
+    };
   } catch (error) {
-    console.error('Error in POST handler:', error);
-    return new NextResponse(JSON.stringify({ error: error.message || 'Internal Server Error' }), {
-      status: 500,
+    console.error('Error in handler:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message || 'Internal Server Error' }),
       headers: { 'Content-Type': 'application/json' },
-    });
+    };
   }
 }

@@ -9,6 +9,7 @@ export async function POST(req) {
     const { message } = await req.json();
 
     if (!process.env.MIST_API_KEY) {
+      console.error('MIST_API_KEY is not set');
       throw new Error('MIST_API_KEY is not set');
     }
 
@@ -27,6 +28,7 @@ export async function POST(req) {
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error('Mistral API error:', response.status, errorText);
       throw new Error(`Mistral API error: ${response.status} ${errorText}`);
     }
 

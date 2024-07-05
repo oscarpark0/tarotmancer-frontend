@@ -1,3 +1,5 @@
+import { createParser } from 'eventsource-parser';
+
 export default async function handler(event, context) {
   // Check if it's a POST request
   if (event.httpMethod !== 'POST') {
@@ -35,24 +37,53 @@ export default async function handler(event, context) {
       throw new Error(`Mistral API error: ${response.status} ${errorText}`);
     }
 
-    // For streaming responses in a serverless environment, you might need to adjust this part
-    const responseBody = await response.text();
+    // Set up streaming response
+    return new Response(
+      new ReadableStream({
+        async start(controller) {
+          const parser = createParser((event) => {
+            if (event.type === 'event') {
+              const data = event.data;
+              if (data === '[DONE]') {
+                controller.close();
+              } else {
+                try {
+                  const json = JSON.parse(data);
+                  const text = json.choices[0]?.delta?.content || '';
+                  controller.enqueue(text);
+                } catch (e) {
+                  console.error('Error parsing streaming data:', e);
+                }
+              }
+            }
+          });
 
-    return {
-      statusCode: response.status,
-      body: responseBody,
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
-    };
+          const reader = response.body.getReader();
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              const chunk = new TextDecoder().decode(value);
+              parser.feed(chunk);
+            }
+          } finally {
+            reader.releaseLock();
+          }
+        }
+      }),
+      {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+      }
+    );
   } catch (error) {
     console.error('Error in handler:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message || 'Internal Server Error' }),
+    return new Response(JSON.stringify({ error: error.message || 'Internal Server Error' }), {
+      status: 500,
       headers: { 'Content-Type': 'application/json' },
-    };
+    });
   }
 }

@@ -39,7 +39,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     if (!shouldRequestCohere) return;
 
     setIsLoading(true);
-    onNewResponse(''); // This will set isStreaming to true in the Robot component
+    onNewResponse(''); 
 
     try {
       const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +
@@ -59,7 +59,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
-      onResponseComplete(); // This will set isStreaming to false in the Robot component
+      onResponseComplete(); 
     }
 
     setInput('');

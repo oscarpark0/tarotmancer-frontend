@@ -9,9 +9,7 @@ export const getMistralResponse = async (message, onNewResponse) => {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Mistral API error:', response.status, errorText);
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const reader = response.body.getReader();
@@ -25,10 +23,17 @@ export const getMistralResponse = async (message, onNewResponse) => {
       const lines = chunk.split('\n');
       
       for (const line of lines) {
-        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-          const jsonData = JSON.parse(line.slice(6));
-          if (jsonData.choices[0].delta.content) {
-            onNewResponse(jsonData.choices[0].delta.content);
+        if (line.startsWith('data: ')) {
+          try {
+            const jsonData = JSON.parse(line.slice(5));
+            if (jsonData.error) {
+              throw new Error(jsonData.error);
+            }
+            if (jsonData.choices && jsonData.choices[0].delta.content) {
+              onNewResponse(jsonData.choices[0].delta.content);
+            }
+          } catch (e) {
+            console.error('Error parsing JSON:', e);
           }
         }
       }

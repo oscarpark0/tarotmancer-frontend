@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/mistral.js": {
+      "maxDuration": 60
+    }
+  }
+}

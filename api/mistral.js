@@ -1,4 +1,4 @@
-export async function handler(event, context) {
+export default async function handler(event, context) {
   // Check if it's a POST request
   if (event.httpMethod !== 'POST') {
     return {

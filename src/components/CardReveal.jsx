@@ -158,7 +158,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.1, duration: 0.2 }}
                 >
-                  {card.name} ({card.number})
+                  {card.name || "Unknown"} ({card.number || "N/A"})
                 </motion.h3>
                 <motion.p 
                   className="tooltip-subtitle"
@@ -166,7 +166,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.15, duration: 0.2 }}
                 >
-                  {card.arcana} - {card.suit}
+                  {card.arcana || "Unknown"} - {card.suit || "Unknown"}
                 </motion.p>
                 <motion.p 
                   className="tooltip-position"
@@ -182,7 +182,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.25, duration: 0.2 }}
                 >
-                  <strong>Keywords:</strong> {card.keywords.join(", ")}
+                  <strong>Keywords:</strong> {card.keywords && card.keywords.length > 0 ? card.keywords.join(", ") : "N/A"}
                 </motion.div>
                 <motion.div 
                   className="tooltip-meanings"
@@ -192,8 +192,8 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                 >
                   <strong>Meanings:</strong>
                   <ul>
-                    <li><strong>Light:</strong> {card.meanings.light[0]}</li>
-                    <li><strong>Shadow:</strong> {card.meanings.shadow[0]}</li>
+                    <li><strong>Light:</strong> {card.meanings?.light?.[0] || "N/A"}</li>
+                    <li><strong>Shadow:</strong> {card.meanings?.shadow?.[0] || "N/A"}</li>
                   </ul>
                 </motion.div>
                 <motion.div 
@@ -202,7 +202,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.35, duration: 0.2 }}
                 >
-                  <strong>Fortune:</strong> {card.fortune_telling[0]}
+                  <strong>Fortune:</strong> {card.fortune_telling?.[0] || "N/A"}
                 </motion.div>
               </motion.div>
             )}

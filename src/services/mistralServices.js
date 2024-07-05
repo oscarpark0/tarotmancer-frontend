@@ -1,5 +1,3 @@
-import { MIST_API_KEY } from '../utils/config';
-
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {

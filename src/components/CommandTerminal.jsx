@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
 import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
@@ -17,13 +16,13 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const { selectedLanguage } = useLanguage();
   const [isDrawing, setIsDrawing] = useState(false);
 
-  const getTranslation = (key) => {
+  const getTranslation = useCallback((key) => {
     if (!buttonTranslations[key]) {
       console.warn(`Translation key "${key}" not found`);
-      return key; // Return the key itself as a fallback
+      return key;
     }
     return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'] || key;
-  };
+  }, [selectedLanguage]);
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -54,8 +53,8 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
       await getMistralResponse(message, onNewResponse);
     } catch (error) {
-      console.error('Error:', error);
-      const errorMessage = getTranslation('errorMessage');
+      console.error('Error in handleSubmit:', error);
+      const errorMessage = getTranslation('errorMessage') + ': ' + error.message;
       onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);

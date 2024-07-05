@@ -8,6 +8,11 @@ export const getMistralResponse = async (message, onNewResponse) => {
       body: JSON.stringify({ message }),
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+    }
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
@@ -28,7 +33,7 @@ export const getMistralResponse = async (message, onNewResponse) => {
       }
     }
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in getMistralResponse:', error);
     throw error;
   }
 };

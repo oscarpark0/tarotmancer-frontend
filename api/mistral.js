@@ -8,6 +8,10 @@ export async function POST(req) {
   try {
     const { message } = await req.json();
 
+    if (!process.env.MIST_API_KEY) {
+      throw new Error('MIST_API_KEY is not set');
+    }
+
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -21,6 +25,11 @@ export async function POST(req) {
       })
     });
 
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Mistral API error: ${response.status} ${errorText}`);
+    }
+
     return new NextResponse(response.body, {
       status: response.status,
       headers: {
@@ -31,7 +40,7 @@ export async function POST(req) {
     });
   } catch (error) {
     console.error('Error in POST handler:', error);
-    return new NextResponse(JSON.stringify({ error: 'Internal Server Error' }), {
+    return new NextResponse(JSON.stringify({ error: error.message || 'Internal Server Error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

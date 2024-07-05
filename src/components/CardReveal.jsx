@@ -147,63 +147,14 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
             {hoveredCard === index && (
               <motion.div
                 className={`card-tooltip ${getTooltipPosition(index, cards.length)} ${isMobile ? 'mobile' : ''}`}
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                initial={{ opacity: 0, y: isMobile ? 5 : 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: isMobile ? 5 : 10 }}
+                transition={{ duration: 0.2 }}
               >
-                <motion.h3 
-                  className="tooltip-title"
-                  initial={{ y: -5, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.2 }}
-                >
-                  {card.name || "Unknown"} ({card.number || "N/A"})
-                </motion.h3>
-                <motion.p 
-                  className="tooltip-subtitle"
-                  initial={{ y: -5, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.15, duration: 0.2 }}
-                >
-                  {card.arcana || "Unknown"} - {card.suit || "Unknown"}
-                </motion.p>
-                <motion.p 
-                  className="tooltip-position"
-                  initial={{ y: -5, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.2 }}
-                >
-                  {card.position}
-                </motion.p>
-                <motion.div 
-                  className="tooltip-keywords"
-                  initial={{ y: -5, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.25, duration: 0.2 }}
-                >
-                  <strong>Keywords:</strong> {card.keywords && card.keywords.length > 0 ? card.keywords.join(", ") : "N/A"}
-                </motion.div>
-                <motion.div 
-                  className="tooltip-meanings"
-                  initial={{ y: -5, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3, duration: 0.2 }}
-                >
-                  <strong>Meanings:</strong>
-                  <ul>
-                    <li><strong>Light:</strong> {card.meanings?.light?.[0] || "N/A"}</li>
-                    <li><strong>Shadow:</strong> {card.meanings?.shadow?.[0] || "N/A"}</li>
-                  </ul>
-                </motion.div>
-                <motion.div 
-                  className="tooltip-fortune"
-                  initial={{ y: -5, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.35, duration: 0.2 }}
-                >
-                  <strong>Fortune:</strong> {card.fortune_telling?.[0] || "N/A"}
-                </motion.div>
+                <h3 className="tooltip-title">{card.name}</h3>
+                <p className="tooltip-position">{card.position}</p>
+                <p className="tooltip-content">{card.tooltip}</p>
               </motion.div>
             )}
           </AnimatePresence>

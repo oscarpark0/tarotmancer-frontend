@@ -1,93 +1,56 @@
-export const config = {
-  runtime: 'edge',
-};
+import { MistralClient } from '@mistralai/mistralai';
 
-export default async function handler(req) {
-  // CORS headers
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  };
+export default async function handler(req, res) {
+  console.log('Mistral API handler called');
 
-  // Handle preflight request
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 200, headers });
+    console.log('OPTIONS request received');
+    res.status(200).end();
+    return;
   }
 
   if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'This endpoint requires a POST request' }), { 
-      status: 405, 
-      headers: { ...headers, 'Content-Type': 'application/json' }
-    });
+    console.log(`Invalid method: ${req.method}`);
+    res.status(405).json({ error: 'This endpoint requires a POST request' });
+    return;
   }
 
   try {
-    const { message } = await req.json();
+    const { message } = req.body;
+    console.log('Received message:', message);
 
-    if (!process.env.MIST_API_KEY) {
-      console.error('MIST_API_KEY is not set');
-      return new Response(JSON.stringify({ error: 'MIST_API_KEY is not set' }), { 
-        status: 500, 
-        headers: { ...headers, 'Content-Type': 'application/json' }
-      });
+    if (!process.env.MISTRAL_API_KEY) {
+      console.error('MISTRAL_API_KEY is not set');
+      res.status(500).json({ error: 'MISTRAL_API_KEY is not set' });
+      return;
     }
 
-    const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.MIST_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "open-mixtral-8x22b",
-        messages: [{ role: "user", content: message }],
-        stream: true
-      })
+    const client = new MistralClient(process.env.MISTRAL_API_KEY);
+
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Mistral API error:', response.status, errorText);
-      return new Response(JSON.stringify({ error: `Mistral API error: ${response.status} ${errorText}` }), { 
-        status: response.status, 
-        headers: { ...headers, 'Content-Type': 'application/json' }
-      });
-    }
+    console.log('Initiating chat stream');
+    const stream = await client.chatStream({
+      model: "mistral-tiny",
+      messages: [{ role: "user", content: message }],
+    });
 
-    // Set up streaming response
-    const streamResponse = new TransformStream();
-    const writer = streamResponse.writable.getWriter();
-    const reader = response.body.getReader();
-
-    const pump = async () => {
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          await writer.write(value);
-        }
-      } finally {
-        writer.close();
+    for await (const chunk of stream) {
+      if (chunk.choices[0].delta.content !== undefined) {
+        const streamText = chunk.choices[0].delta.content;
+        res.write(`data: ${JSON.stringify({ content: streamText })}\n\n`);
       }
-    };
+    }
 
-    pump();
-
-    return new Response(streamResponse.readable, {
-      status: 200,
-      headers: {
-        ...headers,
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
-    });
+    res.write('data: [DONE]\n\n');
+    res.end();
+    console.log('Stream completed');
   } catch (error) {
     console.error('Error in handler:', error);
-    return new Response(JSON.stringify({ error: error.message || 'Internal Server Error' }), { 
-      status: 500, 
-      headers: { ...headers, 'Content-Type': 'application/json' }
-    });
+    res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }

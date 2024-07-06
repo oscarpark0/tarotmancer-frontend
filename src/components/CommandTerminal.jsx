@@ -6,6 +6,7 @@ import CardReveal from './CardReveal';
 import LanguageSelector, { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
+import { formatResponse } from '../utils/textFormatting';
 
 const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete }, ref) => {
   const [input, setInput] = useState('');
@@ -38,7 +39,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     if (!shouldRequestCohere) return;
 
     setIsLoading(true);
-    onNewResponse(''); 
+    onNewResponse(''); // Clear previous response
 
     try {
       const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +
@@ -51,14 +52,17 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-      await getMistralResponse(message, onNewResponse);
+      await getMistralResponse(message, (content) => {
+        const formattedContent = formatResponse(content);
+        onNewResponse(formattedContent);
+      });
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       const errorMessage = getTranslation('errorMessage') + ': ' + error.message;
-      onNewResponse(errorMessage);
+      onNewResponse(formatResponse(errorMessage));
     } finally {
       setIsLoading(false);
-      onResponseComplete(); 
+      onResponseComplete();
     }
 
     setInput('');

@@ -61,12 +61,12 @@ const Robot = memo(({
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
   const screenContentRef = useRef(null);
   const commandTerminalRef = useRef(null);
   const [responses, setResponses] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
   const robotRef = useRef(null);
-  const [isStreaming] = useState(false);
   useLanguage();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,23 +79,16 @@ const Robot = memo(({
 
   const handleNewResponse = useCallback((response) => {
     debouncedSetMonitorOutput(response);
+    setIsStreaming(true);
   }, [debouncedSetMonitorOutput]);
 
   useEffect(() => {
-    if (isStreaming) {
-      onNewResponse(handleNewResponse);
-    } else {
-      debouncedSetMonitorOutput.flush();
-      onResponseComplete();
-    }
-    if (onStreamingStateChange) {
-      onStreamingStateChange(isStreaming);
-    }
-
+    onNewResponse(handleNewResponse);
     return () => {
-      debouncedSetMonitorOutput.cancel();
+      setIsStreaming(false);
+      onResponseComplete();
     };
-  }, [isStreaming, onNewResponse, onResponseComplete, debouncedSetMonitorOutput, handleNewResponse, onStreamingStateChange]);
+  }, [onNewResponse, handleNewResponse, onResponseComplete]);
 
   const completeCurrentResponse = useCallback(() => {
     setResponses(prevResponses => {
@@ -260,7 +253,10 @@ const Robot = memo(({
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onNewResponse={handleNewResponse}
-        onResponseComplete={onResponseComplete}
+        onResponseComplete={() => {
+          setIsStreaming(false);
+          onResponseComplete();
+        }}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}

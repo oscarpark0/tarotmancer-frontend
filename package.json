@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@kinde-oss/kinde-auth-react": "^4.0.1",
+    "@mistralai/mistralai": "^0.5.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -60,6 +61,5 @@
     "tailwind-merge": "^2.3.0",
     "tailwindcss": "^3.4.4",
     "typescript": "^4.9.5"
-  },
-  "proxy": "http://localhost:3000"
+  }
 }

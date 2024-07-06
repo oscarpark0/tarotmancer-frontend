@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const client = new MistralClient(process.env.MISTRAL_API_KEY);
 
     const stream = await client.chatStream({
-      model: "mistral-tiny",
+      model: "open-mixtral-8x22b",
       messages: [{ role: "user", content: message }],
     });
 

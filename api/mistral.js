@@ -1,16 +1,12 @@
 import { MistralClient } from '@mistralai/mistralai';
 
 export default async function handler(req, res) {
-  console.log('Mistral API handler called');
-
   if (req.method === 'OPTIONS') {
-    console.log('OPTIONS request received');
     res.status(200).end();
     return;
   }
 
   if (req.method !== 'POST') {
-    console.log(`Invalid method: ${req.method}`);
     res.status(405).json({ error: 'This endpoint requires a POST request' });
     return;
   }
@@ -27,16 +23,16 @@ export default async function handler(req, res) {
 
     const client = new MistralClient(process.env.MISTRAL_API_KEY);
 
-    res.writeHead(200, {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-    });
-
     console.log('Initiating chat stream');
     const stream = await client.chatStream({
       model: "mistral-tiny",
       messages: [{ role: "user", content: message }],
+    });
+
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
     });
 
     for await (const chunk of stream) {
@@ -54,3 +50,18 @@ export default async function handler(req, res) {
     res.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }
+
+// Add this function to your mistral.js file
+export async function testMistralConnection(req, res) {
+  try {
+    const client = new MistralClient(process.env.MISTRAL_API_KEY);
+    const models = await client.listModels();
+    res.status(200).json({ message: 'Mistral API connection successful', models });
+  } catch (error) {
+    console.error('Error testing Mistral connection:', error);
+    res.status(500).json({ error: 'Failed to connect to Mistral API' });
+  }
+}
+// This route should be added to your main API routes file, not here
+// Remove or comment out the following line:
+// app.get('/api/test-mistral', testMistralConnection);

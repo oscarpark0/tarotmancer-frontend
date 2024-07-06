@@ -2,7 +2,8 @@ import { formatResponse } from '../utils/textFormatting';
 
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
-    const response = await fetch('https://tarotmancer.com/api/mistral', {
+    console.log('Sending request to Mistral API');
+    const response = await fetch('/api/mistral', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -14,41 +15,57 @@ export const getMistralResponse = async (message, onNewResponse) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
+    console.log('Response received from Mistral API');
+
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
-    let buffer = '';
-    let jsonBuffer = '';
 
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
 
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split('\n');
-      buffer = lines.pop() || '';
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n');
 
       for (const line of lines) {
         if (line.startsWith('data: ')) {
-          const data = line.slice(6).trim();
-          if (data === '[DONE]') {
-            return; // Stream is complete
-          }
-          jsonBuffer += data;
+          const data = line.slice(6);
+          if (data === '[DONE]') break;
           try {
-            const parsed = JSON.parse(jsonBuffer);
-            jsonBuffer = ''; // Reset JSON buffer
+            const parsed = JSON.parse(data);
             if (parsed.choices && parsed.choices[0].delta && parsed.choices[0].delta.content) {
               const formattedContent = formatResponse(parsed.choices[0].delta.content);
+              console.log('Streaming content:', formattedContent);
               onNewResponse(formattedContent);
             }
           } catch (e) {
-            // JSON is incomplete, continue buffering
+            console.warn('Error parsing JSON:', e);
           }
         }
       }
     }
   } catch (error) {
     console.error('Error in getMistralResponse:', error);
+    console.error('Error details:', error.message);
+    if (error.response) {
+      console.error('Response status:', error.response.status);
+      console.error('Response text:', await error.response.text());
+    }
+    throw error;
+  }
+};
+
+export const testMistralConnection = async () => {
+  try {
+    const response = await fetch('/api/test-mistral');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log('Mistral API test result:', data);
+    return data;
+  } catch (error) {
+    console.error('Error testing Mistral connection:', error);
     throw error;
   }
 };

@@ -78,9 +78,14 @@ const Robot = memo(({
   );
 
   const handleNewResponse = useCallback((response) => {
-    debouncedSetMonitorOutput(response);
+    console.log('New response received:', response);
+    setMonitorOutput(prevOutput => {
+      const newOutput = prevOutput + response;
+      console.log('Updated monitor output:', newOutput);
+      return newOutput;
+    });
     setIsStreaming(true);
-  }, [debouncedSetMonitorOutput]);
+  }, []);
 
   useEffect(() => {
     onNewResponse(handleNewResponse);
@@ -140,9 +145,9 @@ const Robot = memo(({
   }, []);
 
   const handleMonitorOutput = useCallback((output) => {
-    setMonitorOutput(output);
+    debouncedSetMonitorOutput(output);
     onMonitorOutput(output);
-  }, [onMonitorOutput]);
+  }, [debouncedSetMonitorOutput, onMonitorOutput]);
 
   useLayoutEffect(() => {
     adjustFontSize();
@@ -216,9 +221,7 @@ const Robot = memo(({
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
               />
-              <div className="monitor-output">
-                {monitorOutput}
-              </div>
+              <div className="monitor-output" dangerouslySetInnerHTML={{ __html: monitorOutput }}></div>
               <div className="screen-overlay"></div>
               <div className="screen-glass"></div>
               <div className="screen-frame"></div>

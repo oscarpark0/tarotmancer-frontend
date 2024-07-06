@@ -55,6 +55,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       await getMistralResponse(message, (content) => {
         const formattedContent = formatResponse(content);
         onNewResponse(formattedContent);
+        onMonitorOutput(formattedContent); // Add this line
       });
     } catch (error) {
       console.error('Error in handleSubmit:', error);
@@ -66,7 +67,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     }
 
     setInput('');
-  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input]);
+  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, onMonitorOutput]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {

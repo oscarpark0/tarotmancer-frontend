@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -11,6 +10,7 @@ import LanguageSelector, { LanguageProvider } from './components/LanguageSelecto
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
+import MistralConnectionTest from './components/MistralConnectionTest';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
@@ -138,6 +138,7 @@ function App() {
             } />
             <Route path="/callback" element={<Navigate to="/" />} />
           </Routes>
+          <MistralConnectionTest />
         </div>
       </Router>
     </LanguageProvider>

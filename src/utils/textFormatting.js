@@ -17,7 +17,12 @@ export const formatResponse = (text) => {
     [/Blessed be\./g, '\n\nBlessed be.']
   ];
 
-  return replacements.reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), text);
+  let formattedText = replacements.reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), text);
+  
+  // Remove any incomplete words at the end of the text
+  formattedText = formattedText.replace(/\S+$/, '');
+
+  return formattedText;
 };
 
 // Additional utility functions for text formatting

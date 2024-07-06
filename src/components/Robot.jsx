@@ -5,8 +5,6 @@ import FloatingCards from './FloatingCards.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
-import { formatResponse } from '../utils/textFormatting';
 import { useLanguage } from './LanguageSelector';
 
 const adjustFontSize = () => {
@@ -68,41 +66,36 @@ const Robot = memo(({
   const [responses, setResponses] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
   const robotRef = useRef(null);
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [isStreaming] = useState(false);
   useLanguage();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetMonitorOutput = useCallback(
+    debounce((newText) => {
+      setMonitorOutput(prevOutput => prevOutput + newText);
+    }, 100),
+    []
+  );
 
-  const handleResponseComplete = useCallback(() => {
-    onResponseComplete();
-    setIsStreaming(false);
-    if (onStreamingStateChange) {
-      onStreamingStateChange(false);
-    }
-  }, [onResponseComplete, onStreamingStateChange]);
+  const handleNewResponse = useCallback((response) => {
+    debouncedSetMonitorOutput(response);
+  }, [debouncedSetMonitorOutput]);
 
-  const handleNewResponse = useCallback((content) => {
-    setResponses(prevResponses => {
-      if (content === '') {
-        return [];
-      }
-      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
-        const newResponse = { id: uuidv4(), content: formatResponse(content), complete: false };
-        setActiveTab(newResponse.id);
-        return [...prevResponses, newResponse];
-      } else {
-        const updatedResponses = [...prevResponses];
-        const lastResponse = updatedResponses[updatedResponses.length - 1];
-        lastResponse.content += formatResponse(content);
-        return updatedResponses;
-      }
-    });
-    setMonitorOutput(prevOutput => prevOutput + formatResponse(content));
-    onNewResponse(content);
-    setIsStreaming(true);
-    if (onStreamingStateChange) {
-      onStreamingStateChange(true);
+  useEffect(() => {
+    if (isStreaming) {
+      onNewResponse(handleNewResponse);
+    } else {
+      debouncedSetMonitorOutput.flush();
+      onResponseComplete();
     }
-  }, [onNewResponse, onStreamingStateChange]);
+    if (onStreamingStateChange) {
+      onStreamingStateChange(isStreaming);
+    }
+
+    return () => {
+      debouncedSetMonitorOutput.cancel();
+    };
+  }, [isStreaming, onNewResponse, onResponseComplete, debouncedSetMonitorOutput, handleNewResponse, onStreamingStateChange]);
 
   const completeCurrentResponse = useCallback(() => {
     setResponses(prevResponses => {
@@ -267,7 +260,7 @@ const Robot = memo(({
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onNewResponse={handleNewResponse}
-        onResponseComplete={handleResponseComplete}
+        onResponseComplete={onResponseComplete}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}

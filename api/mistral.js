@@ -1,22 +1,37 @@
-export default async function handler(req, res) {
+export const config = {
+  runtime: 'edge',
+};
+
+export default async function handler(req) {
+  // CORS headers
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
+
+  // Handle preflight request
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { status: 200, headers });
+  }
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'This endpoint requires a POST request' });
+    return new Response(JSON.stringify({ error: 'This endpoint requires a POST request' }), { 
+      status: 405, 
+      headers: { ...headers, 'Content-Type': 'application/json' }
+    });
   }
 
   try {
-    const { message } = req.body;
+    const { message } = await req.json();
 
     if (!process.env.MIST_API_KEY) {
       console.error('MIST_API_KEY is not set');
-      return res.status(500).json({ error: 'MIST_API_KEY is not set' });
+      return new Response(JSON.stringify({ error: 'MIST_API_KEY is not set' }), { 
+        status: 500, 
+        headers: { ...headers, 'Content-Type': 'application/json' }
+      });
     }
-
-    // Set up headers for streaming
-    res.writeHead(200, {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
-    });
 
     const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
@@ -34,27 +49,45 @@ export default async function handler(req, res) {
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Mistral API error:', response.status, errorText);
-      res.write(`data: ${JSON.stringify({ error: `Mistral API error: ${response.status} ${errorText}` })}\n\n`);
-      return res.end();
+      return new Response(JSON.stringify({ error: `Mistral API error: ${response.status} ${errorText}` }), { 
+        status: response.status, 
+        headers: { ...headers, 'Content-Type': 'application/json' }
+      });
     }
 
+    // Set up streaming response
+    const streamResponse = new TransformStream();
+    const writer = streamResponse.writable.getWriter();
     const reader = response.body.getReader();
-    const decoder = new TextDecoder();
 
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        res.write(`data: ${chunk}\n\n`);
+    const pump = async () => {
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          await writer.write(value);
+        }
+      } finally {
+        writer.close();
       }
-    } finally {
-      reader.releaseLock();
-      res.end();
-    }
+    };
+
+    pump();
+
+    return new Response(streamResponse.readable, {
+      status: 200,
+      headers: {
+        ...headers,
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
   } catch (error) {
     console.error('Error in handler:', error);
-    res.write(`data: ${JSON.stringify({ error: error.message || 'Internal Server Error' })}\n\n`);
-    res.end();
+    return new Response(JSON.stringify({ error: error.message || 'Internal Server Error' }), { 
+      status: 500, 
+      headers: { ...headers, 'Content-Type': 'application/json' }
+    });
   }
 }

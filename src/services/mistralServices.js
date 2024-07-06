@@ -46,11 +46,6 @@ export const getMistralResponse = async (message, onNewResponse) => {
     }
   } catch (error) {
     console.error('Error in getMistralResponse:', error);
-    console.error('Error details:', error.message);
-    if (error.response) {
-      console.error('Response status:', error.response.status);
-      console.error('Response text:', await error.response.text());
-    }
     throw error;
   }
 };

@@ -1,4 +1,12 @@
-import { MistralClient } from '@mistralai/mistralai';
+// Use dynamic imports for both node-fetch and @mistralai/mistralai
+let fetch, MistralClient;
+
+Promise.all([
+  import('node-fetch').then(module => { fetch = module.default; }),
+  import('@mistralai/mistralai').then(module => { MistralClient = module.MistralClient; })
+]).then(() => {
+  global.fetch = fetch;
+});
 
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
@@ -12,6 +20,11 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Wait for MistralClient to be available
+    while (!MistralClient) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     const { message } = req.body;
     console.log('Received message:', message);
 
@@ -51,9 +64,14 @@ export default async function handler(req, res) {
   }
 }
 
-// Add this function to your mistral.js file
+// Update the testMistralConnection function similarly
 export async function testMistralConnection(req, res) {
   try {
+    // Wait for MistralClient to be available
+    while (!MistralClient) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
     const client = new MistralClient(process.env.MISTRAL_API_KEY);
     const models = await client.listModels();
     res.status(200).json({ message: 'Mistral API connection successful', models });
@@ -62,6 +80,3 @@ export async function testMistralConnection(req, res) {
     res.status(500).json({ error: 'Failed to connect to Mistral API' });
   }
 }
-// This route should be added to your main API routes file, not here
-// Remove or comment out the following line:
-// app.get('/api/test-mistral', testMistralConnection);

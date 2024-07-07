@@ -1,52 +1,36 @@
 import { formatResponse } from '../utils/textFormatting';
 
-const TIMEOUT_DURATION = 30000; // 30 seconds
+const POLL_INTERVAL = 1000; // 1 second
+const MAX_POLLS = 60; // Maximum number of polls (60 seconds total)
 
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_DURATION);
-
+    const requestId = Date.now().toString();
     const response = await fetch('/api/mistral', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message }),
-      signal: controller.signal
+      body: JSON.stringify({ message, requestId }),
     });
-
-    clearTimeout(timeoutId);
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
+    let polls = 0;
+    while (polls < MAX_POLLS) {
+      await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
+      const pollResponse = await fetch(`/api/pollMistral?requestId=${requestId}`);
+      const data = await pollResponse.json();
 
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split('\n');
-
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6);
-          if (data === '[DONE]') return;
-          try {
-            const parsed = JSON.parse(data);
-            onNewResponse(formatResponse(parsed.content));
-          } catch (e) {
-            console.warn('Error parsing JSON:', e);
-          }
-        }
+      if (data.status === 'completed') {
+        onNewResponse(formatResponse(data.content));
+        return;
       }
+
+      polls++;
     }
+
+    throw new Error('Request timed out after maximum polls');
   } catch (error) {
     console.error('Error in getMistralResponse:', error);
-    if (error.name === 'AbortError') {
-      onNewResponse(formatResponse("The request timed out. Please try again."));
-    } else {
-      throw error;
-    }
+    throw error;
   }
 };

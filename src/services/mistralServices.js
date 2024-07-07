@@ -1,36 +1,47 @@
 import { formatResponse } from '../utils/textFormatting';
 
-const POLL_INTERVAL = 1000; // 1 second
-const MAX_POLLS = 60; // Maximum number of polls (60 seconds total)
-
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
-    const requestId = Date.now().toString();
     const response = await fetch('/api/mistral', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, requestId }),
+      body: JSON.stringify({ message }),
     });
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    let polls = 0;
-    while (polls < MAX_POLLS) {
-      await new Promise(resolve => setTimeout(resolve, POLL_INTERVAL));
-      const pollResponse = await fetch(`/api/pollMistral?requestId=${requestId}`);
-      const data = await pollResponse.json();
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
 
-      if (data.status === 'completed') {
-        onNewResponse(formatResponse(data.content));
-        return;
-      } else if (data.status === 'error') {
-        throw new Error(data.error || 'An error occurred while processing the request');
+    let fullResponse = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      const chunk = decoder.decode(value, { stream: true });
+      const lines = chunk.split('\n\n');
+
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6);
+          if (data === '[DONE]') {
+            onNewResponse(formatResponse(fullResponse));
+            return;
+          }
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.error) {
+              throw new Error(parsed.error);
+            }
+            fullResponse += parsed.content;
+            onNewResponse(formatResponse(fullResponse));
+          } catch (e) {
+            console.warn('Error parsing JSON:', e);
+          }
+        }
       }
-
-      polls++;
     }
-
-    throw new Error('Request timed out after maximum polls');
   } catch (error) {
     console.error('Error in getMistralResponse:', error);
     throw error;

@@ -1,26 +1,18 @@
 import MistralClient from '@mistralai/mistralai';
-import { Redis } from '@upstash/redis';
-
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN,
-});
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { message, requestId } = req.body;
+  const { message } = req.body;
 
-  // Immediately respond to the client
-  res.status(202).json({ status: 'processing', requestId });
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+  });
 
-  // Continue processing in the background
-  processMistralRequest(message, requestId).catch(console.error);
-}
-
-async function processMistralRequest(message, requestId) {
   try {
     const client = new MistralClient(process.env.MISTRAL_API_KEY);
 
@@ -29,18 +21,17 @@ async function processMistralRequest(message, requestId) {
       messages: [{ role: "user", content: message }],
     });
 
-    let fullResponse = '';
     for await (const chunk of chatStream) {
       if (chunk.choices[0].delta.content) {
-        fullResponse += chunk.choices[0].delta.content;
-        await redis.set(`mistral:${requestId}`, fullResponse, { ex: 300 }); // Cache for 5 minutes
+        res.write(`data: ${JSON.stringify({ content: chunk.choices[0].delta.content })}\n\n`);
       }
     }
 
-    await redis.set(`mistral:${requestId}:status`, 'completed', { ex: 300 });
+    res.write('data: [DONE]\n\n');
   } catch (error) {
     console.error('Error in Mistral API handler:', error);
-    await redis.set(`mistral:${requestId}:status`, 'error', { ex: 300 });
-    await redis.set(`mistral:${requestId}:error`, error.message, { ex: 300 });
+    res.write(`data: ${JSON.stringify({ error: 'An error occurred while processing the request' })}\n\n`);
+  } finally {
+    res.end();
   }
 }

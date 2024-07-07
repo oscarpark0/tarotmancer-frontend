@@ -174,14 +174,10 @@ const Robot = memo(({
   }, [onAnimationStart]);
 
   useEffect(() => {
-    // This effect will run whenever isStreaming changes
-    // You can use it to trigger any actions that should occur when streaming starts or stops
     if (isStreaming) {
       console.log('Streaming started');
-      // Add any actions you want to occur when streaming starts
-    } else {
+    } else if (isStreaming === false) {
       console.log('Streaming stopped');
-      // Add any actions you want to occur when streaming stops
     }
   }, [isStreaming]);
 

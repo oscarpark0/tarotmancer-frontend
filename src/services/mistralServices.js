@@ -10,23 +10,10 @@ export const getMistralResponse = async (message, onNewResponse) => {
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
-    const jobId = await response.json();
-
-    const intervalId = setInterval(async () => {
-      try {
-        const resultResponse = await fetch(`/api/mistral-result?jobId=${jobId.jobId}`);
-        if (!resultResponse.ok) throw new Error(`HTTP error! status: ${resultResponse.status}`);
-
-        const result = await resultResponse.json();
-        if (result.result) {
-          clearInterval(intervalId);
-          onNewResponse(formatResponse(result.result));
-        }
-      } catch (error) {
-        console.error('Error in getMistralResponse:', error);
-        throw error;
-      }
-    }, 1000);
+    const result = await response.json();
+    if (result.result) {
+      onNewResponse(formatResponse(result.result));
+    }
   } catch (error) {
     console.error('Error in getMistralResponse:', error);
     throw error;

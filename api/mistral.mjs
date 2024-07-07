@@ -1,4 +1,4 @@
-import { MistralClient } from '@mistralai/mistralai';
+import MistralClient from '@mistralai/mistralai';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

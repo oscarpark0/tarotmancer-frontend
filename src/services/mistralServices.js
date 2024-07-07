@@ -23,6 +23,8 @@ export const getMistralResponse = async (message, onNewResponse) => {
       if (data.status === 'completed') {
         onNewResponse(formatResponse(data.content));
         return;
+      } else if (data.status === 'error') {
+        throw new Error(data.error || 'An error occurred while processing the request');
       }
 
       polls++;

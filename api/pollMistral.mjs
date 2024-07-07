@@ -13,9 +13,16 @@ export default async function handler(req, res) {
   const { requestId } = req.query;
 
   try {
-    const response = await redis.get(`mistral:${requestId}`);
-    if (response) {
-      res.status(200).json({ status: 'completed', content: response });
+    const [status, content, error] = await Promise.all([
+      redis.get(`mistral:${requestId}:status`),
+      redis.get(`mistral:${requestId}`),
+      redis.get(`mistral:${requestId}:error`)
+    ]);
+
+    if (status === 'completed') {
+      res.status(200).json({ status: 'completed', content });
+    } else if (status === 'error') {
+      res.status(500).json({ status: 'error', error });
     } else {
       res.status(202).json({ status: 'processing' });
     }

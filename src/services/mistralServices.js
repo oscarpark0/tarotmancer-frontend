@@ -12,8 +12,9 @@ export const getMistralResponse = async (message, onNewResponse) => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.error}`);
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
     }
 
     console.log('Response received from Mistral API');
@@ -34,13 +35,12 @@ export const getMistralResponse = async (message, onNewResponse) => {
           if (data === '[DONE]') break;
           try {
             const parsed = JSON.parse(data);
-            if (parsed.choices && parsed.choices[0].delta && parsed.choices[0].delta.content) {
-              const formattedContent = formatResponse(parsed.choices[0].delta.content);
-              console.log('Streaming content:', formattedContent);
-              onNewResponse(formattedContent);
-            }
+            const formattedContent = formatResponse(parsed.content);
+            console.log('Streaming content:', formattedContent);
+            onNewResponse(formattedContent);
           } catch (e) {
-            console.warn('Error parsing JSON:', e);
+            console.warn('Error parsing JSON:', e, 'Raw data:', data);
+            onNewResponse(data); // Send the raw data if parsing fails
           }
         }
       }

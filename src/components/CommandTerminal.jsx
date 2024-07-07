@@ -45,7 +45,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +
         "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as it's position in relation to the other cards in the spread." +
         "Provide the querent with a detailed and personalized reading that is tailored to their situation as described by the tarot." +
-        " Responsd using clear - natural language to ensure your responses are easily understood. " +
+        "Responsd using clear - natural language to ensure your responses are easily understood. " +
         "Format your response in a manner that allows each position, card, and orientation to be clearly and easily identified. " +
         "Conclude with an overview of the querent's spread and your interpretation of it.";
       const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
@@ -55,12 +55,18 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       await getMistralResponse(message, (content) => {
         const formattedContent = formatResponse(content);
         onNewResponse(formattedContent);
-        onMonitorOutput(formattedContent); // Add this line
+        onMonitorOutput(formattedContent);
       });
     } catch (error) {
       console.error('Error in handleSubmit:', error);
-      const errorMessage = getTranslation('errorMessage') + ': ' + error.message;
+      let errorMessage = getTranslation('errorMessage');
+      if (error instanceof SyntaxError) {
+        errorMessage += ': Invalid response from server. Please try again later.';
+      } else {
+        errorMessage += ': ' + error.message;
+      }
       onNewResponse(formatResponse(errorMessage));
+      onMonitorOutput(formatResponse("I apologize, but I'm having trouble connecting to my wisdom. Please try again later."));
     } finally {
       setIsLoading(false);
       onResponseComplete();

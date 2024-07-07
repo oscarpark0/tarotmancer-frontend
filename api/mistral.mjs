@@ -2,15 +2,14 @@ import { MistralClient } from '@mistralai/mistralai';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method Not Allowed' });
-    return;
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
     const { message } = req.body;
     const client = new MistralClient(process.env.MISTRAL_API_KEY);
 
-    const stream = await client.chatStream({
+    const chatStream = await client.chatStream({
       model: "open-mixtral-8x22b",
       messages: [{ role: "user", content: message }],
     });
@@ -21,7 +20,7 @@ export default async function handler(req, res) {
       'Connection': 'keep-alive',
     });
 
-    for await (const chunk of stream) {
+    for await (const chunk of chatStream) {
       if (chunk.choices[0].delta.content !== undefined) {
         const streamText = chunk.choices[0].delta.content;
         res.write(`data: ${JSON.stringify({ content: streamText })}\n\n`);
@@ -32,6 +31,6 @@ export default async function handler(req, res) {
     res.end();
   } catch (error) {
     console.error('Error in Mistral API handler:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
   }
 }

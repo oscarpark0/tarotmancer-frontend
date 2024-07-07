@@ -12,7 +12,8 @@ export const getMistralResponse = async (message, onNewResponse) => {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.error}`);
     }
 
     console.log('Response received from Mistral API');

@@ -2,11 +2,17 @@ import { formatResponse } from '../utils/textFormatting';
 
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
     const response = await fetch('/api/mistral', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message }),
+      signal: controller.signal
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
@@ -44,6 +50,9 @@ export const getMistralResponse = async (message, onNewResponse) => {
     }
   } catch (error) {
     console.error('Error in getMistralResponse:', error);
+    if (error.name === 'AbortError') {
+      throw new Error('Request timed out. Please try again.');
+    }
     throw error;
   }
 };

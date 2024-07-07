@@ -60,13 +60,13 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       let errorMessage = getTranslation('errorMessage');
-      if (error.message.includes('504') || error.message.includes('timeout')) {
-        errorMessage += ': The request timed out. Please try again.';
+      if (error.message.includes('timed out')) {
+        errorMessage += ': ' + getTranslation('timeoutError');
       } else {
         errorMessage += ': ' + error.message;
       }
       onNewResponse(formatResponse(errorMessage));
-      onMonitorOutput(formatResponse("I apologize, but I'm having trouble connecting to my wisdom. Please try again."));
+      onMonitorOutput(formatResponse(getTranslation('apologizeError')));
     } finally {
       setIsLoading(false);
       onResponseComplete();

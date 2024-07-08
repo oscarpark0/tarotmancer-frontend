@@ -17,6 +17,6 @@
     "jsx": "react-jsx",
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src"],
+  "include": ["src", "api"],
   "files": ["src/types/css-modules.d.ts"]
 }

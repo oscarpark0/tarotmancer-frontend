@@ -78,15 +78,12 @@ const Robot = memo(({
   );
 
   const handleNewResponse = useCallback((response) => {
-    console.log('New response received:', response);
-    setMonitorOutput(prevOutput => {
-      const newOutput = prevOutput + response;
-      console.log('Updated monitor output:', newOutput);
-      return newOutput;
-    });
+    console.log('New response chunk received:', response);
+    setMonitorOutput(prevOutput => prevOutput + response);
+    onMonitorOutput(response);
     setIsStreaming(true);
     onStreamingStateChange(true);
-  }, [onStreamingStateChange]);
+  }, [onMonitorOutput, onStreamingStateChange]);
 
   useEffect(() => {
     onNewResponse(handleNewResponse);

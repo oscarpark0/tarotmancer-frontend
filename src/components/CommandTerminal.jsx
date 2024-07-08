@@ -53,9 +53,8 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
       await getMistralResponse(message, (content) => {
-        const formattedContent = formatResponse(content);
-        onNewResponse(formattedContent);
-        onMonitorOutput(formattedContent);
+        onNewResponse(content);
+        onMonitorOutput(content);
       });
     } catch (error) {
       console.error('Error in handleSubmit:', error);

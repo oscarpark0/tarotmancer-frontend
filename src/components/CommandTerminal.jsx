@@ -8,7 +8,7 @@ import { buttonTranslations } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
 import { formatResponse } from '../utils/textFormatting';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, isStreaming }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -74,14 +74,13 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
     setInput('');
   }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, onMonitorOutput]);
-
   useEffect(() => {
-    if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
+    if (mostCommonCards && dealingComplete && shouldRequestCohere) {
       setShowCards(true);
       handleSubmit(mostCommonCards);
       setShouldRequestCohere(false);
     }
-  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit, animationsComplete]);
+  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);
@@ -97,12 +96,12 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, []);
 
   const handleDrawClick = useCallback(() => {
-    if (isDrawing) return;
+    if (isDrawing || isStreaming) return;
     setIsDrawing(true);
     fetchSpread();
     setShouldRequestCohere(true);
     onNewResponse('');
-  }, [isDrawing, fetchSpread, setShouldRequestCohere, onNewResponse]);
+  }, [isDrawing, isStreaming, fetchSpread, setShouldRequestCohere, onNewResponse]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -125,7 +124,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? getTranslation('processing') : ''}
+            {isLoading || isStreaming ? getTranslation('processing') : ''}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -153,10 +152,10 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
           onClick={handleDrawClick}
           aria-label={getTranslation('drawCardsAriaLabel')}
           label={getTranslation('draw')}
-          disabled={isLoading || isDrawing}
+          disabled={isLoading || isDrawing || isStreaming}
           className={isDrawing ? 'drawing' : ''}
         >
-          {isLoading ? getTranslation('processing') : 
+          {isLoading || isStreaming ? getTranslation('processing') : 
            isDrawing ? getTranslation('drawing') : 
            getTranslation('draw')}
         </ShimmerButton>

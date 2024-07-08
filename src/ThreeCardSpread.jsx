@@ -166,7 +166,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       isMobile={isMobile}
       drawCount={drawCount}
       fetchSpread={fetchSpread}
-      onNewResponse={(response) => {
+      onNewResponse={() => {
         setIsStreaming(true);
       }}
       onResponseComplete={() => {

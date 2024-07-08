@@ -85,7 +85,8 @@ const Robot = memo(({
       return newOutput;
     });
     setIsStreaming(true);
-  }, []);
+    onStreamingStateChange(true);
+  }, [onStreamingStateChange]);
 
   useEffect(() => {
     onNewResponse(handleNewResponse);

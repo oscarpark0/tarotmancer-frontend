@@ -150,7 +150,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       selectedSpread={selectedSpread}
       onSpreadSelect={onSpreadSelect}
       fetchSpread={fetchSpread}
-      onNewResponse={(response) => {
+      onNewResponse={() => {
         setIsStreaming(true);
       }}
       onResponseComplete={() => {

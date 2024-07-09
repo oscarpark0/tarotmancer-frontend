@@ -69,17 +69,13 @@ const Robot = memo(({
   const robotRef = useRef(null);
   useLanguage();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSetMonitorOutput = useCallback(
-    debounce((newText) => {
-      setMonitorOutput(prevOutput => prevOutput + newText);
-    }, 100),
-    []
-  );
-
   const handleNewResponse = useCallback((response) => {
     console.log('New response chunk received:', response);
-    setMonitorOutput(prevOutput => prevOutput + response);
+    setMonitorOutput(prevOutput => {
+      const newOutput = prevOutput + response;
+      console.log('Updated monitor output:', newOutput);
+      return newOutput;
+    });
     onMonitorOutput(response);
     setIsStreaming(true);
     onStreamingStateChange(true);
@@ -141,11 +137,10 @@ const Robot = memo(({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
   const handleMonitorOutput = useCallback((output) => {
-    debouncedSetMonitorOutput(output);
+    setMonitorOutput(output);
     onMonitorOutput(output);
-  }, [debouncedSetMonitorOutput, onMonitorOutput]);
+  }, [onMonitorOutput]);
 
   useLayoutEffect(() => {
     adjustFontSize();
@@ -215,7 +210,10 @@ const Robot = memo(({
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
               />
-              <div className="monitor-output" dangerouslySetInnerHTML={{ __html: monitorOutput }}></div>
+              <div 
+                className="monitor-output" 
+                dangerouslySetInnerHTML={{ __html: monitorOutput }}
+              ></div>
               <div className="screen-overlay"></div>
               <div className="screen-glass"></div>
               <div className="screen-frame"></div>

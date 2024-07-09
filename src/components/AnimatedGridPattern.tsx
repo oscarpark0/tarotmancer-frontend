@@ -15,10 +15,10 @@ const tarotCards: string[] = [
   'w14.webp',
 ];
 
-const CARD_LIMIT = 20; // Maximum number of cards to render
-const INITIAL_CARD_COUNT = 5; // Start with a small number of cards
-const CARD_INCREMENT = 3; // Number of cards to add in each step
-const CARD_INCREMENT_INTERVAL = 5000; // Time in ms between adding new cards
+const CARD_LIMIT = 20;
+const INITIAL_CARD_COUNT = 5;
+const CARD_INCREMENT = 3;
+const CARD_INCREMENT_INTERVAL = 5;
 
 interface Dimensions {
   width: number;
@@ -27,10 +27,15 @@ interface Dimensions {
 
 interface Card {
   id: number;
-  pos: [number, number];
   tarotCard: string;
-  randomScale: number;
-  randomOpacity: number;
+  randomRotation: number;
+  randomDelay: number;
+  randomDuration: number;
+  posX: number;
+  posY: number;
+  newPosX: number;
+  newPosY: number;
+  randomHue: number;
 }
 
 const getRandomValue = (min: number, max: number): number => Math.random() * (max - min) + min;
@@ -71,19 +76,19 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   const [cards, setCards] = useState<Card[]>([]);
   const [visibleCardCount, setVisibleCardCount] = useState(INITIAL_CARD_COUNT);
 
-  const getPos = useCallback((): [number, number] => [
-    Math.floor(Math.random() * (dimensions.width / width)),
-    Math.floor(Math.random() * (dimensions.height / height)),
-  ], [dimensions, width, height]);
-
   const generateCards = useCallback((count: number): Card[] => 
     Array.from({ length: count }, (_, i) => ({
       id: i,
-      pos: getPos(),
       tarotCard: tarotCards[Math.floor(Math.random() * tarotCards.length)],
-      randomScale: getRandomValue(0.5, 2.0),
-      randomOpacity: Math.random() * maxOpacity,
-    })), [getPos, maxOpacity]);
+      randomRotation: getRandomValue(-180, 180),
+      randomDelay: getRandomValue(0, 10),
+      randomDuration: getRandomValue(8, 12),
+      posX: Math.floor(Math.random() * dimensions.width / width),
+      posY: Math.floor(Math.random() * dimensions.height / height),
+      newPosX: Math.floor(Math.random() * dimensions.width / width),
+      newPosY: Math.floor(Math.random() * dimensions.height / height),
+      randomHue: Math.floor(Math.random() * 360),
+    })), [dimensions, width, height]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -99,8 +104,8 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   }, []);
 
   useEffect(() => {
-    if (dimensions.width && dimensions.height) setCards(generateCards(CARD_LIMIT));
-  }, [dimensions, generateCards]);
+    setCards(generateCards(CARD_LIMIT));
+  }, [generateCards]);
 
   useEffect(() => {
     const handleStreamingStateChange = (e: CustomEvent<boolean>) => setIsStreaming(e.detail);
@@ -130,12 +135,6 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     return baseCount;
   }, [isTabActive, isStreaming, visibleCardCount, numCards]);
 
-  const updateCardPosition = useCallback((id: number) => {
-    setCards(currentCards => currentCards.map(card => 
-      card.id === id ? { ...card, pos: getPos() } : card
-    ));
-  }, [getPos]);
-
   if (isMobile) return null;
 
   return (
@@ -156,32 +155,29 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
       <svg x={x} y={y} className="overflow-visible">
         {cards.slice(0, effectiveNumCards).map((card) => (
           <g
-            key={`${card.id}-${card.pos[0]}-${card.pos[1]}`}
+            key={card.id}
             className={`card-container ${isPaused ? '' : 'animate'}`}
             style={{
-              '--random-scale': card.randomScale,
-              '--random-opacity': card.randomOpacity,
-              '--animation-delay': `${card.id * getRandomValue(0.5, 1.0)}s`,
-              transform: `translate(${card.pos[0] * width}px, ${card.pos[1] * height}px)`,
+              '--random-rotation': `${card.randomRotation}deg`,
+              '--animation-delay': `${card.randomDelay}s`,
+              '--animation-duration': `${card.randomDuration}s`,
+              '--random-scale': getRandomValue(0.8, 1.2),
+              '--random-opacity': getRandomValue(0.5, 1),
+              '--pos-x': `${card.posX * width}px`,
+              '--pos-y': `${card.posY * height}px`,
+              '--new-pos-x': `${card.newPosX * width}px`,
+              '--new-pos-y': `${card.newPosY * height}px`,
+              filter: `hue-rotate(${card.randomHue}deg)`,
             } as React.CSSProperties}
-            onAnimationIteration={() => {
-              if (!isStreaming && !isPaused) {
-                updateCardPosition(card.id);
-              }
-            }}
           >
-            <image
-              href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
-              width={width - 1}
-              height={height - 1}
-              className="tarot-card"
-            />
-            <image
-              href={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
-              width={width - 1}
-              height={height - 1}
-              className="tarot-card-back"
-            />
+            <g className="card-faces">
+              <image
+                href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
+                width={width - 1}
+                height={height - 1}
+                className="tarot-card"
+              />
+            </g>
           </g>
         ))}
       </svg>

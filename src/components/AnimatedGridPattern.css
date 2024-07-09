@@ -8,11 +8,11 @@
 .tarot-card {
   transform-origin: center;
   filter: brightness(0.9) contrast(1.1);
-  transition: filter 0.3s ease;
+  transition: filter 0.3s ease, transform 0.3s ease;
 }
 
 .card-container.animate {
-  animation: cardFloat var(--animation-duration) infinite ease-in-out, cardShift 60s infinite ease-in-out;
+  animation: cardFloat var(--animation-duration) infinite ease-in-out, cardShift 60s infinite linear;
   animation-delay: var(--animation-delay);
 }
 
@@ -31,12 +31,13 @@
   }
   50% {
     transform: translate(
-      calc((var(--new-pos-x) - var(--pos-x)) * 0.1%),
-      calc((var(--new-pos-y) - var(--pos-y)) * 0.1%)
+      calc((var(--new-pos-x) - var(--pos-x)) * 0.5%),
+      calc((var(--new-pos-y) - var(--pos-y)) * 0.5%)
     );
   }
 }
 
 .card-container:hover .tarot-card {
-  filter: brightness(1.1) contrast(1.2);
+  filter: brightness(1.2) contrast(1.3);
+  transform: scale(1.1);
 }

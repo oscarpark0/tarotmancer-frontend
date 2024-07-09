@@ -16,6 +16,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const { selectedLanguage } = useLanguage();
   const [isDrawing, setIsDrawing] = useState(false);
+  const [readyForReading, setReadyForReading] = useState(false);
 
   const getTranslation = useCallback((key) => {
     if (!buttonTranslations[key]) {
@@ -77,7 +78,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere) {
       setShowCards(true);
-      // Instead of calling handleSubmit here, just prepare the data
       const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve..." +
         "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as it's position in relation to the other cards in the spread." +
         "Provide the querent with a detailed and personalized reading that is tailored to their situation as described by the tarot." +
@@ -85,17 +85,24 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
         "Format your response in a manner that allows each position, card, and orientation to be clearly and easily identified. " +
         "Conclude with an overview of the querent's spread and your interpretation of it.";
       const message = `${staticText} ${mostCommonCards.trim()}`;
-      setInput(message);  // Set the input for later use
+      setInput(message);
       setShouldRequestCohere(false);
+      setReadyForReading(true);  // Set this to true when ready for the reading
     }
   }, [mostCommonCards, dealingComplete, shouldRequestCohere]);
 
-  // Then, create a separate function to actually send the request:
   const sendTarotReading = useCallback(() => {
-    if (input.trim()) {
+    if (input.trim() && readyForReading) {
       handleSubmit(input.trim());
+      setReadyForReading(false);  // Reset this after sending the request
     }
-  }, [input, handleSubmit]);
+  }, [input, handleSubmit, readyForReading]);
+
+  useEffect(() => {
+    if (readyForReading) {
+      sendTarotReading();
+    }
+  }, [readyForReading, sendTarotReading]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);

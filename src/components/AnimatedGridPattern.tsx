@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useId, useRef, useState, useMemo } from 'react';
 import { cn } from '../utils';
+import { motion } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
+import debounce from 'lodash.debounce';
 import './AnimatedGridPattern.css';
+
 
 const tarotCards: string[] = [
   'c01.webp', 'c02.webp', 'c03.webp', 'c04.webp', 'c05.webp', 'c06.webp', 'c07.webp', 'c08.webp', 'c09.webp', 'c10.webp',
@@ -15,28 +18,15 @@ const tarotCards: string[] = [
   'w14.webp',
 ];
 
-const CARD_LIMIT = 20;
-const INITIAL_CARD_COUNT = 5;
-const CARD_INCREMENT = 3;
-const CARD_INCREMENT_INTERVAL = 5;
-
 interface Dimensions {
   width: number;
   height: number;
 }
 
-interface Card {
-  id: number;
-  tarotCard: string;
-  randomRotation: number;
-  randomDelay: number;
-  randomDuration: number;
-  posX: number;
-  posY: number;
-  newPosX: number;
-  newPosY: number;
-  randomHue: number;
-}
+const debounceResizeHandler = debounce((entries: ResizeObserverEntry[], setDimensions: React.Dispatch<React.SetStateAction<Dimensions>>) => {
+  const { width, height } = entries[0].contentRect;
+  setDimensions({ width, height });
+}, 200);
 
 const getRandomValue = (min: number, max: number): number => Math.random() * (max - min) + min;
 
@@ -46,12 +36,23 @@ interface AnimatedGridPatternProps extends React.SVGProps<SVGSVGElement> {
   x?: number;
   y?: number;
   strokeDasharray?: number;
+  strokeOpacity?: number;
   numCards?: number;
   className?: string;
   maxOpacity?: number;
+  duration?: number;
+  repeatDelay?: number;
   isDarkMode?: boolean;
   isMobile?: boolean;
   isPaused: boolean;
+}
+
+interface Card {
+  id: number;
+  pos: [number, number];
+  tarotCard: string;
+  randomScale: number;
+  randomOpacity: number;
 }
 
 const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
@@ -60,9 +61,12 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   x = -1,
   y = -1,
   strokeDasharray = 19,
+  strokeOpacity = 1,
   numCards = 10,
   className,
   maxOpacity = 0.9,
+  duration = 6,
+  repeatDelay = 10,
   isDarkMode = false,
   isMobile = false,
   isPaused,
@@ -70,42 +74,57 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
 }) => {
   const id = useId();
   const containerRef = useRef<SVGSVGElement>(null);
-  const [, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
+  const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
   const [isStreaming, setIsStreaming] = useState(false);
   const [isTabActive, setIsTabActive] = useState(true);
   const [cards, setCards] = useState<Card[]>([]);
-  const [visibleCardCount, setVisibleCardCount] = useState(INITIAL_CARD_COUNT);
+
+  const getPos = useCallback((): [number, number] => [
+    Math.floor((Math.random() * dimensions.width) / width),
+    Math.floor((Math.random() * dimensions.height) / height),
+  ], [dimensions.width, dimensions.height, width, height]);
 
   const generateCards = useCallback((count: number): Card[] => 
     Array.from({ length: count }, (_, i) => ({
       id: i,
+      pos: getPos(),
       tarotCard: tarotCards[Math.floor(Math.random() * tarotCards.length)],
-      randomRotation: getRandomValue(-5, 5), // Further reduced rotation range
-      randomDelay: getRandomValue(0, 20),
-      randomDuration: getRandomValue(20, 30), // Increased duration range for slower movement
-      posX: getRandomValue(0, 100), // Use percentage for better scaling
-      posY: getRandomValue(0, 100), // Use percentage for better scaling
-      newPosX: getRandomValue(0, 100), // Use percentage for better scaling
-      newPosY: getRandomValue(0, 100), // Use percentage for better scaling
-      randomHue: Math.floor(Math.random() * 360),
-    })), []);
+      randomScale: getRandomValue(0.5, 2.0),
+      randomOpacity: Math.random() * maxOpacity,
+    })), [getPos, maxOpacity]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (containerRef.current) {
-        const { width, height } = containerRef.current.getBoundingClientRect();
-        setDimensions({ width, height });
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    const resizeObserver = new ResizeObserver((entries) => debounceResizeHandler(entries, setDimensions));
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
+    return () => resizeObserver.disconnect();
   }, []);
 
   useEffect(() => {
-    setCards(generateCards(CARD_LIMIT));
-  }, [generateCards]);
+    if (dimensions.width && dimensions.height) setCards(generateCards(numCards));
+  }, [dimensions, numCards, generateCards]);
+
+  const updateCardPosition = useCallback((id: number) => {
+    setCards(currentCards => currentCards.map(card => 
+      card.id === id ? { ...card, pos: getPos() } : card
+    ));
+  }, [getPos]);
+
+  const cardVariants = useMemo(() => ({
+    initial: { opacity: 0, rotateY: 0, scale: 1, z: 0 },
+    animate: (custom: Card) => ({
+      opacity: custom.randomOpacity,
+      rotateY: isPaused ? 0 : [0, 180],
+      scale: isPaused ? 1 : custom.randomScale,
+      z: isPaused ? 0 : [0, 50, 0],
+      transition: {
+        duration: isPaused ? 0 : duration + getRandomValue(0, 30),
+        repeat: isPaused ? 0 : Infinity,
+        delay: custom.id * getRandomValue(0.5, 1.0),
+        repeatType: 'reverse',
+        ease: [0.645, 0.045, 0.355, 1],
+      },
+    }),
+  }), [duration, isPaused]);
 
   useEffect(() => {
     const handleStreamingStateChange = (e: CustomEvent<boolean>) => setIsStreaming(e.detail);
@@ -114,34 +133,30 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   }, []);
 
   useEffect(() => {
-    const handleVisibilityChange = () => setIsTabActive(!document.hidden);
+    const handleVisibilityChange = () => {
+      setIsTabActive(!document.hidden);
+    };
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
-  useEffect(() => {
-    if (visibleCardCount < CARD_LIMIT) {
-      const timer = setTimeout(() => {
-        setVisibleCardCount(prev => Math.min(prev + CARD_INCREMENT, CARD_LIMIT));
-      }, CARD_INCREMENT_INTERVAL);
-      return () => clearTimeout(timer);
-    }
-  }, [visibleCardCount]);
+  const effectiveNumCards = isTabActive ? (isStreaming ? Math.floor(numCards / 2) : numCards) : Math.floor(numCards / 4);
 
-  const effectiveNumCards = useMemo(() => {
-    const baseCount = Math.min(visibleCardCount, numCards);
-    if (!isTabActive) return Math.floor(baseCount / 4);
-    if (isStreaming) return Math.floor(baseCount / 2);
-    return baseCount;
-  }, [isTabActive, isStreaming, visibleCardCount, numCards]);
+  // If on mobile, return null to disable the component
+  if (isMobile) {
+    return null;
+  }
 
-  if (isMobile) return null;
+  const MemoizedMotionG = motion.g;
+  const MemoizedMotionImage = motion.image;
 
   return (
     <svg
       ref={containerRef}
       aria-hidden="true"
-      className={cn('pointer-events-none absolute inset-0 h-full w-full', 
+      className={cn('pointer-events-none relative inset-0 h-full w-full', 
         isDarkMode ? 'fill-gray-700/30 stroke-gray-700/30' : 'fill-gray-400/30 stroke-gray-400/30', 
         className)}
       {...props}
@@ -152,33 +167,38 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${id})`} />
-      <svg width="100%" height="100%" className="overflow-visible">
+      <svg x={x} y={y} className="overflow-visible">
         {cards.slice(0, effectiveNumCards).map((card) => (
-          <g
-            key={card.id}
-            className={`card-container ${isPaused ? '' : 'animate'}`}
-            style={{
-              '--random-rotation': `${card.randomRotation}deg`,
-              '--animation-delay': `${card.randomDelay}s`,
-              '--animation-duration': `${card.randomDuration}s`,
-              '--random-scale': getRandomValue(0.5, 0.8), // Reduced scale for smaller cards
-              '--random-opacity': getRandomValue(0.5, 0.8), // Reduced opacity
-              '--pos-x': `${card.posX}%`,
-              '--pos-y': `${card.posY}%`,
-              '--new-pos-x': `${card.newPosX}%`,
-              '--new-pos-y': `${card.newPosY}%`,
-              filter: `hue-rotate(${card.randomHue}deg)`,
-            } as React.CSSProperties}
+          <MemoizedMotionG
+            key={`${card.id}-${card.pos[0]}-${card.pos[1]}`}
+            custom={card}
+            variants={cardVariants}
+            initial="initial"
+            animate={isStreaming ? "initial" : "animate"}
+            onAnimationComplete={() => {
+              if (!isStreaming) {
+                setTimeout(() => updateCardPosition(card.id), 10000 + getRandomValue(0, 100));
+              }
+            }}
+            style={{ transformStyle: 'preserve-3d', transformOrigin: 'center', perspective: '1000px' }}
           >
-            <image
+            <MemoizedMotionImage
               href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
-              width={width}
-              height={height}
+              width={width - 1}
+              height={height - 1}
+              x={card.pos[0] * width + 1}
+              y={card.pos[1] * height + 1}
               className="tarot-card"
-              x={`calc(${card.posX}% - ${width / 2}px)`}
-              y={`calc(${card.posY}% - ${height / 2}px)`}
             />
-          </g>
+            <MemoizedMotionImage
+              href={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
+              width={width - 1}
+              height={height - 1}
+              x={card.pos[0] * width + 1}
+              y={card.pos[1] * height + 1}
+              className="tarot-card-back"
+            />
+          </MemoizedMotionG>
         ))}
       </svg>
     </svg>

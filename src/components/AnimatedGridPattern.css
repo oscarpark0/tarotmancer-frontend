@@ -1,14 +1,29 @@
-.preserve-3d {
-    transform-style: preserve-3d;
-    transform-origin: center;
-    perspective: 1000px;
+.card-container {
+  transform-style: preserve-3d;
+  transform-origin: center;
+  perspective: 1000px;
+}
+
+.tarot-card, .tarot-card-back {
+  backface-visibility: hidden;
+  border-radius: 5px;
+}
+
+.tarot-card-back {
+  transform: rotateY(180deg);
+}
+
+.card-container.animate {
+  animation: cardAnimation 10s infinite alternate;
+}
+
+@keyframes cardAnimation {
+  0%, 100% {
+    opacity: 0;
+    transform: rotateY(0deg) scale(1) translateZ(0px);
   }
-  
-  .tarot-card, .tarot-card-back {
-    backface-visibility: hidden;
-    border-radius: 5px;
+  50% {
+    opacity: var(--random-opacity);
+    transform: rotateY(180deg) scale(var(--random-scale)) translateZ(50px);
   }
-  
-  .tarot-card-back {
-    transform: rotateY(180deg);
-  }
+}

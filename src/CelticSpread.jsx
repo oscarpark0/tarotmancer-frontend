@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
@@ -7,7 +8,7 @@ import { API_BASE_URL } from './utils/config.tsx';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { getMistralResponse } from './services/mistralServices';
+
 
 const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode }) => {
   const { getToken, user } = useKindeAuth();
@@ -29,11 +30,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
-  }, []);
-
-  const handleNewResponse = useCallback((responseChunk) => {
-    console.log('New response chunk:', responseChunk);
-    setIsStreaming(true);
   }, []);
 
   const handleSubmitInput = useCallback((value) => {
@@ -94,10 +90,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       ).join('\n');
       setDealCards(true); 
       setMostCommonCards(formattedMostCommonCards);
-
-      // Initiate the Mistral response
-      const message = `${formattedMostCommonCards.trim()}`;
-      await getMistralResponse(message, handleNewResponse);
     } catch (error) {
       console.error('Error drawing spread:', error);
       setError('Failed to draw spread. Please check your authentication and try again.');
@@ -106,7 +98,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, user, handleNewResponse]);
+  }, [getToken, selectedSpread, user]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -124,6 +116,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       }, 750);
     }, 500);
   }, [cards.length, handleDealingComplete]);
+
+  const handleMonitorOutput = useCallback(() => {}, []);
 
   const drawSpread = useCallback(() => {
     setDealCards(false);
@@ -146,7 +140,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       onExitComplete={handleExitComplete}
       revealCards={revealCards}
       shouldDrawNewSpread={shouldDrawNewSpread}
-      onMonitorOutput={handleNewResponse}
+      onMonitorOutput={handleMonitorOutput}
       drawSpread={drawSpread}
       dealingComplete={handleDealingComplete}
       mostCommonCards={mostCommonCards}
@@ -157,7 +151,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       selectedSpread={selectedSpread}
       onSpreadSelect={onSpreadSelect}
       fetchSpread={fetchSpread}
-      onNewResponse={handleNewResponse}
+      onNewResponse={(response) => {
+        setIsStreaming(true);
+      }}
       onResponseComplete={() => {
         setIsStreaming(false);
       }}
@@ -167,7 +163,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleNewResponse, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

@@ -1,3 +1,4 @@
+
 .command-terminal {
   position: absolute;
   left: 0; /* Align with the left edge of the robot container */
@@ -76,7 +77,6 @@
 .terminal-output {
   overflow-y: auto;
   margin-bottom: 10px;
-  max-height: 300px; /* Adjust as needed */
 }
 
 @media (max-width: 768px) {
@@ -111,7 +111,6 @@
   .terminal-output {
     flex-grow: 1;
     overflow-y: auto;
-    max-height: 200px; /* Adjust for mobile */
   }
 
   .draw-button-container {

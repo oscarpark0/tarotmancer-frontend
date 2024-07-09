@@ -1,3 +1,5 @@
+
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
 import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
@@ -6,9 +8,8 @@ import CardReveal from './CardReveal';
 import LanguageSelector, { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
-import { formatResponse } from '../utils/textFormatting';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, isStreaming }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -16,15 +17,14 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const { selectedLanguage } = useLanguage();
   const [isDrawing, setIsDrawing] = useState(false);
-  const [readyForReading, setReadyForReading] = useState(false);
 
-  const getTranslation = useCallback((key) => {
+  const getTranslation = (key) => {
     if (!buttonTranslations[key]) {
       console.warn(`Translation key "${key}" not found`);
-      return key;
+      return key; // Return the key itself as a fallback
     }
     return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'] || key;
-  }, [selectedLanguage]);
+  };
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -40,69 +40,39 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     if (!shouldRequestCohere) return;
 
     setIsLoading(true);
-    onNewResponse(''); // Clear previous response
+    onNewResponse(''); // This will set isStreaming to true in the Robot component
 
     try {
       const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +
         "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as it's position in relation to the other cards in the spread." +
         "Provide the querent with a detailed and personalized reading that is tailored to their situation as described by the tarot." +
-        "Responsd using clear - natural language to ensure your responses are easily understood. " +
+        " Responsd using clear - natural language to ensure your responses are easily understood. " +
         "Format your response in a manner that allows each position, card, and orientation to be clearly and easily identified. " +
         "Conclude with an overview of the querent's spread and your interpretation of it.";
       const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-      await getMistralResponse(message, (content) => {
-        onNewResponse(content);
-        onMonitorOutput(content);
-      });
+      await getMistralResponse(message, onNewResponse);
     } catch (error) {
-      console.error('Error in handleSubmit:', error);
-      let errorMessage = getTranslation('errorMessage');
-      if (error.message.includes('timed out')) {
-        errorMessage += ': ' + getTranslation('timeoutError');
-      } else {
-        errorMessage += ': ' + error.message;
-      }
-      onNewResponse(formatResponse(errorMessage));
-      onMonitorOutput(formatResponse(getTranslation('apologizeError')));
+      console.error('Error:', error);
+      const errorMessage = getTranslation('errorMessage');
+      onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
-      onResponseComplete();
+      onResponseComplete(); // This will set isStreaming to false in the Robot component
     }
 
     setInput('');
-  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, onMonitorOutput]);
+  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input]);
 
   useEffect(() => {
-    if (mostCommonCards && dealingComplete && shouldRequestCohere) {
+    if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
       setShowCards(true);
-      const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve..." +
-        "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as it's position in relation to the other cards in the spread." +
-        "Provide the querent with a detailed and personalized reading that is tailored to their situation as described by the tarot." +
-        "Responsd using clear - natural language to ensure your responses are easily understood. " +
-        "Format your response in a manner that allows each position, card, and orientation to be clearly and easily identified. " +
-        "Conclude with an overview of the querent's spread and your interpretation of it.";
-      const message = `${staticText} ${mostCommonCards.trim()}`;
-      setInput(message);
+      handleSubmit(mostCommonCards);
       setShouldRequestCohere(false);
-      setReadyForReading(true);  // Set this to true when ready for the reading
     }
-  }, [mostCommonCards, dealingComplete, shouldRequestCohere]);
-
-  const sendTarotReading = useCallback(() => {
-    if (input.trim() && readyForReading) {
-      handleSubmit(input.trim());
-      setReadyForReading(false);  // Reset this after sending the request
-    }
-  }, [input, handleSubmit, readyForReading]);
-
-  useEffect(() => {
-    if (readyForReading) {
-      sendTarotReading();
-    }
-  }, [readyForReading, sendTarotReading]);
+  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit, animationsComplete]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);
@@ -118,12 +88,12 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, []);
 
   const handleDrawClick = useCallback(() => {
-    if (isDrawing || isStreaming) return;
+    if (isDrawing) return;
     setIsDrawing(true);
     fetchSpread();
     setShouldRequestCohere(true);
     onNewResponse('');
-  }, [isDrawing, isStreaming, fetchSpread, setShouldRequestCohere, onNewResponse]);
+  }, [isDrawing, fetchSpread, setShouldRequestCohere, onNewResponse]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -146,7 +116,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading || isStreaming ? getTranslation('processing') : ''}
+            {isLoading ? getTranslation('processing') : ''}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -174,10 +144,10 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
           onClick={handleDrawClick}
           aria-label={getTranslation('drawCardsAriaLabel')}
           label={getTranslation('draw')}
-          disabled={isLoading || isDrawing || isStreaming}
+          disabled={isLoading || isDrawing}
           className={isDrawing ? 'drawing' : ''}
         >
-          {isLoading || isStreaming ? getTranslation('processing') : 
+          {isLoading ? getTranslation('processing') : 
            isDrawing ? getTranslation('drawing') : 
            getTranslation('draw')}
         </ShimmerButton>

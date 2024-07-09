@@ -10,7 +10,6 @@ import LanguageSelector, { LanguageProvider } from './components/LanguageSelecto
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
@@ -138,7 +137,6 @@ function App() {
             } />
             <Route path="/callback" element={<Navigate to="/" />} />
           </Routes>
-          <SpeedInsights />
         </div>
       </Router>
     </LanguageProvider>

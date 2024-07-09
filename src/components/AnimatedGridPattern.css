@@ -2,66 +2,41 @@
   transform-style: preserve-3d;
   transform-origin: center;
   perspective: 1000px;
-  transition: all 0.5s ease, transform 1s ease;
+  opacity: var(--random-opacity);
 }
 
-.card-faces {
-  transform-style: preserve-3d;
-  transition: transform 0.6s;
-}
-
-.tarot-card, .tarot-card-back {
-  position: absolute;
-  backface-visibility: hidden;
-  border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.tarot-card {
+  transform-origin: center;
+  filter: brightness(0.9) contrast(1.1);
+  transition: filter 0.3s ease;
 }
 
 .card-container.animate {
-  animation: cardFlyIn var(--animation-duration) infinite ease-in-out, cardTeleport 10s infinite ease-in-out;
+  animation: cardFloat var(--animation-duration) infinite ease-in-out, cardShift 60s infinite ease-in-out;
   animation-delay: var(--animation-delay);
 }
 
-@keyframes cardFlyIn {
+@keyframes cardFloat {
   0%, 100% {
-    opacity: 0;
-    transform: translateZ(-1000px) rotateY(var(--random-rotation)) scale(var(--random-scale)) rotate(var(--random-rotation));
-  }
-  10%, 90% {
-    opacity: var(--random-opacity);
+    transform: translateZ(-10px) rotateY(var(--random-rotation)) scale(var(--random-scale)) rotate(var(--random-rotation));
   }
   50% {
-    opacity: var(--random-opacity);
-    transform: translateZ(0) rotateY(0) scale(1) rotate(0);
+    transform: translateZ(10px) rotateY(calc(var(--random-rotation) * -0.5)) scale(calc(var(--random-scale) * 1.05)) rotate(calc(var(--random-rotation) * -0.5));
   }
 }
 
-@keyframes cardTeleport {
+@keyframes cardShift {
   0%, 100% {
-    opacity: 0;
-    transform: translate(var(--pos-x), var(--pos-y));
-  }
-  10%, 90% {
-    opacity: var(--random-opacity);
+    transform: translate(0, 0);
   }
   50% {
-    opacity: var(--random-opacity);
-    transform: translate(var(--new-pos-x), var(--new-pos-y));
+    transform: translate(
+      calc((var(--new-pos-x) - var(--pos-x)) * 0.1%),
+      calc((var(--new-pos-y) - var(--pos-y)) * 0.1%)
+    );
   }
 }
 
-.card-container::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.card-container:hover::before {
-  opacity: 1;
+.card-container:hover .tarot-card {
+  filter: brightness(1.1) contrast(1.2);
 }

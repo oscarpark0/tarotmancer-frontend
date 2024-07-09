@@ -70,7 +70,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
 }) => {
   const id = useId();
   const containerRef = useRef<SVGSVGElement>(null);
-  const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
+  const [, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
   const [isStreaming, setIsStreaming] = useState(false);
   const [isTabActive, setIsTabActive] = useState(true);
   const [cards, setCards] = useState<Card[]>([]);
@@ -80,15 +80,15 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     Array.from({ length: count }, (_, i) => ({
       id: i,
       tarotCard: tarotCards[Math.floor(Math.random() * tarotCards.length)],
-      randomRotation: getRandomValue(-180, 180),
-      randomDelay: getRandomValue(0, 10),
-      randomDuration: getRandomValue(8, 12),
-      posX: Math.floor(Math.random() * dimensions.width / width),
-      posY: Math.floor(Math.random() * dimensions.height / height),
-      newPosX: Math.floor(Math.random() * dimensions.width / width),
-      newPosY: Math.floor(Math.random() * dimensions.height / height),
+      randomRotation: getRandomValue(-5, 5), // Further reduced rotation range
+      randomDelay: getRandomValue(0, 20),
+      randomDuration: getRandomValue(20, 30), // Increased duration range for slower movement
+      posX: getRandomValue(0, 100), // Use percentage for better scaling
+      posY: getRandomValue(0, 100), // Use percentage for better scaling
+      newPosX: getRandomValue(0, 100), // Use percentage for better scaling
+      newPosY: getRandomValue(0, 100), // Use percentage for better scaling
       randomHue: Math.floor(Math.random() * 360),
-    })), [dimensions, width, height]);
+    })), []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -141,7 +141,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     <svg
       ref={containerRef}
       aria-hidden="true"
-      className={cn('pointer-events-none relative inset-0 h-full w-full', 
+      className={cn('pointer-events-none absolute inset-0 h-full w-full', 
         isDarkMode ? 'fill-gray-700/30 stroke-gray-700/30' : 'fill-gray-400/30 stroke-gray-400/30', 
         className)}
       {...props}
@@ -152,7 +152,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
         </pattern>
       </defs>
       <rect width="100%" height="100%" fill={`url(#${id})`} />
-      <svg x={x} y={y} className="overflow-visible">
+      <svg width="100%" height="100%" className="overflow-visible">
         {cards.slice(0, effectiveNumCards).map((card) => (
           <g
             key={card.id}
@@ -161,23 +161,23 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
               '--random-rotation': `${card.randomRotation}deg`,
               '--animation-delay': `${card.randomDelay}s`,
               '--animation-duration': `${card.randomDuration}s`,
-              '--random-scale': getRandomValue(0.8, 1.2),
-              '--random-opacity': getRandomValue(0.5, 1),
-              '--pos-x': `${card.posX * width}px`,
-              '--pos-y': `${card.posY * height}px`,
-              '--new-pos-x': `${card.newPosX * width}px`,
-              '--new-pos-y': `${card.newPosY * height}px`,
+              '--random-scale': getRandomValue(0.5, 0.8), // Reduced scale for smaller cards
+              '--random-opacity': getRandomValue(0.5, 0.8), // Reduced opacity
+              '--pos-x': `${card.posX}%`,
+              '--pos-y': `${card.posY}%`,
+              '--new-pos-x': `${card.newPosX}%`,
+              '--new-pos-y': `${card.newPosY}%`,
               filter: `hue-rotate(${card.randomHue}deg)`,
             } as React.CSSProperties}
           >
-            <g className="card-faces">
-              <image
-                href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
-                width={width - 1}
-                height={height - 1}
-                className="tarot-card"
-              />
-            </g>
+            <image
+              href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
+              width={width}
+              height={height}
+              className="tarot-card"
+              x={`calc(${card.posX}% - ${width / 2}px)`}
+              y={`calc(${card.posY}% - ${height / 2}px)`}
+            />
           </g>
         ))}
       </svg>

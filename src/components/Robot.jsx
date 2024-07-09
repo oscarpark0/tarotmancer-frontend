@@ -5,6 +5,8 @@ import FloatingCards from './FloatingCards.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
+import { formatResponse } from '../utils/textFormatting';
 import { useLanguage } from './LanguageSelector';
 
 const adjustFontSize = () => {
@@ -61,33 +63,46 @@ const Robot = memo(({
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
-  const [isStreaming, setIsStreaming] = useState(false);
   const screenContentRef = useRef(null);
   const commandTerminalRef = useRef(null);
   const [responses, setResponses] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
   const robotRef = useRef(null);
+  const [isStreaming, setIsStreaming] = useState(false);
   useLanguage();
 
-  const handleNewResponse = useCallback((response) => {
-    console.log('New response chunk received:', response);
-    setMonitorOutput(prevOutput => {
-      const newOutput = prevOutput + response;
-      console.log('Updated monitor output:', newOutput);
-      return newOutput;
-    });
-    onMonitorOutput(response);
-    setIsStreaming(true);
-    onStreamingStateChange(true);
-  }, [onMonitorOutput, onStreamingStateChange]);
 
-  useEffect(() => {
-    onNewResponse(handleNewResponse);
-    return () => {
-      setIsStreaming(false);
-      onResponseComplete();
-    };
-  }, [onNewResponse, handleNewResponse, onResponseComplete]);
+  const handleResponseComplete = useCallback(() => {
+    onResponseComplete();
+    setIsStreaming(false);
+    if (onStreamingStateChange) {
+      onStreamingStateChange(false);
+    }
+  }, [onResponseComplete, onStreamingStateChange]);
+
+  const handleNewResponse = useCallback((content) => {
+    setResponses(prevResponses => {
+      if (content === '') {
+        return [];
+      }
+      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
+        const newResponse = { id: uuidv4(), content: formatResponse(content), complete: false };
+        setActiveTab(newResponse.id);
+        return [...prevResponses, newResponse];
+      } else {
+        const updatedResponses = [...prevResponses];
+        const lastResponse = updatedResponses[updatedResponses.length - 1];
+        lastResponse.content += formatResponse(content);
+        return updatedResponses;
+      }
+    });
+    setMonitorOutput(prevOutput => prevOutput + formatResponse(content));
+    onNewResponse(content);
+    setIsStreaming(true);
+    if (onStreamingStateChange) {
+      onStreamingStateChange(true);
+    }
+  }, [onNewResponse, onStreamingStateChange]);
 
   const completeCurrentResponse = useCallback(() => {
     setResponses(prevResponses => {
@@ -137,6 +152,7 @@ const Robot = memo(({
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   const handleMonitorOutput = useCallback((output) => {
     setMonitorOutput(output);
     onMonitorOutput(output);
@@ -167,10 +183,14 @@ const Robot = memo(({
   }, [onAnimationStart]);
 
   useEffect(() => {
+    // This effect will run whenever isStreaming changes
+    // You can use it to trigger any actions that should occur when streaming starts or stops
     if (isStreaming) {
       console.log('Streaming started');
-    } else if (isStreaming === false) {
+      // Add any actions you want to occur when streaming starts
+    } else {
       console.log('Streaming stopped');
+      // Add any actions you want to occur when streaming stops
     }
   }, [isStreaming]);
 
@@ -210,10 +230,9 @@ const Robot = memo(({
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
               />
-              <div 
-                className="monitor-output" 
-                dangerouslySetInnerHTML={{ __html: monitorOutput }}
-              ></div>
+              <div className="monitor-output">
+                {monitorOutput}
+              </div>
               <div className="screen-overlay"></div>
               <div className="screen-glass"></div>
               <div className="screen-frame"></div>
@@ -248,10 +267,7 @@ const Robot = memo(({
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onNewResponse={handleNewResponse}
-        onResponseComplete={() => {
-          setIsStreaming(false);
-          onResponseComplete();
-        }}
+        onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}

@@ -73,13 +73,29 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
     setInput('');
   }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, onMonitorOutput]);
+
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere) {
       setShowCards(true);
-      handleSubmit(mostCommonCards);
+      // Instead of calling handleSubmit here, just prepare the data
+      const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve..." +
+        "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as it's position in relation to the other cards in the spread." +
+        "Provide the querent with a detailed and personalized reading that is tailored to their situation as described by the tarot." +
+        "Responsd using clear - natural language to ensure your responses are easily understood. " +
+        "Format your response in a manner that allows each position, card, and orientation to be clearly and easily identified. " +
+        "Conclude with an overview of the querent's spread and your interpretation of it.";
+      const message = `${staticText} ${mostCommonCards.trim()}`;
+      setInput(message);  // Set the input for later use
       setShouldRequestCohere(false);
     }
-  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit]);
+  }, [mostCommonCards, dealingComplete, shouldRequestCohere]);
+
+  // Then, create a separate function to actually send the request:
+  const sendTarotReading = useCallback(() => {
+    if (input.trim()) {
+      handleSubmit(input.trim());
+    }
+  }, [input, handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);

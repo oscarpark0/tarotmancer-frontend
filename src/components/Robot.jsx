@@ -5,8 +5,6 @@ import FloatingCards from './FloatingCards.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
-import { v4 as uuidv4 } from 'uuid';
-import { formatResponse } from '../utils/textFormatting';
 import { useLanguage } from './LanguageSelector';
 
 const adjustFontSize = () => {
@@ -81,22 +79,7 @@ const Robot = memo(({
   }, [onResponseComplete, onStreamingStateChange]);
 
   const handleNewResponse = useCallback((content) => {
-    setResponses(prevResponses => {
-      if (content === '') {
-        return [];
-      }
-      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
-        const newResponse = { id: uuidv4(), content: formatResponse(content), complete: false };
-        setActiveTab(newResponse.id);
-        return [...prevResponses, newResponse];
-      } else {
-        const updatedResponses = [...prevResponses];
-        const lastResponse = updatedResponses[updatedResponses.length - 1];
-        lastResponse.content += formatResponse(content);
-        return updatedResponses;
-      }
-    });
-    setMonitorOutput(prevOutput => prevOutput + formatResponse(content));
+    setMonitorOutput(prevOutput => prevOutput + content);
     onNewResponse(content);
     setIsStreaming(true);
     if (onStreamingStateChange) {

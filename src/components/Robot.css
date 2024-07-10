@@ -115,20 +115,14 @@ background-blend-mode: multiply;
   bottom: 0;
   color: #b7ff10;
   text-shadow: 0 0 5px rgba(0, 255, 13, 0.596);
-  font-size: 20px;
+  font-size: 16px;
   padding: 20px;
   overflow-y: auto;
   z-index: 10;
   font-family: 'VT323', monospace;
   line-height: 1.5;
-  animation: textFlicker 0.01s infinite;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
   white-space: pre-wrap;
   word-wrap: break-word;
-  text-shadow: 
-  0 0 5px rgba(4, 22, 5, 0.877),
-  0 0 10px rgba(0, 255, 13, 0.5);
 }
 
 .monitor-output h1, .monitor-output h2, .monitor-output h3, .monitor-output h4, .monitor-output h5, .monitor-output h6 {

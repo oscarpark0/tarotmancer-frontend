@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
@@ -27,6 +26,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [monitorOutput, setMonitorOutput] = useState('');
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -131,6 +131,15 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     setAnimationStarted(true);
   }, []);
 
+  const handleNewResponse = useCallback((content) => {
+    setMonitorOutput(prevOutput => prevOutput + content);
+    setIsStreaming(true);
+  }, []);
+
+  const handleResponseComplete = useCallback(() => {
+    setIsStreaming(false);
+  }, []);
+
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -151,19 +160,16 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       selectedSpread={selectedSpread}
       onSpreadSelect={onSpreadSelect}
       fetchSpread={fetchSpread}
-      onNewResponse={(response) => {
-        setIsStreaming(true);
-      }}
-      onResponseComplete={() => {
-        setIsStreaming(false);
-      }}
+      onNewResponse={handleNewResponse}
+      onResponseComplete={handleResponseComplete}
       animationsComplete={animationsComplete}
       isDarkMode={isDarkMode}
       onAnimationStart={handleAnimationStart}
       onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
+      monitorOutput={monitorOutput}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, monitorOutput]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

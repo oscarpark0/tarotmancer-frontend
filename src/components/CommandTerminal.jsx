@@ -1,4 +1,3 @@
-
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
 import './CommandTerminal.css';
@@ -40,7 +39,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     if (!shouldRequestCohere) return;
 
     setIsLoading(true);
-    onNewResponse(''); // This will set isStreaming to true in the Robot component
+    onNewResponse(''); // Clear previous response
 
     try {
       const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +
@@ -53,14 +52,19 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-      await getMistralResponse(message, onNewResponse);
+      const closeEventSource = await getMistralResponse(message, onNewResponse);
+      
+      // Clean up the EventSource when the component unmounts or when a new request is made
+      return () => {
+        closeEventSource();
+      };
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = getTranslation('errorMessage');
       onNewResponse(errorMessage);
     } finally {
       setIsLoading(false);
-      onResponseComplete(); // This will set isStreaming to false in the Robot component
+      onResponseComplete();
     }
 
     setInput('');

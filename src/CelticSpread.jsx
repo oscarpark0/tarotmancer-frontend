@@ -3,7 +3,6 @@ import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
-import { API_BASE_URL } from './utils/config.tsx';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -52,7 +51,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
-      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/${endpoint}`, {
         method: 'GET',
         headers: headers,
       });

@@ -63,6 +63,7 @@ const Robot = memo(({
   onStreamingStateChange,
 }) => {
   const { monitorOutput, handleMonitorOutput } = useMonitorOutput(MonitorOutput);
+  console.log("Robot received monitorOutput:", monitorOutput);
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   const { isStreaming, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
   
@@ -234,6 +235,8 @@ Robot.propTypes = {
   animationsComplete: PropTypes.bool.isRequired,
   onAnimationStart: PropTypes.func.isRequired,
   onStreamingStateChange: PropTypes.func.isRequired,
+  monitorOutput: PropTypes.string.isRequired,
+  isStreaming: PropTypes.bool.isRequired,
 };
 
 export default Robot;

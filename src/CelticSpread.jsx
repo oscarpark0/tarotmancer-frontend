@@ -143,8 +143,12 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   }, []);
 
   const handleNewResponse = useCallback((content) => {
-    console.log("New response received:", content); // Add this line for debugging
-    setMonitorOutput(prevOutput => prevOutput + content);
+    console.log("New response received:", content);
+    setMonitorOutput(prevOutput => {
+      const newOutput = prevOutput + content;
+      console.log("Updated monitor output:", newOutput);
+      return newOutput;
+    });
     setIsStreaming(true);
   }, []);
 

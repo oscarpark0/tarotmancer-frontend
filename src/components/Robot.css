@@ -123,6 +123,19 @@ background-blend-mode: multiply;
   line-height: 1.5;
   white-space: pre-wrap;
   word-wrap: break-word;
+  background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background */
+  border: 1px solid #b7ff10; /* Add a border to see the boundaries */
+}
+
+.monitor-output::before {
+  content: 'Monitor Output';
+  color: #b7ff10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 2px 5px;
+  font-size: 12px;
 }
 
 .monitor-output h1, .monitor-output h2, .monitor-output h3, .monitor-output h4, .monitor-output h5, .monitor-output h6 {

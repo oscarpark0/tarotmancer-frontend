@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef, useLayoutEffect, memo } from 'react';
+import React, { useEffect, useCallback, useRef, useLayoutEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
@@ -6,6 +6,9 @@ import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
 import { useLanguage } from './LanguageSelector';
+import { useMonitorOutput } from '../hooks/useRobotMonitor';
+import { useRobotDimensions } from '../hooks/useRobotLayout';
+import { useStreamingState } from '../hooks/useRobotStreamingState';
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -59,69 +62,18 @@ const Robot = memo(({
   onAnimationStart,
   onStreamingStateChange,
 }) => {
-  const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
-  const [monitorOutput, setMonitorOutput] = useState('');
-  const screenContentRef = useRef(null);
+  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
+  const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
+  const { isStreaming, handleNewResponse, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
+  
   const commandTerminalRef = useRef(null);
-  const [responses, setResponses] = useState([]);
-  const [activeTab, setActiveTab] = useState(null);
-  const robotRef = useRef(null);
-  const [isStreaming, setIsStreaming] = useState(false);
   useLanguage();
-
-
-  const handleResponseComplete = useCallback(() => {
-    onResponseComplete();
-    setIsStreaming(false);
-    if (onStreamingStateChange) {
-      onStreamingStateChange(false);
-    }
-  }, [onResponseComplete, onStreamingStateChange]);
-
-  const handleNewResponse = useCallback((content) => {
-    setMonitorOutput(prevOutput => prevOutput + content);
-    onNewResponse(content);
-    setIsStreaming(true);
-    if (onStreamingStateChange) {
-      onStreamingStateChange(true);
-    }
-  }, [onNewResponse, onStreamingStateChange]);
-
-  const completeCurrentResponse = useCallback(() => {
-    setResponses(prevResponses => {
-      if (prevResponses.length > 0) {
-        const updatedResponses = [...prevResponses];
-        updatedResponses[updatedResponses.length - 1].complete = true;
-        return updatedResponses;
-      }
-      return prevResponses;
-    });
-  }, []);
-
-  useEffect(() => {
-    if (dealingComplete) {
-      completeCurrentResponse();
-    }
-  }, [dealingComplete, completeCurrentResponse]);
 
   useEffect(() => {
     if (dealCards) {
       setTimeout(onExitComplete, 2000);
     }
   }, [dealCards, onExitComplete]);
-
-  useEffect(() => {
-    if (screenContentRef.current && robotRef.current) {
-      const screenRect = screenContentRef.current.getBoundingClientRect();
-      const robotRect = robotRef.current.getBoundingClientRect();
-      setMonitorPosition({
-        x: screenRect.x - robotRect.x,
-        y: screenRect.y - robotRect.y,
-        width: screenRect.width,
-        height: screenRect.height,
-      });
-    }
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -136,11 +88,6 @@ const Robot = memo(({
     };
   }, []);
 
-  const handleMonitorOutput = useCallback((output) => {
-    setMonitorOutput(output);
-    onMonitorOutput(output);
-  }, [onMonitorOutput]);
-
   useLayoutEffect(() => {
     adjustFontSize();
   }, [monitorOutput]);
@@ -151,31 +98,9 @@ const Robot = memo(({
     }
   }, [dealingComplete, mostCommonCards, onSubmitInput]);
 
-  useEffect(() => {
-  }, [selectedSpread]);
-
-  useEffect(() => {
-    if (robotRef.current) {
-      const robotHeight = robotRef.current.offsetHeight;
-      document.documentElement.style.setProperty('--robot-height', `${robotHeight}px`);
-    }
-  }, []);
-
   const handleAnimationStart = useCallback(() => {
     onAnimationStart();
   }, [onAnimationStart]);
-
-  useEffect(() => {
-    // This effect will run whenever isStreaming changes
-    // You can use it to trigger any actions that should occur when streaming starts or stops
-    if (isStreaming) {
-      console.log('Streaming started');
-      // Add any actions you want to occur when streaming starts
-    } else {
-      console.log('Streaming stopped');
-      // Add any actions you want to occur when streaming stops
-    }
-  }, [isStreaming]);
 
   return (
     <motion.div
@@ -192,38 +117,21 @@ const Robot = memo(({
         height: 'auto',
       }}
     >
-      <div ref={robotRef} className="robot-body">
-        <div className="tarotmancer-text">tarotmancer</div>
-        <div className="robot-head">
-          <div className="crt-screen">
-            <div className="screen-content" ref={screenContentRef}>
-              <FloatingCards
-                dealCards={dealCards}
-                monitorPosition={monitorPosition}
-                finalCardPositions={finalCardPositions}
-                revealCards={revealCards}
-                onExitComplete={onExitComplete}
-                shouldDrawNewSpread={shouldDrawNewSpread}
-                dealingComplete={() => {
-                  if (typeof dealingComplete === 'function') {
-                    dealingComplete();
-                  }
-                }}
-                numCards={cards.length}
-                isMobile={isMobile}
-                onAnimationStart={handleAnimationStart}
-              />
-              <div className="monitor-output">
-                {monitorOutput}
-              </div>
-              <div className="screen-overlay"></div>
-              <div className="screen-glass"></div>
-              <div className="screen-frame"></div>
-              <div className="screen-scanlines"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <RobotBody
+        robotRef={robotRef}
+        screenContentRef={screenContentRef}
+        monitorPosition={monitorPosition}
+        monitorOutput={monitorOutput}
+        dealCards={dealCards}
+        finalCardPositions={finalCardPositions}
+        revealCards={revealCards}
+        onExitComplete={onExitComplete}
+        shouldDrawNewSpread={shouldDrawNewSpread}
+        dealingComplete={dealingComplete}
+        cards={cards}
+        isMobile={isMobile}
+        onAnimationStart={handleAnimationStart}
+      />
 
       <CommandTerminal
         onMonitorOutput={handleMonitorOutput}
@@ -246,9 +154,6 @@ const Robot = memo(({
           left: 0,
         }}
         fetchSpread={fetchSpread}
-        responses={responses}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
         onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
@@ -258,6 +163,51 @@ const Robot = memo(({
     </motion.div>
   );
 });
+
+const RobotBody = memo(({
+  robotRef,
+  screenContentRef,
+  monitorPosition,
+  monitorOutput,
+  dealCards,
+  finalCardPositions,
+  revealCards,
+  onExitComplete,
+  shouldDrawNewSpread,
+  dealingComplete,
+  cards,
+  isMobile,
+  onAnimationStart,
+}) => (
+  <div ref={robotRef} className="robot-body">
+    <div className="tarotmancer-text">tarotmancer</div>
+    <div className="robot-head">
+      <div className="crt-screen">
+        <div className="screen-content" ref={screenContentRef}>
+          <FloatingCards
+            dealCards={dealCards}
+            monitorPosition={monitorPosition}
+            finalCardPositions={finalCardPositions}
+            revealCards={revealCards}
+            onExitComplete={onExitComplete}
+            shouldDrawNewSpread={shouldDrawNewSpread}
+            dealingComplete={dealingComplete}
+            numCards={cards.length}
+            isMobile={isMobile}
+            onAnimationStart={onAnimationStart}
+          />
+          <div className="monitor-output">
+            {monitorOutput}
+          </div>
+          <div className="screen-overlay"></div>
+          <div className="screen-glass"></div>
+          <div className="screen-frame"></div>
+          <div className="screen-scanlines"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+));
 
 Robot.propTypes = {
   dealCards: PropTypes.bool.isRequired,

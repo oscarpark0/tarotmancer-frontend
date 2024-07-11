@@ -6,10 +6,11 @@ import Robot from './components/Robot';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useAppContext } from './contexts/AppContext';
 
-
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode }) => {
+const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   const { getToken, user } = useKindeAuth();
+  const { selectedSpread, handleSpreadSelect } = useAppContext();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -39,30 +40,38 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
 
   const fetchSpread = useCallback(async () => {
     setIsLoading(true);
+    setError(null);
     try {
       const token = await getToken();
       const origin = window.location.origin;
-
+  
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
         'Authorization': `Bearer ${token}`,
         'User-ID': user?.id,
       };
-
+  
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
-      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/${endpoint}`, {
+      const url = `${process.env.REACT_APP_API_BASE_URL}/${endpoint}`;
+      
+      console.log('Fetching from URL:', url);
+      console.log('Headers:', headers);
+  
+      const response = await fetch(url, {
         method: 'GET',
         headers: headers,
       });
-
+  
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Error response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
-
+  
       const data = await response.json();
+      console.log('Received data:', data);
+  
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
@@ -83,7 +92,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
         tooltip: pos.position_name
       }));
       setCards(newCards);
-
+  
       const formattedMostCommonCards = data.positions.map(
         (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
       ).join('\n');
@@ -91,14 +100,14 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       setMostCommonCards(formattedMostCommonCards);
     } catch (error) {
       console.error('Error drawing spread:', error);
-      setError('Failed to draw spread. Please check your authentication and try again.');
+      setError(`Failed to draw spread: ${error.message}. Please check your network connection and try again.`);
       setCards([]);
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
   }, [getToken, selectedSpread, user]);
-
+  
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
     handleSubmitInput(mostCommonCards);
@@ -157,7 +166,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       isMobile={isMobile}
       cards={cards}
       selectedSpread={selectedSpread}
-      onSpreadSelect={onSpreadSelect}
+      onSpreadSelect={handleSpreadSelect}
       fetchSpread={fetchSpread}
       onNewResponse={handleNewResponse}
       onResponseComplete={handleResponseComplete}
@@ -168,7 +177,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       isStreaming={isStreaming}
       monitorOutput={monitorOutput}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, monitorOutput]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, monitorOutput]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

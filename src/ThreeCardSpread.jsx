@@ -7,9 +7,11 @@ import { API_BASE_URL } from './utils/config.tsx';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useAppContext } from './contexts/AppContext';
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode }) => {
+const ThreeCardSpread = React.memo(({ isMobile, drawCount, setDrawCount, setLastResetTime, isDarkMode }) => {
   const { getToken } = useKindeAuth();
+  const { selectedSpread, handleSpreadSelect } = useAppContext();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -150,7 +152,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       dealCards={dealCards}
       cardPositions={positions}
       revealedCards={revealedCards}
-      finalCardPositions={positions}
+      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
       revealCards={revealCards}
       shouldDrawNewSpread={shouldDrawNewSpread}
@@ -162,7 +164,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       onSubmitInput={handleSubmitInput}
       cards={cards}
       selectedSpread={selectedSpread}
-      onSpreadSelect={onSpreadSelect}
+      onSpreadSelect={handleSpreadSelect}
       isMobile={isMobile}
       drawCount={drawCount}
       fetchSpread={fetchSpread}
@@ -177,7 +179,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, handleSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

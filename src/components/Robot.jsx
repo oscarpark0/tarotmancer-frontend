@@ -61,8 +61,9 @@ const Robot = memo(({
   animationsComplete,
   onAnimationStart,
   onStreamingStateChange,
+  onMonitorOutput,
 }) => {
-  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(MonitorOutput);
+  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
   console.log("Robot received monitorOutput:", monitorOutput);
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   const { isStreaming, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
@@ -105,7 +106,7 @@ const Robot = memo(({
 
   return (
     <motion.div
-      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
+      className={`tarot-monitor ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
       style={{
         position: 'absolute',
         zIndex: isMobile ? 1000 : 100,
@@ -118,7 +119,7 @@ const Robot = memo(({
         height: 'auto',
       }}
     >
-      <RobotBody
+      <CRTMonitor
         robotRef={robotRef}
         screenContentRef={screenContentRef}
         monitorPosition={monitorPosition}
@@ -166,7 +167,7 @@ const Robot = memo(({
   );
 });
 
-const RobotBody = memo(({
+const CRTMonitor = memo(({
   robotRef,
   screenContentRef,
   monitorPosition,
@@ -182,12 +183,11 @@ const RobotBody = memo(({
   isMobile,
   onAnimationStart,
 }) => {
-  console.log("RobotBody rendering with monitorOutput:", monitorOutput);
+  console.log("CRTMonitor rendering with monitorOutput:", monitorOutput);
   return (
-    <div ref={robotRef} className="robot-body">
-      <div className="tarotmancer-text">tarotmancer</div>
-      <div className="robot-head">
-        <div className="crt-screen">
+    <div ref={robotRef} className="crt-monitor">
+      <div className="monitor-frame">
+        <div className="screen">
           <div className="screen-content" ref={screenContentRef}>
             <FloatingCards
               dealCards={dealCards}
@@ -206,11 +206,11 @@ const RobotBody = memo(({
             </div>
             <div className="screen-overlay"></div>
             <div className="screen-glass"></div>
-            <div className="screen-frame"></div>
             <div className="screen-scanlines"></div>
           </div>
         </div>
       </div>
+      <div className="monitor-label">tarotmancer</div>
     </div>
   );
 });

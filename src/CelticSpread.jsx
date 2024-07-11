@@ -44,37 +44,41 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
     try {
       const token = await getToken();
       const origin = window.location.origin;
-  
+
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
         'Authorization': `Bearer ${token}`,
         'User-ID': user?.id,
       };
-  
+
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
       
-      // Fix the URL construction here
       const baseUrl = process.env.REACT_APP_BASE_URL;
       const url = `${baseUrl}/${endpoint}`;
       
       console.log('Fetching from URL:', url);
       console.log('Headers:', headers);
-  
+
       const response = await fetch(url, {
         method: 'GET',
         headers: headers,
       });
-  
+
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Error response:', errorText);
         throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
       }
-  
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Oops! We haven't received a valid response from the server.");
+      }
+
       const data = await response.json();
       console.log('Received data:', data);
-  
+
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);

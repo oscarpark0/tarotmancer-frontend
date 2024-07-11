@@ -5,7 +5,9 @@ export const useMonitorOutput = (onMonitorOutput) => {
 
   const handleMonitorOutput = useCallback((output) => {
     setMonitorOutput(output);
-    onMonitorOutput(output);
+    if (typeof onMonitorOutput === 'function') {
+      onMonitorOutput(output);
+    }
   }, [onMonitorOutput]);
 
   return { monitorOutput, handleMonitorOutput };

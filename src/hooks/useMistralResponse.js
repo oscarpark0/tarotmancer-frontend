@@ -19,19 +19,18 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
             const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
             const message = `${languagePrefix} ${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-            const closeEventSource = await getMistralResponse(message, (content) => {
-                console.log("Received content in useMistralResponse:", content);
-                onNewResponse(content);
+            await getMistralResponse(message, (content) => {
+                if (content === "[DONE]") {
+                    onResponseComplete();
+                } else {
+                    onNewResponse(content);
+                }
             });
-            return () => {
-                closeEventSource();
-            };
         } catch (error) {
             console.error('Error:', error);
             onNewResponse('An error occurred while processing your request.');
         } finally {
             setIsLoading(false);
-            onResponseComplete();
         }
     }, [onNewResponse, onResponseComplete, selectedLanguage]);
 

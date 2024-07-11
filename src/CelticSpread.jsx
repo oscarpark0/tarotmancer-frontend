@@ -128,7 +128,9 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
     }, 500);
   }, [cards.length, handleDealingComplete]);
 
-  const handleMonitorOutput = useCallback(() => {}, []);
+  const handleMonitorOutput = useCallback((content) => {
+    setMonitorOutput(prevOutput => prevOutput + content);
+  }, []);
 
   const drawSpread = useCallback(() => {
     setDealCards(false);

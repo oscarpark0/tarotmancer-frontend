@@ -88,6 +88,7 @@ background-blend-mode: multiply;
   border-radius: 52px;
   transform-style: preserve-3d;
   position: relative;
+  z-index: 100000000000000000000;
   background: 
     linear-gradient(to bottom, #2b2b2b, #1a1a1a),
     radial-gradient(ellipse at center, #3a3a3a 0%, #191919 90%);
@@ -105,6 +106,7 @@ background-blend-mode: multiply;
   height: 100%;
   overflow: hidden;
   border-radius: 52px;
+  z-index: 100000000000000000000;
 }
 
 .monitor-output {
@@ -133,27 +135,6 @@ background-blend-mode: multiply;
   border: 1px solid #b7ff10; /* Add a border to see the boundaries */
 }
 
-.monitor-output::before {
-  content: 'Monitor Output';
-  color: #b7ff10;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 2px 5px;
-  font-size: 12px;
-}
-
-.monitor-output h1, .monitor-output h2, .monitor-output h3, .monitor-output h4, .monitor-output h5, .monitor-output h6 {
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-}
-
-.monitor-output br {
-  display: block;
-  content: "";
-  margin-top: 1em;
-}
 
 .screen-overlay {
   position: absolute;

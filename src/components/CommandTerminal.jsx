@@ -30,7 +30,17 @@ const CommandTerminal = forwardRef(({
   const [isDrawing, setIsDrawing] = useState(false);
   const terminalOutputRef = useRef(null);
 
-  const { isLoading, handleSubmit } = useMistralResponse(onNewResponse, onResponseComplete, selectedLanguage);
+  const { isLoading, handleSubmit } = useMistralResponse(
+    (content) => {
+      onNewResponse(content);
+      onMonitorOutput(content);
+    },
+    () => {
+      onResponseComplete();
+      onMonitorOutput('\n--- Response Complete ---\n');
+    },
+    selectedLanguage
+  );
 
   const getTranslation = (key) => {
     if (!buttonTranslations[key]) {

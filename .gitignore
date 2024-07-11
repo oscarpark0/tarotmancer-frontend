@@ -27,3 +27,4 @@ yarn-error.log*
 @config.tsx
 .vercel
 mintty.exe.stackdump
+console response.txt

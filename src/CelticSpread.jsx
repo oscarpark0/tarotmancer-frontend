@@ -55,7 +55,7 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
       
       // Fix the URL construction here
-      const baseUrl = process.env.REACT_APP_BASE_URL.replace(/\/$/, '');
+      const baseUrl = process.env.REACT_APP_BASE_URL;
       const url = `${baseUrl}/${endpoint}`;
       
       console.log('Fetching from URL:', url);

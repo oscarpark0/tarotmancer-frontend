@@ -2,10 +2,10 @@ import { formatResponse } from '../utils/textFormatting';
 
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
-    const encodedMessage = encodeURIComponent(message);
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral-stream?message=${encodedMessage}`, {
-      method: 'GET',
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral-stream`, {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message }),
     });
 
     if (!response.ok) {

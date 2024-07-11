@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../utils/config';
 
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/mistral-stream`, {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral-stream`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message }),

@@ -30,8 +30,10 @@ export const getMistralResponse = async (message, onNewResponse) => {
           try {
             const parsed = JSON.parse(data);
             if (parsed.choices && parsed.choices[0].delta.content) {
-              console.log("Streaming content:", parsed.choices[0].delta.content);
-              onNewResponse(formatResponse(parsed.choices[0].delta.content));
+              console.log("Before formatting:", parsed.choices[0].delta.content);
+              const formattedContent = formatResponse(parsed.choices[0].delta.content);
+              console.log("After formatting:", formattedContent);
+              onNewResponse(formattedContent);
             }
           } catch (e) {
             console.error('Error parsing JSON:', e);

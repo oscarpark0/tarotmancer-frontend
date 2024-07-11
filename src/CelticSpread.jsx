@@ -143,7 +143,7 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   }, []);
 
   const handleNewResponse = useCallback((content) => {
-    console.log("New response received:", content);
+    console.log("Received new response content:", content);
     setMonitorOutput(prevOutput => {
       const newOutput = prevOutput + content;
       console.log("Updated monitor output:", newOutput);

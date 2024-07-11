@@ -181,36 +181,39 @@ const RobotBody = memo(({
   cards,
   isMobile,
   onAnimationStart,
-}) => (
-  <div ref={robotRef} className="robot-body">
-    <div className="tarotmancer-text">tarotmancer</div>
-    <div className="robot-head">
-      <div className="crt-screen">
-        <div className="screen-content" ref={screenContentRef}>
-          <FloatingCards
-            dealCards={dealCards}
-            monitorPosition={monitorPosition}
-            finalCardPositions={finalCardPositions}
-            revealCards={revealCards}
-            onExitComplete={onExitComplete}
-            shouldDrawNewSpread={shouldDrawNewSpread}
-            dealingComplete={dealingComplete}
-            numCards={cards.length}
-            isMobile={isMobile}
-            onAnimationStart={onAnimationStart}
-          />
-          <div className={`monitor-output ${isStreaming ? 'streaming' : ''}`}>
-            {monitorOutput}
+}) => {
+  console.log("RobotBody rendering with monitorOutput:", monitorOutput);
+  return (
+    <div ref={robotRef} className="robot-body">
+      <div className="tarotmancer-text">tarotmancer</div>
+      <div className="robot-head">
+        <div className="crt-screen">
+          <div className="screen-content" ref={screenContentRef}>
+            <FloatingCards
+              dealCards={dealCards}
+              monitorPosition={monitorPosition}
+              finalCardPositions={finalCardPositions}
+              revealCards={revealCards}
+              onExitComplete={onExitComplete}
+              shouldDrawNewSpread={shouldDrawNewSpread}
+              dealingComplete={dealingComplete}
+              numCards={cards.length}
+              isMobile={isMobile}
+              onAnimationStart={onAnimationStart}
+            />
+            <div className={`monitor-output ${isStreaming ? 'streaming' : ''}`}>
+              {monitorOutput || 'Waiting for input...'}
+            </div>
+            <div className="screen-overlay"></div>
+            <div className="screen-glass"></div>
+            <div className="screen-frame"></div>
+            <div className="screen-scanlines"></div>
           </div>
-          <div className="screen-overlay"></div>
-          <div className="screen-glass"></div>
-          <div className="screen-frame"></div>
-          <div className="screen-scanlines"></div>
         </div>
       </div>
     </div>
-  </div>
-));
+  );
+});
 
 Robot.propTypes = {
   dealCards: PropTypes.bool.isRequired,

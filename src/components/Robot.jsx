@@ -9,6 +9,7 @@ import { useLanguage } from './LanguageSelector';
 import { useMonitorOutput } from '../hooks/useRobotMonitor';
 import { useRobotDimensions } from '../hooks/useRobotLayout';
 import { useStreamingState } from '../hooks/useRobotStreamingState';
+import { useMistralResponse } from '../hooks/useMistralResponse'; 
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -62,11 +63,23 @@ const Robot = memo(({
   onAnimationStart,
   onStreamingStateChange,
   onMonitorOutput,
+  selectedLanguage,
 }) => {
   const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
   console.log("Robot received monitorOutput:", monitorOutput);
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   const { isStreaming, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
+  const { fullResponse } = useMistralResponse(
+    (content) => {
+      onNewResponse(content);
+      handleMonitorOutput(content);
+    },
+    () => {
+      onResponseComplete();
+      handleMonitorOutput('\n--- Response Complete ---\n');
+    },
+    selectedLanguage
+  );
   
   const commandTerminalRef = useRef(null);
   useLanguage();
@@ -123,7 +136,7 @@ const Robot = memo(({
         robotRef={robotRef}
         screenContentRef={screenContentRef}
         monitorPosition={monitorPosition}
-        monitorOutput={monitorOutput}
+        monitorOutput={fullResponse}
         isStreaming={isStreaming}
         dealCards={dealCards}
         finalCardPositions={finalCardPositions}
@@ -162,6 +175,7 @@ const Robot = memo(({
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
+        fullResponse={fullResponse}
       />
     </motion.div>
   );
@@ -240,6 +254,7 @@ Robot.propTypes = {
   onStreamingStateChange: PropTypes.func.isRequired,
   monitorOutput: PropTypes.string.isRequired,
   isStreaming: PropTypes.bool.isRequired,
+  selectedLanguage: PropTypes.string.isRequired,
 };
 
 export default Robot;

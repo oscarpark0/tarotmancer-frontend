@@ -1,11 +1,14 @@
 import { useState, useCallback } from 'react';
 import { getMistralResponse } from '../services/mistralServices';
+import { formatResponse } from '../utils/textFormatting';
 
 export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLanguage) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [fullResponse, setFullResponse] = useState('');
 
     const handleSubmit = useCallback(async (mostCommonCards, input) => {
         setIsLoading(true);
+        setFullResponse('');
         onNewResponse(''); // Clear previous response
         try {
             const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve. " +
@@ -23,7 +26,9 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                 if (content === "[DONE]") {
                     onResponseComplete();
                 } else {
-                    onNewResponse(content);
+                    const formattedContent = formatResponse(content);
+                    setFullResponse(prev => prev + formattedContent);
+                    onNewResponse(prev => prev + formattedContent);
                 }
             });
         } catch (error) {
@@ -34,5 +39,5 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         }
     }, [onNewResponse, onResponseComplete, selectedLanguage]);
 
-    return { isLoading, handleSubmit };
+    return { isLoading, handleSubmit, fullResponse };
 };

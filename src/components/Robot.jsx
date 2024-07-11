@@ -45,7 +45,7 @@ const Robot = memo(({
   onExitComplete,
   revealCards,
   shouldDrawNewSpread,
-  onMonitorOutput,
+  MonitorOutput,
   drawSpread,
   dealingComplete,
   mostCommonCards,
@@ -62,9 +62,9 @@ const Robot = memo(({
   onAnimationStart,
   onStreamingStateChange,
 }) => {
-  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
+  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(MonitorOutput);
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
-  const { isStreaming, handleNewResponse, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
+  const { isStreaming, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
   
   const commandTerminalRef = useRef(null);
   useLanguage();
@@ -122,6 +122,7 @@ const Robot = memo(({
         screenContentRef={screenContentRef}
         monitorPosition={monitorPosition}
         monitorOutput={monitorOutput}
+        isStreaming={isStreaming}
         dealCards={dealCards}
         finalCardPositions={finalCardPositions}
         revealCards={revealCards}
@@ -154,7 +155,7 @@ const Robot = memo(({
           left: 0,
         }}
         fetchSpread={fetchSpread}
-        onNewResponse={handleNewResponse}
+        onNewResponse={onNewResponse}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
@@ -169,6 +170,7 @@ const RobotBody = memo(({
   screenContentRef,
   monitorPosition,
   monitorOutput,
+  isStreaming,
   dealCards,
   finalCardPositions,
   revealCards,
@@ -196,7 +198,7 @@ const RobotBody = memo(({
             isMobile={isMobile}
             onAnimationStart={onAnimationStart}
           />
-          <div className="monitor-output">
+          <div className={`monitor-output ${isStreaming ? 'streaming' : ''}`}>
             {monitorOutput}
           </div>
           <div className="screen-overlay"></div>

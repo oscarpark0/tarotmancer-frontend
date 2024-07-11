@@ -30,6 +30,7 @@ export const getMistralResponse = async (message, onNewResponse) => {
           try {
             const parsed = JSON.parse(data);
             if (parsed.choices && parsed.choices[0].delta.content) {
+              console.log("Streaming content:", parsed.choices[0].delta.content);
               onNewResponse(formatResponse(parsed.choices[0].delta.content));
             }
           } catch (e) {

@@ -3,37 +3,38 @@ import { API_BASE_URL } from '../utils/config';
 
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
-    const eventSource = new EventSource(`${API_BASE_URL}/api/mistral-stream`, {
+    const response = await fetch(`${API_BASE_URL}/api/mistral-stream`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message }),
     });
 
-    eventSource.onmessage = (event) => {
-      const data = event.data;
-      if (data === '[DONE]') {
-        eventSource.close();
-        return;
-      }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
 
-      try {
-        const parsed = JSON.parse(data);
-        if (parsed.choices && parsed.choices[0].delta.content) {
-          onNewResponse(formatResponse(parsed.choices[0].delta.content));
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      
+      const chunk = decoder.decode(value);
+      const lines = chunk.split('\n');
+      
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const data = line.slice(5);
+          if (data === '[DONE]') return;
+          
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.choices && parsed.choices[0].delta.content) {
+              onNewResponse(formatResponse(parsed.choices[0].delta.content));
+            }
+          } catch (e) {
+            console.error('Error parsing JSON:', e);
+          }
         }
-      } catch (e) {
-        console.error('Error parsing JSON:', e);
       }
-    };
-
-    eventSource.onerror = (error) => {
-      console.error('EventSource failed:', error);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
+    }
   } catch (error) {
     console.error('Error in getMistralResponse:', error);
     throw error;

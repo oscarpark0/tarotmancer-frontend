@@ -218,7 +218,7 @@ const CRTMonitor = memo(({
               onAnimationStart={onAnimationStart}
             />
             <div className={`monitor-output ${isStreaming ? 'streaming' : ''}`}>
-              {monitorOutput}
+              <pre>{monitorOutput}</pre>
             </div>
             <div className="screen-overlay"></div>
             <div className="screen-glass"></div>

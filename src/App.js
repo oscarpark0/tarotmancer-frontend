@@ -6,7 +6,7 @@ import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation.tsx';
-import LanguageSelector, { LanguageProvider } from './components/LanguageSelector';
+import { LanguageProvider } from './components/LanguageSelector';
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
@@ -102,16 +102,18 @@ const Header = React.memo(({ isAuthenticated, isDarkMode, toggleDarkMode }) => {
           <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
           {isAuthenticated ? (
             <>
-              <div className="header-language-selector">
-                <LanguageSelector />
+              <div className="header-language-selector tooltip">
+                <button disabled className="language-selector-disabled">Language</button>
+                <span className="tooltiptext">Language selection coming soon</span>
               </div>
               <SubscribeButton />
               <LogoutButton />
             </>
           ) : (
             <>
-              <div className="header-language-selector">
-                <LanguageSelector />
+              <div className="header-language-selector tooltip">
+                <button disabled className="language-selector-disabled">Language</button>
+                <span className="tooltiptext">Language selection coming soon</span>
               </div>
               <LoginButton />
             </>

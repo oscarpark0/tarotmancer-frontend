@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useLayoutEffect, memo, useState } from 'react';
+import React, { useEffect, useCallback, useRef, useLayoutEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
@@ -64,6 +64,14 @@ const Robot = memo(({
   onMonitorOutput,
   selectedLanguage,
 }) => {
+  const { isStreaming, handleNewResponse, handleResponseComplete } = useStreamingState(
+    onNewResponse,
+    onResponseComplete,
+    onStreamingStateChange
+  );
+
+  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
+
   const { isLoading, handleSubmit, fullResponse } = useMistralResponse(
     (content) => {
       handleNewResponse(content);
@@ -72,14 +80,6 @@ const Robot = memo(({
     handleResponseComplete,
     selectedLanguage
   );
-
-  const { isStreaming, handleNewResponse, handleResponseComplete } = useStreamingState(
-    onNewResponse,
-    onResponseComplete,
-    onStreamingStateChange
-  );
-
-  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
 
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   

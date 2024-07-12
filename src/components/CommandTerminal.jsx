@@ -130,8 +130,11 @@ const TerminalControls = React.memo(({
   <div className="draw-button-container">
     <div className="input-container2">
       <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
-      <div className="terminal-language-selector">
-        <LanguageSelector onLanguageSelect={() => {}} selectedLanguage={selectedLanguage} />
+      <div className="terminal-language-selector tooltip">
+        <button disabled className="language-selector-disabled">
+          {getTranslation('language')}
+        </button>
+        <span className="tooltiptext">{getTranslation('languageComingSoon')}</span>
       </div>
       <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
         <input

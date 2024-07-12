@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useLayoutEffect, memo } from 'react';
+import React, { useEffect, useCallback, useRef, useLayoutEffect, memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
@@ -65,18 +65,21 @@ const Robot = memo(({
   onMonitorOutput,
   selectedLanguage,
 }) => {
+  const [currentResponse, setCurrentResponse] = useState('');
   const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
   console.log("Robot received monitorOutput:", monitorOutput);
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   const { isStreaming, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
-  const { fullResponse } = useMistralResponse(
+  const { fullResponse, handleSubmit } = useMistralResponse(
     (content) => {
+      setCurrentResponse(prev => prev + content);
       onNewResponse(content);
       handleMonitorOutput(content);
     },
     () => {
       onResponseComplete();
       handleMonitorOutput('\n--- Response Complete ---\n');
+      handleResponseComplete();
     },
     selectedLanguage
   );
@@ -109,9 +112,9 @@ const Robot = memo(({
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {
-      onSubmitInput(mostCommonCards);
+      handleSubmit(mostCommonCards);
     }
-  }, [dealingComplete, mostCommonCards, onSubmitInput]);
+  }, [dealingComplete, mostCommonCards, handleSubmit]);
 
   const handleAnimationStart = useCallback(() => {
     onAnimationStart();
@@ -136,7 +139,7 @@ const Robot = memo(({
         robotRef={robotRef}
         screenContentRef={screenContentRef}
         monitorPosition={monitorPosition}
-        monitorOutput={fullResponse}
+        monitorOutput={currentResponse || 'Waiting for input...'}
         isStreaming={isStreaming}
         dealCards={dealCards}
         finalCardPositions={finalCardPositions}
@@ -175,7 +178,8 @@ const Robot = memo(({
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
-        fullResponse={fullResponse}
+        fullResponse={currentResponse}
+        handleSubmit={handleSubmit}
       />
     </motion.div>
   );
@@ -216,7 +220,7 @@ const CRTMonitor = memo(({
               onAnimationStart={onAnimationStart}
             />
             <div className={`monitor-output ${isStreaming ? 'streaming' : ''}`}>
-              {monitorOutput || 'Waiting for input...'}
+              {monitorOutput}
             </div>
             <div className="screen-overlay"></div>
             <div className="screen-glass"></div>

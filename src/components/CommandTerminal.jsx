@@ -21,7 +21,9 @@ const CommandTerminal = forwardRef(({
   fetchSpread,
   onNewResponse,
   onResponseComplete,
-  animationsComplete
+  animationsComplete,
+  fullResponse,
+  handleSubmit,
 }, ref) => {
   const [input, setInput] = useState('');
   const [showCards, setShowCards] = useState(false);
@@ -30,7 +32,7 @@ const CommandTerminal = forwardRef(({
   const [isDrawing, setIsDrawing] = useState(false);
   const terminalOutputRef = useRef(null);
 
-  const { isLoading, handleSubmit } = useMistralResponse(
+  const { isLoading } = useMistralResponse(
     (content) => {
       onNewResponse(content);
       onMonitorOutput(content);
@@ -101,7 +103,7 @@ const CommandTerminal = forwardRef(({
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? getTranslation('processing') : ''}
+            {isLoading ? getTranslation('processing') : fullResponse || 'Waiting for input...'}
           </div>
         </div>
         <div className="screen-overlay"></div>

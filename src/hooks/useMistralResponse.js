@@ -24,6 +24,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
             await getMistralResponse(message, (content) => {
                 if (content === "[DONE]") {
                     onResponseComplete();
+                    setIsLoading(false);
                 } else {
                     setFullResponse(prev => prev + content);
                     onNewResponse(content);
@@ -32,7 +33,6 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         } catch (error) {
             console.error('Error:', error);
             onNewResponse('An error occurred while processing your request.');
-        } finally {
             setIsLoading(false);
         }
     }, [onNewResponse, onResponseComplete, selectedLanguage]);

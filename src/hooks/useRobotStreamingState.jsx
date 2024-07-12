@@ -4,10 +4,12 @@ export const useStreamingState = (onNewResponse, onResponseComplete, onStreaming
   const [isStreaming, setIsStreaming] = useState(false);
 
   const handleNewResponse = useCallback((content) => {
-    onNewResponse(content);
-    setIsStreaming(true);
-    if (onStreamingStateChange) {
-      onStreamingStateChange(true);
+    if (content !== "[DONE]") {
+      onNewResponse(content);
+      setIsStreaming(true);
+      if (onStreamingStateChange) {
+        onStreamingStateChange(true);
+      }
     }
   }, [onNewResponse, onStreamingStateChange]);
 

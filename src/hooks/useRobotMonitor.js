@@ -4,9 +4,11 @@ export const useMonitorOutput = (onMonitorOutput) => {
   const [monitorOutput, setMonitorOutput] = useState('');
 
   const handleMonitorOutput = useCallback((output) => {
-    setMonitorOutput(output);
-    if (typeof onMonitorOutput === 'function') {
-      onMonitorOutput(output);
+    if (output !== "[DONE]") {
+      setMonitorOutput(prev => prev + output);
+      if (typeof onMonitorOutput === 'function') {
+        onMonitorOutput(output);
+      }
     }
   }, [onMonitorOutput]);
 

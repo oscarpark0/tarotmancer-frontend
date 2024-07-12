@@ -6,16 +6,25 @@ export const useRobotDimensions = () => {
   const screenContentRef = useRef(null);
 
   useEffect(() => {
-    if (screenContentRef.current && robotRef.current) {
-      const screenRect = screenContentRef.current.getBoundingClientRect();
-      const robotRect = robotRef.current.getBoundingClientRect();
-      setMonitorPosition({
-        x: screenRect.x - robotRect.x,
-        y: screenRect.y - robotRect.y,
-        width: screenRect.width,
-        height: screenRect.height,
-      });
-    }
+    const updateDimensions = () => {
+      if (screenContentRef.current && robotRef.current) {
+        const screenRect = screenContentRef.current.getBoundingClientRect();
+        const robotRect = robotRef.current.getBoundingClientRect();
+        setMonitorPosition({
+          x: screenRect.x - robotRect.x,
+          y: screenRect.y - robotRect.y,
+          width: screenRect.width,
+          height: screenRect.height,
+        });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+    };
   }, []);
 
   useEffect(() => {

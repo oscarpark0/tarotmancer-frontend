@@ -46,7 +46,6 @@ const Robot = memo(({
   onExitComplete,
   revealCards,
   shouldDrawNewSpread,
-  MonitorOutput,
   drawSpread,
   dealingComplete,
   mostCommonCards,
@@ -65,22 +64,24 @@ const Robot = memo(({
   onMonitorOutput,
   selectedLanguage,
 }) => {
-  const [currentResponse, setCurrentResponse] = useState('');
-  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
-  console.log("Robot received monitorOutput:", monitorOutput);
-  const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
-  const { isStreaming, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
-  const { handleSubmit } = useMistralResponse(
+  const { isLoading, handleSubmit, fullResponse } = useMistralResponse(
     (content) => {
-      setCurrentResponse(prev => prev + content);
+      handleNewResponse(content);
       handleMonitorOutput(content);
     },
-    () => {
-      handleResponseComplete();
-      handleMonitorOutput('\n--- Response Complete ---\n');
-    },
+    handleResponseComplete,
     selectedLanguage
   );
+
+  const { isStreaming, handleNewResponse, handleResponseComplete } = useStreamingState(
+    onNewResponse,
+    onResponseComplete,
+    onStreamingStateChange
+  );
+
+  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
+
+  const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   
   const commandTerminalRef = useRef(null);
   useLanguage();
@@ -137,7 +138,7 @@ const Robot = memo(({
         robotRef={robotRef}
         screenContentRef={screenContentRef}
         monitorPosition={monitorPosition}
-        monitorOutput={currentResponse || 'Welcome...'}
+        monitorOutput={monitorOutput}
         isStreaming={isStreaming}
         dealCards={dealCards}
         finalCardPositions={finalCardPositions}
@@ -151,7 +152,6 @@ const Robot = memo(({
       />
 
       <CommandTerminal
-        onMonitorOutput={() => {}} // Remove this prop or set it to an empty function
         drawSpread={drawSpread}
         onSubmitInput={onSubmitInput}
         mostCommonCards={mostCommonCards}
@@ -171,13 +171,14 @@ const Robot = memo(({
           left: 0,
         }}
         fetchSpread={fetchSpread}
-        onNewResponse={onNewResponse}
+        onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
-        fullResponse={currentResponse}
+        fullResponse={fullResponse}
         handleSubmit={handleSubmit}
+        isLoading={isLoading}
       />
     </motion.div>
   );
@@ -199,7 +200,6 @@ const CRTMonitor = memo(({
   isMobile,
   onAnimationStart,
 }) => {
-  console.log("CRTMonitor rendering with monitorOutput:", monitorOutput);
   return (
     <div ref={robotRef} className="crt-monitor">
       <div className="monitor-frame">
@@ -238,7 +238,6 @@ Robot.propTypes = {
   onExitComplete: PropTypes.func.isRequired,
   revealCards: PropTypes.bool.isRequired,
   shouldDrawNewSpread: PropTypes.bool.isRequired,
-  onMonitorOutput: PropTypes.func.isRequired,
   drawSpread: PropTypes.func.isRequired,
   dealingComplete: PropTypes.func.isRequired,
   mostCommonCards: PropTypes.string.isRequired,
@@ -254,8 +253,7 @@ Robot.propTypes = {
   animationsComplete: PropTypes.bool.isRequired,
   onAnimationStart: PropTypes.func.isRequired,
   onStreamingStateChange: PropTypes.func.isRequired,
-  monitorOutput: PropTypes.string.isRequired,
-  isStreaming: PropTypes.bool.isRequired,
+  onMonitorOutput: PropTypes.func.isRequired,
   selectedLanguage: PropTypes.string.isRequired,
 };
 

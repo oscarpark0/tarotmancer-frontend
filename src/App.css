@@ -64,7 +64,7 @@
   }
   
   .header-language-selector select {
-    width: 100px; /* Adjust this value as needed */
+    width: 100px; 
     padding: 0.5px;
     background: #282c34 url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat 98% 50%;
     color: #33ff33;
@@ -178,4 +178,60 @@
 
   .dark-mode .welcome-message {
     background-color: #1a1a1a;
+  }
+
+  .ticker-container {
+    overflow: hidden;
+    background-color: #040507;
+    padding: 10px 0;
+    border-style: inset;
+    border-radius: 10px;
+    border-width: 6px;
+    border-color: #292525;
+    width: 25%;
+    height: 40px; 
+    display: flex;
+    align-items: center;
+  }
+
+  .ticker-wrapper {
+    display: inline-flex;
+    white-space: nowrap;
+    animation: ticker 30s linear infinite;
+  }
+
+  .ticker-item {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: #f0e68c;
+    margin-right: 50px;
+    text-shadow: 0 0 5px rgba(240, 230, 140, 0.7);
+  }
+
+  @keyframes ticker {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .dark-mode .ticker-container {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .dark-mode .ticker-item {
+    color: #8a2be2;
+    text-shadow: 0 0 5px rgba(138, 43, 226, 0.7);
+  }
+
+  @media (max-width: 767px) {
+    .ticker-container {
+      height: 30px; 
+    }
+
+    .ticker-item {
+      font-size: 0.8rem;
+    }
   }

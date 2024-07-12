@@ -11,6 +11,7 @@ import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 import { AppContextProvider } from './contexts/AppContext';
+import { useAppContext } from './contexts/AppContext';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
@@ -83,32 +84,43 @@ function App() {
   );
 }
 
-const Header = React.memo(({ isAuthenticated, isDarkMode, toggleDarkMode }) => (
-  <header className="app-header">
-    <div className="header-content">
-      <h1 className="app-title"><span>TarotMancer</span></h1>
-      <div className="auth-container">
-        <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-        {isAuthenticated ? (
-          <>
-            <div className="header-language-selector">
-              <LanguageSelector />
-            </div>
-            <SubscribeButton />
-            <LogoutButton />
-          </>
-        ) : (
-          <>
-            <div className="header-language-selector">
-              <LanguageSelector />
-            </div>
-            <LoginButton />
-          </>
-        )}
+const Header = React.memo(({ isAuthenticated, isDarkMode, toggleDarkMode }) => {
+  const { tickerMessages } = useAppContext();
+
+  return (
+    <header className="app-header">
+      <div className="header-content">
+        <h1 className="app-title"><span>TarotMancer</span></h1>
+        <div className="ticker-container">
+          <div className="ticker-wrapper">
+            {tickerMessages.map((message, index) => (
+              <span key={index} className="ticker-item">{message}</span>
+            ))}
+          </div>
+        </div>
+        <div className="auth-container">
+          <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          {isAuthenticated ? (
+            <>
+              <div className="header-language-selector">
+                <LanguageSelector />
+              </div>
+              <SubscribeButton />
+              <LogoutButton />
+            </>
+          ) : (
+            <>
+              <div className="header-language-selector">
+                <LanguageSelector />
+              </div>
+              <LoginButton />
+            </>
+          )}
+        </div>
       </div>
-    </div>
-  </header>
-));
+    </header>
+  );
+});
 
 const WelcomeMessage = React.memo(({ isDarkMode, toggleDarkMode }) => (
   <div className="welcome-message">

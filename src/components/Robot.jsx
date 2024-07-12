@@ -73,13 +73,11 @@ const Robot = memo(({
   const { handleSubmit } = useMistralResponse(
     (content) => {
       setCurrentResponse(prev => prev + content);
-      onNewResponse(content);
       handleMonitorOutput(content);
     },
     () => {
-      onResponseComplete();
-      handleMonitorOutput('\n--- Response Complete ---\n');
       handleResponseComplete();
+      handleMonitorOutput('\n--- Response Complete ---\n');
     },
     selectedLanguage
   );
@@ -153,7 +151,7 @@ const Robot = memo(({
       />
 
       <CommandTerminal
-        onMonitorOutput={handleMonitorOutput}
+        onMonitorOutput={() => {}} // Remove this prop or set it to an empty function
         drawSpread={drawSpread}
         onSubmitInput={onSubmitInput}
         mostCommonCards={mostCommonCards}

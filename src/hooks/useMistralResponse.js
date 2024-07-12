@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 import { getMistralResponse } from '../services/mistralServices';
-import { formatResponse } from '../utils/textFormatting';
 
 export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLanguage) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -26,9 +25,8 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                 if (content === "[DONE]") {
                     onResponseComplete();
                 } else {
-                    const formattedContent = formatResponse(content);
-                    setFullResponse(prev => prev + formattedContent);
-                    onNewResponse(formattedContent);
+                    setFullResponse(prev => prev + content);
+                    onNewResponse(content);
                 }
             });
         } catch (error) {

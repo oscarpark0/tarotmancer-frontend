@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
+import React, { useState, useEffect, useCallback, forwardRef } from 'react';
 import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
@@ -30,16 +30,11 @@ const CommandTerminal = forwardRef(({
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const { selectedLanguage } = useLanguage();
   const [isDrawing, setIsDrawing] = useState(false);
-  const terminalOutputRef = useRef(null);
 
   const { isLoading } = useMistralResponse(
-    (content) => {
-      onNewResponse(content);
-      onMonitorOutput(content);
-    },
+    () => {}, // Remove this or set it to an empty function
     () => {
       onResponseComplete();
-      onMonitorOutput('\n--- Response Complete ---\n');
     },
     selectedLanguage
   );
@@ -102,12 +97,9 @@ const CommandTerminal = forwardRef(({
               className="terminal-card-reveal"
             />
           )}
-          <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? getTranslation('processing') : fullResponse || 'Waiting for input...'}
-          </div>
+          <div className="screen-overlay"></div>
+          <div className="screen-scanline"></div>
         </div>
-        <div className="screen-overlay"></div>
-        <div className="screen-scanline"></div>
       </div>
       <TerminalControls
         selectedSpread={selectedSpread}

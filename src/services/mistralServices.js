@@ -1,5 +1,3 @@
-import { formatResponse } from '../utils/textFormatting';
-
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral-stream`, {
@@ -25,14 +23,15 @@ export const getMistralResponse = async (message, onNewResponse) => {
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           const data = line.slice(5);
-          if (data === '[DONE]') return;
+          if (data === '[DONE]') {
+            onNewResponse('[DONE]');
+            return;
+          }
 
           try {
             const parsed = JSON.parse(data);
             if (parsed.choices && parsed.choices[0].delta.content) {
-              console.log("Before formatting:", parsed.choices[0].delta.content);
-              const formattedContent = formatResponse(parsed.choices[0].delta.content);
-              console.log("After formatting:", formattedContent);
+              const formattedContent = parsed.choices[0].delta.content;
               onNewResponse(formattedContent);
             }
           } catch (e) {
@@ -43,10 +42,6 @@ export const getMistralResponse = async (message, onNewResponse) => {
     }
   } catch (error) {
     console.error('Error in getMistralResponse:', error);
-    console.error('Error details:', error.message);
-    if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      console.error('This might be a CORS or network issue.');
-    }
     throw error;
   }
 };

@@ -6,7 +6,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
     const [isLoading, setIsLoading] = useState(false);
     const [fullResponse, setFullResponse] = useState('');
 
-    const handleSubmit = useCallback(async (mostCommonCards, input) => {
+    const handleSubmit = useCallback(async (mostCommonCards, input = '') => {
         setIsLoading(true);
         setFullResponse('');
         onNewResponse(''); // Clear previous response
@@ -19,7 +19,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                 "Conclude with an overview of the querent's spread and your interpretation of it.";
 
             const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}.` : '';
-            const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
+            const userQuestion = input && input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
             const message = `${languagePrefix} ${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
             await getMistralResponse(message, (content) => {
@@ -28,7 +28,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                 } else {
                     const formattedContent = formatResponse(content);
                     setFullResponse(prev => prev + formattedContent);
-                    onNewResponse(prev => prev + formattedContent);
+                    onNewResponse(formattedContent);
                 }
             });
         } catch (error) {

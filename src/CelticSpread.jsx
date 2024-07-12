@@ -26,7 +26,8 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
-  const [monitorOutput, setMonitorOutput] = useState('');
+  const [, setMonitorOutput] = useState('');
+  const [currentResponse, setCurrentResponse] = useState('');
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -150,7 +151,7 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
 
   const handleNewResponse = useCallback((content) => {
     console.log("Received new response content:", content);
-    setMonitorOutput(prevOutput => prevOutput + content);
+    setCurrentResponse(prevResponse => prevResponse + content);
     setIsStreaming(true);
   }, []);
 
@@ -185,9 +186,9 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
       onAnimationStart={handleAnimationStart}
       onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
-      monitorOutput={monitorOutput}
+      currentResponse={currentResponse}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, monitorOutput]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, currentResponse]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

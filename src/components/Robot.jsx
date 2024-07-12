@@ -70,7 +70,7 @@ const Robot = memo(({
   console.log("Robot received monitorOutput:", monitorOutput);
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   const { isStreaming, handleResponseComplete } = useStreamingState(onNewResponse, onResponseComplete, onStreamingStateChange);
-  const { fullResponse, handleSubmit } = useMistralResponse(
+  const { handleSubmit } = useMistralResponse(
     (content) => {
       setCurrentResponse(prev => prev + content);
       onNewResponse(content);

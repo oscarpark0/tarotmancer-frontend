@@ -3,7 +3,7 @@ import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
-import LanguageSelector, { useLanguage } from './LanguageSelector';
+import { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 import { useMistralResponse } from '../hooks/useMistralResponse';
 

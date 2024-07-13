@@ -7,6 +7,7 @@ import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useAppContext } from './contexts/AppContext';
+import { useMistralResponse } from './hooks/useMistralResponse'; // Add this import
 
 const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   const { getToken, user } = useKindeAuth();
@@ -28,6 +29,20 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [, setMonitorOutput] = useState('');
   const [currentResponse, setCurrentResponse] = useState('');
+  const [isRequesting, setIsRequesting] = useState(false);
+
+  const handleResponseComplete = useCallback(() => {
+    setIsStreaming(false);
+  }, []);
+
+  const { handleSubmit } = useMistralResponse(
+    (content) => {
+      handleNewResponse(content);
+      handleMonitorOutput(content);
+    },
+    handleResponseComplete,
+    selectedLanguage
+  );
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -118,8 +133,14 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
+    if (!isRequesting) {
+      setIsRequesting(true);
+      handleSubmit(mostCommonCards).finally(() => {
+        setIsRequesting(false);
+      });
+    }
     handleSubmitInput(mostCommonCards);
-  }, [handleSubmitInput, mostCommonCards]);
+  }, [handleSubmitInput, mostCommonCards, isRequesting, handleSubmit]);
 
   const handleExitComplete = useCallback(() => {
     setFloatingCardsComplete(true);
@@ -155,10 +176,6 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
     setIsStreaming(true);
   }, []);
 
-  const handleResponseComplete = useCallback(() => {
-    setIsStreaming(false);
-  }, []);
-
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -188,8 +205,9 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
       isStreaming={isStreaming}
       currentResponse={currentResponse}
       selectedLanguage={selectedLanguage}
+      isRequesting={isRequesting}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, currentResponse, selectedLanguage]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, currentResponse, selectedLanguage, isRequesting]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

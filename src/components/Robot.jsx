@@ -64,6 +64,7 @@ const Robot = memo(({
   onMonitorOutput,
   selectedLanguage,
   input,
+  isRequesting,
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
@@ -125,11 +126,13 @@ const Robot = memo(({
   }, [onAnimationStart]);
 
   const handleDrawClick = useCallback(() => {
-    setIsDrawing(true);
-    fetchSpread();
-    setShouldRequestCohere(true);
-    onNewResponse('');
-  }, [fetchSpread, onNewResponse]);
+    if (!isRequesting) {
+      setIsDrawing(true);
+      fetchSpread();
+      setShouldRequestCohere(true);
+      onNewResponse('');
+    }
+  }, [fetchSpread, onNewResponse, isRequesting]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
@@ -278,6 +281,7 @@ Robot.propTypes = {
   onMonitorOutput: PropTypes.func.isRequired,
   selectedLanguage: PropTypes.string.isRequired,
   input: PropTypes.string.isRequired,
+  isRequesting: PropTypes.bool.isRequired,
 };
 
 export default Robot;

@@ -17,12 +17,20 @@ const getMistralResponse = async (message, onChunk) => {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
+    let buffer = '';
+
     while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-        for (const line of lines) {
+        const chunk = decoder.decode(value, { stream: true });
+        buffer += chunk;
+
+        let boundary = buffer.indexOf('\n');
+        while (boundary !== -1) {
+            const line = buffer.slice(0, boundary);
+            buffer = buffer.slice(boundary + 1);
+            boundary = buffer.indexOf('\n');
+
             if (line.startsWith('data: ')) {
                 const content = line.slice(6);
                 if (content === '[DONE]') {

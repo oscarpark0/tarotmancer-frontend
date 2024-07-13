@@ -263,7 +263,6 @@ const CRTMonitor = memo(({
               </pre>
             </div>
             <div className="screen-overlay"></div>
-            <div className="screen-glass"></div>
             <div className="screen-scanlines"></div>
           </div>
         </div>

@@ -247,7 +247,7 @@ const CRTMonitor = memo(({
             />
             <div className={`monitor-output ${isStreaming ? 'streaming' : ''}`}>
               <pre>
-                Response is streamed here
+                Response is streamed here:
                 {monitorOutput}
               </pre>
             </div>

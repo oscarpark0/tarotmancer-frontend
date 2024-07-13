@@ -83,8 +83,12 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                     isRequestInProgress.current = false;
                     isResponseComplete.current = true;
                 } else {
-                    setFullResponse(prev => prev + content);
-                    onNewResponse(content);
+                    const parsedContent = JSON.parse(content);
+                    const textContent = parsedContent.choices[0].delta.content;
+                    if (textContent) {
+                        setFullResponse(prev => prev + textContent);
+                        onNewResponse(textContent);
+                    }
                 }
             });
         } catch (error) {

@@ -27,7 +27,7 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
-  const [, setMonitorOutput] = useState('');
+  const [monitorOutput, setMonitorOutput] = useState('');
   const [currentResponse, setCurrentResponse] = useState('');
   const [isRequesting, setIsRequesting] = useState(false);
 
@@ -173,6 +173,7 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   const handleNewResponse = useCallback((content) => {
     console.log("Received new response content:", content);
     setCurrentResponse(prevResponse => prevResponse + content);
+    setMonitorOutput(prevOutput => prevOutput + content);
     setIsStreaming(true);
   }, []);
 
@@ -217,8 +218,9 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
       isLoading={isLoadingMistral}
       handleDrawClick={handleDrawClick}
       isDrawing={isRequesting}
+      monitorOutput={monitorOutput}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, currentResponse, selectedLanguage, isRequesting, handleSubmit, isLoadingMistral, handleDrawClick]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, currentResponse, selectedLanguage, isRequesting, handleSubmit, isLoadingMistral, handleDrawClick, monitorOutput]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

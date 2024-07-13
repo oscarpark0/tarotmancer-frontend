@@ -68,6 +68,7 @@ const Robot = memo(({
   handleSubmit,
   isLoading,
   isDrawing,
+  monitorOutput,
 }) => {
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const [, setShowCards] = useState(false);
@@ -79,7 +80,7 @@ const Robot = memo(({
     onMonitorOutput
   );
   
-  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
+  const { monitorOutput: monitorOutputState, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
   
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   
@@ -119,7 +120,7 @@ const Robot = memo(({
 
   useLayoutEffect(() => {
     adjustFontSize();
-  }, [monitorOutput]);
+  }, [monitorOutputState]);
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {
@@ -173,7 +174,7 @@ const Robot = memo(({
         robotRef={robotRef}
         screenContentRef={screenContentRef}
         monitorPosition={monitorPosition}
-        monitorOutput={monitorOutput}
+        monitorOutput={monitorOutputState}
         isStreaming={isStreaming}
         dealCards={dealCards}
         finalCardPositions={finalCardPositions}
@@ -254,10 +255,7 @@ const CRTMonitor = memo(({
               onAnimationStart={onAnimationStart}
             />
             <div className={`monitor-output ${isStreaming ? 'streaming' : ''}`}>
-              <pre>
-                Response is streamed here:
-                {monitorOutput}
-              </pre>
+              <pre>{monitorOutput}</pre>
             </div>
             <div className="screen-overlay"></div>
             <div className="screen-scanlines"></div>
@@ -299,6 +297,7 @@ Robot.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   handleDrawClick: PropTypes.func.isRequired,
   isDrawing: PropTypes.bool.isRequired,
+  monitorOutput: PropTypes.string.isRequired,
 };
 
 export default Robot;

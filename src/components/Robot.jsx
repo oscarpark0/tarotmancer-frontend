@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef, useLayoutEffect, memo } from 'react';
+import React, { useEffect, useCallback, useRef, useLayoutEffect, memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
@@ -63,7 +63,11 @@ const Robot = memo(({
   onStreamingStateChange,
   onMonitorOutput,
   selectedLanguage,
+  input,
 }) => {
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
+
   const { isStreaming, handleNewResponse, handleResponseComplete } = useStreamingState(
     onNewResponse,
     onResponseComplete,
@@ -110,14 +114,27 @@ const Robot = memo(({
   }, [monitorOutput]);
 
   useEffect(() => {
-    if (dealingComplete && mostCommonCards) {
-      handleSubmit(mostCommonCards);
+    if (mostCommonCards && dealingComplete && animationsComplete) {
+      handleSubmit(mostCommonCards, input);
     }
-  }, [dealingComplete, mostCommonCards, handleSubmit]);
+  }, [mostCommonCards, dealingComplete, animationsComplete, handleSubmit, input]);
+
+  useEffect(() => {
+    if (shouldRequestCohere && mostCommonCards && dealingComplete && animationsComplete) {
+      setShouldRequestCohere(false);
+    }
+  }, [shouldRequestCohere, mostCommonCards, dealingComplete, animationsComplete]);
 
   const handleAnimationStart = useCallback(() => {
     onAnimationStart();
   }, [onAnimationStart]);
+
+  const handleDrawClick = useCallback(() => {
+    setIsDrawing(true);
+    fetchSpread();
+    setShouldRequestCohere(true);
+    onNewResponse('');
+  }, [fetchSpread, onNewResponse]);
 
   return (
     <motion.div
@@ -179,6 +196,8 @@ const Robot = memo(({
         fullResponse={fullResponse}
         handleSubmit={handleSubmit}
         isLoading={isLoading}
+        handleDrawClick={handleDrawClick}
+        isDrawing={isDrawing}
       />
     </motion.div>
   );
@@ -255,6 +274,7 @@ Robot.propTypes = {
   onStreamingStateChange: PropTypes.func.isRequired,
   onMonitorOutput: PropTypes.func.isRequired,
   selectedLanguage: PropTypes.string.isRequired,
+  input: PropTypes.string.isRequired,
 };
 
 export default Robot;

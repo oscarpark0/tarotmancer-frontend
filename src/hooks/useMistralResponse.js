@@ -1,6 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
 import { getMistralResponse } from '../services/mistralServices';
-import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 
 export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLanguage) => {
@@ -12,30 +11,6 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         throttle(getMistralResponse, 1000, { leading: true, trailing: false })
     ).current;
 
-    const debouncedHandleSubmit = useRef(
-        debounce(async (message) => {
-            setIsLoading(true);
-            setFullResponse('');
-            onNewResponse(''); // Clear previous response
-
-            try {
-                await throttledGetMistralResponse(message, (content) => {
-                    if (content === "[DONE]") {
-                        onResponseComplete();
-                        setIsLoading(false);
-                    } else {
-                        setFullResponse(prev => prev + content);
-                        onNewResponse(content);
-                    }
-                });
-            } catch (error) {
-                console.error('Error:', error);
-                onNewResponse('An error occurred while processing your request.');
-                setIsLoading(false);
-            }
-        }, 500)
-    ).current;
-
     const handleSubmit = useCallback(async (mostCommonCards, input = '') => {
         const now = Date.now();
         if (now - lastRequestTime.current < 1000) {
@@ -43,6 +18,10 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
             return;
         }
         lastRequestTime.current = now;
+
+        setIsLoading(true);
+        setFullResponse('');
+        onNewResponse(''); // Clear previous response
 
         const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve. " +
             "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as its position in relation to the other cards in the spread. " +
@@ -55,8 +34,22 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         const userQuestion = input && input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
         const message = `${languagePrefix} ${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-        debouncedHandleSubmit(message);
-    }, [selectedLanguage, debouncedHandleSubmit]);
+        try {
+            await throttledGetMistralResponse(message, (content) => {
+                if (content === "[DONE]") {
+                    onResponseComplete();
+                    setIsLoading(false);
+                } else {
+                    setFullResponse(prev => prev + content);
+                    onNewResponse(content);
+                }
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            onNewResponse('An error occurred while processing your request.');
+            setIsLoading(false);
+        }
+    }, [selectedLanguage, throttledGetMistralResponse, onNewResponse, onResponseComplete]);
 
     return { isLoading, handleSubmit, fullResponse };
 };

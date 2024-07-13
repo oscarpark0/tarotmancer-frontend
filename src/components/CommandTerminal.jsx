@@ -5,7 +5,6 @@ import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
 import { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
-import { useMistralResponse } from '../hooks/useMistralResponse';
 
 const CommandTerminal = forwardRef(({
   onMonitorOutput,
@@ -24,20 +23,13 @@ const CommandTerminal = forwardRef(({
   animationsComplete,
   fullResponse,
   handleSubmit,
+  handleDrawClick, // Add this prop
+  isDrawing,       // Add this prop
 }, ref) => {
   const [input, setInput] = useState('');
   const [showCards, setShowCards] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const { selectedLanguage } = useLanguage();
-  const [isDrawing, setIsDrawing] = useState(false);
-
-  const { isLoading } = useMistralResponse(
-    () => {}, // Remove this or set it to an empty function
-    () => {
-      onResponseComplete();
-    },
-    selectedLanguage
-  );
 
   const getTranslation = (key) => {
     if (!buttonTranslations[key]) {
@@ -69,20 +61,6 @@ const CommandTerminal = forwardRef(({
     onSpreadSelect(newSpread);
   };
 
-  const handleDrawClick = useCallback(() => {
-    if (isDrawing) return;
-    setIsDrawing(true);
-    fetchSpread();
-    setShouldRequestCohere(true);
-    onNewResponse('');
-  }, [isDrawing, fetchSpread, onNewResponse]);
-
-  useEffect(() => {
-    if (dealingComplete) {
-      setIsDrawing(false);
-    }
-  }, [dealingComplete]);
-
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
@@ -107,10 +85,9 @@ const CommandTerminal = forwardRef(({
         selectedLanguage={selectedLanguage}
         input={input}
         handleInputChange={handleInputChange}
-        isLoading={isLoading}
         getTranslation={getTranslation}
-        handleDrawClick={handleDrawClick}
-        isDrawing={isDrawing}
+        handleDrawClick={handleDrawClick} // Pass this prop
+        isDrawing={isDrawing}             // Pass this prop
       />
     </div>
   );
@@ -122,7 +99,6 @@ const TerminalControls = React.memo(({
   selectedLanguage,
   input,
   handleInputChange,
-  isLoading,
   getTranslation,
   handleDrawClick,
   isDrawing
@@ -143,7 +119,6 @@ const TerminalControls = React.memo(({
           onChange={handleInputChange}
           className="terminal-input"
           id="terminal-input"
-          disabled={isLoading}
           placeholder={getTranslation('inputPlaceholder')}
         />
       </form>
@@ -152,12 +127,10 @@ const TerminalControls = React.memo(({
       onClick={handleDrawClick}
       aria-label={getTranslation('drawCardsAriaLabel')}
       label={getTranslation('draw')}
-      disabled={isLoading || isDrawing}
+      disabled={isDrawing}
       className={isDrawing ? 'drawing' : ''}
     >
-      {isLoading ? getTranslation('processing') : 
-       isDrawing ? getTranslation('drawing') : 
-       getTranslation('draw')}
+      {isDrawing ? getTranslation('drawing') : getTranslation('draw')}
     </ShimmerButton>
   </div>
 ));

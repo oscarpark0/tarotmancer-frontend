@@ -9,6 +9,7 @@ import { useLanguage } from './LanguageSelector';
 import { useMonitorOutput } from '../hooks/useRobotMonitor';
 import { useRobotDimensions } from '../hooks/useRobotLayout';
 import { useStreamingState } from '../hooks/useRobotStreamingState';
+import { useMistralResponse } from '../hooks/useMistralResponse';
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -66,7 +67,6 @@ const Robot = memo(({
   isRequesting,
   handleSubmit,
   isLoading,
-  handleDrawClick,
   isDrawing,
 }) => {
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
@@ -85,6 +85,21 @@ const Robot = memo(({
   
   const commandTerminalRef = useRef(null);
   useLanguage();
+
+  const { isLoading: isLoadingMistral, handleSubmit: handleSubmitMistral, resetResponse } = useMistralResponse(
+    (content) => {
+      handleNewResponse(content);
+      handleMonitorOutput(content);
+    },
+    handleResponseComplete
+  );
+
+  const handleDrawClick = useCallback(() => {
+    resetResponse();
+    fetchSpread().then(() => {
+      handleSubmitMistral(mostCommonCards);
+    });
+  }, [fetchSpread, handleSubmitMistral, mostCommonCards, resetResponse]);
 
   useEffect(() => {
     if (dealCards) {
@@ -194,18 +209,15 @@ const Robot = memo(({
           left: 0,
         }}
         fetchSpread={fetchSpread}
-        onNewResponse={(content) => {
-          handleNewResponse(content);
-          handleMonitorOutput(content);
-        }}
+        onNewResponse={handleNewResponse}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
-        handleSubmit={handleSubmit}
-        isLoading={isLoading}
+        handleSubmit={handleSubmitMistral}
+        isLoading={isLoadingMistral}
         handleDrawClick={handleDrawClick}
-        isDrawing={isDrawing}
+        isDrawing={isLoading}
       />
     </motion.div>
   );

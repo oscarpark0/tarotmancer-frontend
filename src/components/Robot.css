@@ -108,6 +108,12 @@
   z-index: 1000000000000000000000; /* Extremely high z-index */
   scrollbar-width: thin;
   scrollbar-color: #00ff00 #000000;
+  transition: all 0.3s ease;
+}
+
+.monitor-output.streaming {
+  box-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+  animation: pulse 2s infinite;
 }
 
 .monitor-output pre {
@@ -129,9 +135,16 @@
   border: 2px solid #000000;
 }
 
-.monitor-output pre {
-  margin: 0;
-  font-family: inherit;
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .screen-overlay {

@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef } from 'react';
-import throttle from 'lodash/throttle';
 
 const getMistralResponse = async (message, onChunk) => {
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/mistral_stream`, {
@@ -52,26 +51,14 @@ const getMistralResponse = async (message, onChunk) => {
 export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLanguage) => {
     const [isLoading, setIsLoading] = useState(false);
     const [fullResponse, setFullResponse] = useState('');
-    const lastRequestTime = useRef(0);
     const isRequestInProgress = useRef(false);
     const isResponseComplete = useRef(false);
-
-    const throttledGetMistralResponse = useRef(
-        throttle(getMistralResponse, 1000, { leading: true, trailing: false })
-    ).current;
 
     const handleSubmit = useCallback(async (mostCommonCards, input = '') => {
         if (isRequestInProgress.current || isResponseComplete.current) {
             console.log('Request already in progress or response is complete');
             return;
         }
-
-        const now = Date.now();
-        if (now - lastRequestTime.current < 1000) {
-            console.log('Request throttled');
-            return;
-        }
-        lastRequestTime.current = now;
 
         isRequestInProgress.current = true;
         isResponseComplete.current = false;
@@ -91,7 +78,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         const message = `${languagePrefix} ${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
         try {
-            await throttledGetMistralResponse(message, (content) => {
+            await getMistralResponse(message, (content) => {
                 if (content === "[DONE]") {
                     onResponseComplete();
                     setIsLoading(false);
@@ -112,7 +99,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
             isRequestInProgress.current = false;
             isResponseComplete.current = true;
         }
-    }, [selectedLanguage, throttledGetMistralResponse, onNewResponse, onResponseComplete]);
+    }, [selectedLanguage, onNewResponse, onResponseComplete]);
 
     const resetResponse = useCallback(() => {
         isResponseComplete.current = false;

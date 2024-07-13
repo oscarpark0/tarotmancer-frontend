@@ -1,17 +1,18 @@
 import { useState, useCallback } from 'react';
 
-export const useStreamingState = (onNewResponse, onResponseComplete, onStreamingStateChange) => {
+export const useStreamingState = (onNewResponse, onResponseComplete, onStreamingStateChange, onMonitorOutput) => {
   const [isStreaming, setIsStreaming] = useState(false);
 
   const handleNewResponse = useCallback((content) => {
     if (content !== "[DONE]") {
       onNewResponse(content);
+      onMonitorOutput(content); // Add this line
       setIsStreaming(true);
       if (onStreamingStateChange) {
         onStreamingStateChange(true);
       }
     }
-  }, [onNewResponse, onStreamingStateChange]);
+  }, [onNewResponse, onStreamingStateChange, onMonitorOutput]);
 
   const handleResponseComplete = useCallback(() => {
     onResponseComplete();

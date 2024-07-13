@@ -7,7 +7,6 @@ import { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 
 const CommandTerminal = forwardRef(({
-  onMonitorOutput,
   drawSpread,
   mostCommonCards,
   dealingComplete,
@@ -21,7 +20,6 @@ const CommandTerminal = forwardRef(({
   onNewResponse,
   onResponseComplete,
   animationsComplete,
-  fullResponse,
   handleSubmit,
   handleDrawClick,
   isDrawing,
@@ -61,6 +59,12 @@ const CommandTerminal = forwardRef(({
     onSpreadSelect(newSpread);
   };
 
+  const handleSubmitWrapper = (e) => {
+    e.preventDefault();
+    handleSubmit(mostCommonCards, input);
+    setInput('');
+  };
+
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
@@ -88,6 +92,7 @@ const CommandTerminal = forwardRef(({
         getTranslation={getTranslation}
         handleDrawClick={handleDrawClick}
         isDrawing={isDrawing}
+        handleSubmit={handleSubmitWrapper}
       />
     </div>
   );
@@ -101,7 +106,8 @@ const TerminalControls = React.memo(({
   handleInputChange,
   getTranslation,
   handleDrawClick,
-  isDrawing
+  isDrawing,
+  handleSubmit
 }) => (
   <div className="draw-button-container">
     <div className="input-container2">
@@ -112,7 +118,7 @@ const TerminalControls = React.memo(({
         </button>
         <span className="tooltiptext">{getTranslation('languageComingSoon')}</span>
       </div>
-      <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
+      <form onSubmit={handleSubmit} className="terminal-input-form">
         <input
           type="text"
           value={input}

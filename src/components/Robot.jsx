@@ -75,10 +75,11 @@ const Robot = memo(({
   const { isStreaming, handleNewResponse, handleResponseComplete } = useStreamingState(
     onNewResponse,
     onResponseComplete,
-    onStreamingStateChange
+    onStreamingStateChange,
+    onMonitorOutput
   );
-
-  const { monitorOutput } = useMonitorOutput(onMonitorOutput);
+  
+  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
   
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   
@@ -125,6 +126,21 @@ const Robot = memo(({
       setShouldRequestCohere(false);
     }
   }, [mostCommonCards, dealingComplete, animationsComplete, handleSubmit, shouldRequestCohere, input]);
+
+  // Use handleMonitorOutput in a useEffect to update the monitor output when new content is received
+  useEffect(() => {
+    const updateMonitorOutput = (content) => {
+      handleMonitorOutput(content);
+    };
+
+    // Add event listener for new content
+    window.addEventListener('new-content', updateMonitorOutput);
+
+    // Clean up the event listener
+    return () => {
+      window.removeEventListener('new-content', updateMonitorOutput);
+    };
+  }, [handleMonitorOutput]);
 
   return (
     <motion.div
@@ -178,7 +194,11 @@ const Robot = memo(({
           left: 0,
         }}
         fetchSpread={fetchSpread}
-        onNewResponse={handleNewResponse}
+        onNewResponse={(content) => {
+          handleNewResponse(content);
+          // Dispatch a custom event to update the monitor output
+          window.dispatchEvent(new CustomEvent('new-content', { detail: content }));
+        }}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}

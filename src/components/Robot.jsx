@@ -86,20 +86,17 @@ const Robot = memo(({
   const commandTerminalRef = useRef(null);
   useLanguage();
 
-  const { isLoading: isLoadingMistral, handleSubmit: handleSubmitMistral, resetResponse } = useMistralResponse(
-    (content) => {
-      handleNewResponse(content);
-      handleMonitorOutput(content);
-    },
-    handleResponseComplete
+  const { isLoading: isLoadingMistral, handleSubmit: handleSubmitMistral, fullResponse, resetResponse } = useMistralResponse(
+    handleNewResponse,
+    handleResponseComplete,
+    selectedLanguage
   );
 
   const handleDrawClick = useCallback(() => {
+    if (isLoading || isLoadingMistral) return;
     resetResponse();
-    fetchSpread().then(() => {
-      handleSubmitMistral(mostCommonCards);
-    });
-  }, [fetchSpread, handleSubmitMistral, mostCommonCards, resetResponse]);
+    drawSpread();
+  }, [isLoading, isLoadingMistral, resetResponse, drawSpread]);
 
   useEffect(() => {
     if (dealCards) {

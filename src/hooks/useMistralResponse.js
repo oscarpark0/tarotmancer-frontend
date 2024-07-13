@@ -16,20 +16,13 @@ const getMistralResponse = async (message, onChunk) => {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
-    let buffer = '';
-
     while (true) {
         const { value, done } = await reader.read();
         if (done) break;
-        const chunk = decoder.decode(value, { stream: true });
-        buffer += chunk;
-
-        let boundary = buffer.indexOf('\n');
-        while (boundary !== -1) {
-            const line = buffer.slice(0, boundary);
-            buffer = buffer.slice(boundary + 1);
-            boundary = buffer.indexOf('\n');
-
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+        
+        for (const line of lines) {
             if (line.startsWith('data: ')) {
                 const content = line.slice(6);
                 if (content === '[DONE]') {
@@ -37,10 +30,9 @@ const getMistralResponse = async (message, onChunk) => {
                 } else {
                     try {
                         const parsedContent = JSON.parse(content);
-                        onChunk(parsedContent);
+                        onChunk(parsedContent.choices[0].delta.content || '');
                     } catch (error) {
                         console.error('Error parsing JSON:', error);
-                        // Skip this chunk if it's not valid JSON
                     }
                 }
             }
@@ -85,11 +77,8 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                     isRequestInProgress.current = false;
                     isResponseComplete.current = true;
                 } else {
-                    const textContent = content.choices[0].delta.content;
-                    if (textContent) {
-                        setFullResponse(prev => prev + textContent);
-                        onNewResponse(textContent);
-                    }
+                    setFullResponse(prev => prev + content);
+                    onNewResponse(content);
                 }
             });
         } catch (error) {

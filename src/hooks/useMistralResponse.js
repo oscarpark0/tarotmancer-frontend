@@ -1,20 +1,54 @@
 import { useState, useCallback, useRef } from 'react';
-import { getMistralResponse } from '../services/mistralServices';
 import throttle from 'lodash/throttle';
+
+const getMistralResponse = async (message, onChunk) => {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/mistral_stream`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+        for (const line of lines) {
+            if (line.startsWith('data: ')) {
+                const content = line.slice(6);
+                if (content === '[DONE]') {
+                    onChunk('[DONE]');
+                } else {
+                    onChunk(content);
+                }
+            }
+        }
+    }
+};
 
 export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLanguage) => {
     const [isLoading, setIsLoading] = useState(false);
     const [fullResponse, setFullResponse] = useState('');
     const lastRequestTime = useRef(0);
     const isRequestInProgress = useRef(false);
+    const isResponseComplete = useRef(false);
 
     const throttledGetMistralResponse = useRef(
         throttle(getMistralResponse, 1000, { leading: true, trailing: false })
     ).current;
 
     const handleSubmit = useCallback(async (mostCommonCards, input = '') => {
-        if (isRequestInProgress.current) {
-            console.log('Request already in progress');
+        if (isRequestInProgress.current || isResponseComplete.current) {
+            console.log('Request already in progress or response is complete');
             return;
         }
 
@@ -47,6 +81,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                     onResponseComplete();
                     setIsLoading(false);
                     isRequestInProgress.current = false;
+                    isResponseComplete.current = true;
                 } else {
                     setFullResponse(prev => prev + content);
                     onNewResponse(content);
@@ -57,8 +92,14 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
             onNewResponse('An error occurred while processing your request.');
             setIsLoading(false);
             isRequestInProgress.current = false;
+            isResponseComplete.current = true;
         }
     }, [selectedLanguage, throttledGetMistralResponse, onNewResponse, onResponseComplete]);
 
-    return { isLoading, handleSubmit, fullResponse };
+    const resetResponse = useCallback(() => {
+        isResponseComplete.current = false;
+        setFullResponse('');
+    }, []);
+
+    return { isLoading, handleSubmit, fullResponse, resetResponse };
 };

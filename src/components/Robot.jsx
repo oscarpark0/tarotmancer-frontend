@@ -9,7 +9,6 @@ import { useLanguage } from './LanguageSelector';
 import { useMonitorOutput } from '../hooks/useRobotMonitor';
 import { useRobotDimensions } from '../hooks/useRobotLayout';
 import { useStreamingState } from '../hooks/useRobotStreamingState';
-import { useMistralResponse } from '../hooks/useMistralResponse'; 
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -66,8 +65,10 @@ const Robot = memo(({
   input,
   isRequesting,
   handleSubmit,
+  isLoading,
+  handleDrawClick,
+  isDrawing,
 }) => {
-  const [isDrawing, setIsDrawing] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const [, setShowCards] = useState(false);
 
@@ -77,17 +78,8 @@ const Robot = memo(({
     onStreamingStateChange
   );
 
-  const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
-
-  const { isLoading, handleSubmit: mistralhandleSubmit } = useMistralResponse(
-    (content) => {
-      handleNewResponse(content);
-      handleMonitorOutput(content);
-    },
-    handleResponseComplete,
-    selectedLanguage
-  );
-
+  const { monitorOutput } = useMonitorOutput(onMonitorOutput);
+  
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   
   const commandTerminalRef = useRef(null);
@@ -118,30 +110,21 @@ const Robot = memo(({
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {
-      mistralhandleSubmit(mostCommonCards);
+      handleSubmit(mostCommonCards);
     }
-  }, [dealingComplete, mostCommonCards, mistralhandleSubmit]);
+  }, [dealingComplete, mostCommonCards, handleSubmit]);
 
   const handleAnimationStart = useCallback(() => {
     onAnimationStart();
   }, [onAnimationStart]);
 
-  const handleDrawClick = useCallback(() => {
-    if (!isRequesting) {
-      setIsDrawing(true);
-      fetchSpread();
-      setShouldRequestCohere(true);
-      mistralhandleSubmit(mostCommonCards);
-    }
-  }, [fetchSpread, mistralhandleSubmit, mostCommonCards, isRequesting]);
-
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
       setShowCards(true);
-      mistralhandleSubmit(mostCommonCards, input);
+      handleSubmit(mostCommonCards, input);
       setShouldRequestCohere(false);
     }
-  }, [mostCommonCards, dealingComplete, animationsComplete, mistralhandleSubmit, shouldRequestCohere, input]);
+  }, [mostCommonCards, dealingComplete, animationsComplete, handleSubmit, shouldRequestCohere, input]);
 
   return (
     <motion.div
@@ -200,7 +183,7 @@ const Robot = memo(({
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
-        handleSubmit={mistralhandleSubmit}
+        handleSubmit={handleSubmit}
         isLoading={isLoading}
         handleDrawClick={handleDrawClick}
         isDrawing={isDrawing}
@@ -283,6 +266,9 @@ Robot.propTypes = {
   input: PropTypes.string.isRequired,
   isRequesting: PropTypes.bool.isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  handleDrawClick: PropTypes.func.isRequired,
+  isDrawing: PropTypes.bool.isRequired,
 };
 
 export default Robot;

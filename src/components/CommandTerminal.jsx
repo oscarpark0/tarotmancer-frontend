@@ -23,8 +23,8 @@ const CommandTerminal = forwardRef(({
   animationsComplete,
   fullResponse,
   handleSubmit,
-  handleDrawClick, // Add this prop
-  isDrawing,       // Add this prop
+  handleDrawClick,
+  isDrawing,
 }, ref) => {
   const [input, setInput] = useState('');
   const [showCards, setShowCards] = useState(false);
@@ -86,8 +86,8 @@ const CommandTerminal = forwardRef(({
         input={input}
         handleInputChange={handleInputChange}
         getTranslation={getTranslation}
-        handleDrawClick={handleDrawClick} // Pass this prop
-        isDrawing={isDrawing}             // Pass this prop
+        handleDrawClick={handleDrawClick}
+        isDrawing={isDrawing}
       />
     </div>
   );

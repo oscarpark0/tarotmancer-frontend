@@ -6,12 +6,18 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
     const [isLoading, setIsLoading] = useState(false);
     const [fullResponse, setFullResponse] = useState('');
     const lastRequestTime = useRef(0);
+    const isRequestInProgress = useRef(false);
 
     const throttledGetMistralResponse = useRef(
         throttle(getMistralResponse, 1000, { leading: true, trailing: false })
     ).current;
 
     const handleSubmit = useCallback(async (mostCommonCards, input = '') => {
+        if (isRequestInProgress.current) {
+            console.log('Request already in progress');
+            return;
+        }
+
         const now = Date.now();
         if (now - lastRequestTime.current < 1000) {
             console.log('Request throttled');
@@ -19,6 +25,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         }
         lastRequestTime.current = now;
 
+        isRequestInProgress.current = true;
         setIsLoading(true);
         setFullResponse('');
         onNewResponse(''); // Clear previous response
@@ -39,6 +46,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                 if (content === "[DONE]") {
                     onResponseComplete();
                     setIsLoading(false);
+                    isRequestInProgress.current = false;
                 } else {
                     setFullResponse(prev => prev + content);
                     onNewResponse(content);
@@ -48,6 +56,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
             console.error('Error:', error);
             onNewResponse('An error occurred while processing your request.');
             setIsLoading(false);
+            isRequestInProgress.current = false;
         }
     }, [selectedLanguage, throttledGetMistralResponse, onNewResponse, onResponseComplete]);
 

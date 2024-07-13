@@ -65,6 +65,7 @@ const Robot = memo(({
   selectedLanguage,
   input,
   isRequesting,
+  handleSubmit,
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
@@ -78,7 +79,7 @@ const Robot = memo(({
 
   const { monitorOutput, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
 
-  const { isLoading, handleSubmit, fullResponse } = useMistralResponse(
+  const { isLoading, handleSubmit: mistralhandleSubmit } = useMistralResponse(
     (content) => {
       handleNewResponse(content);
       handleMonitorOutput(content);
@@ -117,9 +118,9 @@ const Robot = memo(({
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {
-      handleSubmit(mostCommonCards);
+      mistralhandleSubmit(mostCommonCards);
     }
-  }, [dealingComplete, mostCommonCards, handleSubmit]);
+  }, [dealingComplete, mostCommonCards, mistralhandleSubmit]);
 
   const handleAnimationStart = useCallback(() => {
     onAnimationStart();
@@ -130,17 +131,17 @@ const Robot = memo(({
       setIsDrawing(true);
       fetchSpread();
       setShouldRequestCohere(true);
-      onNewResponse('');
+      mistralhandleSubmit(mostCommonCards);
     }
-  }, [fetchSpread, onNewResponse, isRequesting]);
+  }, [fetchSpread, mistralhandleSubmit, mostCommonCards, isRequesting]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
       setShowCards(true);
-      handleSubmit(mostCommonCards, input);
+      mistralhandleSubmit(mostCommonCards, input);
       setShouldRequestCohere(false);
     }
-  }, [mostCommonCards, dealingComplete, animationsComplete, handleSubmit, shouldRequestCohere, input]);
+  }, [mostCommonCards, dealingComplete, animationsComplete, mistralhandleSubmit, shouldRequestCohere, input]);
 
   return (
     <motion.div
@@ -199,8 +200,7 @@ const Robot = memo(({
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
-        fullResponse={fullResponse}
-        handleSubmit={handleSubmit}
+        handleSubmit={mistralhandleSubmit}
         isLoading={isLoading}
         handleDrawClick={handleDrawClick}
         isDrawing={isDrawing}
@@ -282,6 +282,7 @@ Robot.propTypes = {
   selectedLanguage: PropTypes.string.isRequired,
   input: PropTypes.string.isRequired,
   isRequesting: PropTypes.bool.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 export default Robot;

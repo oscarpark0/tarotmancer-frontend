@@ -10,7 +10,7 @@ import { useAppContext } from './contexts/AppContext';
 
 const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   const { getToken, user } = useKindeAuth();
-  const { selectedSpread, handleSpreadSelect } = useAppContext();
+  const { selectedSpread, handleSpreadSelect, selectedLanguage } = useAppContext();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -187,8 +187,9 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
       onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
       currentResponse={currentResponse}
+      selectedLanguage={selectedLanguage}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, currentResponse]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, currentResponse, selectedLanguage]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

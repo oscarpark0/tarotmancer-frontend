@@ -11,7 +11,7 @@ import { useAppContext } from './contexts/AppContext';
 
 const ThreeCardSpread = React.memo(({ isMobile, drawCount, setDrawCount, setLastResetTime, isDarkMode }) => {
   const { getToken } = useKindeAuth();
-  const { selectedSpread, handleSpreadSelect } = useAppContext();
+  const { selectedSpread, handleSpreadSelect, selectedLanguage } = useAppContext();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -186,8 +186,9 @@ const ThreeCardSpread = React.memo(({ isMobile, drawCount, setDrawCount, setLast
       onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
       monitorOutput={monitorOutput}
+      selectedLanguage={selectedLanguage}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, handleSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, monitorOutput]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, handleSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, handleNewResponse, handleResponseComplete, monitorOutput, selectedLanguage]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

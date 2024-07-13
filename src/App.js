@@ -10,15 +10,18 @@ import { LanguageProvider } from './components/LanguageSelector';
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-import { AppContextProvider } from './contexts/AppContext';
-import { useAppContext } from './contexts/AppContext';
+import { AppContextProvider, useAppContext } from './contexts/AppContext';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
 
-function App() {
+function AppContent() {
   const kindeAuth = useKindeAuth();
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
+  const isMobileScreen = useMediaQuery({ maxWidth: 767 });
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { setSelectedLanguage } = useAppContext();
+
   useEffect(() => {
     if (window.location.search.includes('code=') && kindeAuth?.handleRedirectCallback) {
       kindeAuth.handleRedirectCallback().catch(error => {
@@ -26,8 +29,6 @@ function App() {
       });
     }
   }, [kindeAuth]);
-  const isMobileScreen = useMediaQuery({ maxWidth: 767 });
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
   }, []);
@@ -35,6 +36,7 @@ function App() {
   useEffect(() => {
     document.body.classList.toggle('dark-mode', isDarkMode);
   }, [isDarkMode]);
+
   const memoizedHeader = useMemo(() => (
     (!isMobileScreen || !isAuthenticated) && (
       <Header
@@ -50,36 +52,42 @@ function App() {
   ), [isDarkMode, toggleDarkMode]);
 
   return (
+    <LanguageProvider onLanguageChange={setSelectedLanguage}>
+      <Router>
+        <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
+          {memoizedHeader}
+          <Routes>
+            <Route path="/celtic-spread" element={
+              isAuthenticated ? (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <CelticSpread isDarkMode={isDarkMode} isMobile={isMobileScreen} />
+                </Suspense>
+              ) : <Navigate to="/" />
+            } />
+            <Route path="/three-card-spread" element={
+              isAuthenticated ? (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ThreeCardSpread isDarkMode={isDarkMode} isMobile={isMobileScreen} />
+                </Suspense>
+              ) : <Navigate to="/" />
+            } />
+            <Route path="/" element={
+              isAuthenticated ? (
+                <Navigate to="/celtic-spread" />
+              ) : memoizedWelcomeMessage
+            } />
+            <Route path="/callback" element={<Navigate to="/" />} />
+          </Routes>
+        </div>
+      </Router>
+    </LanguageProvider>
+  );
+}
+
+function App() {
+  return (
     <AppContextProvider>
-      <LanguageProvider>
-        <Router>
-          <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
-            {memoizedHeader}
-            <Routes>
-              <Route path="/celtic-spread" element={
-                isAuthenticated ? (
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <CelticSpread isDarkMode={isDarkMode} isMobile={isMobileScreen} />
-                  </Suspense>
-                ) : <Navigate to="/" />
-              } />
-              <Route path="/three-card-spread" element={
-                isAuthenticated ? (
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <ThreeCardSpread isDarkMode={isDarkMode} isMobile={isMobileScreen} />
-                  </Suspense>
-                ) : <Navigate to="/" />
-              } />
-              <Route path="/" element={
-                isAuthenticated ? (
-                  <Navigate to="/celtic-spread" />
-                ) : memoizedWelcomeMessage
-              } />
-              <Route path="/callback" element={<Navigate to="/" />} />
-            </Routes>
-          </div>
-        </Router>
-      </LanguageProvider>
+      <AppContent />
     </AppContextProvider>
   );
 }

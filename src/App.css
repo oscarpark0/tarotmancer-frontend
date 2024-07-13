@@ -197,7 +197,7 @@
   .ticker-wrapper {
     display: inline-flex;
     white-space: nowrap;
-    animation: ticker 30s linear infinite;
+    animation: ticker 175s linear infinite;
   }
 
   .ticker-item {

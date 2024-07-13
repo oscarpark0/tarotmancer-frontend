@@ -28,7 +28,13 @@ const getMistralResponse = async (message, onChunk) => {
                 if (content === '[DONE]') {
                     onChunk('[DONE]');
                 } else {
-                    onChunk(content);
+                    try {
+                        const parsedContent = JSON.parse(content);
+                        onChunk(parsedContent);
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        // Skip this chunk if it's not valid JSON
+                    }
                 }
             }
         }
@@ -60,6 +66,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         lastRequestTime.current = now;
 
         isRequestInProgress.current = true;
+        isResponseComplete.current = false;
         setIsLoading(true);
         setFullResponse('');
         onNewResponse(''); // Clear previous response
@@ -83,8 +90,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                     isRequestInProgress.current = false;
                     isResponseComplete.current = true;
                 } else {
-                    const parsedContent = JSON.parse(content);
-                    const textContent = parsedContent.choices[0].delta.content;
+                    const textContent = content.choices[0].delta.content;
                     if (textContent) {
                         setFullResponse(prev => prev + textContent);
                         onNewResponse(textContent);
@@ -102,6 +108,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
 
     const resetResponse = useCallback(() => {
         isResponseComplete.current = false;
+        isRequestInProgress.current = false;
         setFullResponse('');
     }, []);
 

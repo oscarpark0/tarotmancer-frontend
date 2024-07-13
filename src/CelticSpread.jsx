@@ -35,7 +35,7 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
     setIsStreaming(false);
   }, []);
 
-  const { isLoading: isLoadingMistral, handleSubmit } = useMistralResponse(
+  const { isLoading: isLoadingMistral, handleSubmit, resetResponse } = useMistralResponse(
     (content) => {
       handleNewResponse(content);
       handleMonitorOutput(content);
@@ -177,15 +177,11 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
   }, []);
 
   const handleDrawClick = useCallback(() => {
-    if (!isRequesting) {
-      setIsRequesting(true);
-      fetchSpread().then(() => {
-        handleSubmit(mostCommonCards);
-      }).finally(() => {
-        setIsRequesting(false);
-      });
-    }
-  }, [fetchSpread, handleSubmit, mostCommonCards, isRequesting]);
+    resetResponse(); // Reset the response state before starting a new request
+    fetchSpread().then(() => {
+      handleSubmit(mostCommonCards);
+    });
+  }, [fetchSpread, handleSubmit, mostCommonCards, resetResponse]);
 
   const memoizedRobot = useMemo(() => (
     <Robot

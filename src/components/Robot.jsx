@@ -196,8 +196,7 @@ const Robot = memo(({
         fetchSpread={fetchSpread}
         onNewResponse={(content) => {
           handleNewResponse(content);
-          // Dispatch a custom event to update the monitor output
-          window.dispatchEvent(new CustomEvent('new-content', { detail: content }));
+          handleMonitorOutput(content);
         }}
         onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}

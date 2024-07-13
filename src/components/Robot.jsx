@@ -86,7 +86,7 @@ const Robot = memo(({
   const commandTerminalRef = useRef(null);
   useLanguage();
 
-  const { isLoading: isLoadingMistral, handleSubmit: handleSubmitMistral, fullResponse, resetResponse } = useMistralResponse(
+  const { isLoading: isLoadingMistral, handleSubmit: handleSubmitMistral, resetResponse } = useMistralResponse(
     handleNewResponse,
     handleResponseComplete,
     selectedLanguage

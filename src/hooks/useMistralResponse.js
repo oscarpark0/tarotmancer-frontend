@@ -24,13 +24,16 @@ const getMistralResponse = async (message, onChunk) => {
         
         for (const line of lines) {
             if (line.startsWith('data: ')) {
-                const content = line.slice(6);
+                const content = line.slice(6).trim();
                 if (content === '[DONE]') {
                     onChunk('[DONE]');
                 } else {
                     try {
                         const parsedContent = JSON.parse(content);
-                        onChunk(parsedContent.choices[0].delta.content || '');
+                        const textChunk = parsedContent.choices[0].delta.content;
+                        if (textChunk) {
+                            onChunk(textChunk);
+                        }
                     } catch (error) {
                         console.error('Error parsing JSON:', error);
                     }

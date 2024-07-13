@@ -105,6 +105,11 @@ const Header = React.memo(({ isAuthenticated, isDarkMode, toggleDarkMode }) => {
               <span key={index} className="ticker-item">{message}</span>
             ))}
           </div>
+          <div className="ticker-wrapper">
+            {tickerMessages.map((message, index) => (
+              <span key={`duplicate-${index}`} className="ticker-item">{message}</span>
+            ))}
+          </div>
         </div>
         <div className="auth-container">
           <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />

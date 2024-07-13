@@ -67,6 +67,7 @@ const Robot = memo(({
 }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
+  const [, setShowCards] = useState(false);
 
   const { isStreaming, handleNewResponse, handleResponseComplete } = useStreamingState(
     onNewResponse,
@@ -114,16 +115,10 @@ const Robot = memo(({
   }, [monitorOutput]);
 
   useEffect(() => {
-    if (mostCommonCards && dealingComplete && animationsComplete) {
-      handleSubmit(mostCommonCards, input);
+    if (dealingComplete && mostCommonCards) {
+      handleSubmit(mostCommonCards);
     }
-  }, [mostCommonCards, dealingComplete, animationsComplete, handleSubmit, input]);
-
-  useEffect(() => {
-    if (shouldRequestCohere && mostCommonCards && dealingComplete && animationsComplete) {
-      setShouldRequestCohere(false);
-    }
-  }, [shouldRequestCohere, mostCommonCards, dealingComplete, animationsComplete]);
+  }, [dealingComplete, mostCommonCards, handleSubmit]);
 
   const handleAnimationStart = useCallback(() => {
     onAnimationStart();
@@ -135,6 +130,14 @@ const Robot = memo(({
     setShouldRequestCohere(true);
     onNewResponse('');
   }, [fetchSpread, onNewResponse]);
+
+  useEffect(() => {
+    if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
+      setShowCards(true);
+      handleSubmit(mostCommonCards, input);
+      setShouldRequestCohere(false);
+    }
+  }, [mostCommonCards, dealingComplete, animationsComplete, handleSubmit, shouldRequestCohere, input]);
 
   return (
     <motion.div

@@ -8,7 +8,7 @@ export const AppContextProvider = ({ children }) => {
     const [selectedSpread, setSelectedSpread] = useState('celtic');
     const [canAccessCohere, setCanAccessCohere] = useState(false);
     const [tickerMessages, setTickerMessages] = useState([]);
-    const [selectedLanguage, setSelectedLanguage] = useState('en'); // Default to English
+    const [selectedLanguage, setSelectedLanguage] = useState('en'); 
 
     const handleSpreadSelect = useCallback((spread) => {
         setSelectedSpread(spread);

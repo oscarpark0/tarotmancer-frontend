@@ -99,18 +99,20 @@ const Header = React.memo(({ isAuthenticated, isDarkMode, toggleDarkMode }) => {
     <header className="app-header">
       <div className="header-content">
         <h1 className="app-title"><span>TarotMancer</span></h1>
-        <div className="ticker-container">
-          <div className="ticker-wrapper">
-            {tickerMessages.map((message, index) => (
-              <span key={index} className="ticker-item">{message}</span>
-            ))}
+        {!isAuthenticated && (
+          <div className="ticker-container">
+            <div className="ticker-wrapper">
+              {tickerMessages.map((message, index) => (
+                <span key={index} className="ticker-item">{message}</span>
+              ))}
+            </div>
+            <div className="ticker-wrapper">
+              {tickerMessages.map((message, index) => (
+                <span key={`duplicate-${index}`} className="ticker-item">{message}</span>
+              ))}
+            </div>
           </div>
-          <div className="ticker-wrapper">
-            {tickerMessages.map((message, index) => (
-              <span key={`duplicate-${index}`} className="ticker-item">{message}</span>
-            ))}
-          </div>
-        </div>
+        )}
         <div className="auth-container">
           <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
           {isAuthenticated ? (

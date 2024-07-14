@@ -99,8 +99,9 @@ const Robot = memo(({
     if (isLoading || isLoadingMistral) return;
     resetResponse();
     drawSpread();
+    
   }, [isLoading, isLoadingMistral, resetResponse, drawSpread]);
-
+  console.log("Monitor Output 3:", monitorOutput);
   useEffect(() => {
     if (dealCards) {
       setTimeout(onExitComplete, 2000);
@@ -239,6 +240,10 @@ const CRTMonitor = memo(({
   isMobile,
   onAnimationStart,
 }) => {
+  useEffect(() => {
+    console.log("CRTMonitor monitorOutput:", monitorOutput);
+  }, [monitorOutput]);
+
   return (
     <div ref={robotRef} className="crt-monitor">
       <div className="monitor-frame">

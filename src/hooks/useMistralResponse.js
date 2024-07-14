@@ -73,6 +73,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         const message = `${languagePrefix} ${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
         try {
+            let accumulatedResponse = '';
             await getMistralResponse(message, (content) => {
                 if (content === "[DONE]") {
                     onResponseComplete();
@@ -80,8 +81,9 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
                     isRequestInProgress.current = false;
                     isResponseComplete.current = true;
                 } else {
-                    setFullResponse(prev => prev + content);
-                    onNewResponse(content);
+                    accumulatedResponse += content;
+                    setFullResponse(accumulatedResponse);
+                    onNewResponse(accumulatedResponse);
                 }
             });
         } catch (error) {

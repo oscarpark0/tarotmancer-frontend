@@ -13,25 +13,24 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
         setIsLoading(true);
         setError(null);
         setStreamComplete(false);
+        setFullResponse('');
 
         const eventSource = new EventSource(`${process.env.REACT_APP_BASE_URL}/mistral_stream`, {
             withCredentials: true,
         });
 
-        let accumulatedText = '';
-
         eventSource.onmessage = (event) => {
             if (event.data === '[DONE]') {
                 eventSource.close();
                 setStreamComplete(true);
-                onResponseComplete(accumulatedText);
+                onResponseComplete(fullResponse);
                 return;
             }
 
             try {
                 const data = JSON.parse(event.data);
                 const text = data.choices[0].delta.content || '';
-                accumulatedText += text;
+                setFullResponse(prev => prev + text);
                 onNewResponse(text);
             } catch (err) {
                 console.error('Error parsing SSE data:', err);
@@ -44,7 +43,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
             setError('Failed to connect to the server');
             setIsLoading(false);
         };
-    }, [onResponseComplete, onNewResponse]);
+    }, [onResponseComplete, fullResponse, onNewResponse]);
 
     const handleSubmit = useCallback((mostCommonCards, input = '') => {
         if (isLoading || streamComplete) {

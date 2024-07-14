@@ -81,6 +81,7 @@ const Robot = memo(({
   );
   
   const { monitorOutput: monitorOutputState, handleMonitorOutput } = useMonitorOutput(onMonitorOutput);
+  console.log("Monitor Output 1:", monitorOutput);
   
   const { monitorPosition, robotRef, screenContentRef } = useRobotDimensions();
   
@@ -90,7 +91,8 @@ const Robot = memo(({
   const { isLoading: isLoadingMistral, handleSubmit: handleSubmitMistral, resetResponse } = useMistralResponse(
     handleNewResponse,
     handleResponseComplete,
-    selectedLanguage
+    selectedLanguage,
+    console.log("Monitor Output:2", monitorOutput)
   );
 
   const handleDrawClick = useCallback(() => {

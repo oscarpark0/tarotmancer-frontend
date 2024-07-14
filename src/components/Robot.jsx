@@ -89,10 +89,12 @@ const Robot = memo(({
   useLanguage();
 
   const { isLoading: isLoadingMistral, handleSubmit: handleSubmitMistral, resetResponse } = useMistralResponse(
-    handleNewResponse,
+    (content) => {
+      handleNewResponse(content);
+      onMonitorOutput(content);
+    },
     handleResponseComplete,
-    selectedLanguage,
-    console.log("Monitor Output:2", monitorOutput)
+    selectedLanguage
   );
 
   const handleDrawClick = useCallback(() => {

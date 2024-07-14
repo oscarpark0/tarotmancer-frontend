@@ -15,7 +15,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
         setStreamComplete(false);
         setFullResponse('');
 
-        const eventSource = new EventSource(`${process.env.REACT_APP_BASE_URL}/mistral_stream`, {
+        const eventSource = new EventSource(`${process.env.REACT_APP_BASE_URL}/mistral_stream?message=${encodeURIComponent(message)}`, {
             withCredentials: true,
         });
 

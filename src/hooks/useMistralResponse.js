@@ -1,65 +1,56 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback } from 'react';
 
-const getMistralResponse = async (message, onChunk) => {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/mistral_stream`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ message }),
-    });
+// const getMistralResponse = async (message, onChunk, onResponseComplete) => { ... };
 
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-
-    while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-        
-        for (const line of lines) {
-            if (line.startsWith('data: ')) {
-                const content = line.slice(6).trim();
-                if (content === '[DONE]') {
-                    onChunk('[DONE]');
-                } else {
-                    try {
-                        const parsedContent = JSON.parse(content);
-                        const textChunk = parsedContent.choices[0].delta.content;
-                        if (textChunk) {
-                            onChunk(textChunk);
-                        }
-                    } catch (error) {
-                        console.error('Error parsing JSON:', error);
-                    }
-                }
-            }
-        }
-    }
-};
-
-export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLanguage) => {
+export const useMistralResponse = (onNewResponse, onResponseComplete) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [streamComplete, setStreamComplete] = useState(false);
     const [fullResponse, setFullResponse] = useState('');
-    const isRequestInProgress = useRef(false);
-    const isResponseComplete = useRef(false);
+    const [selectedLanguage, setSelectedLanguage] = useState('English');
 
-    const handleSubmit = useCallback(async (mostCommonCards, input = '') => {
-        if (isRequestInProgress.current || isResponseComplete.current) {
+    const fetchMistralResponse = useCallback((message) => {
+        setIsLoading(true);
+        setError(null);
+        setStreamComplete(false);
+
+        const eventSource = new EventSource(`${process.env.REACT_APP_BASE_URL}/mistral_stream`, {
+            withCredentials: true,
+        });
+
+        let accumulatedText = '';
+
+        eventSource.onmessage = (event) => {
+            if (event.data === '[DONE]') {
+                eventSource.close();
+                setStreamComplete(true);
+                onResponseComplete(accumulatedText);
+                return;
+            }
+
+            try {
+                const data = JSON.parse(event.data);
+                const text = data.choices[0].delta.content || '';
+                accumulatedText += text;
+                onNewResponse(text);
+            } catch (err) {
+                console.error('Error parsing SSE data:', err);
+            }
+        };
+
+        eventSource.onerror = (err) => {
+            console.error('EventSource failed:', err);
+            eventSource.close();
+            setError('Failed to connect to the server');
+            setIsLoading(false);
+        };
+    }, [onResponseComplete, onNewResponse]);
+
+    const handleSubmit = useCallback((mostCommonCards, input = '') => {
+        if (isLoading || streamComplete) {
             console.log('Request already in progress or response is complete');
             return;
         }
-
-        isRequestInProgress.current = true;
-        isResponseComplete.current = false;
-        setIsLoading(true);
-        setFullResponse('');
-        onNewResponse(''); // Clear previous response
 
         const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve. " +
             "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as its position in relation to the other cards in the spread. " +
@@ -72,34 +63,14 @@ export const useMistralResponse = (onNewResponse, onResponseComplete, selectedLa
         const userQuestion = input && input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
         const message = `${languagePrefix} ${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-        try {
-            let accumulatedResponse = '';
-            await getMistralResponse(message, (content) => {
-                if (content === "[DONE]") {
-                    onResponseComplete();
-                    setIsLoading(false);
-                    isRequestInProgress.current = false;
-                    isResponseComplete.current = true;
-                } else {
-                    accumulatedResponse += content;
-                    setFullResponse(accumulatedResponse);
-                    onNewResponse(accumulatedResponse);
-                }
-            });
-        } catch (error) {
-            console.error('Error:', error);
-            onNewResponse('An error occurred while processing your request.');
-            setIsLoading(false);
-            isRequestInProgress.current = false;
-            isResponseComplete.current = true;
-        }
-    }, [selectedLanguage, onNewResponse, onResponseComplete]);
+        fetchMistralResponse(message);
+    }, [fetchMistralResponse, isLoading, streamComplete, selectedLanguage]);
 
     const resetResponse = useCallback(() => {
-        isResponseComplete.current = false;
-        isRequestInProgress.current = false;
+        setStreamComplete(false);
+        setIsLoading(false);
         setFullResponse('');
     }, []);
 
-    return { isLoading, handleSubmit, fullResponse, resetResponse };
+    return { isLoading, handleSubmit, fullResponse, resetResponse, error, setSelectedLanguage };
 };

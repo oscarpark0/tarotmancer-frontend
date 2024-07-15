@@ -1,188 +1,42 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+// src/CelticSpread.jsx
+import React, { useMemo } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
-import { generateCelticCrossPositions } from './utils/cardPositions.js';
-import ErrorBoundary from './components/ErrorBoundary'; 
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import ErrorBoundary from './components/ErrorBoundary';
 import { useAppContext } from './contexts/AppContext';
-import { useMistralResponse } from './hooks/useMistralResponse';
+import { SpreadProvider, useSpreadContext } from './contexts/SpreadContext';
+import { LoadingState } from './components/LoadingState';
+import { ErrorState } from './components/ErrorState';
 
-const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
-  const { getToken, user } = useKindeAuth();
+const CelticSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
   const { selectedSpread, handleSpreadSelect, selectedLanguage } = useAppContext();
-  const [positions, setPositions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [dealCards, setDealCards] = useState(false);
-  const [revealCards, setRevealCards] = useState(false);
-  const [revealedCards, setRevealedCards] = useState(0);
-  const [dealingComplete, setDealingComplete] = useState(false);
-  const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
-  const [mostCommonCards, setMostCommonCards] = useState('');
-  const formRef = useRef(null);
-  const [cards, setCards] = useState([]);
-  const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
-  const [animationsComplete, setAnimationsComplete] = useState(false);
-  const [animationStarted, setAnimationStarted] = useState(false);
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [monitorOutput, setMonitorOutput] = useState('');
-  const [currentResponse, setCurrentResponse] = useState('');
-  const [isRequesting, setIsRequesting] = useState(false);
-
-  const handleResponseComplete = useCallback(() => {
-    setIsStreaming(false);
-  }, []);
-
-  const { isLoading: isLoadingMistral, handleSubmit, resetResponse } = useMistralResponse(
-    (content) => {
-      handleNewResponse(content);
-      handleMonitorOutput(content);
-    },
-    handleResponseComplete,
-    selectedLanguage
-  );
-
-  const handleStreamingStateChange = useCallback((streaming) => {
-    setIsStreaming(streaming);
-  }, []);
-
-  const handleSubmitInput = useCallback((value) => {
-    if (formRef.current) {
-      formRef.current.submitInput(value);
-    }
-  }, []);
-
-  const fetchSpread = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const token = await getToken();
-      const origin = window.location.origin;
-
-      const headers = {
-        'Content-Type': 'application/json',
-        'Origin': origin,
-        'Authorization': `Bearer ${token}`,
-        'User-ID': user?.id,
-      };
-
-      const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
-      
-      const baseUrl = process.env.REACT_APP_BASE_URL;
-      const url = `${baseUrl}/${endpoint}`;
-      
-      console.log('Fetching from URL:', url);
-      console.log('Headers:', headers);
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: headers,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
-      }
-
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new Error("Oops! We haven't received a valid response from the server.");
-      }
-
-      const data = await response.json();
-      console.log('Received data:', data);
-
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
-      
-      const newPositions = positions.map((pos, index) => ({
-        ...data.positions[index],
-        left: pos.left,
-        top: pos.top,
-        tooltip: data.positions[index].position_name
-      }));
-      
-      setPositions(newPositions);
-      const newCards = newPositions.map(pos => ({
-        name: pos.most_common_card,
-        img: pos.most_common_card_img,
-        orientation: pos.orientation,
-        position_name: pos.position_name,
-        tooltip: pos.position_name
-      }));
-      setCards(newCards);
-  
-      const formattedMostCommonCards = data.positions.map(
-        (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
-      ).join('\n');
-      setDealCards(true); 
-      setMostCommonCards(formattedMostCommonCards);
-    } catch (error) {
-      console.error('Error drawing spread:', error);
-      setError(`Failed to draw spread: ${error.message}. Please check your network connection and try again.`);
-      setCards([]);
-    } finally {
-      setIsLoading(false);
-      setShouldDrawNewSpread(false);
-    }
-  }, [getToken, selectedSpread, user]);
-  
-  const handleDealingComplete = useCallback(() => {
-    setDealingComplete(true);
-    if (!isRequesting) {
-      setIsRequesting(true);
-      handleSubmit(mostCommonCards).finally(() => {
-        setIsRequesting(false);
-      });
-    }
-    handleSubmitInput(mostCommonCards);
-  }, [handleSubmitInput, mostCommonCards, isRequesting, handleSubmit]);
-
-  const handleExitComplete = useCallback(() => {
-    setFloatingCardsComplete(true);
-    setTimeout(() => {
-      setRevealCards(true);
-      setRevealedCards(cards.length);
-      setTimeout(() => {
-        handleDealingComplete();
-        setAnimationsComplete(true);
-      }, 750);
-    }, 500);
-  }, [cards.length, handleDealingComplete]);
-
-  const handleMonitorOutput = useCallback((content) => {
-    setMonitorOutput(prevOutput => prevOutput + content);
-  }, []);
-
-  const drawSpread = useCallback(() => {
-    setDealCards(false);
-    setRevealCards(false);
-    setDealingComplete(false);
-    setShouldDrawNewSpread(true);
-    fetchSpread();
-  }, [fetchSpread]);
-
-  const handleAnimationStart = useCallback(() => {
-    setAnimationStarted(true);
-  }, []);
-
-  const handleNewResponse = useCallback((content) => {
-    console.log("Received new response content:", content);
-    setCurrentResponse(prevResponse => prevResponse + content);
-    setMonitorOutput(prevOutput => prevOutput + content);
-    setIsStreaming(true);
-  }, []);
-
-  const handleDrawClick = useCallback(() => {
-    resetResponse(); // Reset the response state before starting a new request
-    fetchSpread().then(() => {
-      handleSubmit(mostCommonCards);
-    });
-  }, [fetchSpread, handleSubmit, mostCommonCards, resetResponse]);
+  const {
+    positions,
+    isLoading,
+    error,
+    dealCards,
+    revealCards,
+    revealedCards,
+    dealingComplete,
+    shouldDrawNewSpread,
+    mostCommonCards,
+    cards,
+    floatingCardsComplete,
+    animationsComplete,
+    animationStarted,
+    isStreaming,
+    monitorOutput,
+    currentResponse,
+    isRequesting,
+    isLoadingMistral,
+    handleExitComplete,
+    handleMonitorOutput,
+    drawSpread,
+    handleAnimationStart,
+    handleDrawClick,
+    handleSubmit  } = useSpreadContext();
 
   const memoizedRobot = useMemo(() => (
     <Robot
@@ -195,21 +49,15 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
       shouldDrawNewSpread={shouldDrawNewSpread}
       onMonitorOutput={handleMonitorOutput}
       drawSpread={drawSpread}
-      dealingComplete={handleDealingComplete}
+      dealingComplete={dealingComplete}
       mostCommonCards={mostCommonCards}
-      formRef={formRef}
-      onSubmitInput={handleSubmitInput}
       isMobile={isMobile}
       cards={cards}
       selectedSpread={selectedSpread}
       onSpreadSelect={handleSpreadSelect}
-      fetchSpread={fetchSpread}
-      onNewResponse={handleNewResponse}
-      onResponseComplete={handleResponseComplete}
       animationsComplete={animationsComplete}
       isDarkMode={isDarkMode}
       onAnimationStart={handleAnimationStart}
-      onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
       currentResponse={currentResponse}
       selectedLanguage={selectedLanguage}
@@ -220,7 +68,7 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
       isDrawing={isRequesting}
       monitorOutput={monitorOutput}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, handleSpreadSelect, fetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, currentResponse, selectedLanguage, isRequesting, handleSubmit, isLoadingMistral, handleDrawClick, monitorOutput]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, isMobile, cards, selectedSpread, handleSpreadSelect, animationsComplete, isDarkMode, handleAnimationStart, isStreaming, currentResponse, selectedLanguage, isRequesting, handleSubmit, isLoadingMistral, handleDrawClick, monitorOutput]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -229,14 +77,14 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
       revealCards={revealCards}
-      dealingComplete={handleDealingComplete}
+      dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
       numCards={10}
       isMobile={isMobile}
       cards={cards}
       onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart]);
+  ), [dealCards, positions, handleExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
@@ -264,29 +112,38 @@ const CelticSpread = React.memo(({ isMobile, isDarkMode }) => {
         />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
-            <p className="text-2xl text-green-600 text-center animate-pulse z-99900">Shuffling the cards...</p>
+            <LoadingState />
           ) : error ? (
-            <p className="text-4xl text-red-600 text-center z-100">{error}</p>
-          ) : null}
-          <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
-            {memoizedRobot}
-          </div>
-          {positions.length > 0 && !isMobile && (
-            <div className="relative z-10 w-full flex flex-col items-center">
-              <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
-                <section className="relative z-10 mb-16 w-full">
-                  <ErrorBoundary>
-                    {memoizedFloatingCards}
-                  </ErrorBoundary>
-                  {memoizedCardReveal}
-                </section>
+            <ErrorState error={error} />
+          ) : (
+            <>
+              <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
+                {memoizedRobot}
               </div>
-            </div>
+              {positions.length > 0 && !isMobile && (
+                <div className="relative z-10 w-full flex flex-col items-center">
+                  <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
+                    <section className="relative z-10 mb-16 w-full">
+                      <ErrorBoundary>
+                        {memoizedFloatingCards}
+                      </ErrorBoundary>
+                      {memoizedCardReveal}
+                    </section>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
     </ErrorBoundary>
   );
 });
+
+const CelticSpread = ({ isMobile, isDarkMode }) => (
+  <SpreadProvider spreadType="celtic" selectedLanguage="en">
+    <CelticSpreadContent isMobile={isMobile} isDarkMode={isDarkMode} />
+  </SpreadProvider>
+);
 
 export default CelticSpread;

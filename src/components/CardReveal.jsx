@@ -2,8 +2,16 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import './CardReveal.css';
+import { useSpreadContext } from '../contexts/SpreadContext';
 
-const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, className }) => {
+const CardReveal = ({ isMobile, className }) => {
+  const {
+    cards,
+    revealCards,
+    dealingComplete,
+    shouldDrawNewSpread,
+  } = useSpreadContext();
+
   const [revealedCards, setRevealedCards] = useState(0);
   const [flippedCards, setFlippedCards] = useState(0);
   const [hoveredCard, setHoveredCard] = useState(null);

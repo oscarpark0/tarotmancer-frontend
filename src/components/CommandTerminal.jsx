@@ -1,33 +1,25 @@
-import React, { useState, useEffect, useCallback, forwardRef } from 'react';
+import React, { useState, useCallback, forwardRef } from 'react';
 import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
 import { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
+import { useSpreadContext } from '../contexts/SpreadContext';
 
-const CommandTerminal = forwardRef(({
-  drawSpread,
-  mostCommonCards,
-  dealingComplete,
-  onSpreadSelect,
-  selectedSpread,
-  isMobile,
-  cards = [],
-  revealCards,
-  shouldDrawNewSpread,
-  fetchSpread,
-  onNewResponse,
-  onResponseComplete,
-  animationsComplete,
-  handleSubmit,
-  handleDrawClick,
-  isDrawing,
-}, ref) => {
+const CommandTerminal = forwardRef(({ isMobile }, ref) => {
   const [input, setInput] = useState('');
-  const [showCards, setShowCards] = useState(false);
-  const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const { selectedLanguage } = useLanguage();
+  const {
+    mostCommonCards,
+    dealingComplete,
+    cards,
+    revealCards,
+    shouldDrawNewSpread,
+    handleSubmit,
+    handleDrawClick,
+    isRequesting
+  } = useSpreadContext();
 
   const getTranslation = (key) => {
     if (!buttonTranslations[key]) {
@@ -37,27 +29,9 @@ const CommandTerminal = forwardRef(({
     return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'] || key;
   };
 
-  useEffect(() => {
-    if (cards.length > 0 && dealingComplete) {
-      setShowCards(true);
-    }
-  }, [cards, dealingComplete]);
-
   const handleInputChange = useCallback((e) => {
     setInput(e.target.value);
   }, []);
-
-  useEffect(() => {
-    if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
-      setShowCards(true);
-      handleSubmit(mostCommonCards, input);
-      setShouldRequestCohere(false);
-    }
-  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit, animationsComplete, input]);
-
-  const handleSpreadSelect = (newSpread) => {
-    onSpreadSelect(newSpread);
-  };
 
   const handleSubmitWrapper = (e) => {
     e.preventDefault();
@@ -69,7 +43,7 @@ const CommandTerminal = forwardRef(({
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
         <div className="terminal-content">
-          {isMobile && showCards && (
+          {isMobile && dealingComplete && (
             <CardReveal
               cards={cards}
               revealCards={revealCards}
@@ -84,14 +58,12 @@ const CommandTerminal = forwardRef(({
         </div>
       </div>
       <TerminalControls
-        selectedSpread={selectedSpread}
-        onSpreadSelect={handleSpreadSelect}
         selectedLanguage={selectedLanguage}
         input={input}
         handleInputChange={handleInputChange}
         getTranslation={getTranslation}
         handleDrawClick={handleDrawClick}
-        isDrawing={isDrawing}
+        isDrawing={isRequesting}
         handleSubmit={handleSubmitWrapper}
       />
     </div>
@@ -99,8 +71,6 @@ const CommandTerminal = forwardRef(({
 });
 
 const TerminalControls = React.memo(({
-  selectedSpread,
-  onSpreadSelect,
   selectedLanguage,
   input,
   handleInputChange,
@@ -111,7 +81,7 @@ const TerminalControls = React.memo(({
 }) => (
   <div className="draw-button-container">
     <div className="input-container2">
-      <SpreadSelector onSpreadSelect={onSpreadSelect} selectedSpread={selectedSpread} />
+      <SpreadSelector />
       <div className="terminal-language-selector tooltip">
         <button disabled className="language-selector-disabled">
           {getTranslation('language')}

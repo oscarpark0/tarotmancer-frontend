@@ -12,15 +12,14 @@ import './App.css';
 import { useMediaQuery } from 'react-responsive';
 import { AppContextProvider, useAppContext } from './contexts/AppContext';
 
-const CelticSpread = lazy(() => import('./CelticSpread'));
-const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
+const TarotSpread = lazy(() => import('./TarotSpread'));
 
 function AppContent() {
   const kindeAuth = useKindeAuth();
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const { setSelectedLanguage } = useAppContext();
+  const { setSelectedLanguage, selectedSpread } = useAppContext();
 
   useEffect(() => {
     if (window.location.search.includes('code=') && kindeAuth?.handleRedirectCallback) {
@@ -29,6 +28,7 @@ function AppContent() {
       });
     }
   }, [kindeAuth]);
+
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
   }, []);
@@ -57,23 +57,16 @@ function AppContent() {
         <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
           {memoizedHeader}
           <Routes>
-            <Route path="/celtic-spread" element={
+            <Route path="/tarot-spread" element={
               isAuthenticated ? (
                 <Suspense fallback={<div>Loading...</div>}>
-                  <CelticSpread isDarkMode={isDarkMode} isMobile={isMobileScreen} />
-                </Suspense>
-              ) : <Navigate to="/" />
-            } />
-            <Route path="/three-card-spread" element={
-              isAuthenticated ? (
-                <Suspense fallback={<div>Loading...</div>}>
-                  <ThreeCardSpread isDarkMode={isDarkMode} isMobile={isMobileScreen} />
+                  <TarotSpread isDarkMode={isDarkMode} isMobile={isMobileScreen} spreadType={selectedSpread} />
                 </Suspense>
               ) : <Navigate to="/" />
             } />
             <Route path="/" element={
               isAuthenticated ? (
-                <Navigate to="/celtic-spread" />
+                <Navigate to="/tarot-spread" />
               ) : memoizedWelcomeMessage
             } />
             <Route path="/callback" element={<Navigate to="/" />} />
@@ -153,4 +146,5 @@ const WelcomeMessage = React.memo(({ isDarkMode, toggleDarkMode }) => (
     </div>
   </div>
 ));
+
 export default App;

@@ -1,0 +1,183 @@
+import { useState, useCallback } from 'react';
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { generateCelticCrossPositions, generateThreeCardPositions } from '../utils/cardPositions';
+import { useMistralResponse } from './useMistralResponse';
+
+export const useSpread = (spreadType, selectedLanguage) => {
+  const { getToken, user } = useKindeAuth();
+  const [positions, setPositions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [dealCards, setDealCards] = useState(false);
+  const [revealCards, setRevealCards] = useState(false);
+  const [revealedCards, setRevealedCards] = useState(0);
+  const [dealingComplete, setDealingComplete] = useState(false);
+  const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
+  const [mostCommonCards, setMostCommonCards] = useState('');
+  const [cards, setCards] = useState([]);
+  const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
+  const [animationsComplete, setAnimationsComplete] = useState(false);
+  const [animationStarted, setAnimationStarted] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [monitorOutput, setMonitorOutput] = useState('');
+  const [currentResponse, setCurrentResponse] = useState('');
+  const [isRequesting, setIsRequesting] = useState(false);
+
+  const handleResponseComplete = useCallback(() => {
+    setIsStreaming(false);
+  }, []);
+
+  const { isLoading: isLoadingMistral, handleSubmit, resetResponse } = useMistralResponse(
+    (content) => {
+      handleNewResponse(content);
+      handleMonitorOutput(content);
+    },
+    handleResponseComplete,
+    selectedLanguage
+  );
+
+  const fetchSpread = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const token = await getToken();
+      const origin = window.location.origin;
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'Origin': origin,
+        'Authorization': `Bearer ${token}`,
+        'User-ID': user?.id,
+      };
+
+      const endpoint = spreadType === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
+      
+      const baseUrl = process.env.REACT_APP_BASE_URL;
+      const url = `${baseUrl}/${endpoint}`;
+      
+      const response = await fetch(url, { method: 'GET', headers });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+      }
+
+      const data = await response.json();
+
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const positions = spreadType === 'celtic' 
+        ? generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight)
+        : generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);
+      
+      const newPositions = positions.map((pos, index) => ({
+        ...data.positions[index],
+        left: pos.left,
+        top: pos.top,
+        tooltip: data.positions[index].position_name
+      }));
+      
+      setPositions(newPositions);
+      const newCards = newPositions.map(pos => ({
+        name: pos.most_common_card,
+        img: pos.most_common_card_img,
+        orientation: pos.orientation,
+        position_name: pos.position_name,
+        tooltip: pos.position_name
+      }));
+      setCards(newCards);
+  
+      const formattedMostCommonCards = data.positions.map(
+        (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
+      ).join('\n');
+      setDealCards(true); 
+      setMostCommonCards(formattedMostCommonCards);
+    } catch (error) {
+      console.error('Error drawing spread:', error);
+      setError({ message: `Failed to draw spread: ${error.message}. Please check your network connection and try again.` });
+      setCards([]);
+    } finally {
+      setIsLoading(false);
+      setShouldDrawNewSpread(false);
+    }
+  }, [getToken, spreadType, user]);
+
+  const handleDealingComplete = useCallback(() => {
+    setDealingComplete(true);
+    if (!isRequesting) {
+      setIsRequesting(true);
+      handleSubmit(mostCommonCards).finally(() => {
+        setIsRequesting(false);
+      });
+    }
+  }, [mostCommonCards, isRequesting, handleSubmit]);
+
+  const handleExitComplete = useCallback(() => {
+    setFloatingCardsComplete(true);
+    setTimeout(() => {
+      setRevealCards(true);
+      setRevealedCards(cards.length);
+      setTimeout(() => {
+        handleDealingComplete();
+        setAnimationsComplete(true);
+      }, 750);
+    }, 500);
+  }, [cards.length, handleDealingComplete]);
+
+  const handleMonitorOutput = useCallback((content) => {
+    setMonitorOutput(prevOutput => prevOutput + content);
+  }, []);
+
+  const drawSpread = useCallback(() => {
+    setDealCards(false);
+    setRevealCards(false);
+    setDealingComplete(false);
+    setShouldDrawNewSpread(true);
+    fetchSpread();
+  }, [fetchSpread]);
+
+  const handleAnimationStart = useCallback(() => {
+    setAnimationStarted(true);
+  }, []);
+
+  const handleNewResponse = useCallback((content) => {
+    setCurrentResponse(prevResponse => prevResponse + content);
+    setMonitorOutput(prevOutput => prevOutput + content);
+    setIsStreaming(true);
+  }, []);
+
+  const handleDrawClick = useCallback(() => {
+    resetResponse();
+    fetchSpread().then(() => {
+      handleSubmit(mostCommonCards);
+    });
+  }, [fetchSpread, handleSubmit, mostCommonCards, resetResponse]);
+
+  return {
+    positions,
+    isLoading,
+    error,
+    dealCards,
+    revealCards,
+    revealedCards,
+    dealingComplete,
+    shouldDrawNewSpread,
+    mostCommonCards,
+    cards,
+    floatingCardsComplete,
+    animationsComplete,
+    animationStarted,
+    isStreaming,
+    monitorOutput,
+    currentResponse,
+    isRequesting,
+    isLoadingMistral,
+    handleExitComplete,
+    handleMonitorOutput,
+    drawSpread,
+    handleAnimationStart,
+    handleDrawClick,
+    handleSubmit,
+    setRevealedCards
+  };
+};

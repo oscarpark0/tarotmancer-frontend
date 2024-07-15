@@ -1,12 +1,21 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
+import { useSpreadContext } from '../contexts/SpreadContext';
 
-function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, numCards, isMobile }) {
+function FloatingCards({ monitorPosition, isMobile }) {
   const [isAnimating, setIsAnimating] = useState(false);
+  const {
+    dealCards,
+    onExitComplete,
+    revealCards,
+    shouldDrawNewSpread,
+    cards,
+  } = useSpreadContext();
+
+  const numCards = cards.length;
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {
@@ -60,7 +69,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
 
   return (
     <div className={`floating-cards ${isAnimating ? 'dealing' : ''} ${isMobile ? 'mobile' : ''}`}>
-      {isAnimating && Array.from({ length: numCards || 0 }).map((_, i) => {
+      {isAnimating && Array.from({ length: numCards }).map((_, i) => {
         const position = cardPositions[i];
         return (
           <motion.img
@@ -93,7 +102,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               transform: position.transform,
             }}
             onAnimationComplete={() => {
-              if (i === (numCards || 0) - 1) {
+              if (i === numCards - 1) {
                 setIsAnimating(false);
                 onExitComplete();
               }

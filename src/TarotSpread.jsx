@@ -27,6 +27,9 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
     drawSpread,
     handleAnimationStart,
     handleMonitorOutput,
+    currentResponse,
+    mistralError,
+    fullResponse
   } = spreadContext;
 
   const memoizedRobot = useMemo(() => (
@@ -86,8 +89,8 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
             <LoadingState />
-          ) : error ? (
-            <ErrorState error={error} />
+          ) : error || mistralError ? (
+            <ErrorState error={error || mistralError} />
           ) : (
             <>
               <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
@@ -103,6 +106,11 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
                       {memoizedCardReveal}
                     </section>
                   </div>
+                </div>
+              )}
+              {isStreaming && (
+                <div className="fixed bottom-0 left-0 right-0 bg-white p-4 overflow-y-auto max-h-60">
+                  <p>{currentResponse || fullResponse}</p>
                 </div>
               )}
             </>

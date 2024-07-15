@@ -27,13 +27,15 @@ export const useSpread = (spreadType, selectedLanguage) => {
     setIsStreaming(false);
   }, []);
 
-  const { isLoading: isLoadingMistral, handleSubmit, resetResponse } = useMistralResponse(
-    (content) => {
-      handleNewResponse(content);
-      handleMonitorOutput(content);
-    },
-    handleResponseComplete,
-    selectedLanguage
+  const handleNewResponse = useCallback((content) => {
+    setCurrentResponse(prevResponse => prevResponse + content);
+    setMonitorOutput(prevOutput => prevOutput + content);
+    setIsStreaming(true);
+  }, []);
+
+  const { isLoading: isLoadingMistral, handleSubmit, fullResponse, error: mistralError } = useMistralResponse(
+    handleNewResponse,
+    handleResponseComplete
   );
 
   const fetchSpread = useCallback(async () => {
@@ -139,19 +141,13 @@ export const useSpread = (spreadType, selectedLanguage) => {
   const handleAnimationStart = useCallback(() => {
     setAnimationStarted(true);
   }, []);
-
-  const handleNewResponse = useCallback((content) => {
-    setCurrentResponse(prevResponse => prevResponse + content);
-    setMonitorOutput(prevOutput => prevOutput + content);
-    setIsStreaming(true);
-  }, []);
-
   const handleDrawClick = useCallback(() => {
-    resetResponse();
+    setCurrentResponse('');
+    setMonitorOutput('');
     fetchSpread().then(() => {
       handleSubmit(mostCommonCards);
     });
-  }, [fetchSpread, handleSubmit, mostCommonCards, resetResponse]);
+  }, [fetchSpread, handleSubmit, mostCommonCards, setCurrentResponse, setMonitorOutput]);
 
   return {
     positions,
@@ -178,6 +174,8 @@ export const useSpread = (spreadType, selectedLanguage) => {
     handleAnimationStart,
     handleDrawClick,
     handleSubmit,
-    setRevealedCards
+    setRevealedCards,
+    mistralError,
+    fullResponse
   };
 };

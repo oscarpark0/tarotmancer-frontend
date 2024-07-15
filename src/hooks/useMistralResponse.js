@@ -12,11 +12,18 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
         setStreamComplete(false);
         setFullResponse('');
 
+        console.log('Attempting to connect to:', `${process.env.REACT_APP_BASE_URL}/mistral_stream?message=${encodeURIComponent(message)}`);
+
         const eventSource = new EventSource(`${process.env.REACT_APP_BASE_URL}/mistral_stream?message=${encodeURIComponent(message)}`, {
             withCredentials: true,
         });
 
+        eventSource.onopen = (event) => {
+            console.log('EventSource connected');
+        };
+
         eventSource.onmessage = (event) => {
+            console.log('Received message:', event.data);
             if (event.data === '[DONE]') {
                 eventSource.close();
                 setStreamComplete(true);
@@ -32,8 +39,9 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
 
         eventSource.onerror = (err) => {
             console.error('EventSource failed:', err);
+            console.error('EventSource readyState:', eventSource.readyState);
             eventSource.close();
-            setError('Failed to connect to the server');
+            setError(`Failed to connect to the server: ${err.message}`);
             setIsLoading(false);
         };
     }, [onResponseComplete, fullResponse, onNewResponse]);

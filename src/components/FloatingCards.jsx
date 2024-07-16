@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
@@ -36,7 +36,7 @@ function FloatingCards({ monitorPosition, isMobile }) {
     const baseScale = isMobile ? 0.01 : 0.015; // Reduced scale for smaller cards
     const baseLeft = '-50%';
     const topOffset = '6%'; // Moved up from 50% to 40%
-    
+
     if (numCards === 3) {
       // Three Card Spread
       const threeCardSpacing = isMobile ? '8vw' : '6vw';
@@ -51,7 +51,7 @@ function FloatingCards({ monitorPosition, isMobile }) {
       const celticBaseScale = isMobile ? baseScale * 0.9 : baseScale;
       const spacing = isMobile ? '12vw' : '9vw';
       const verticalSpacing = isMobile ? '8vh' : '12vh';
-      
+
       return [
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) rotate(90deg) scale(${crossCardScale * 0.7})` },
@@ -67,16 +67,23 @@ function FloatingCards({ monitorPosition, isMobile }) {
     }
   }, [numCards]);
 
+  const handleAnimationComplete = useCallback((index) => {
+    if (index === numCards - 1) {
+      setIsAnimating(false);
+      onExitComplete();
+    }
+  }, [numCards, onExitComplete]);
+
   return (
     <div className={`floating-cards ${isAnimating ? 'dealing' : ''} ${isMobile ? 'mobile' : ''}`}>
-      {isAnimating && Array.from({ length: numCards }).map((_, i) => {
-        const position = cardPositions[i];
+      {isAnimating && Array.from({ length: numCards }).map((_, index) => {
+        const position = cardPositions[index];
         return (
           <motion.img
-            key={i}
+            key={index}
             src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
             alt="Tarot Card"
-            className={`floating-card card-${i + 1}`}
+            className={`floating-card card-${index + 1}`}
             initial={{
               opacity: 0,
               x: '50%',
@@ -94,20 +101,14 @@ function FloatingCards({ monitorPosition, isMobile }) {
             transition={{
               duration: 2,
               times: [0, 0.5, 1],
-              delay: i * 0.1,
+              delay: index * 0.1,
               ease: "easeInOut",
             }}
             style={{
               position: 'absolute',
               transform: position.transform,
             }}
-            onAnimationComplete={() => {
-              const currentIndex = i;  // Capture the current index
-              if (currentIndex === numCards - 1) {
-                setIsAnimating(false);
-                onExitComplete();
-              }
-            }}
+            onAnimationComplete={() => handleAnimationComplete(index)}
           />
         );
       })}
@@ -115,4 +116,4 @@ function FloatingCards({ monitorPosition, isMobile }) {
   );
 }
 
-export default FloatingCards;
+export default React.memo(FloatingCards);

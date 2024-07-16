@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import './CardReveal.css';
 import { useSpreadContext } from '../contexts/SpreadContext';
 
-const CardReveal = ({ isMobile, className }) => {
+const CardReveal = React.memo(({ isMobile, className }) => {
   const {
     cards,
     revealCards,
@@ -58,7 +58,7 @@ const CardReveal = ({ isMobile, className }) => {
     }
   }, [cards.length]);
 
-  const getTooltipPosition = (index, totalCards) => {
+  const getTooltipPosition = useCallback((index, totalCards) => {
     if (totalCards === 3) {
       return index === 1 ? 'bottom' : 'top';
     } else {
@@ -70,26 +70,26 @@ const CardReveal = ({ isMobile, className }) => {
       if (index === 5) return 'top';
       return index % 2 === 0 ? 'left' : 'left';
     }
-  };
+  }, []);
 
-  const handleMouseEnter = (index) => {
+  const handleMouseEnter = useCallback((index) => {
     setHoveredCard(index);
-  };
+  }, []);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     setHoveredCard(null);
-  };
+  }, []);
 
   useEffect(() => {
     let timer;
     if (revealCards && (flippedCards < cards.length || revealedCards < cards.length)) {
       if (flippedCards < cards.length) {
         timer = setTimeout(() => {
-          setFlippedCards(flippedCards + 1);
+          setFlippedCards(prev => prev + 1);
         }, 135);
       } else if (revealedCards < cards.length) {
         timer = setTimeout(() => {
-          setRevealedCards(revealedCards + 1);
+          setRevealedCards(prev => prev + 1);
         }, 300);
       }
     }
@@ -170,6 +170,6 @@ const CardReveal = ({ isMobile, className }) => {
       ))}
     </div>
   );
-};
+});
 
 export default CardReveal;

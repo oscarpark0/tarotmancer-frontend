@@ -1,5 +1,5 @@
 // src/TarotSpread.jsx
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useCallback } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
@@ -24,14 +24,14 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => 
     isLoading,
     isStreaming,
     handleExitComplete,
-    handleSubmit,
-    handleDrawClick,
-    handleAnimationStart,
-    handleMonitorOutput,
     currentResponse,
     mistralError,
     fullResponse
   } = spreadContext;
+
+  const memoizedHandleExitComplete = useCallback(() => {
+    handleExitComplete();
+  }, [handleExitComplete]);
 
   const memoizedRobot = useMemo(() => (
     <Robot
@@ -43,20 +43,12 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => 
       isDarkMode={isDarkMode}
       cardPositions={positions}
       finalCardPositions={positions}
-      onExitComplete={handleExitComplete}
-      dealingComplete={() => {}} // Placeholder function
+      onExitComplete={memoizedHandleExitComplete}
       formRef={formRef}
-      onSubmitInput={handleSubmit}
-      fetchSpread={handleDrawClick}
-      onNewResponse={() => {}} // Placeholder function
-      onResponseComplete={() => {}} // Placeholder function
-      onAnimationStart={handleAnimationStart}
-      onStreamingStateChange={() => {}} // Placeholder function
-      onMonitorOutput={handleMonitorOutput}
       input={input}
       isDrawing={isDrawing}
     />
-  ), [spreadContext, selectedSpread, handleSpreadSelect, selectedLanguage, isMobile, isDarkMode, positions, handleExitComplete, handleSubmit, handleDrawClick, handleAnimationStart, handleMonitorOutput, input, isDrawing]);
+  ), [spreadContext, selectedSpread, handleSpreadSelect, selectedLanguage, isMobile, isDarkMode, positions, memoizedHandleExitComplete, input, isDrawing]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

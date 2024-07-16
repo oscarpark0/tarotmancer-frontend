@@ -21,23 +21,23 @@ const CommandTerminal = forwardRef(({ isMobile }, ref) => {
     isRequesting
   } = useSpreadContext();
 
-  const getTranslation = (key) => {
+  const getTranslation = useCallback((key) => {
     if (!buttonTranslations[key]) {
       console.warn(`Translation key "${key}" not found`);
       return key;
     }
     return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'] || key;
-  };
+  }, [selectedLanguage]);
 
   const handleInputChange = useCallback((e) => {
     setInput(e.target.value);
   }, []);
 
-  const handleSubmitWrapper = (e) => {
+  const handleSubmitWrapper = useCallback((e) => {
     e.preventDefault();
     handleSubmit(mostCommonCards, input);
     setInput('');
-  };
+  }, [handleSubmit, mostCommonCards, input]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>

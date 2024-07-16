@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, memo, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, memo, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
@@ -43,13 +43,6 @@ const Robot = memo(({
   finalCardPositions,
   onExitComplete,
   formRef,
-  onSubmitInput,
-  fetchSpread,
-  onNewResponse,
-  onResponseComplete,
-  onAnimationStart,
-  onStreamingStateChange,
-  onMonitorOutput,
   input,
   isDrawing,
 }) => {
@@ -75,18 +68,31 @@ const Robot = memo(({
   const commandTerminalRef = useRef(null);
   useLanguage();
 
-  useEffect(() => {
-    if (dealCards) {
-      setTimeout(handleExitComplete, 2000);
-    }
-  }, [dealCards, handleExitComplete]);
+  const memoizedHandleExitComplete = useCallback(() => {
+    handleExitComplete();
+  }, [handleExitComplete]);
+
+  const memoizedHandleSubmit = useCallback((input) => {
+    handleSubmit(mostCommonCards, input);
+  }, [handleSubmit, mostCommonCards]);
+
+  const memoizedHandleDrawClick = useCallback(() => {
+    handleDrawClick();
+  }, [handleDrawClick]);
 
   useEffect(() => {
-    const handleResize = () => {
+    if (dealCards) {
+      const timer = setTimeout(memoizedHandleExitComplete, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [dealCards, memoizedHandleExitComplete]);
+
+  useEffect(() => {
+    const handleResize = debounce(() => {
       if (commandTerminalRef.current) {
         debouncedAdjustFontSize();
       }
-    };
+    }, 100);
 
     window.addEventListener('resize', handleResize);
     return () => {
@@ -100,9 +106,9 @@ const Robot = memo(({
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {
-      handleSubmit(mostCommonCards);
+      memoizedHandleSubmit(mostCommonCards);
     }
-  }, [dealingComplete, mostCommonCards, handleSubmit]);
+  }, [dealingComplete, mostCommonCards, memoizedHandleSubmit]);
 
   return (
     <motion.div
@@ -152,9 +158,9 @@ const Robot = memo(({
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
-        handleSubmit={handleSubmit}
+        handleSubmit={memoizedHandleSubmit}
         isLoading={isLoadingMistral}
-        handleDrawClick={handleDrawClick}
+        handleDrawClick={memoizedHandleDrawClick}
         isDrawing={isDrawing}
       />
     </motion.div>

@@ -102,7 +102,8 @@ function FloatingCards({ monitorPosition, isMobile }) {
               transform: position.transform,
             }}
             onAnimationComplete={() => {
-              if (i === numCards - 1) {
+              const currentIndex = i;  // Capture the current index
+              if (currentIndex === numCards - 1) {
                 setIsAnimating(false);
                 onExitComplete();
               }

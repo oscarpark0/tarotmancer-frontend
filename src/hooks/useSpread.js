@@ -59,7 +59,11 @@ export const useSpread = (spreadType, selectedLanguage) => {
       const baseUrl = process.env.REACT_APP_BASE_URL;
       const url = `${baseUrl}/${endpoint}`;
       
-      const response = await fetch(url, { method: 'GET', headers });
+      const response = await fetch(url, { 
+        method: 'GET', 
+        headers,
+        credentials: 'include'
+      });
 
       if (!response.ok) {
         const errorText = await response.text();

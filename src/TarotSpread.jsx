@@ -13,6 +13,8 @@ import { ErrorState } from './components/ErrorState';
 const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => {
   const { selectedSpread, handleSpreadSelect, selectedLanguage } = useAppContext();
   const spreadContext = useSpreadContext();
+  const { error } = spreadContext;
+
   const [input] = useState('');
   const [isDrawing] = useState(false);
   const formRef = useRef(null);
@@ -20,7 +22,6 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => 
   const {
     positions,
     isLoading,
-    error,
     isStreaming,
     handleExitComplete,
     handleSubmit,
@@ -73,6 +74,15 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => 
       className=""
     />
   ), [spreadContext, isMobile]);
+
+  if (error) {
+    return (
+      <div className="error-message">
+        <h2>Error</h2>
+        <p>{error.message}</p>
+      </div>
+    );
+  }
 
   return (
     <ErrorBoundary>

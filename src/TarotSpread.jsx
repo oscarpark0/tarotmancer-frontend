@@ -24,7 +24,7 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
     isStreaming,
     handleExitComplete,
     handleSubmit,
-    drawSpread,
+    handleDrawClick,
     handleAnimationStart,
     handleMonitorOutput,
     currentResponse,
@@ -46,7 +46,7 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
       dealingComplete={() => {}} // Placeholder function
       formRef={formRef}
       onSubmitInput={handleSubmit}
-      fetchSpread={drawSpread}
+      fetchSpread={handleDrawClick}
       onNewResponse={() => {}} // Placeholder function
       onResponseComplete={() => {}} // Placeholder function
       onAnimationStart={handleAnimationStart}
@@ -55,7 +55,7 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
       input={input}
       isDrawing={isDrawing}
     />
-  ), [spreadContext, selectedSpread, handleSpreadSelect, selectedLanguage, isMobile, isDarkMode, positions, handleExitComplete, handleSubmit, drawSpread, handleAnimationStart, handleMonitorOutput, input, isDrawing]);
+  ), [spreadContext, selectedSpread, handleSpreadSelect, selectedLanguage, isMobile, isDarkMode, positions, handleExitComplete, handleSubmit, handleDrawClick, handleAnimationStart, handleMonitorOutput, input, isDrawing]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -122,9 +122,11 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
 });
 
 const TarotSpread = ({ isMobile, isDarkMode, spreadType }) => (
-  <SpreadProvider spreadType={spreadType} selectedLanguage="en">
-    <TarotSpreadContent isMobile={isMobile} isDarkMode={isDarkMode} />
-  </SpreadProvider>
+  <ErrorBoundary>
+    <SpreadProvider spreadType={spreadType} selectedLanguage="en">
+      <TarotSpreadContent isMobile={isMobile} isDarkMode={isDarkMode} />
+    </SpreadProvider>
+  </ErrorBoundary>
 );
 
 export default TarotSpread;

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { generateCelticCrossPositions, generateThreeCardPositions } from '../utils/cardPositions';
 import { useMistralResponse } from './useMistralResponse';
@@ -33,10 +33,12 @@ export const useSpread = (spreadType, selectedLanguage) => {
     setIsStreaming(true);
   }, []);
 
-  const { isLoading: isLoadingMistral, handleSubmit, fullResponse, error: mistralError } = useMistralResponse(
-    handleNewResponse,
-    handleResponseComplete
-  );
+  const {
+    isLoading: isLoadingMistral,
+    handleSubmit: handleMistralSubmit,
+    fullResponse,
+    error: mistralError
+  } = useMistralResponse(handleNewResponse, handleResponseComplete);
 
   const fetchSpread = useCallback(async () => {
     setIsLoading(true);
@@ -108,11 +110,11 @@ export const useSpread = (spreadType, selectedLanguage) => {
     setDealingComplete(true);
     if (!isRequesting) {
       setIsRequesting(true);
-      handleSubmit(mostCommonCards).finally(() => {
+      handleMistralSubmit(mostCommonCards).finally(() => {
         setIsRequesting(false);
       });
     }
-  }, [mostCommonCards, isRequesting, handleSubmit]);
+  }, [mostCommonCards, isRequesting, handleMistralSubmit]);
 
   const handleExitComplete = useCallback(() => {
     setFloatingCardsComplete(true);
@@ -141,13 +143,25 @@ export const useSpread = (spreadType, selectedLanguage) => {
   const handleAnimationStart = useCallback(() => {
     setAnimationStarted(true);
   }, []);
+
   const handleDrawClick = useCallback(() => {
     setCurrentResponse('');
     setMonitorOutput('');
     fetchSpread().then(() => {
-      handleSubmit(mostCommonCards);
+      if (mostCommonCards) {
+        handleMistralSubmit(mostCommonCards);
+      }
     });
-  }, [fetchSpread, handleSubmit, mostCommonCards, setCurrentResponse, setMonitorOutput]);
+  }, [fetchSpread, handleMistralSubmit, mostCommonCards]);
+
+  useEffect(() => {
+    if (dealingComplete && !isRequesting) {
+      setIsRequesting(true);
+      handleMistralSubmit(mostCommonCards).finally(() => {
+        setIsRequesting(false);
+      });
+    }
+  }, [dealingComplete, isRequesting, handleMistralSubmit, mostCommonCards]);
 
   return {
     positions,
@@ -173,7 +187,7 @@ export const useSpread = (spreadType, selectedLanguage) => {
     drawSpread,
     handleAnimationStart,
     handleDrawClick,
-    handleSubmit,
+    handleSubmit: handleMistralSubmit,
     setRevealedCards,
     mistralError,
     fullResponse

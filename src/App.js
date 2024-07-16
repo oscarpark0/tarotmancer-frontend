@@ -11,6 +11,7 @@ import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 import { AppContextProvider, useAppContext } from './contexts/AppContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 const TarotSpread = lazy(() => import('./TarotSpread'));
 
@@ -79,9 +80,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AppContextProvider>
-      <AppContent />
-    </AppContextProvider>
+    <ErrorBoundary>
+      <AppContextProvider>
+        <AppContent />
+      </AppContextProvider>
+    </ErrorBoundary>
   );
 }
 

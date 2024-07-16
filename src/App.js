@@ -11,7 +11,7 @@ import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 import { AppContextProvider, useAppContext } from './contexts/AppContext';
-import { ErrorBoundary } from './components/ErrorBoundary.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 const TarotSpread = lazy(() => import('./TarotSpread'));
 

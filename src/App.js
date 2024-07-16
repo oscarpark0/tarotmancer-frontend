@@ -13,6 +13,7 @@ import { useMediaQuery } from 'react-responsive';
 import { AppContextProvider, useAppContext } from './contexts/AppContext';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 
+// Lazy load TarotSpread component to improve initial load time
 const TarotSpread = lazy(() => import('./TarotSpread'));
 
 function AppContent() {

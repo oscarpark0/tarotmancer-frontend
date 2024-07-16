@@ -1,6 +1,6 @@
 // src/TarotSpread.jsx
 import React, { useMemo, useRef, useState } from 'react';
-import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
+import AnimatedGridPattern from './components/AnimatedGridPattern';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
@@ -10,7 +10,7 @@ import { SpreadProvider, useSpreadContext } from './contexts/SpreadContext';
 import { LoadingState } from './components/LoadingState';
 import { ErrorState } from './components/ErrorState';
 
-const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
+const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => {
   const { selectedSpread, handleSpreadSelect, selectedLanguage } = useAppContext();
   const spreadContext = useSpreadContext();
   const [input] = useState('');
@@ -122,11 +122,9 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode }) => {
 });
 
 const TarotSpread = ({ isMobile, isDarkMode, spreadType }) => (
-  <ErrorBoundary>
-    <SpreadProvider spreadType={spreadType} selectedLanguage="en">
-      <TarotSpreadContent isMobile={isMobile} isDarkMode={isDarkMode} />
-    </SpreadProvider>
-  </ErrorBoundary>
+  <SpreadProvider spreadType={spreadType}>
+    <TarotSpreadContent isMobile={isMobile} isDarkMode={isDarkMode} spreadType={spreadType} />
+  </SpreadProvider>
 );
 
 export default TarotSpread;

@@ -39,9 +39,8 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
 
         eventSource.onerror = (err) => {
             console.error('EventSource failed:', err);
-            console.error('EventSource readyState:', eventSource.readyState);
             eventSource.close();
-            setError(`Failed to connect to the server: ${err.message}`);
+            setError(`Failed to connect to the server. Please try again later.`);
             setIsLoading(false);
         };
     }, [onResponseComplete, fullResponse, onNewResponse]);

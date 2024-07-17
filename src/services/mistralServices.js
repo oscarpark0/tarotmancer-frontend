@@ -1,35 +1,43 @@
-import { MIST_API_KEY } from '../utils/config';
-
 export const getMistralResponse = async (message, onNewResponse) => {
   try {
-    const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${MIST_API_KEY}`
       },
-      body: JSON.stringify({
-        model: "open-mixtral-8x22b",
-        messages: [{ role: "user", content: message }],
-        stream: true
-      })
+      body: JSON.stringify({ message }),
+      credentials: 'include',
     });
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
 
     while (true) {
-      const { done, value } = await reader.read();
+      const { value, done } = await reader.read();
       if (done) break;
 
-      const chunk = decoder.decode(value);
+      const chunk = decoder.decode(value, { stream: true });
       const lines = chunk.split('\n');
-      
+
       for (const line of lines) {
-        if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-          const jsonData = JSON.parse(line.slice(6));
-          if (jsonData.choices[0].delta.content) {
-            onNewResponse(jsonData.choices[0].delta.content);
+        if (line.startsWith('data: ')) {
+          const data = line.slice(6).trim();
+          if (data === '[DONE]') {
+            return;
+          }
+          try {
+            if (data.startsWith('{') && data.endsWith('}')) {
+              const parsed = JSON.parse(data);
+              const content = parsed.choices[0].delta.content;
+              if (content) {
+                onNewResponse(content);
+              }
+            } else {
+              onNewResponse(data);
+            }
+          } catch (e) {
+            console.error('Error parsing SSE data:', e);
+            onNewResponse(data);
           }
         }
       }

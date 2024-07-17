@@ -31,7 +31,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
         setFullResponse('');
 
         try {
-            const response = await fetchWithRetry(`${process.env.REACT_APP_BASE_URL}/chat`, {
+            const response = await fetchWithRetry(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

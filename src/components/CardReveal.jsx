@@ -1,17 +1,9 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import './CardReveal.css';
-import { useSpreadContext } from '../contexts/SpreadContext';
 
-const CardReveal = React.memo(({ isMobile, className }) => {
-  const {
-    cards,
-    revealCards,
-    dealingComplete,
-    shouldDrawNewSpread,
-  } = useSpreadContext();
-
+const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, className }) => {
   const [revealedCards, setRevealedCards] = useState(0);
   const [flippedCards, setFlippedCards] = useState(0);
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -58,7 +50,7 @@ const CardReveal = React.memo(({ isMobile, className }) => {
     }
   }, [cards.length]);
 
-  const getTooltipPosition = useCallback((index, totalCards) => {
+  const getTooltipPosition = (index, totalCards) => {
     if (totalCards === 3) {
       return index === 1 ? 'bottom' : 'top';
     } else {
@@ -70,26 +62,26 @@ const CardReveal = React.memo(({ isMobile, className }) => {
       if (index === 5) return 'top';
       return index % 2 === 0 ? 'left' : 'left';
     }
-  }, []);
+  };
 
-  const handleMouseEnter = useCallback((index) => {
+  const handleMouseEnter = (index) => {
     setHoveredCard(index);
-  }, []);
+  };
 
-  const handleMouseLeave = useCallback(() => {
+  const handleMouseLeave = () => {
     setHoveredCard(null);
-  }, []);
+  };
 
   useEffect(() => {
     let timer;
     if (revealCards && (flippedCards < cards.length || revealedCards < cards.length)) {
       if (flippedCards < cards.length) {
         timer = setTimeout(() => {
-          setFlippedCards(prev => prev + 1);
+          setFlippedCards(flippedCards + 1);
         }, 135);
       } else if (revealedCards < cards.length) {
         timer = setTimeout(() => {
-          setRevealedCards(prev => prev + 1);
+          setRevealedCards(revealedCards + 1);
         }, 300);
       }
     }
@@ -155,14 +147,35 @@ const CardReveal = React.memo(({ isMobile, className }) => {
             {hoveredCard === index && (
               <motion.div
                 className={`card-tooltip ${getTooltipPosition(index, cards.length)} ${isMobile ? 'mobile' : ''}`}
-                initial={{ opacity: 0, y: isMobile ? 5 : 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: isMobile ? 5 : 10 }}
-                transition={{ duration: 0.2 }}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <h3 className="tooltip-title">{card.name}</h3>
-                <p className="tooltip-position">{card.position}</p>
-                <p className="tooltip-content">{card.tooltip}</p>
+                <motion.h3 
+                  className="tooltip-title"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.2 }}
+                >
+                  {card.name}
+                </motion.h3>
+                <motion.p 
+                  className="tooltip-position"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.2 }}
+                >
+                  {card.position}
+                </motion.p>
+                <motion.p 
+                  className="tooltip-content"
+                  initial={{ y: -5, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.2 }}
+                >
+                  {card.tooltip}
+                </motion.p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -170,6 +183,6 @@ const CardReveal = React.memo(({ isMobile, className }) => {
       ))}
     </div>
   );
-});
+};
 
 export default CardReveal;

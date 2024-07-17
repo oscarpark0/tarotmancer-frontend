@@ -3,8 +3,21 @@ export const formatResponse = (text) => {
     console.warn('formatResponse received non-string input:', text);
     return '';
   }
-  console.log("Formatting text:", text);
-  return text; // Temporarily return the text without modifications
+
+  const replacements = [
+    [/\n{3,}/g, '\n\n'],
+    [/([.!?])\s*(?=[A-Z])/g, '$1\n\n'],
+    [/^(-|\d+\.)\s*/gm, '  $1 '],
+    [/\*\*(.*?)\*\*/g, '<strong>$1</strong>'],
+    [/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'],
+    [/(\d+\.)\s+([A-Z])/g, '$1\n\n$2'],
+    [/([A-Z][a-z]+:)/g, '\n$1'],
+    [/(\w+\s*\((?:up|down)right\))/g, '<em>$1</em>'],
+    [/^Dear querent,/gm, '\n\nDear querent,'],
+    [/Blessed be\./g, '\n\nBlessed be.']
+  ];
+
+  return replacements.reduce((acc, [regex, replacement]) => acc.replace(regex, replacement), text);
 };
 
 // Additional utility functions for text formatting

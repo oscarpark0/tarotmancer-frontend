@@ -1,3 +1,4 @@
+
 .command-terminal {
   position: absolute;
   left: 0; /* Align with the left edge of the robot container */
@@ -5,9 +6,8 @@
   color: #33ff33;
   z-index: 1000;
   background: radial-gradient(circle at 50%, #bdbdbd, #a9a9a9, #696969);
-  border-radius: 15px;
+  border-radius: 9px;
   border-style: inset;
-  border-width: 2px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
   padding: 20px;
   width: 500px; /* Match the width of the robot container */
@@ -48,8 +48,6 @@
   border-radius: 10px 10px 0 0;
   overflow: hidden;
   position: relative;
-  border-width: 5px;
-  border-style: inset;
 }
 
 .terminal-content {
@@ -90,8 +88,6 @@
     margin-top: 0;
     padding: 10px;
     border-top: 2px solid #444;
-    border-width: 2.5px;
-    border-style: inset;
   }
 
   .terminal-screen {
@@ -99,8 +95,6 @@
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - var(--robot-height) - 60px);
-    border-width: 2px;
-    border-style: inset;
   }
 
   .terminal-content {
@@ -305,53 +299,31 @@
   width: 100%;
 }
 
-.language-selector-disabled {
-  width: 25%;
+.terminal-language-selector select {
+  width: 25%; /* Change this to adjust the width */
   padding: 0.5px;
-  background-color: #0a0a0a;
+  background: #0a0a0a url("data:image/svg+xml;utf8,<svg fill='%2333ff33' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat 98% 50%;
   color: #33ff33;
   border: 1px solid #33ff33;
   font-size: 12px;
-  opacity: 0.6;
-  cursor: not-allowed;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
+@media (max-width: 768px) {
+  .robot-container {
+    margin-top: -40px; 
+  }
 
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 200px;
-  background-color: #0a0a0a;
-  color: #33ff33;
-  text-align: right;
-  border-radius: 6px;
-  padding: 5px;
-  position: relative;
-  z-index: 100000000000000000000;
-  top: 1%;
-  left: 0;
-  margin-left: -100px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
 
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: transparent transparent #0a0a0a transparent;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
+  .main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding-top: 10px; 
+  }
 }
 
 .response-output {

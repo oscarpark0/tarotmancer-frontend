@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -6,30 +7,33 @@ import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation.tsx';
-import { LanguageProvider } from './components/LanguageSelector';
+import LanguageSelector, { LanguageProvider } from './components/LanguageSelector';
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
-import { AppContextProvider, useAppContext } from './contexts/AppContext';
-import ErrorBoundary from './components/ErrorBoundary.jsx';
 
-// Lazy load TarotSpread component to improve initial load time
-const TarotSpread = lazy(() => import('./TarotSpread'));
+const CelticSpread = lazy(() => import('./CelticSpread'));
+const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
 
-function AppContent() {
+function App() {
   const kindeAuth = useKindeAuth();
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
-  const isMobileScreen = useMediaQuery({ maxWidth: 767 });
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const { setSelectedLanguage, selectedSpread } = useAppContext();
 
   useEffect(() => {
+    // Handle the authentication callback
     if (window.location.search.includes('code=') && kindeAuth?.handleRedirectCallback) {
       kindeAuth.handleRedirectCallback().catch(error => {
         console.error('Authentication callback error:', error);
+        // Consider displaying this error to the user
       });
     }
   }, [kindeAuth]);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const isMobileScreen = useMediaQuery({ maxWidth: 767 });
+  const [selectedSpread, setSelectedSpread] = useState('celtic');
+  const [canAccessCohere, setCanAccessCohere] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
@@ -39,36 +43,97 @@ function AppContent() {
     document.body.classList.toggle('dark-mode', isDarkMode);
   }, [isDarkMode]);
 
+  const handleSpreadSelect = useCallback((spread) => {
+    setSelectedSpread(spread);
+  }, []);
+
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const memoizedHeader = useMemo(() => (
     (!isMobileScreen || !isAuthenticated) && (
-      <Header
-        isAuthenticated={isAuthenticated}
-        isDarkMode={isDarkMode}
-        toggleDarkMode={toggleDarkMode}
-      />
+      <header className="app-header">
+        <div className="header-content">
+          <h1 className="app-title"><span>TarotMancer</span></h1>
+          <div className="auth-container">
+            <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+            {isAuthenticated ? (
+              <>
+                <div className="header-language-selector">
+                  <LanguageSelector />
+                </div>
+                <SubscribeButton />
+                <LogoutButton />
+              </>
+            ) : (
+              <>
+                <div className="header-language-selector">
+                  <LanguageSelector />
+                </div>
+                <LoginButton />
+              </>
+            )}
+          </div>
+        </div>
+      </header>
     )
   ), [isMobileScreen, isAuthenticated, isDarkMode, toggleDarkMode]);
 
   const memoizedWelcomeMessage = useMemo(() => (
-    <WelcomeMessage isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+    <div className="welcome-message">
+      <AnimatedGridPattern className="absolute inset-0 z-0" isDarkMode={isDarkMode} />
+      <div className="relative z-10 welcome-content">
+        <div className="animation-container">
+          <TypingAnimation duration={100}>TarotMancer</TypingAnimation>
+        </div>
+        <div className="welcome-buttons">
+          <LoginButton />
+          <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+        </div>
+      </div>
+    </div>
   ), [isDarkMode, toggleDarkMode]);
 
+  const spreadProps = useMemo(() => ({
+    isMobile,
+    onSpreadSelect: handleSpreadSelect,
+    selectedSpread,
+    canAccessCohere,
+    setCanAccessCohere,
+    kindeAuth,
+  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, kindeAuth]);
+
+
   return (
-    <LanguageProvider onLanguageChange={setSelectedLanguage}>
+    <LanguageProvider>
       <Router>
         <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ height: '100vh', overflow: 'hidden' }}>
           {memoizedHeader}
           <Routes>
-            <Route path="/tarot-spread" element={
+            <Route path="/celtic-spread" element={
               isAuthenticated ? (
                 <Suspense fallback={<div>Loading...</div>}>
-                  <TarotSpread isDarkMode={isDarkMode} isMobile={isMobileScreen} spreadType={selectedSpread} />
+                  <CelticSpread {...spreadProps} isDarkMode={isDarkMode} />
+                </Suspense>
+              ) : <Navigate to="/" />
+            } />
+            <Route path="/three-card-spread" element={
+              isAuthenticated ? (
+                <Suspense fallback={<div>Loading...</div>}>
+                  <ThreeCardSpread {...spreadProps} isDarkMode={isDarkMode} />
                 </Suspense>
               ) : <Navigate to="/" />
             } />
             <Route path="/" element={
               isAuthenticated ? (
-                <Navigate to="/tarot-spread" />
+                <Navigate to={selectedSpread === 'celtic' ? "/celtic-spread" : "/three-card-spread"} />
               ) : memoizedWelcomeMessage
             } />
             <Route path="/callback" element={<Navigate to="/" />} />
@@ -78,77 +143,5 @@ function AppContent() {
     </LanguageProvider>
   );
 }
-
-function App() {
-  return (
-    <ErrorBoundary>
-      <AppContextProvider>
-        <AppContent />
-      </AppContextProvider>
-    </ErrorBoundary>
-  );
-}
-
-const Header = React.memo(({ isAuthenticated, isDarkMode, toggleDarkMode }) => {
-  const { tickerMessages } = useAppContext();
-
-  return (
-    <header className="app-header">
-      <div className="header-content">
-        <h1 className="app-title"><span>TarotMancer</span></h1>
-        {!isAuthenticated && (
-          <div className="ticker-container">
-            <div className="ticker-wrapper">
-              {tickerMessages.map((message, index) => (
-                <span key={index} className="ticker-item">{message}</span>
-              ))}
-            </div>
-            <div className="ticker-wrapper">
-              {tickerMessages.map((message, index) => (
-                <span key={`duplicate-${index}`} className="ticker-item">{message}</span>
-              ))}
-            </div>
-          </div>
-        )}
-        <div className="auth-container">
-          <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-          {isAuthenticated ? (
-            <>
-              <div className="header-language-selector tooltip">
-                <button disabled className="language-selector-disabled">Language</button>
-                <span className="tooltiptext">Language selection coming soon</span>
-              </div>
-              <SubscribeButton />
-              <LogoutButton />
-            </>
-          ) : (
-            <>
-              <div className="header-language-selector tooltip">
-                <button disabled className="language-selector-disabled">Language</button>
-                <span className="tooltiptext">Language selection coming soon</span>
-              </div>
-              <LoginButton />
-            </>
-          )}
-        </div>
-      </div>
-    </header>
-  );
-});
-
-const WelcomeMessage = React.memo(({ isDarkMode, toggleDarkMode }) => (
-  <div className="welcome-message">
-    <AnimatedGridPattern className="absolute inset-0 z-0" isDarkMode={isDarkMode} />
-    <div className="relative z-10 welcome-content">
-      <div className="animation-container">
-        <TypingAnimation duration={100}>TarotMancer</TypingAnimation>
-      </div>
-      <div className="welcome-buttons">
-        <LoginButton />
-        <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      </div>
-    </div>
-  </div>
-));
 
 export default App;

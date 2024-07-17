@@ -1,12 +1,13 @@
-import React, { useEffect, useLayoutEffect, memo, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useLayoutEffect, memo } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
 import './Robot.css';
 import { debounce } from 'lodash';
+import { v4 as uuidv4 } from 'uuid';
+import { formatResponse } from '../utils/textFormatting';
 import { useLanguage } from './LanguageSelector';
-import { useSpreadContext } from '../contexts/SpreadContext';
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -37,62 +38,114 @@ const adjustFontSize = () => {
 const debouncedAdjustFontSize = debounce(adjustFontSize, 100);
 
 const Robot = memo(({
-  isMobile,
-  isDarkMode,
+  dealCards,
   cardPositions,
   finalCardPositions,
   onExitComplete,
+  revealCards,
+  shouldDrawNewSpread,
+  onMonitorOutput,
+  drawSpread,
+  dealingComplete,
+  mostCommonCards,
   formRef,
-  input,
-  isDrawing,
+  onSubmitInput,
+  selectedSpread,
+  onSpreadSelect,
+  cards = [],
+  isMobile,
+  fetchSpread,
+  onNewResponse,
+  onResponseComplete,
+  animationsComplete,
+  onAnimationStart,
+  onStreamingStateChange,
 }) => {
-  const {
-    dealCards,
-    handleExitComplete,
-    revealCards,
-    shouldDrawNewSpread,
-    drawSpread,
-    dealingComplete,
-    mostCommonCards,
-    cards,
-    selectedSpread,
-    animationsComplete,
-    handleAnimationStart,
-    isStreaming,
-    handleSubmit,
-    isLoadingMistral,
-    handleDrawClick,
-    monitorOutput,
-  } = useSpreadContext();
-
+  const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [monitorOutput, setMonitorOutput] = useState('');
+  const screenContentRef = useRef(null);
   const commandTerminalRef = useRef(null);
+  const [responses, setResponses] = useState([]);
+  const [activeTab, setActiveTab] = useState(null);
+  const robotRef = useRef(null);
+  const [isStreaming, setIsStreaming] = useState(false);
   useLanguage();
 
-  const memoizedHandleExitComplete = useCallback(() => {
-    handleExitComplete();
-  }, [handleExitComplete]);
 
-  const memoizedHandleSubmit = useCallback((input) => {
-    handleSubmit(mostCommonCards, input);
-  }, [handleSubmit, mostCommonCards]);
+  const handleResponseComplete = useCallback(() => {
+    onResponseComplete();
+    setIsStreaming(false);
+    if (onStreamingStateChange) {
+      onStreamingStateChange(false);
+    }
+  }, [onResponseComplete, onStreamingStateChange]);
 
-  const memoizedHandleDrawClick = useCallback(() => {
-    handleDrawClick();
-  }, [handleDrawClick]);
+  const handleNewResponse = useCallback((content) => {
+    setResponses(prevResponses => {
+      if (content === '') {
+        return [];
+      }
+      if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
+        const newResponse = { id: uuidv4(), content: formatResponse(content), complete: false };
+        setActiveTab(newResponse.id);
+        return [...prevResponses, newResponse];
+      } else {
+        const updatedResponses = [...prevResponses];
+        const lastResponse = updatedResponses[updatedResponses.length - 1];
+        lastResponse.content += formatResponse(content);
+        return updatedResponses;
+      }
+    });
+    setMonitorOutput(prevOutput => prevOutput + formatResponse(content));
+    onNewResponse(content);
+    setIsStreaming(true);
+    if (onStreamingStateChange) {
+      onStreamingStateChange(true);
+    }
+  }, [onNewResponse, onStreamingStateChange]);
+
+  const completeCurrentResponse = useCallback(() => {
+    setResponses(prevResponses => {
+      if (prevResponses.length > 0) {
+        const updatedResponses = [...prevResponses];
+        updatedResponses[updatedResponses.length - 1].complete = true;
+        return updatedResponses;
+      }
+      return prevResponses;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (dealingComplete) {
+      completeCurrentResponse();
+    }
+  }, [dealingComplete, completeCurrentResponse]);
 
   useEffect(() => {
     if (dealCards) {
-      const timer = setTimeout(memoizedHandleExitComplete, 2000);
-      return () => clearTimeout(timer);
+      setTimeout(onExitComplete, 2000);
     }
-  }, [dealCards, memoizedHandleExitComplete]);
+  }, [dealCards, onExitComplete]);
 
   useEffect(() => {
-    const handleResize = debounce(() => {
+    if (screenContentRef.current && robotRef.current) {
+      const screenRect = screenContentRef.current.getBoundingClientRect();
+      const robotRect = robotRef.current.getBoundingClientRect();
+      setMonitorPosition({
+        x: screenRect.x - robotRect.x,
+        y: screenRect.y - robotRect.y,
+        width: screenRect.width,
+        height: screenRect.height,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
       if (commandTerminalRef.current) {
         debouncedAdjustFontSize();
       }
-    }, 100);
+    };
 
     window.addEventListener('resize', handleResize);
     return () => {
@@ -100,19 +153,50 @@ const Robot = memo(({
     };
   }, []);
 
+  const handleMonitorOutput = useCallback((output) => {
+    setMonitorOutput(output);
+    onMonitorOutput(output);
+  }, [onMonitorOutput]);
+
   useLayoutEffect(() => {
     adjustFontSize();
   }, [monitorOutput]);
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {
-      memoizedHandleSubmit(mostCommonCards);
+      onSubmitInput(mostCommonCards);
     }
-  }, [dealingComplete, mostCommonCards, memoizedHandleSubmit]);
+  }, [dealingComplete, mostCommonCards, onSubmitInput]);
+
+  useEffect(() => {
+  }, [selectedSpread]);
+
+  useEffect(() => {
+    if (robotRef.current) {
+      const robotHeight = robotRef.current.offsetHeight;
+      document.documentElement.style.setProperty('--robot-height', `${robotHeight}px`);
+    }
+  }, []);
+
+  const handleAnimationStart = useCallback(() => {
+    onAnimationStart();
+  }, [onAnimationStart]);
+
+  useEffect(() => {
+    // This effect will run whenever isStreaming changes
+    // You can use it to trigger any actions that should occur when streaming starts or stops
+    if (isStreaming) {
+      console.log('Streaming started');
+      // Add any actions you want to occur when streaming starts
+    } else {
+      console.log('Streaming stopped');
+      // Add any actions you want to occur when streaming stops
+    }
+  }, [isStreaming]);
 
   return (
     <motion.div
-      className={`tarot-monitor ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
+      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
       style={{
         position: 'absolute',
         zIndex: isMobile ? 1000 : 100,
@@ -125,24 +209,47 @@ const Robot = memo(({
         height: 'auto',
       }}
     >
-      <CRTMonitor
-        monitorOutput={monitorOutput}
-        isStreaming={isStreaming}
-        dealCards={dealCards}
-        finalCardPositions={finalCardPositions}
-        revealCards={revealCards}
-        onExitComplete={onExitComplete}
-        shouldDrawNewSpread={shouldDrawNewSpread}
-        dealingComplete={dealingComplete}
-        cards={cards}
-        isMobile={isMobile}
-        onAnimationStart={handleAnimationStart}
-      />
+      <div ref={robotRef} className="robot-body">
+        <div className="tarotmancer-text">tarotmancer</div>
+        <div className="robot-head">
+          <div className="crt-screen">
+            <div className="screen-content" ref={screenContentRef}>
+              <FloatingCards
+                dealCards={dealCards}
+                monitorPosition={monitorPosition}
+                finalCardPositions={finalCardPositions}
+                revealCards={revealCards}
+                onExitComplete={onExitComplete}
+                shouldDrawNewSpread={shouldDrawNewSpread}
+                dealingComplete={() => {
+                  if (typeof dealingComplete === 'function') {
+                    dealingComplete();
+                  }
+                }}
+                numCards={cards.length}
+                isMobile={isMobile}
+                onAnimationStart={handleAnimationStart}
+              />
+              <div className="monitor-output">
+                {monitorOutput}
+              </div>
+              <div className="screen-overlay"></div>
+              <div className="screen-glass"></div>
+              <div className="screen-frame"></div>
+              <div className="screen-scanlines"></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <CommandTerminal
+        onMonitorOutput={handleMonitorOutput}
         drawSpread={drawSpread}
+        onSubmitInput={onSubmitInput}
         mostCommonCards={mostCommonCards}
         dealingComplete={dealingComplete}
+        formRef={formRef}
+        onSpreadSelect={onSpreadSelect}
         selectedSpread={selectedSpread}
         isMobile={isMobile}
         cards={cards}
@@ -155,61 +262,17 @@ const Robot = memo(({
           top: '100%',
           left: 0,
         }}
+        fetchSpread={fetchSpread}
+        responses={responses}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onNewResponse={handleNewResponse}
+        onResponseComplete={handleResponseComplete}
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
-        handleSubmit={memoizedHandleSubmit}
-        isLoading={isLoadingMistral}
-        handleDrawClick={memoizedHandleDrawClick}
-        isDrawing={isDrawing}
       />
     </motion.div>
-  );
-});
-
-const CRTMonitor = memo(({
-  monitorOutput,
-  isStreaming,
-  dealCards,
-  finalCardPositions,
-  revealCards,
-  onExitComplete,
-  shouldDrawNewSpread,
-  dealingComplete,
-  cards,
-  isMobile,
-  onAnimationStart,
-}) => {
-  useEffect(() => {
-    console.log("CRTMonitor monitorOutput:", monitorOutput);
-  }, [monitorOutput]);
-
-  return (
-    <div className="crt-monitor">
-      <div className="monitor-frame">
-        <div className="screen">
-          <div className="screen-content">
-            <FloatingCards
-              dealCards={dealCards}
-              finalCardPositions={finalCardPositions}
-              revealCards={revealCards}
-              onExitComplete={onExitComplete}
-              shouldDrawNewSpread={shouldDrawNewSpread}
-              dealingComplete={dealingComplete}
-              numCards={cards.length}
-              isMobile={isMobile}
-              onAnimationStart={onAnimationStart}
-            />
-            <div className={`monitor-output ${isStreaming ? 'streaming' : ''}`}>
-              <pre>{monitorOutput}</pre>
-            </div>
-            <div className="screen-overlay"></div>
-            <div className="screen-scanlines"></div>
-          </div>
-        </div>
-      </div>
-      <div className="monitor-label">tarotmancer</div>
-    </div>
   );
 });
 
@@ -220,6 +283,7 @@ Robot.propTypes = {
   onExitComplete: PropTypes.func.isRequired,
   revealCards: PropTypes.bool.isRequired,
   shouldDrawNewSpread: PropTypes.bool.isRequired,
+  onMonitorOutput: PropTypes.func.isRequired,
   drawSpread: PropTypes.func.isRequired,
   dealingComplete: PropTypes.func.isRequired,
   mostCommonCards: PropTypes.string.isRequired,
@@ -235,15 +299,6 @@ Robot.propTypes = {
   animationsComplete: PropTypes.bool.isRequired,
   onAnimationStart: PropTypes.func.isRequired,
   onStreamingStateChange: PropTypes.func.isRequired,
-  onMonitorOutput: PropTypes.func.isRequired,
-  selectedLanguage: PropTypes.string.isRequired,
-  input: PropTypes.string.isRequired,
-  isRequesting: PropTypes.bool.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  handleDrawClick: PropTypes.func.isRequired,
-  isDrawing: PropTypes.bool.isRequired,
-  monitorOutput: PropTypes.string.isRequired,
 };
 
 export default Robot;

@@ -1,11 +1,9 @@
 import React, { memo } from 'react';
-import { useAppContext } from '../contexts/AppContext';
 
-const SpreadSelector = memo(() => {
-  const { selectedSpread, handleSpreadSelect } = useAppContext();
+const SpreadSelector = memo(({ onSpreadSelect, selectedSpread }) => {
 
   const handleChange = (event) => {
-    handleSpreadSelect(event.target.value);
+    onSpreadSelect(event.target.value);
   };
 
   return (

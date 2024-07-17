@@ -20,7 +20,7 @@
     letter-spacing: 0.1em;
     text-align: left;
     font-family: 'Cinzel', 'Playfair Display', serif;
-    color: #30303f94;
+    color: #f0e68c;
     position: relative;
     overflow: hidden;
     transition: color 0.3s ease;
@@ -64,7 +64,7 @@
   }
   
   .header-language-selector select {
-    width: 100px; 
+    width: 100px; /* Adjust this value as needed */
     padding: 0.5px;
     background: #282c34 url("data:image/svg+xml;utf8,<svg fill='%23ffffff' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat 98% 50%;
     color: #33ff33;
@@ -178,137 +178,4 @@
 
   .dark-mode .welcome-message {
     background-color: #1a1a1a;
-  }
-
-  .ticker-container {
-    overflow: hidden;
-    background-color: #040507;
-    padding: 10px 0;
-    border-style: inset;
-    border-radius: 10px;
-    border-width: 6px;
-    border-color: #292525;
-    width: 25%; 
-    height: 30px; 
-    display: flex;
-    align-items: center;
-  }
-
-  .ticker-wrapper {
-    display: inline-flex;
-    white-space: nowrap;
-    animation: ticker 175s linear infinite;
-  }
-
-  .ticker-item {
-    font-family: 'Cinzel', serif;
-    font-size: 1rem;
-    color: #f0e68c;
-    margin-right: 50px;
-    text-shadow: 0 0 5px rgba(240, 230, 140, 0.7);
-  }
-
-  @keyframes ticker {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-100%);
-    }
-  }
-
-  /* Add this new rule */
-  .ticker-wrapper:nth-child(2) {
-    animation: ticker2 175s linear infinite;
-    animation-delay: -87.5s; /* Half of the animation duration */
-  }
-
-  @keyframes ticker2 {
-    0% {
-      transform: translateX(100%);
-    }
-    100% {
-      transform: translateX(0);
-    }
-  }
-
-  .dark-mode .ticker-container {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .dark-mode .ticker-item {
-    color: #8a2be2;
-    text-shadow: 0 0 5px rgba(138, 43, 226, 0.7);
-  }
-
-  @media (max-width: 767px) {
-    .ticker-container {
-      height: 30px; 
-    }
-
-    .ticker-item {
-      font-size: 0.8rem;
-    }
-  }
-
-  .language-selector-disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    padding: 5px 10px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  .dark-mode .language-selector-disabled {
-    background-color: #333;
-    border-color: #555;
-    color: #ccc;
-  }
-
-  .tooltip {
-    position: relative;
-    display: inline-block;
-  }
-
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 200px;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px;
-    position: absolute;
-    z-index: 1;
-    top: 125%;
-    left: 50%;
-    margin-left: -100px;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .tooltip .tooltiptext::after {
-    content: "";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #555 transparent;
-  }
-
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-  }
-
-  .dark-mode .tooltip .tooltiptext {
-    background-color: #f0f0f0;
-    color: #333;
-  }
-
-  .dark-mode .tooltip .tooltiptext::after {
-    border-color: transparent transparent #f0f0f0 transparent;
   }

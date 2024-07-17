@@ -8,10 +8,16 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
       body: JSON.stringify({
         model: "mistral-medium",
         messages: [{ role: "user", content: message }],
-        stream: true
+        stream: true,
+        max_tokens: 1000 // Add a max_tokens parameter
       }),
       credentials: 'include',
     });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`API request failed: ${errorData.message}`);
+    }
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -46,6 +52,8 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
     }
   } catch (error) {
     console.error('Error:', error);
+    onNewResponse(`Error: ${error.message}`);
+    onResponseComplete();
     throw error;
   }
 };

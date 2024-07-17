@@ -13,7 +13,7 @@ import { ErrorState } from './components/ErrorState';
 const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => {
   const { selectedSpread, handleSpreadSelect, selectedLanguage } = useAppContext();
   const spreadContext = useSpreadContext();
-  const { error } = spreadContext;
+  const { error, handleExitComplete } = spreadContext;
 
   const [input] = useState('');
   const [isDrawing] = useState(false);
@@ -23,14 +23,17 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => 
     positions,
     isLoading,
     isStreaming,
-    handleExitComplete,
     currentResponse,
     mistralError,
     fullResponse
   } = spreadContext;
 
   const memoizedHandleExitComplete = useCallback(() => {
-    handleExitComplete();
+    if (typeof handleExitComplete === 'function') {
+      handleExitComplete();
+    } else {
+      console.error('handleExitComplete is not a function in spreadContext');
+    }
   }, [handleExitComplete]);
 
   const memoizedRobot = useMemo(() => (
@@ -56,8 +59,9 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => 
       monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
       numCards={selectedSpread === 'celtic' ? 10 : 3}
       isMobile={isMobile}
+      onExitComplete={memoizedHandleExitComplete}
     />
-  ), [spreadContext, selectedSpread, isMobile]);
+  ), [spreadContext, selectedSpread, isMobile, memoizedHandleExitComplete]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal

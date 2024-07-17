@@ -5,11 +5,10 @@ import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 import { useSpreadContext } from '../contexts/SpreadContext';
 
-function FloatingCards({ monitorPosition, isMobile }) {
+function FloatingCards({ monitorPosition, isMobile, onExitComplete }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const {
     dealCards,
-    onExitComplete,
     revealCards,
     shouldDrawNewSpread,
     cards,
@@ -73,7 +72,7 @@ function FloatingCards({ monitorPosition, isMobile }) {
       if (typeof onExitComplete === 'function') {
         onExitComplete();
       } else {
-        console.error('onExitComplete is not a function');
+        console.warn('onExitComplete is not a function');
       }
     }
   }, [numCards, onExitComplete]);

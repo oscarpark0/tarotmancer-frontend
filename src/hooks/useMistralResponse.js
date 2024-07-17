@@ -59,21 +59,14 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
                             return;
                         }
                         try {
-                            if (data.startsWith('{') && data.endsWith('}')) {
-                                const parsed = JSON.parse(data);
-                                const content = parsed.choices[0].delta.content;
-                                if (content) {
-                                    setFullResponse(prev => prev + content);
-                                    onNewResponse(content);
-                                }
-                            } else {
-                                setFullResponse(prev => prev + data);
-                                onNewResponse(data);
+                            const parsed = JSON.parse(data);
+                            const content = parsed.choices[0].delta.content;
+                            if (content) {
+                                setFullResponse(prev => prev + content);
+                                onNewResponse(content);
                             }
                         } catch (e) {
                             console.error('Error parsing SSE data:', e);
-                            setFullResponse(prev => prev + data);
-                            onNewResponse(data);
                         }
                     }
                 }

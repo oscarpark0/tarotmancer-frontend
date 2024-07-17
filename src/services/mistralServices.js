@@ -26,18 +26,13 @@ export const getMistralResponse = async (message, onNewResponse) => {
             return;
           }
           try {
-            if (data.startsWith('{') && data.endsWith('}')) {
-              const parsed = JSON.parse(data);
-              const content = parsed.choices[0].delta.content;
-              if (content) {
-                onNewResponse(content);
-              }
-            } else {
-              onNewResponse(data);
+            const parsed = JSON.parse(data);
+            const content = parsed.choices[0].delta.content;
+            if (content) {
+              onNewResponse(content);
             }
           } catch (e) {
             console.error('Error parsing SSE data:', e);
-            onNewResponse(data);
           }
         }
       }
@@ -47,6 +42,5 @@ export const getMistralResponse = async (message, onNewResponse) => {
     throw error;
   }
 };
-
 
 export default getMistralResponse;

@@ -1,9 +1,29 @@
 import { useState, useCallback } from 'react';
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
+
 export const useMistralResponse = (onNewResponse, onResponseComplete) => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [fullResponse, setFullResponse] = useState('');
+
+    const fetchWithRetry = useCallback(async (url, options, retries = 0) => {
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response;
+        } catch (err) {
+            if (retries < MAX_RETRIES) {
+                console.log(`Retrying request (${retries + 1}/${MAX_RETRIES})...`);
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+                return fetchWithRetry(url, options, retries + 1);
+            }
+            throw err;
+        }
+    }, []); // Added empty dependency array here
 
     const fetchMistralResponse = useCallback(async (message) => {
         setIsLoading(true);
@@ -11,7 +31,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
         setFullResponse('');
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/chat`, {
+            const response = await fetchWithRetry(`${process.env.REACT_APP_BASE_URL}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -19,10 +39,6 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
                 body: JSON.stringify({ message }),
                 credentials: 'include',
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
 
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
@@ -43,7 +59,6 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
                             return;
                         }
                         try {
-                            // Check if the data is valid JSON
                             if (data.startsWith('{') && data.endsWith('}')) {
                                 const parsed = JSON.parse(data);
                                 const content = parsed.choices[0].delta.content;
@@ -52,13 +67,11 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
                                     onNewResponse(content);
                                 }
                             } else {
-                                // If it's not JSON, treat it as plain text
                                 setFullResponse(prev => prev + data);
                                 onNewResponse(data);
                             }
                         } catch (e) {
                             console.error('Error parsing SSE data:', e);
-                            // If parsing fails, treat the data as plain text
                             setFullResponse(prev => prev + data);
                             onNewResponse(data);
                         }
@@ -71,7 +84,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
         } finally {
             setIsLoading(false);
         }
-    }, [onResponseComplete, fullResponse, onNewResponse]);
+    }, [fetchWithRetry, onResponseComplete, fullResponse, onNewResponse]);
 
     return {
         isLoading,

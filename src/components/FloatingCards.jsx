@@ -33,9 +33,9 @@ function FloatingCards({ monitorPosition, isMobile }) {
 
   const cardPositions = useMemo(() => {
     const isMobile = window.innerWidth <= 768;
-    const baseScale = isMobile ? 0.01 : 0.015; // Reduced scale for smaller cards
+    const baseScale = isMobile ? 0.01 : 0.015;
     const baseLeft = '-50%';
-    const topOffset = '6%'; // Moved up from 50% to 40%
+    const topOffset = '6%';
 
     if (numCards === 3) {
       // Three Card Spread
@@ -70,14 +70,35 @@ function FloatingCards({ monitorPosition, isMobile }) {
   const handleAnimationComplete = useCallback((index) => {
     if (index === numCards - 1) {
       setIsAnimating(false);
-      onExitComplete();
+      if (typeof onExitComplete === 'function') {
+        onExitComplete();
+      } else {
+        console.error('onExitComplete is not a function');
+      }
     }
   }, [numCards, onExitComplete]);
 
+  function animationCompleteHandler(index) {
+    try {
+      handleAnimationComplete(index);
+    } catch (error) {
+      console.error('Error in handleAnimationComplete:', error);
+    }
+  }
+
+  if (typeof onExitComplete !== 'function') {
+    console.error('onExitComplete is not a function');
+    return null; // or some fallback UI
+  }
+
   return (
     <div className={`floating-cards ${isAnimating ? 'dealing' : ''} ${isMobile ? 'mobile' : ''}`}>
-      {isAnimating && Array.from({ length: numCards }).map((_, index) => {
+      {isAnimating && cardPositions && Array.from({ length: numCards }).map((_, index) => {
         const position = cardPositions[index];
+        if (!position) {
+          console.error(`No position found for index ${index}`);
+          return null;
+        }
         return (
           <motion.img
             key={index}
@@ -108,7 +129,7 @@ function FloatingCards({ monitorPosition, isMobile }) {
               position: 'absolute',
               transform: position.transform,
             }}
-            onAnimationComplete={() => handleAnimationComplete(index)}
+            onAnimationComplete={() => animationCompleteHandler(index)}
           />
         );
       })}

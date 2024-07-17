@@ -5,7 +5,11 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({
+        model: "mistral-medium",
+        messages: [{ role: "user", content: message }],
+        stream: true
+      }),
       credentials: 'include',
     });
 

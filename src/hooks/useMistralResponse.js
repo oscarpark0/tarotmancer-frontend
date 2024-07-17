@@ -36,21 +36,31 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
 
                 for (const line of lines) {
                     if (line.startsWith('data: ')) {
-                        const data = line.slice(6);
+                        const data = line.slice(6).trim();
                         if (data === '[DONE]') {
                             onResponseComplete(fullResponse);
                             setIsLoading(false);
                             return;
                         }
                         try {
-                            const parsed = JSON.parse(data);
-                            const content = parsed.choices[0].delta.content;
-                            if (content) {
-                                setFullResponse(prev => prev + content);
-                                onNewResponse(content);
+                            // Check if the data is valid JSON
+                            if (data.startsWith('{') && data.endsWith('}')) {
+                                const parsed = JSON.parse(data);
+                                const content = parsed.choices[0].delta.content;
+                                if (content) {
+                                    setFullResponse(prev => prev + content);
+                                    onNewResponse(content);
+                                }
+                            } else {
+                                // If it's not JSON, treat it as plain text
+                                setFullResponse(prev => prev + data);
+                                onNewResponse(data);
                             }
                         } catch (e) {
                             console.error('Error parsing SSE data:', e);
+                            // If parsing fails, treat the data as plain text
+                            setFullResponse(prev => prev + data);
+                            onNewResponse(data);
                         }
                     }
                 }

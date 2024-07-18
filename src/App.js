@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -34,6 +33,8 @@ function App() {
   const [selectedSpread, setSelectedSpread] = useState('celtic');
   const [canAccessCohere, setCanAccessCohere] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [canDraw, setCanDraw] = useState(true);
+  const [lastDrawTime, setLastDrawTime] = useState(null);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
@@ -46,7 +47,6 @@ function App() {
   const handleSpreadSelect = useCallback((spread) => {
     setSelectedSpread(spread);
   }, []);
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -110,6 +110,57 @@ function App() {
     kindeAuth,
   }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, kindeAuth]);
 
+  const checkCanDraw = useCallback(async () => {
+    if (!isAuthenticated) return;
+
+    const storedLastDrawTime = localStorage.getItem('lastDrawTime');
+    if (storedLastDrawTime) {
+      const timeSinceLastDraw = Date.now() - new Date(storedLastDrawTime).getTime();
+      if (timeSinceLastDraw < 24 * 60 * 60 * 1000) {
+        setCanDraw(false);
+        setLastDrawTime(new Date(storedLastDrawTime));
+        return;
+      }
+    }
+
+    try {
+      const token = await kindeAuth.getToken();
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/can-draw`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'User-ID': kindeAuth.user.id
+        }
+      });
+      const data = await response.json();
+      setCanDraw(data.can_draw);
+    } catch (error) {
+      console.error('Error checking draw status:', error);
+    }
+  }, [isAuthenticated, kindeAuth]);
+
+  useEffect(() => {
+    checkCanDraw();
+  }, [checkCanDraw]);
+
+  const handleDraw = useCallback(async () => {
+    if (!canDraw) return;
+
+    // Your existing draw logic here...
+
+    setCanDraw(false);
+    const now = new Date();
+    setLastDrawTime(now);
+    localStorage.setItem('lastDrawTime', now.toISOString());
+  }, [canDraw]);
+
+  const timeUntilNextDraw = useMemo(() => {
+    if (!lastDrawTime) return null;
+    const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000);
+    const timeLeft = nextDrawTime - new Date();
+    const hours = Math.floor(timeLeft / (60 * 60 * 1000));
+    const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+    return `${hours}h ${minutes}m`;
+  }, [lastDrawTime]);
 
   return (
     <LanguageProvider>
@@ -138,6 +189,16 @@ function App() {
             } />
             <Route path="/callback" element={<Navigate to="/" />} />
           </Routes>
+          {isAuthenticated && (
+            <div>
+              <button onClick={handleDraw} disabled={!canDraw}>
+                Draw Cards
+              </button>
+              {!canDraw && timeUntilNextDraw && (
+                <p>Next draw available in: {timeUntilNextDraw}</p>
+              )}
+            </div>
+          )}
         </div>
       </Router>
     </LanguageProvider>

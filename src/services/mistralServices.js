@@ -6,7 +6,7 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: "mistral-tiny",
+        model: "mistral-nemo",
         messages: [{ role: "user", content: message }],
         stream: true,
       }),

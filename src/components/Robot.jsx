@@ -81,10 +81,17 @@ const Robot = memo(({
   }, [onResponseComplete, onStreamingStateChange]);
 
   const handleNewResponse = useCallback((content) => {
-    setResponses(prevResponses => {
-      if (content === '') {
-        return [];
+    if (content === '') {
+      setResponses([]);
+      setMonitorOutput('');
+      setIsStreaming(false);
+      if (onStreamingStateChange) {
+        onStreamingStateChange(false);
       }
+      return;
+    }
+
+    setResponses(prevResponses => {
       if (prevResponses.length === 0 || prevResponses[prevResponses.length - 1].complete) {
         const newResponse = { id: uuidv4(), content: formatResponse(content), complete: false };
         setActiveTab(newResponse.id);

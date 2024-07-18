@@ -52,14 +52,14 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-      await getMistralResponse(message, onNewResponse);
+      await getMistralResponse(message, onNewResponse, onResponseComplete);
     } catch (error) {
       console.error('Error:', error);
       const errorMessage = getTranslation('errorMessage');
       onNewResponse(errorMessage);
+      onResponseComplete();
     } finally {
       setIsLoading(false);
-      onResponseComplete(); // This will set isStreaming to false in the Robot component
     }
 
     setInput('');

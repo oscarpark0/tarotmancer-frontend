@@ -78,7 +78,7 @@ export const buttonTranslations = {
       Dutch: "Aan het abonneren...",
       Korean: "구독 중...",
       Arabic: "مشترك...",
-      Hindi: "सदस्यता ले रहा है...",
+      Hindi: "सदस्यता ���े रहा है...",
       Swedish: "Prenumererar...",
       Polish: "Subskrybując...",
       Turkish: "Abonelik oluşturuluyor...",
@@ -117,7 +117,7 @@ export const buttonTranslations = {
       Italian: "Iscrivetevi per ricevere aggiornamenti su Tarotmancer e ricevere una lettura settimanale inviata alla vostra email.",
       Japanese: "Tarotmancerのアップデートを受け取るには、週間の読書をメールで受け取るには、サインアップしてください。",
       Chinese: "注册以接收Tarotmancer的更新,并通过电子邮件接收每周的读物。",
-      Russian: "Зарегистрируйтесь, чтобы получать обновления о Tarotmancer и получать еженедельное чтение по электронной почте.",
+      Russian: "Зарегистрируйтесь, чтобы получать обновления о Tarotmancer и получать еженедельное чтение по электрон��ой почте.",
       Portuguese: "Inscreva-se para receber atualizações sobre o Tarotmancer e receber uma leitura semanal enviada por e-mail.",
       Dutch: "Schrijf je in om updates over Tarotmancer te ontvangen en een wekelijkse lezing per e-mail te ontvangen.",
       Korean: "Tarotmancer 업데이트를 받고 주간 독서를 이메일로 받으려면 가입하세요.",
@@ -377,5 +377,28 @@ export const buttonTranslations = {
       Norwegian: "Vent på neste trekk",
       Finnish: "Odota seuraavaa nostoa",
       Greek: "Περιμένετε το επόμενο τραβήγμα"
+    },
+
+    nextDrawIn: {
+      English: "Next draw in",
+      Spanish: "Próximo sorteo en",
+      French: "Prochain tirage dans",
+      German: "Nächster Zug in",
+      Italian: "Prossimo pesca in",
+      Japanese: "次のドローは",
+      Chinese: "下次抽牌在",
+      Russian: "Следующий вытягивание через",
+      Portuguese: "Próximo sorteio em",
+      Dutch: "Volgende trekking in",
+      Korean: "다음 뽑기는",
+      Arabic: "السحب التالي في",
+      Hindi: "अगला खींचना",
+      Swedish: "Nästa drag om",
+      Polish: "Następne losowanie za",
+      Turkish: "Sonraki çekim",
+      Danish: "Næste træk om",
+      Norwegian: "Neste trekk om",
+      Finnish: "Seuraava nosto",
+      Greek: "Επόμενο τραβήγμα σε"
     }
   };

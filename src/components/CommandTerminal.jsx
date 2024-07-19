@@ -100,6 +100,13 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     }
   }, [dealingComplete]);
 
+  const getButtonText = useCallback(() => {
+    if (isLoading) return getTranslation('processing');
+    if (isDrawing) return getTranslation('drawing');
+    if (!canDraw && timeUntilNextDraw) return `${getTranslation('nextDrawIn')} ${timeUntilNextDraw}`;
+    return getTranslation('draw');
+  }, [isLoading, isDrawing, canDraw, timeUntilNextDraw, getTranslation]);
+
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
@@ -147,10 +154,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
           disabled={isLoading || isDrawing || !canDraw}
           className={isDrawing ? 'drawing' : ''}
         >
-          {isLoading ? getTranslation('processing') : 
-           isDrawing ? getTranslation('drawing') : 
-           !canDraw ? getTranslation('waitForNextDraw') :
-           getTranslation('draw')}
+          {getButtonText()}
         </ShimmerButton>
       </div>
     </div>

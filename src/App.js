@@ -124,19 +124,20 @@ function App() {
       console.log('Response status:', response.status);
       console.log('Response headers:', response.headers);
       
-      const text = await response.text(); // Get the response as text first
-      console.log('Response text:', text);
+      const text = await response.text();
+      console.log('Full response text:', text);
       
-      let data;
-      try {
-        data = JSON.parse(text); // Try to parse it as JSON
-      } catch (e) {
-        console.error('Failed to parse response as JSON:', e);
-        return;
+      if (response.ok) {
+        try {
+          const data = JSON.parse(text);
+          setCanDraw(data.can_draw);
+          console.log('Can draw:', data.can_draw);
+        } catch (e) {
+          console.error('Failed to parse response as JSON:', e);
+        }
+      } else {
+        console.error('Server returned an error:', response.status, text);
       }
-      
-      setCanDraw(data.can_draw);
-      console.log('Can draw:', data.can_draw);
     } catch (error) {
       console.error('Error checking draw status:', error);
     }

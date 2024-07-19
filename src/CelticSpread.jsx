@@ -9,7 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw }) => {
   const { getToken, user } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +38,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   }, []);
 
   const fetchSpread = useCallback(async () => {
+    if (!canDraw) {
+      setError(`You can draw again in ${timeUntilNextDraw}`);
+      return;
+    }
     setIsLoading(true);
     try {
       const token = await getToken();
@@ -97,7 +101,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, user]);
+  }, [getToken, selectedSpread, user, canDraw, timeUntilNextDraw]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -161,8 +165,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       onAnimationStart={handleAnimationStart}
       onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
+      canDraw={canDraw}
+      timeUntilNextDraw={timeUntilNextDraw}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

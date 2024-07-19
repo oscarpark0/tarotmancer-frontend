@@ -8,7 +8,7 @@ import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw }) => {
   const { getToken } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,6 +36,11 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   }, []);
 
   const fetchSpread = useCallback(async () => {
+    if (!canDraw) {
+      setError(`You can draw again in ${timeUntilNextDraw}`);
+      return;
+    }
+
     if (drawCount >= 100) {
       setError('You have reached the maximum number of draws for today. Please try again tomorrow.');
       return;
@@ -116,7 +121,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, drawCount, setDrawCount, setLastResetTime]);
+  }, [getToken, selectedSpread, drawCount, setDrawCount, setLastResetTime, canDraw, timeUntilNextDraw]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -176,8 +181,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       isDarkMode={isDarkMode}
       onStreamingStateChange={handleStreamingStateChange}
       isStreaming={isStreaming}
+      canDraw={canDraw}
+      timeUntilNextDraw={timeUntilNextDraw}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

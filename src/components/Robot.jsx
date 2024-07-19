@@ -60,6 +60,8 @@ const Robot = memo(({
   animationsComplete,
   onAnimationStart,
   onStreamingStateChange,
+  canDraw,
+  timeUntilNextDraw,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -278,6 +280,8 @@ const Robot = memo(({
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
+        canDraw={canDraw}
+        timeUntilNextDraw={timeUntilNextDraw}
       />
     </motion.div>
   );
@@ -306,6 +310,8 @@ Robot.propTypes = {
   animationsComplete: PropTypes.bool.isRequired,
   onAnimationStart: PropTypes.func.isRequired,
   onStreamingStateChange: PropTypes.func.isRequired,
+  canDraw: PropTypes.bool.isRequired,
+  timeUntilNextDraw: PropTypes.string,
 };
 
 export default Robot;

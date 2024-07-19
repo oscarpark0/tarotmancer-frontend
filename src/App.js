@@ -142,17 +142,6 @@ function App() {
     checkCanDraw();
   }, [checkCanDraw]);
 
-  const handleDraw = useCallback(async () => {
-    if (!canDraw) return;
-
-    // Your existing draw logic here...
-
-    setCanDraw(false);
-    const now = new Date();
-    setLastDrawTime(now);
-    localStorage.setItem('lastDrawTime', now.toISOString());
-  }, [canDraw]);
-
   const timeUntilNextDraw = useMemo(() => {
     const now = new Date();
     const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
@@ -171,14 +160,24 @@ function App() {
             <Route path="/celtic-spread" element={
               isAuthenticated ? (
                 <Suspense fallback={<div>Loading...</div>}>
-                  <CelticSpread {...spreadProps} isDarkMode={isDarkMode} />
+                  <CelticSpread 
+                    {...spreadProps} 
+                    isDarkMode={isDarkMode}
+                    canDraw={canDraw}
+                    timeUntilNextDraw={timeUntilNextDraw}
+                  />
                 </Suspense>
               ) : <Navigate to="/" />
             } />
             <Route path="/three-card-spread" element={
               isAuthenticated ? (
                 <Suspense fallback={<div>Loading...</div>}>
-                  <ThreeCardSpread {...spreadProps} isDarkMode={isDarkMode} />
+                  <ThreeCardSpread 
+                    {...spreadProps} 
+                    isDarkMode={isDarkMode}
+                    canDraw={canDraw}
+                    timeUntilNextDraw={timeUntilNextDraw}
+                  />
                 </Suspense>
               ) : <Navigate to="/" />
             } />
@@ -189,20 +188,6 @@ function App() {
             } />
             <Route path="/callback" element={<Navigate to="/" />} />
           </Routes>
-          {isAuthenticated && (
-            <div className="draw-controls">
-              <button 
-                onClick={handleDraw} 
-                disabled={!canDraw}
-                className={`draw-button ${!canDraw ? 'disabled' : ''}`}
-              >
-                Draw Cards
-              </button>
-              {!canDraw && timeUntilNextDraw && (
-                <p className="next-draw-time">Next draw available in: {timeUntilNextDraw}</p>
-              )}
-            </div>
-          )}
         </div>
       </Router>
     </LanguageProvider>

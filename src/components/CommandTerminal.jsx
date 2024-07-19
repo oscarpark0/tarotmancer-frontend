@@ -8,7 +8,7 @@ import LanguageSelector, { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -87,12 +87,12 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, []);
 
   const handleDrawClick = useCallback(() => {
-    if (isDrawing) return;
+    if (isDrawing || !canDraw) return;
     setIsDrawing(true);
     fetchSpread();
     setShouldRequestCohere(true);
     onNewResponse('');
-  }, [isDrawing, fetchSpread, setShouldRequestCohere, onNewResponse]);
+  }, [isDrawing, canDraw, fetchSpread, setShouldRequestCohere, onNewResponse]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -115,7 +115,8 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? getTranslation('processing') : ''}
+            {isLoading ? getTranslation('processing') : 
+             !canDraw ? `${getTranslation('nextDrawAvailable')} ${timeUntilNextDraw}` : ''}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -143,11 +144,12 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
           onClick={handleDrawClick}
           aria-label={getTranslation('drawCardsAriaLabel')}
           label={getTranslation('draw')}
-          disabled={isLoading || isDrawing}
+          disabled={isLoading || isDrawing || !canDraw}
           className={isDrawing ? 'drawing' : ''}
         >
           {isLoading ? getTranslation('processing') : 
            isDrawing ? getTranslation('drawing') : 
+           !canDraw ? getTranslation('waitForNextDraw') :
            getTranslation('draw')}
         </ShimmerButton>
       </div>

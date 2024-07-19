@@ -34,6 +34,7 @@ function App() {
   const [canAccessCohere, setCanAccessCohere] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [canDraw, setCanDraw] = useState(true);
+  const [userDraws, setUserDraws] = useState([]);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
@@ -156,6 +157,47 @@ function App() {
     return Math.floor(timeLeft / 1000); // Return seconds until next draw
   }, [canDraw]);
 
+  const fetchUserDraws = useCallback(async () => {
+    if (!isAuthenticated) return;
+
+    try {
+      const token = await kindeAuth.getToken();
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/user-draws`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'User-ID': kindeAuth.user.id
+        }
+      });
+      
+      if (response.ok) {
+        const draws = await response.json();
+        setUserDraws(draws);
+      } else {
+        console.error('Failed to fetch user draws');
+      }
+    } catch (error) {
+      console.error('Error fetching user draws:', error);
+    }
+  }, [isAuthenticated, kindeAuth]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUserDraws();
+    }
+  }, [isAuthenticated, fetchUserDraws]);
+
+  const PastDraws = ({ draws }) => (
+    <div className="past-draws">
+      <h2>Past Draws</h2>
+      {draws.map((draw) => (
+        <div key={draw.id} className="past-draw">
+          <h3>{draw.spread_type} - {new Date(draw.created_at).toLocaleString()}</h3>
+          <p>{draw.response}</p>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
     <LanguageProvider>
       <Router>
@@ -193,6 +235,7 @@ function App() {
             } />
             <Route path="/callback" element={<Navigate to="/" />} />
           </Routes>
+          <PastDraws draws={userDraws} />
         </div>
       </Router>
     </LanguageProvider>

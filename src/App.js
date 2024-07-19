@@ -114,7 +114,7 @@ function App() {
 
     try {
       const token = await kindeAuth.getToken();
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/can-draw`, {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/can-draw`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'User-ID': kindeAuth.user.id

@@ -120,9 +120,23 @@ function App() {
           'User-ID': kindeAuth.user.id
         }
       });
-      const data = await response.json();
+      
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+      
+      const text = await response.text(); // Get the response as text first
+      console.log('Response text:', text);
+      
+      let data;
+      try {
+        data = JSON.parse(text); // Try to parse it as JSON
+      } catch (e) {
+        console.error('Failed to parse response as JSON:', e);
+        return;
+      }
+      
       setCanDraw(data.can_draw);
-      console.log('Can draw:', data.can_draw); // Add this log
+      console.log('Can draw:', data.can_draw);
     } catch (error) {
       console.error('Error checking draw status:', error);
     }

@@ -206,7 +206,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 10px 20px;
-  font-size: 18px;
+  font-size: 10px;
   position: relative;
   overflow: hidden;
 }

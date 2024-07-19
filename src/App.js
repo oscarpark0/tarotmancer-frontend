@@ -147,14 +147,19 @@ function App() {
   useEffect(() => {
     checkCanDraw();
   }, [checkCanDraw]);
-
   const timeUntilNextDraw = useMemo(() => {
     if (canDraw) return null; // Return null if user can draw
 
     const now = new Date();
     const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
     const timeLeft = tomorrow - now;
-    return Math.floor(timeLeft / 1000); // Return seconds until next draw
+
+    const seconds = Math.floor(timeLeft / 1000);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   }, [canDraw]);
 
   const fetchUserDraws = useCallback(async () => {

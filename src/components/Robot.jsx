@@ -322,7 +322,7 @@ Robot.propTypes = {
   onAnimationStart: PropTypes.func.isRequired,
   onStreamingStateChange: PropTypes.func.isRequired,
   canDraw: PropTypes.bool.isRequired,
-  timeUntilNextDraw: PropTypes.string,
+  timeUntilNextDraw: PropTypes.number,
 };
 
 export default Robot;

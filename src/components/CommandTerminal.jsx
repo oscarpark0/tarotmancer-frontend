@@ -16,6 +16,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const { selectedLanguage } = useLanguage();
   const [isDrawing, setIsDrawing] = useState(false);
+  const [countdown, setCountdown] = useState(timeUntilNextDraw);
 
   const getTranslation = (key) => {
     if (!buttonTranslations[key]) {
@@ -100,12 +101,36 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     }
   }, [dealingComplete]);
 
+  const formatCountdown = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    let interval;
+    if (!canDraw && timeUntilNextDraw) {
+      setCountdown(timeUntilNextDraw);
+      interval = setInterval(() => {
+        setCountdown(prevCountdown => {
+          if (prevCountdown <= 0) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prevCountdown - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [canDraw, timeUntilNextDraw]);
+
   const getButtonText = useCallback(() => {
     if (isLoading) return getTranslation('processing');
     if (isDrawing) return getTranslation('drawing');
-    if (!canDraw && timeUntilNextDraw) return `${getTranslation('nextDrawIn')} ${timeUntilNextDraw}`;
+    if (!canDraw && countdown > 0) return `${getTranslation('nextDrawIn')} ${formatCountdown(countdown)}`;
     return getTranslation('draw');
-  }, [isLoading, isDrawing, canDraw, timeUntilNextDraw, getTranslation]);
+  }, [isLoading, isDrawing, canDraw, countdown, getTranslation]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
@@ -152,7 +177,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
           aria-label={getTranslation('drawCardsAriaLabel')}
           label={getTranslation('draw')}
           disabled={isLoading || isDrawing || !canDraw}
-          className={isDrawing ? 'drawing' : ''}
+          className={`${isDrawing ? 'drawing' : ''} text-sm`}
         >
           {getButtonText()}
         </ShimmerButton>

@@ -153,9 +153,7 @@ function App() {
     const now = new Date();
     const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
     const timeLeft = tomorrow - now;
-    const hours = Math.floor(timeLeft / (60 * 60 * 1000));
-    const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
-    return `${hours}h ${minutes}m`;
+    return Math.floor(timeLeft / 1000); // Return seconds until next draw
   }, [canDraw]);
 
   return (

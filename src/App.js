@@ -190,12 +190,16 @@ function App() {
             <Route path="/callback" element={<Navigate to="/" />} />
           </Routes>
           {isAuthenticated && (
-            <div>
-              <button onClick={handleDraw} disabled={!canDraw}>
+            <div className="draw-controls">
+              <button 
+                onClick={handleDraw} 
+                disabled={!canDraw}
+                className={`draw-button ${!canDraw ? 'disabled' : ''}`}
+              >
                 Draw Cards
               </button>
               {!canDraw && timeUntilNextDraw && (
-                <p>Next draw available in: {timeUntilNextDraw}</p>
+                <p className="next-draw-time">Next draw available in: {timeUntilNextDraw}</p>
               )}
             </div>
           )}

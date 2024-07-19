@@ -179,3 +179,42 @@
   .dark-mode .welcome-message {
     background-color: #1a1a1a;
   }
+
+  .draw-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 1000;
+  }
+
+  .draw-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .draw-button:hover:not(.disabled) {
+    background-color: #45a049;
+  }
+
+  .draw-button.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+
+  .next-draw-time {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .dark-mode .next-draw-time {
+    color: #aaa;
+  }

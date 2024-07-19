@@ -34,7 +34,6 @@ function App() {
   const [canAccessCohere, setCanAccessCohere] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [canDraw, setCanDraw] = useState(true);
-  const [, setLastDrawTime] = useState(null);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
@@ -113,16 +112,6 @@ function App() {
   const checkCanDraw = useCallback(async () => {
     if (!isAuthenticated) return;
 
-    const storedLastDrawTime = localStorage.getItem('lastDrawTime');
-    if (storedLastDrawTime) {
-      const timeSinceLastDraw = Date.now() - new Date(storedLastDrawTime).getTime();
-      if (timeSinceLastDraw < 24 * 60 * 60 * 1000) {
-        setCanDraw(false);
-        setLastDrawTime(new Date(storedLastDrawTime));
-        return;
-      }
-    }
-
     try {
       const token = await kindeAuth.getToken();
       const response = await fetch(`${process.env.REACT_APP_API_URL}/api/can-draw`, {
@@ -133,6 +122,7 @@ function App() {
       });
       const data = await response.json();
       setCanDraw(data.can_draw);
+      console.log('Can draw:', data.can_draw); // Add this log
     } catch (error) {
       console.error('Error checking draw status:', error);
     }
@@ -143,13 +133,15 @@ function App() {
   }, [checkCanDraw]);
 
   const timeUntilNextDraw = useMemo(() => {
+    if (canDraw) return null; // Return null if user can draw
+
     const now = new Date();
     const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
     const timeLeft = tomorrow - now;
     const hours = Math.floor(timeLeft / (60 * 60 * 1000));
     const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
     return `${hours}h ${minutes}m`;
-  }, []);
+  }, [canDraw]);
 
   return (
     <LanguageProvider>

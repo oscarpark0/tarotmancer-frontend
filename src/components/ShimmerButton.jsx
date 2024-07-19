@@ -21,7 +21,7 @@ const ShimmerButton = React.forwardRef(
           "--bg": background,
         }}
         className={cn(
-          "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-purple-500/30 px-6 py-3 text-white [background:var(--bg)] [border-radius:var(--radius)] dark:text-black",
+          "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border border-purple-500/30 px-6 py-3 text-white [background:var(--bg)] [border-radius:var(--radius)] dark:text-white",
           "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-[1px]",
           className,
         )}

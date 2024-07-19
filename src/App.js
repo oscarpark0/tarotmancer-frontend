@@ -34,7 +34,7 @@ function App() {
   const [canAccessCohere, setCanAccessCohere] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [canDraw, setCanDraw] = useState(true);
-  const [lastDrawTime, setLastDrawTime] = useState(null);
+  const [, setLastDrawTime] = useState(null);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
@@ -154,13 +154,13 @@ function App() {
   }, [canDraw]);
 
   const timeUntilNextDraw = useMemo(() => {
-    if (!lastDrawTime) return null;
-    const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000);
-    const timeLeft = nextDrawTime - new Date();
+    const now = new Date();
+    const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
+    const timeLeft = tomorrow - now;
     const hours = Math.floor(timeLeft / (60 * 60 * 1000));
     const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
     return `${hours}h ${minutes}m`;
-  }, [lastDrawTime]);
+  }, []);
 
   return (
     <LanguageProvider>

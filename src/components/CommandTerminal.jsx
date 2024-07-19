@@ -89,10 +89,10 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const handleDrawClick = useCallback(() => {
     if (isDrawing || !canDraw) return;
     setIsDrawing(true);
-    fetchSpread();
+    drawSpread();
     setShouldRequestCohere(true);
     onNewResponse('');
-  }, [isDrawing, canDraw, fetchSpread, setShouldRequestCohere, onNewResponse]);
+  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse]);
 
   useEffect(() => {
     if (dealingComplete) {

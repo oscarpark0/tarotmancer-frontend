@@ -123,12 +123,14 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const handleMonitorOutput = useCallback(() => {}, []);
 
   const drawSpread = useCallback(() => {
-    setDealCards(false);
-    setRevealCards(false);
-    setDealingComplete(false);
-    setShouldDrawNewSpread(true);
-    fetchSpread();
-  }, [fetchSpread]);
+    if (canDraw) {
+      setDealCards(false);
+      setRevealCards(false);
+      setDealingComplete(false);
+      setShouldDrawNewSpread(true);
+      fetchSpread();
+    }
+  }, [canDraw, fetchSpread]);
 
   const handleAnimationStart = useCallback(() => {
     setAnimationStarted(true);

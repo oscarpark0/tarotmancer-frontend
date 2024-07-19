@@ -71,8 +71,19 @@ const Robot = memo(({
   const [activeTab, setActiveTab] = useState(null);
   const robotRef = useRef(null);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [localCanDraw, setLocalCanDraw] = useState(canDraw);
   useLanguage();
 
+  useEffect(() => {
+    setLocalCanDraw(canDraw);
+  }, [canDraw]);
+
+  const handleDrawSpread = useCallback(() => {
+    if (localCanDraw) {
+      drawSpread();
+      setLocalCanDraw(false);
+    }
+  }, [drawSpread, localCanDraw]);
 
   const handleResponseComplete = useCallback(() => {
     onResponseComplete();
@@ -253,7 +264,7 @@ const Robot = memo(({
 
       <CommandTerminal
         onMonitorOutput={handleMonitorOutput}
-        drawSpread={drawSpread}
+        drawSpread={handleDrawSpread}
         onSubmitInput={onSubmitInput}
         mostCommonCards={mostCommonCards}
         dealingComplete={dealingComplete}
@@ -280,7 +291,7 @@ const Robot = memo(({
         animationsComplete={animationsComplete}
         onAnimationStart={handleAnimationStart}
         isStreaming={isStreaming}
-        canDraw={canDraw}
+        canDraw={localCanDraw}
         timeUntilNextDraw={timeUntilNextDraw}
       />
     </motion.div>

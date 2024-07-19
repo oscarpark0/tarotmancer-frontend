@@ -143,12 +143,14 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const handleMonitorOutput = useCallback(() => {}, []);
 
   const handleDrawSpread = useCallback(() => {
-    setDealCards(false);
-    setRevealCards(false);
-    setDealingComplete(false);
-    setShouldDrawNewSpread(true);
-    fetchSpread();
-  }, [fetchSpread]);
+    if (canDraw) {
+      setDealCards(false);
+      setRevealCards(false);
+      setDealingComplete(false);
+      setShouldDrawNewSpread(true);
+      fetchSpread();
+    }
+  }, [canDraw, fetchSpread]);
 
   const memoizedRobot = useMemo(() => (
     <Robot

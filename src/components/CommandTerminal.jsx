@@ -116,7 +116,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
             {isLoading ? getTranslation('processing') : 
-             !canDraw ? `${getTranslation('nextDrawAvailable')} ${timeUntilNextDraw}` : ''}
+             !canDraw && timeUntilNextDraw ? `${getTranslation('nextDrawAvailable')} ${timeUntilNextDraw}` : ''}
           </div>
         </div>
         <div className="screen-overlay"></div>

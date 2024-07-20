@@ -27,7 +27,6 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
         model: "open-mistral-nemo-2407",
         messages: [{ role: "user", content: message }],
         stream: true,
-        drawId: drawId || 'unknown'
       }),
       credentials: 'include',
     });

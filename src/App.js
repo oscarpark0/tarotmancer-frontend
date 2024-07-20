@@ -37,6 +37,7 @@ function App() {
   const [canDraw, setCanDraw] = useState(true);
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
+  const [currentDrawId, setCurrentDrawId] = useState(null);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
@@ -209,6 +210,8 @@ function App() {
                     isDarkMode={isDarkMode}
                     canDraw={canDraw}
                     timeUntilNextDraw={timeUntilNextDraw}
+                    currentDrawId={currentDrawId}
+                    setCurrentDrawId={setCurrentDrawId}
                   />
                 </Suspense>
               ) : <Navigate to="/" />
@@ -221,6 +224,8 @@ function App() {
                     isDarkMode={isDarkMode}
                     canDraw={canDraw}
                     timeUntilNextDraw={timeUntilNextDraw}
+                    currentDrawId={currentDrawId}
+                    setCurrentDrawId={setCurrentDrawId}
                   />
                 </Suspense>
               ) : <Navigate to="/" />

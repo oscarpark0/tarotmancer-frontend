@@ -167,11 +167,8 @@ export const useSpread = (spreadType, selectedLanguage) => {
   }, [fetchSpread, handleMistralSubmit, mostCommonCards, currentDrawId]);
 
   useEffect(() => {
-    if (dealingComplete && !isRequesting) {
-      setIsRequesting(true);
-      handleMistralSubmit(mostCommonCards, currentDrawId).finally(() => {
-        setIsRequesting(false);
-      });
+    if (dealingComplete && !isRequesting && currentDrawId) {
+      handleMistralSubmit(mostCommonCards, currentDrawId);
     }
   }, [dealingComplete, isRequesting, handleMistralSubmit, mostCommonCards, currentDrawId]);
 

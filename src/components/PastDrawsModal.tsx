@@ -25,11 +25,17 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
 
       try {
         const token = await getToken();
+        const headers: HeadersInit = {
+          'Authorization': `Bearer ${token}`,
+        };
+
+        // Only add the User-ID header if user.id is not null
+        if (user.id) {
+          headers['User-ID'] = user.id;
+        }
+
         const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/user-draws`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            ...(user.id && { 'User-ID': user.id })
-          }
+          headers: headers
         });
         
         if (response.ok) {

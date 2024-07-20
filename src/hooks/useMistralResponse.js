@@ -22,6 +22,14 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
     }, []);
 
     const fetchMistralResponse = useCallback(async (message, drawId, userId) => {
+        if (!drawId) {
+            console.error('Draw ID is not available');
+            return;
+        }
+        if (!userId) {
+            console.error('User ID is not available');
+            return;
+        }
         setIsLoading(true);
         setError(null);
         setFullResponse('');

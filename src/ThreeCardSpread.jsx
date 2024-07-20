@@ -9,7 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw }) => {
-  const { getToken } = useKindeAuth();
+  const { getToken, user } = useKindeAuth();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -24,6 +24,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [currentDrawId, setCurrentDrawId] = useState(null);
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -36,6 +37,11 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   }, []);
 
   const fetchSpread = useCallback(async () => {
+    if (!user || !user.id) {
+      setError('User not authenticated. Please log in.');
+      return;
+    }
+
     if (!canDraw) {
       setError(`You can draw again in ${timeUntilNextDraw}`);
       return;
@@ -54,7 +60,8 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
+        'User-ID': user.id
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
@@ -112,6 +119,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setCards(newCards);
       setDealCards(true);
       setMostCommonCards(formattedMostCommonCards);
+      setCurrentDrawId(data.id); // Ensure this is set
 
     } catch (error) {
       console.error('Error drawing spread:', error);
@@ -121,7 +129,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, drawCount, setDrawCount, setLastResetTime, canDraw, timeUntilNextDraw]);
+  }, [getToken, selectedSpread, drawCount, setDrawCount, setLastResetTime, canDraw, timeUntilNextDraw, user]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -185,8 +193,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       isStreaming={isStreaming}
       canDraw={canDraw}
       timeUntilNextDraw={timeUntilNextDraw}
+      userId={user?.id}
+      currentDrawId={currentDrawId}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, user, currentDrawId]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

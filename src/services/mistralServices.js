@@ -3,6 +3,12 @@ import { getToken, getUserId } from '../utils/auth';
 export const getMistralResponse = async (message, onNewResponse, onResponseComplete, drawId, userId) => {
   try {
     const token = getToken();
+    if (!userId) {
+      userId = getUserId(); // Fallback to getUserId if not provided
+    }
+    if (!userId) {
+      throw new Error('User ID not available');
+    }
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
       method: 'POST',
       headers: {
@@ -71,10 +77,10 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
 
 async function storeMistralResponse(drawId, response, userId) {
   if (!userId) {
-    userId = getUserId(); // Use getUserId as a fallback
-  }
-  if (!userId) {
     throw new Error('User ID not provided');
+  }
+  if (!drawId) {
+    throw new Error('Draw ID not provided');
   }
 
   try {
@@ -89,8 +95,8 @@ async function storeMistralResponse(drawId, response, userId) {
     });
 
     if (!res.ok) {
-      const errorData = await res.json();
-      throw new Error(`Failed to store Mistral response: ${errorData.message}`);
+      const errorText = await res.text();
+      throw new Error(`Failed to store Mistral response: ${errorText}`);
     }
   } catch (error) {
     console.error('Error storing Mistral response:', error);

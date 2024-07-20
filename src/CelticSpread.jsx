@@ -57,7 +57,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
         'Content-Type': 'application/json',
         'Origin': origin,
         'Authorization': `Bearer ${token}`,
-        'User-ID': user?.id,
+        'User-ID': user.id,
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';

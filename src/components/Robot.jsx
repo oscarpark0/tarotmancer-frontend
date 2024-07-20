@@ -62,6 +62,8 @@ const Robot = memo(({
   onStreamingStateChange,
   canDraw,
   timeUntilNextDraw,
+  user,
+  currentDrawId,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -246,6 +248,8 @@ const Robot = memo(({
       isStreaming={isStreaming}
       canDraw={localCanDraw}
       timeUntilNextDraw={timeUntilNextDraw}
+      userId={user?.id}
+      currentDrawId={currentDrawId}
     />
   ), [
     handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, 
@@ -253,7 +257,7 @@ const Robot = memo(({
     cards, revealCards, shouldDrawNewSpread, fetchSpread, responses, 
     activeTab, setActiveTab, handleNewResponse, handleResponseComplete, 
     animationsComplete, handleAnimationStart, isStreaming, localCanDraw, 
-    timeUntilNextDraw
+    timeUntilNextDraw, user, currentDrawId
   ]);
 
   return (
@@ -334,6 +338,8 @@ Robot.propTypes = {
   onStreamingStateChange: PropTypes.func.isRequired,
   canDraw: PropTypes.bool.isRequired,
   timeUntilNextDraw: PropTypes.number,
+  user: PropTypes.object,
+  currentDrawId: PropTypes.number,
 };
 
 export default Robot;

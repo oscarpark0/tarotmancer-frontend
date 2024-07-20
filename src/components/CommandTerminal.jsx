@@ -39,10 +39,10 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
-    if (!shouldRequestCohere) return;
+    if (!shouldRequestCohere || !currentDrawId) return;
 
     setIsLoading(true);
-    onNewResponse(''); // This will set isStreaming to true in the Robot component
+    onNewResponse('');
 
     try {
       const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +

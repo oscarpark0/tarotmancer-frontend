@@ -8,6 +8,7 @@ import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation.tsx';
 import LanguageSelector, { LanguageProvider } from './components/LanguageSelector';
 import DarkModeToggle from './components/DarkModeToggle.tsx';
+import PastDrawsModal from './components/PastDrawsModal';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 
@@ -34,7 +35,8 @@ function App() {
   const [canAccessCohere, setCanAccessCohere] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [canDraw, setCanDraw] = useState(true);
-  const [userDraws, setUserDraws] = useState([]);
+  const [, setUserDraws] = useState([]);
+  const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => !prevMode);
@@ -69,6 +71,7 @@ function App() {
                 <div className="header-language-selector">
                   <LanguageSelector />
                 </div>
+                <button onClick={() => setIsPastDrawsModalOpen(true)}>Past Draws</button>
                 <SubscribeButton />
                 <LogoutButton />
               </>
@@ -191,17 +194,6 @@ function App() {
     }
   }, [isAuthenticated, fetchUserDraws]);
 
-  const PastDraws = ({ draws }) => (
-    <div className="past-draws">
-      <h2>Past Draws</h2>
-      {draws.map((draw) => (
-        <div key={draw.id} className="past-draw">
-          <h3>{draw.spread_type} - {new Date(draw.created_at).toLocaleString()}</h3>
-          <p>{draw.response}</p>
-        </div>
-      ))}
-    </div>
-  );
 
   return (
     <LanguageProvider>
@@ -240,7 +232,10 @@ function App() {
             } />
             <Route path="/callback" element={<Navigate to="/" />} />
           </Routes>
-          <PastDraws draws={userDraws} />
+          <PastDrawsModal 
+            isOpen={isPastDrawsModalOpen} 
+            onClose={() => setIsPastDrawsModalOpen(false)} 
+          />
         </div>
       </Router>
     </LanguageProvider>

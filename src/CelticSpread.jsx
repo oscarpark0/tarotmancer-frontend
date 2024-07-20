@@ -7,7 +7,7 @@ import { API_BASE_URL } from './utils/config.tsx';
 import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-
+import PastDrawsModal from './components/PastDrawsModal';
 
 const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw }) => {
   const { getToken, user } = useKindeAuth();
@@ -26,6 +26,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [currentDrawId, setCurrentDrawId] = useState(null);
+  const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -67,6 +69,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       }
 
       const data = await response.json();
+      setCurrentDrawId(data.id); // Assuming the backend returns the draw ID
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
@@ -169,8 +172,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       isStreaming={isStreaming}
       canDraw={canDraw}
       timeUntilNextDraw={timeUntilNextDraw}
+      currentDrawId={currentDrawId}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -235,6 +239,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
           )}
         </div>
       </div>
+      <PastDrawsModal 
+        isOpen={isPastDrawsModalOpen} 
+        onClose={() => setIsPastDrawsModalOpen(false)} 
+      />
     </ErrorBoundary>
   );
 });

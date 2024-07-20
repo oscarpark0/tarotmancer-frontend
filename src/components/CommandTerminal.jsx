@@ -7,8 +7,9 @@ import CardReveal from './CardReveal';
 import LanguageSelector, { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -17,6 +18,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const { selectedLanguage } = useLanguage();
   const [isDrawing, setIsDrawing] = useState(false);
   const [countdown, setCountdown] = useState(timeUntilNextDraw);
+  const kindeAuth = useKindeAuth();
 
   const getTranslation = (key) => {
     if (!buttonTranslations[key]) {

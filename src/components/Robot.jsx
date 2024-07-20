@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef, useLayoutEffect, memo } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useLayoutEffect, memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
@@ -214,6 +214,48 @@ const Robot = memo(({
     }
   }, [isStreaming]);
 
+  const memoizedCommandTerminal = useMemo(() => (
+    <CommandTerminal
+      onMonitorOutput={handleMonitorOutput}
+      drawSpread={handleDrawSpread}
+      onSubmitInput={onSubmitInput}
+      mostCommonCards={mostCommonCards}
+      dealingComplete={dealingComplete}
+      formRef={formRef}
+      onSpreadSelect={onSpreadSelect}
+      selectedSpread={selectedSpread}
+      isMobile={isMobile}
+      cards={cards}
+      revealCards={revealCards}
+      shouldDrawNewSpread={shouldDrawNewSpread}
+      ref={commandTerminalRef}
+      style={{
+        position: 'absolute',
+        width: '100%',
+        top: '100%',
+        left: 0,
+      }}
+      fetchSpread={fetchSpread}
+      responses={responses}
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+      onNewResponse={handleNewResponse}
+      onResponseComplete={handleResponseComplete}
+      animationsComplete={animationsComplete}
+      onAnimationStart={handleAnimationStart}
+      isStreaming={isStreaming}
+      canDraw={localCanDraw}
+      timeUntilNextDraw={timeUntilNextDraw}
+    />
+  ), [
+    handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, 
+    dealingComplete, formRef, onSpreadSelect, selectedSpread, isMobile, 
+    cards, revealCards, shouldDrawNewSpread, fetchSpread, responses, 
+    activeTab, setActiveTab, handleNewResponse, handleResponseComplete, 
+    animationsComplete, handleAnimationStart, isStreaming, localCanDraw, 
+    timeUntilNextDraw
+  ]);
+
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
@@ -262,38 +304,7 @@ const Robot = memo(({
         </div>
       </div>
 
-      <CommandTerminal
-        onMonitorOutput={handleMonitorOutput}
-        drawSpread={handleDrawSpread}
-        onSubmitInput={onSubmitInput}
-        mostCommonCards={mostCommonCards}
-        dealingComplete={dealingComplete}
-        formRef={formRef}
-        onSpreadSelect={onSpreadSelect}
-        selectedSpread={selectedSpread}
-        isMobile={isMobile}
-        cards={cards}
-        revealCards={revealCards}
-        shouldDrawNewSpread={shouldDrawNewSpread}
-        ref={commandTerminalRef}
-        style={{
-          position: 'absolute',
-          width: '100%',
-          top: '100%',
-          left: 0,
-        }}
-        fetchSpread={fetchSpread}
-        responses={responses}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onNewResponse={handleNewResponse}
-        onResponseComplete={handleResponseComplete}
-        animationsComplete={animationsComplete}
-        onAnimationStart={handleAnimationStart}
-        isStreaming={isStreaming}
-        canDraw={localCanDraw}
-        timeUntilNextDraw={timeUntilNextDraw}
-      />
+      {memoizedCommandTerminal}
     </motion.div>
   );
 });

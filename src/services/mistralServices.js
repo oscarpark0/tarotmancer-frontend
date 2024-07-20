@@ -2,10 +2,12 @@ import { getToken, getUserId } from '../utils/auth';
 
 export const getMistralResponse = async (message, onNewResponse, onResponseComplete, drawId, userId) => {
   try {
+    const token = getToken();
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({
         model: "open-mistral-nemo-2407",
@@ -68,6 +70,9 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
 }
 
 async function storeMistralResponse(drawId, response, userId) {
+  if (!userId) {
+    userId = getUserId(); // Use getUserId as a fallback
+  }
   if (!userId) {
     throw new Error('User ID not provided');
   }

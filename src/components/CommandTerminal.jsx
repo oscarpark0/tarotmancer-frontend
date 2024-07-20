@@ -39,6 +39,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
+    console.log('handleSubmit called with:', { mostCommonCards, shouldRequestCohere, currentDrawId });
     if (!shouldRequestCohere || !currentDrawId) {
       console.log('Not requesting Mistral:', { shouldRequestCohere, currentDrawId });
       return;
@@ -142,6 +143,10 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     if (!canDraw && countdown > 0) return `${getTranslation('nextDrawIn')} ${formatCountdown(countdown)}`;
     return getTranslation('draw');
   }, [isLoading, isDrawing, canDraw, countdown, getTranslation]);
+
+  useEffect(() => {
+    console.log('currentDrawId in CommandTerminal changed:', currentDrawId);
+  }, [currentDrawId]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>

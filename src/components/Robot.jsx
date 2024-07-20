@@ -260,6 +260,8 @@ const Robot = memo(({
     timeUntilNextDraw, user, currentDrawId
   ]);
 
+  console.log('Robot rendering with currentDrawId:', currentDrawId);
+
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}

@@ -1,4 +1,4 @@
-export const getMistralResponse = async (message, onNewResponse, onResponseComplete) => {
+export const getMistralResponse = async (message, onNewResponse, onResponseComplete, drawId) => {
   try {
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
       method: 'POST',
@@ -35,6 +35,7 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
         if (line.startsWith('data: ')) {
           const data = line.slice(6);
           if (data === '[DONE]') {
+            await storeMistralResponse(drawId, fullResponse);
             onResponseComplete(fullResponse);
             return;
           }
@@ -57,4 +58,23 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
     onResponseComplete();
     throw error;
   }
-};
+}
+
+async function storeMistralResponse(drawId, response) {
+  try {
+    const res = await fetch(`${process.env.REACT_APP_BASE_URL}/api/store-mistral-response`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ drawId, response }),
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to store Mistral response');
+    }
+  } catch (error) {
+    console.error('Error storing Mistral response:', error);
+  }
+}

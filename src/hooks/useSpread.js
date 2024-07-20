@@ -22,6 +22,7 @@ export const useSpread = (spreadType, selectedLanguage) => {
   const [monitorOutput, setMonitorOutput] = useState('');
   const [currentResponse, setCurrentResponse] = useState('');
   const [isRequesting, setIsRequesting] = useState(false);
+  const [currentDrawId, setCurrentDrawId] = useState(null);
 
   const handleResponseComplete = useCallback(() => {
     setIsStreaming(false);
@@ -76,6 +77,9 @@ export const useSpread = (spreadType, selectedLanguage) => {
 
       const data = JSON.parse(responseText);
 
+      // Set the current draw ID
+      setCurrentDrawId(data.id);
+
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = spreadType === 'celtic' 
@@ -118,11 +122,11 @@ export const useSpread = (spreadType, selectedLanguage) => {
     setDealingComplete(true);
     if (!isRequesting) {
       setIsRequesting(true);
-      handleMistralSubmit(mostCommonCards).finally(() => {
+      handleMistralSubmit(mostCommonCards, currentDrawId).finally(() => {
         setIsRequesting(false);
       });
     }
-  }, [mostCommonCards, isRequesting, handleMistralSubmit]);
+  }, [mostCommonCards, isRequesting, handleMistralSubmit, currentDrawId]);
 
   const handleExitComplete = useCallback(() => {
     setFloatingCardsComplete(true);
@@ -157,19 +161,19 @@ export const useSpread = (spreadType, selectedLanguage) => {
     setMonitorOutput('');
     fetchSpread().then(() => {
       if (mostCommonCards) {
-        handleMistralSubmit(mostCommonCards);
+        handleMistralSubmit(mostCommonCards, currentDrawId);
       }
     });
-  }, [fetchSpread, handleMistralSubmit, mostCommonCards]);
+  }, [fetchSpread, handleMistralSubmit, mostCommonCards, currentDrawId]);
 
   useEffect(() => {
     if (dealingComplete && !isRequesting) {
       setIsRequesting(true);
-      handleMistralSubmit(mostCommonCards).finally(() => {
+      handleMistralSubmit(mostCommonCards, currentDrawId).finally(() => {
         setIsRequesting(false);
       });
     }
-  }, [dealingComplete, isRequesting, handleMistralSubmit, mostCommonCards]);
+  }, [dealingComplete, isRequesting, handleMistralSubmit, mostCommonCards, currentDrawId]);
 
   return {
     positions,

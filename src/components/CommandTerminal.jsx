@@ -40,9 +40,13 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
     console.log('handleSubmit called with:', { mostCommonCards, shouldRequestCohere, currentDrawId });
-    if (!shouldRequestCohere || !currentDrawId) {
-      console.log('Not requesting Mistral:', { shouldRequestCohere, currentDrawId });
+    if (!shouldRequestCohere) {
+      console.log('Not requesting Mistral: shouldRequestCohere is false');
       return;
+    }
+
+    if (!currentDrawId) {
+      console.warn('currentDrawId is undefined, but continuing with request');
     }
 
     setIsLoading(true);

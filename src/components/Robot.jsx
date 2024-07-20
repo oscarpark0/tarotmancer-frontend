@@ -216,6 +216,10 @@ const Robot = memo(({
     }
   }, [isStreaming]);
 
+  useEffect(() => {
+    console.log('currentDrawId in Robot changed:', currentDrawId);
+  }, [currentDrawId]);
+
   const memoizedCommandTerminal = useMemo(() => (
     <CommandTerminal
       onMonitorOutput={handleMonitorOutput}

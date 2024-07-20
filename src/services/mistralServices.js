@@ -6,12 +6,13 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
     const token = getToken();
     if (!userId) {
       userId = getUserId(); // Fallback to getUserId if not provided
+      console.log('Using fallback userId:', userId);
     }
     if (!userId) {
-      throw new Error('User ID not available');
+      console.warn('User ID not available, but continuing with request');
     }
     if (!drawId) {
-      throw new Error('Draw ID not provided');
+      console.warn('Draw ID not provided, but continuing with request');
     }
 
     console.log('Sending request to Mistral API');
@@ -20,12 +21,13 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-        'User-ID': userId
+        'User-ID': userId || 'unknown'
       },
       body: JSON.stringify({
         model: "open-mistral-nemo-2407",
         messages: [{ role: "user", content: message }],
         stream: true,
+        drawId: drawId || 'unknown'
       }),
       credentials: 'include',
     });

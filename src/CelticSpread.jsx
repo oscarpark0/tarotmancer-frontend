@@ -73,8 +73,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       }
 
       const data = await response.json();
-      setCurrentDrawId(data.id); // Assuming the backend returns the draw ID
-      console.log('Set currentDrawId in CelticSpread:', data.id);
+      console.log('Received spread data:', data); // Add this line to see the full response
+      const drawId = data.id || data.drawId || data.draw_id; // Try different possible names
+      setCurrentDrawId(drawId);
+      console.log('Set currentDrawId in CelticSpread:', drawId);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);

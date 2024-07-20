@@ -63,7 +63,15 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
       console.log('Sending Mistral request with message:', message);
 
-      await getMistralResponse(message, onNewResponse, onResponseComplete, currentDrawId, kindeAuth.user?.id);
+      await getMistralResponse(message, onNewResponse, (fullResponse, error) => {
+        if (error) {
+          console.error('Error storing Mistral response:', error);
+          // Handle error (e.g., show error message to user)
+        } else {
+          console.log('Mistral response stored successfully');
+        }
+        onResponseComplete(fullResponse);
+      }, currentDrawId, kindeAuth.user?.id);
       
       console.log('Mistral request completed');
     } catch (error) {

@@ -79,6 +79,8 @@ export const useSpread = (spreadType, selectedLanguage) => {
 
       // Set the current draw ID
       setCurrentDrawId(data.id);
+      console.log('Received spread data:', data);
+      console.log('Set currentDrawId:', data.id);
 
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;

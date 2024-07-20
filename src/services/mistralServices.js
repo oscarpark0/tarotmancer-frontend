@@ -1,6 +1,7 @@
 import { getToken, getUserId } from '../utils/auth';
 
 export const getMistralResponse = async (message, onNewResponse, onResponseComplete, drawId, userId) => {
+  console.log('getMistralResponse called with:', { message, drawId, userId });
   try {
     const token = getToken();
     if (!userId) {
@@ -9,11 +10,17 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
     if (!userId) {
       throw new Error('User ID not available');
     }
+    if (!drawId) {
+      throw new Error('Draw ID not provided');
+    }
+
+    console.log('Sending request to Mistral API');
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
+        'User-ID': userId
       },
       body: JSON.stringify({
         model: "open-mistral-nemo-2407",
@@ -22,6 +29,8 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
       }),
       credentials: 'include',
     });
+
+    console.log('Received response from Mistral API:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();

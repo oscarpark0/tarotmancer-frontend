@@ -39,10 +39,15 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
-    if (!shouldRequestCohere || !currentDrawId) return;
+    if (!shouldRequestCohere || !currentDrawId) {
+      console.log('Not requesting Mistral:', { shouldRequestCohere, currentDrawId });
+      return;
+    }
 
     setIsLoading(true);
     onNewResponse('');
+
+    console.log('Preparing to send Mistral request:', { mostCommonCards, currentDrawId, userId: kindeAuth.user?.id });
 
     try {
       const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +
@@ -55,9 +60,13 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
+      console.log('Sending Mistral request with message:', message);
+
       await getMistralResponse(message, onNewResponse, onResponseComplete, currentDrawId, kindeAuth.user?.id);
+      
+      console.log('Mistral request completed');
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error in Mistral request:', error);
       const errorMessage = getTranslation('errorMessage');
       onNewResponse(errorMessage);
       onResponseComplete(null, error);
@@ -70,11 +79,11 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
-      setShowCards(true);
+      console.log('Triggering Mistral request after animations');
       handleSubmit(mostCommonCards);
       setShouldRequestCohere(false);
     }
-  }, [mostCommonCards, dealingComplete, shouldRequestCohere, handleSubmit, animationsComplete]);
+  }, [mostCommonCards, dealingComplete, shouldRequestCohere, animationsComplete, handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);

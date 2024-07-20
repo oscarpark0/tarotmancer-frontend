@@ -21,7 +21,7 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
         }
     }, []);
 
-    const fetchMistralResponse = useCallback(async (message) => {
+    const fetchMistralResponse = useCallback(async (message, drawId, userId) => {
         setIsLoading(true);
         setError(null);
         setFullResponse('');
@@ -36,7 +36,9 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
                 (fullResponse) => {
                     setFullResponse(fullResponse);
                     onResponseComplete(fullResponse);
-                }
+                },
+                drawId,
+                userId
             );
         } catch (err) {
             console.error('Error in Mistral response:', err);

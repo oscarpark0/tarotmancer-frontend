@@ -40,6 +40,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   }, []);
 
   const fetchSpread = useCallback(async () => {
+    if (!user || !user.id) {
+      setError('User not authenticated. Please log in.');
+      return;
+    }
     if (!canDraw) {
       setError(`You can draw again in ${timeUntilNextDraw}`);
       return;

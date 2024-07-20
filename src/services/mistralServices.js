@@ -1,3 +1,5 @@
+import { getToken, getUserId } from '../utils/auth';
+
 export const getMistralResponse = async (message, onNewResponse, onResponseComplete, drawId) => {
   try {
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
@@ -35,8 +37,13 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
         if (line.startsWith('data: ')) {
           const data = line.slice(6);
           if (data === '[DONE]') {
-            await storeMistralResponse(drawId, fullResponse);
-            onResponseComplete(fullResponse);
+            try {
+              await storeMistralResponse(drawId, fullResponse);
+              onResponseComplete(fullResponse);
+            } catch (error) {
+              console.error('Failed to store Mistral response:', error);
+              onResponseComplete(fullResponse, error);
+            }
             return;
           }
           try {
@@ -55,26 +62,35 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
   } catch (error) {
     console.error('Error:', error);
     onNewResponse(`Error: ${error.message}`);
-    onResponseComplete();
+    onResponseComplete(null, error);
     throw error;
   }
 }
 
 async function storeMistralResponse(drawId, response) {
   try {
+    const userId = getUserId();
+
+    if (!userId) {
+      throw new Error('User ID not available');
+    }
+
     const res = await fetch(`${process.env.REACT_APP_BASE_URL}/api/store-mistral-response`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'User-ID': userId,
       },
       body: JSON.stringify({ drawId, response }),
       credentials: 'include',
     });
 
     if (!res.ok) {
-      throw new Error('Failed to store Mistral response');
+      const errorData = await res.json();
+      throw new Error(`Failed to store Mistral response: ${errorData.message}`);
     }
   } catch (error) {
     console.error('Error storing Mistral response:', error);
+    throw error;
   }
 }

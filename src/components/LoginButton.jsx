@@ -1,11 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { LanguageContext } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 
 const LoginButton = () => {
-  const { login } = useKindeAuth();
+  const { login, isAuthenticated, user } = useKindeAuth();
   const { selectedLanguage } = useContext(LanguageContext);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      localStorage.setItem('userId', user.id);
+    }
+  }, [isAuthenticated, user]);
 
   const handleLogin = () => {
     if (login) {

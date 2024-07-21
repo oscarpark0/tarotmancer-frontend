@@ -6,7 +6,7 @@ interface Draw {
   id: number;
   spread_type: string;
   created_at: string;
-  response: string;
+  response: string | null;
 }
 
 interface PastDrawsModalProps {
@@ -65,7 +65,11 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
           <div>
             <button onClick={() => setSelectedDraw(null)}>Back to list</button>
             <h3>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
-            <p>{selectedDraw.response}</p>
+            {selectedDraw.response ? (
+              <p className={styles.responseText}>{selectedDraw.response}</p>
+            ) : (
+              <p>No response available for this draw.</p>
+            )}
           </div>
         ) : (
           <ul>

@@ -11,13 +11,13 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
   const cardPositions = useMemo(() => {
     const isMobile = window.innerWidth <= 768;
     
-    const baseScale = isMobile ? 0.8 : 1;
-    const centerX = '50vw';
-    const centerY = isMobile ? '40vh' : '50vh';
+    const baseScale = isMobile ? 0.6 : 0.8;
+    const centerX = '50%';
+    const centerY = '50%';
     
     if (cards.length === 3) {
       // Three Card Spread
-      const spacing = isMobile ? '25vw' : '15vw';
+      const spacing = isMobile ? '30%' : '20%';
       return [
         { top: centerY, left: `calc(${centerX} - ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: centerY, left: centerX, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
@@ -26,9 +26,9 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     } else {
       // Celtic Cross Spread
       const crossScale = baseScale * 0.9;
-      const stackOffsetX = isMobile ? '25vw' : '20vw';
-      const crossOffsetX = isMobile ? '7vw' : '5vw';
-      const verticalSpacing = isMobile ? '10vh' : '15vh';
+      const stackOffsetX = isMobile ? '35%' : '25%';
+      const crossOffsetX = isMobile ? '10%' : '7%';
+      const verticalSpacing = isMobile ? '15%' : '20%';
       
       return [
         { top: centerY, left: centerX, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
@@ -38,9 +38,9 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
         { top: centerY, left: `calc(${centerX} - ${crossOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: centerY, left: `calc(${centerX} + ${crossOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: `calc(${centerY} - ${verticalSpacing})`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: `calc(${centerY} - ${verticalSpacing}/3)`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
-        { top: `calc(${centerY} + ${verticalSpacing}/3)`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: centerY, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
         { top: `calc(${centerY} + ${verticalSpacing})`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${centerY} + ${verticalSpacing} * 2)`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
       ];
     }
   }, [cards.length]);

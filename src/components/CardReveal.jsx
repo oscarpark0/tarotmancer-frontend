@@ -9,43 +9,38 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
   const [hoveredCard, setHoveredCard] = useState(null);
 
   const cardPositions = useMemo(() => {
-    const containerWidth = window.innerWidth;
-    const isMobile = containerWidth <= 768;
+    const isMobile = window.innerWidth <= 768;
     
-    const baseScale = isMobile ? 0.01 : 20; 
-    const baseLeft = isMobile ? '50%' : '40%'; 
-    const topOffset = isMobile ? '30%' : '140%'; 
-    
-    // New horizontal spacing variables
-    const threeCardHorizontalSpacing = isMobile ? '25vw' : '10vw';
-    const celticCrossHorizontalSpacing = isMobile ? '9vw' : '7vw';
-    const celticStackHorizontalSpacing = isMobile ? '22vw' : '15vw';
+    const baseScale = isMobile ? 0.8 : 1;
+    const centerX = '50vw';
+    const centerY = isMobile ? '40vh' : '50vh';
     
     if (cards.length === 3) {
       // Three Card Spread
+      const spacing = isMobile ? '25vw' : '15vw';
       return [
-        { top: topOffset, left: `calc(${baseLeft} - ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
-        { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
-        { top: topOffset, left: `calc(${baseLeft} + ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
+        { top: centerY, left: `calc(${centerX} - ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: centerY, left: centerX, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: centerY, left: `calc(${centerX} + ${spacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
       ];
     } else {
       // Celtic Cross Spread
-      const crossCardScale = baseScale * 0.9;
-      const celticBaseScale = isMobile ? baseScale * 0.8 : baseScale;
-      const celticBaseLeft = isMobile ? '30%' : baseLeft;
-      const verticalSpacing = isMobile ? '5.9vh' : '12.5vh';
+      const crossScale = baseScale * 0.9;
+      const stackOffsetX = isMobile ? '25vw' : '20vw';
+      const crossOffsetX = isMobile ? '7vw' : '5vw';
+      const verticalSpacing = isMobile ? '10vh' : '15vh';
       
       return [
-        { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) rotate(90deg) scale(${crossCardScale * 0.7})`, zIndex: 12 },
-        { top: `calc(${topOffset} - ${verticalSpacing})`, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + ${verticalSpacing})`, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: topOffset, left: `calc(${celticBaseLeft} - ${celticCrossHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: topOffset, left: `calc(${celticBaseLeft} + ${celticCrossHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} - ${verticalSpacing} * 1.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} - ${verticalSpacing} * 0.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + ${verticalSpacing} * 0.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + ${verticalSpacing} * 1.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
+        { top: centerY, left: centerX, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: centerY, left: centerX, transform: `translate(-50%, -50%) rotate(90deg) scale(${crossScale})`, zIndex: 11 },
+        { top: `calc(${centerY} - ${verticalSpacing})`, left: centerX, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${centerY} + ${verticalSpacing})`, left: centerX, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: centerY, left: `calc(${centerX} - ${crossOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: centerY, left: `calc(${centerX} + ${crossOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${centerY} - ${verticalSpacing})`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${centerY} - ${verticalSpacing}/3)`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${centerY} + ${verticalSpacing}/3)`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
+        { top: `calc(${centerY} + ${verticalSpacing})`, left: `calc(${centerX} + ${stackOffsetX})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 10 },
       ];
     }
   }, [cards.length]);

@@ -1,30 +1,19 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { LanguageContext } from './LanguageSelector';
+import { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 
 const LoginButton = () => {
-  const { login, isAuthenticated, user } = useKindeAuth();
-  const { selectedLanguage } = useContext(LanguageContext);
+  const { login } = useKindeAuth();
+  const { selectedLanguage } = useLanguage();
 
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      localStorage.setItem('userId', user.id);
-    }
-  }, [isAuthenticated, user]);
-
-  const handleLogin = () => {
-    if (login) {
-      login();
-    } else {
-      console.error('Login function is not available');
-      alert('Login is currently unavailable. Please try again later.');
-    }
+  const getTranslation = (key) => {
+    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'];
   };
 
   return (
-    <button onClick={handleLogin} className="mystic-button">
-      <span className="button-text">{buttonTranslations.login[selectedLanguage]}</span>
+    <button onClick={() => login()} className="mystic-button">
+      <span className="button-text">{getTranslation('login')}</span>
     </button>
   );
 };

@@ -4,10 +4,11 @@ import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
-import LanguageSelector, { useLanguage } from './LanguageSelector';
+import { useLanguage } from './LanguageSelector';
 import { buttonTranslations } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import LanguageSelector from './LanguageSelector';
 
 const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId }, ref) => {
   const [input, setInput] = useState('');

@@ -160,7 +160,7 @@ function App() {
     checkCanDraw();
   }, [checkCanDraw]);
   const timeUntilNextDraw = useMemo(() => {
-    if (canDraw) return null; // Return null if user can draw
+    if (canDraw) return null; // null = user can draw
 
     const now = new Date();
     const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));

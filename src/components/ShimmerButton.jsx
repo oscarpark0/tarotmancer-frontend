@@ -1,5 +1,7 @@
 import { cn } from "../utils";
 import React from "react";
+import { useLanguage } from './LanguageSelector';
+import { buttonTranslations } from '../utils/translations';
 
 const ShimmerButton = React.forwardRef(
   (
@@ -10,10 +12,22 @@ const ShimmerButton = React.forwardRef(
       background = "rgba(26, 0, 51, 0.9)",
       className,
       children,
+      translationKey,
       ...props
     },
     ref,
   ) => {
+    const { selectedLanguage } = useLanguage();
+
+    const getTranslation = (key) => {
+      if (key && buttonTranslations[key]) {
+        return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'] || key;
+      }
+      return key;
+    };
+
+    const buttonText = translationKey ? getTranslation(translationKey) : children;
+
     return (
       <button
         style={{
@@ -42,7 +56,7 @@ const ShimmerButton = React.forwardRef(
         </div>
 
         {/* Button content */}
-        <div className="relative z-10">{children}</div>
+        <div className="relative z-10">{buttonText}</div>
 
         {/* Hover glow effect */}
         <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">

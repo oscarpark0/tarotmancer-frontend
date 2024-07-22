@@ -7,6 +7,10 @@ const LogoutButton = () => {
   const { logout } = useKindeAuth();
   const { selectedLanguage } = useContext(LanguageContext);
 
+  const getTranslation = (key) => {
+    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'];
+  };
+
   const handleLogout = () => {
     // Store the current drawCount and lastResetTime in sessionStorage
     const drawCount = localStorage.getItem('drawCount');
@@ -20,7 +24,7 @@ const LogoutButton = () => {
       logout();
     } else {
       console.error('Logout function is not available');
-      alert('Logout is currently unavailable. Please try again later.');
+      alert(getTranslation('logoutUnavailable'));
       return;
     }
 
@@ -30,7 +34,7 @@ const LogoutButton = () => {
 
   return (
     <button onClick={handleLogout} className="mystic-button">
-      <span className="button-text">{buttonTranslations.logout[selectedLanguage]}</span>
+      <span className="button-text">{getTranslation('logout')}</span>
     </button>
   );
 };

@@ -7,9 +7,17 @@ import { API_BASE_URL } from './utils/config.tsx';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useLanguage } from './components/LanguageSelector';
+import { buttonTranslations } from './utils/translations';
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw }) => {
   const { getToken, user } = useKindeAuth();
+  const { selectedLanguage } = useLanguage();
+
+  const getTranslation = (key) => {
+    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'];
+  };
+
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -233,7 +241,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         <AnimatedGridPattern className="absolute inset-0" color="#00ff00" fill="#000000" positions={positions} isDarkMode={isDarkMode} isMobile={isMobile} isPaused={isStreaming} />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
-            <p className="text-4xl text-green-600 text-center animate-pulse z-1900">Shuffling the cards...</p>
+            <p className="text-4xl text-green-600 text-center animate-pulse z-1900">
+              {getTranslation('processing')}
+            </p>
           ) : error ? (
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
           ) : null}

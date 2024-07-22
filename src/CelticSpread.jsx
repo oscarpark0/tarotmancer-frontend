@@ -8,9 +8,17 @@ import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import PastDrawsModal from './components/PastDrawsModal';
+import { useLanguage } from './components/LanguageSelector';
+import { buttonTranslations } from './utils/translations';
 
 const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw }) => {
   const { getToken, user } = useKindeAuth();
+  const { selectedLanguage } = useLanguage();
+
+  const getTranslation = (key) => {
+    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'];
+  };
+
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -225,7 +233,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
         />
         <div className="relative w-full h-screen overflow-hidden">
           {isLoading ? (
-            <p className="text-2xl text-green-600 text-center animate-pulse z-99900">Shuffling the cards...</p>
+            <p className="text-2xl text-green-600 text-center animate-pulse z-99900">
+              {getTranslation('processing')}
+            </p>
           ) : error ? (
             <p className="text-4xl text-red-600 text-center z-100">{error}</p>
           ) : null}

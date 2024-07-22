@@ -4,7 +4,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay */
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,29 +12,21 @@
   }
   
   .modalContent {
-    background-color: #fefefe; /* Lighter background */
+    background-color: white;
     padding: 20px;
-    border-radius: 10px; /* More rounded corners */
+    border-radius: 5px;
     max-width: 500px;
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Added shadow */
   }
   
   .closeButton {
     float: right;
-    background: #ff4d4d; /* Red background for close button */
-    color: white; /* White text */
+    background: none;
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    border-radius: 50%; /* Circular button */
-    padding: 5px 10px; /* Padding for better click area */
-  }
-  
-  .closeButton:hover {
-    background: #ff1a1a; /* Darker red on hover */
   }
   
   ul {
@@ -46,12 +38,10 @@
     cursor: pointer;
     padding: 10px;
     border-bottom: 1px solid #eee;
-    background-color: transparent; 
-    transition: background-color 0.1s ease-out; 
   }
   
   li:hover {
-    background-color: #e0e0e0; /* Slightly darker on hover */
+    background-color: #f0f0f0;
   }
   
   .responseText {
@@ -60,7 +50,7 @@
     max-height: 300px;
     overflow-y: auto;
     padding: 10px;
-    background-color: #f0f0f0; /* Light gray background for response */
-    border: 1px solid #ccc; /* Softer border */
+    background-color: #000000;
+    border: 1px solid #ddd;
     border-radius: 4px;
   }

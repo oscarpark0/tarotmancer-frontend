@@ -25,7 +25,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
   const cardPositions = useMemo(() => {
     const isMobile = window.innerWidth <= 768;
     const baseScale = isMobile ? 0.01 : 0.015; // Reduced scale for smaller cards
-    const baseLeft = '-50%';
+    const baseLeft = '-30%';
     const topOffset = '6%'; // Moved up from 50% to 40%
     
     if (numCards === 3) {
@@ -40,8 +40,8 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
       // Celtic Cross Spread
       const crossCardScale = baseScale * 0.9;
       const celticBaseScale = isMobile ? baseScale * 0.9 : baseScale;
-      const spacing = isMobile ? '12vw' : '9vw';
-      const verticalSpacing = isMobile ? '8vh' : '12vh';
+      const spacing = isMobile ? '12vw' : '11vw';
+      const verticalSpacing = isMobile ? '8vh' : '8vh';
       
       return [
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },

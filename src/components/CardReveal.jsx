@@ -17,7 +17,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     const topOffset = isMobile ? '30%' : '169%'; 
     
     // New horizontal spacing variables
-    const threeCardHorizontalSpacing = isMobile ? '25vw' : '10vw';
+    const threeCardHorizontalSpacing = isMobile ? '25vw' : '8vw';
     const celticCrossHorizontalSpacing = isMobile ? '9vw' : '5vw';
     const celticStackHorizontalSpacing = isMobile ? '22vw' : '12vw';
     

@@ -60,11 +60,16 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <button className={styles.closeButton} onClick={onClose}>&times;</button>
-        <h2>Past Draws</h2>
+        <h2 style={{ color: '#333' }}>Past Draws</h2>
         {selectedDraw ? (
           <div>
-            <button onClick={() => setSelectedDraw(null)}>Back to list</button>
-            <h3>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
+            <button 
+              onClick={() => setSelectedDraw(null)} 
+              style={{ backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', padding: '10px', cursor: 'pointer' }} 
+            >
+              Back to list
+            </button>
+            <h3 style={{ color: '#555' }}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
             {selectedDraw.response ? (
               <p className={styles.responseText}>{selectedDraw.response}</p>
             ) : (

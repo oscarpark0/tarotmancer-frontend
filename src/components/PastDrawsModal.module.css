@@ -12,7 +12,7 @@
   }
   
   .modalContent {
-    background-color: rgb(64, 11, 126);
+    background-color: rgb(222, 208, 255);
     padding: 20px;
     border-radius: 5px;
     max-width: 500px;
@@ -51,7 +51,7 @@
   }
   
   ul {
-    list-style-type: none;
+    list-style-type: square;
     padding: 0;
   }
   

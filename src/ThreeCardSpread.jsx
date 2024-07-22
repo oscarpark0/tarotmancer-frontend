@@ -77,6 +77,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       }
 
       const data = await response.json();
+      console.log('Received spread data:', data);
+      const drawId = data.id || data.drawId || data.draw_id;
+      setCurrentDrawId(drawId);
+      console.log('Set currentDrawId in ThreeCardSpread:', drawId);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateThreeCardPositions(data.positions.length, windowWidth, windowHeight);

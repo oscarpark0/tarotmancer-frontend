@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import styles from './PastDrawsModal.module.css';
+import { useLanguage } from './LanguageSelector';
+import { buttonTranslations } from '../utils/translations';
 
 interface Draw {
   id: number;
@@ -18,6 +20,13 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
   const [draws, setDraws] = useState<Draw[]>([]);
   const [selectedDraw, setSelectedDraw] = useState<Draw | null>(null);
   const { getToken, user } = useKindeAuth();
+  const { selectedLanguage } = useLanguage();
+
+  const getTranslation = (key: keyof typeof buttonTranslations) => {
+    return buttonTranslations[key][selectedLanguage as keyof (typeof buttonTranslations)[typeof key]] || 
+           buttonTranslations[key]['English'] || 
+           key;
+  };
 
   useEffect(() => {
     const fetchDraws = async () => {
@@ -60,20 +69,20 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <button className={styles.closeButton} onClick={onClose}>&times;</button>
-        <h2 style={{ color: '#333' }}>Past Draws</h2>
+        <h2 style={{ color: '#333' }}>{getTranslation('pastDraws')}</h2>
         {selectedDraw ? (
           <div>
             <button 
               onClick={() => setSelectedDraw(null)} 
               style={{ backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', padding: '10px', cursor: 'pointer' }} 
             >
-              Back to list
+              {getTranslation('backToList')}
             </button>
             <h3 style={{ color: '#555' }}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
             {selectedDraw.response ? (
               <p className={styles.responseText}>{selectedDraw.response}</p>
             ) : (
-              <p>No response available for this draw.</p>
+              <p>{getTranslation('noResponseAvailable')}</p>
             )}
           </div>
         ) : (

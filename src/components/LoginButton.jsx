@@ -8,7 +8,7 @@ const LoginButton = () => {
   const { selectedLanguage } = useLanguage();
 
   const getTranslation = (key) => {
-    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'];
+    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'] || key;
   };
 
   return (

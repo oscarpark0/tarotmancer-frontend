@@ -14,12 +14,12 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     
     const baseScale = isMobile ? 0.01 : 20; 
     const baseLeft = isMobile ? '50%' : '40%'; 
-    const topOffset = isMobile ? '30%' : '140%'; 
+    const topOffset = isMobile ? '30%' : '169%'; 
     
     // New horizontal spacing variables
     const threeCardHorizontalSpacing = isMobile ? '25vw' : '10vw';
-    const celticCrossHorizontalSpacing = isMobile ? '9vw' : '7vw';
-    const celticStackHorizontalSpacing = isMobile ? '22vw' : '15vw';
+    const celticCrossHorizontalSpacing = isMobile ? '9vw' : '5vw';
+    const celticStackHorizontalSpacing = isMobile ? '22vw' : '12vw';
     
     if (cards.length === 3) {
       // Three Card Spread
@@ -33,7 +33,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
       const crossCardScale = baseScale * 0.9;
       const celticBaseScale = isMobile ? baseScale * 0.8 : baseScale;
       const celticBaseLeft = isMobile ? '30%' : baseLeft;
-      const verticalSpacing = isMobile ? '5.9vh' : '12.5vh';
+      const verticalSpacing = isMobile ? '5.9vh' : '9.5vh';
       
       return [
         { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },

@@ -1,12 +1,10 @@
 import { getToken, getUserId } from '../utils/auth';
 
 export const getMistralResponse = async (message, onNewResponse, onResponseComplete, drawId, userId) => {
-  console.log('getMistralResponse called with:', { message, drawId, userId });
   try {
     const token = getToken();
     if (!userId) {
-      userId = getUserId(); // Fallback to getUserId if not provided
-      console.log('Using fallback userId:', userId);
+      userId = getUserId(); 
     }
     if (!userId) {
       console.warn('User ID not available, but continuing with request');
@@ -14,8 +12,6 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
     if (!drawId) {
       console.warn('Draw ID not provided, but continuing with request');
     }
-
-    console.log('Sending request to Mistral API');
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
       method: 'POST',
       headers: {
@@ -31,7 +27,6 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
       credentials: 'include',
     });
 
-    console.log('Received response from Mistral API:', response.status);
 
     if (!response.ok) {
       const errorData = await response.json();

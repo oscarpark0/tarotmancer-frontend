@@ -15,7 +15,6 @@ export const useMistralResponse = (onNewResponse, onResponseComplete) => {
                 return await fn(...args);
             } catch (err) {
                 if (i === MAX_RETRIES - 1) throw err;
-                console.log(`Retrying request (${i + 1}/${MAX_RETRIES})...`);
                 await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
             }
         }

@@ -205,19 +205,11 @@ const Robot = memo(({
   }, [onAnimationStart]);
 
   useEffect(() => {
-    // This effect will run whenever isStreaming changes
-    // You can use it to trigger any actions that should occur when streaming starts or stops
     if (isStreaming) {
-      console.log('Streaming started');
-      // Add any actions you want to occur when streaming starts
-    } else {
-      console.log('Streaming stopped');
-      // Add any actions you want to occur when streaming stops
     }
   }, [isStreaming]);
 
   useEffect(() => {
-    console.log('currentDrawId in Robot changed:', currentDrawId);
   }, [currentDrawId]);
 
   const memoizedCommandTerminal = useMemo(() => (
@@ -264,7 +256,6 @@ const Robot = memo(({
     timeUntilNextDraw, user, currentDrawId
   ]);
 
-  console.log('Robot rendering with currentDrawId:', currentDrawId);
 
   return (
     <motion.div

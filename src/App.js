@@ -134,17 +134,13 @@ function App() {
         }
       });
       
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
       
       const text = await response.text();
-      console.log('Full response text:', text);
       
       if (response.ok) {
         try {
           const data = JSON.parse(text);
           setCanDraw(data.can_draw);
-          console.log('Can draw:', data.can_draw);
         } catch (e) {
           console.error('Failed to parse response as JSON:', e);
         }

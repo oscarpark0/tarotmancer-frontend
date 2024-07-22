@@ -73,14 +73,10 @@ export const useSpread = (spreadType, selectedLanguage) => {
       }
 
       const responseText = await response.text();
-      console.log('Raw response:', responseText);
 
       const data = JSON.parse(responseText);
 
-      // Set the current draw ID
       setCurrentDrawId(data.id);
-      console.log('Received spread data:', data);
-      console.log('Set currentDrawId:', data.id);
 
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;

@@ -40,9 +40,7 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
-    console.log('handleSubmit called with:', { mostCommonCards, shouldRequestCohere, currentDrawId });
     if (!shouldRequestCohere) {
-      console.log('Not requesting Mistral: shouldRequestCohere is false');
       return;
     }
 
@@ -52,8 +50,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
     setIsLoading(true);
     onNewResponse('');
-
-    console.log('Preparing to send Mistral request:', { mostCommonCards, currentDrawId, userId: kindeAuth.user?.id });
 
     try {
       const staticText = "You are Tarotmancer - a wise and knowledgeable tarot card interpretation master." +
@@ -65,7 +61,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-      console.log('Sending Mistral request with message:', message);
 
       await getMistralResponse(message, onNewResponse, (fullResponse, error) => {
         if (error) {
@@ -77,7 +72,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
         onResponseComplete(fullResponse);
       }, currentDrawId, kindeAuth.user?.id);
       
-      console.log('Mistral request completed');
     } catch (error) {
       console.error('Error in Mistral request:', error);
       const errorMessage = getTranslation('errorMessage');
@@ -92,7 +86,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
-      console.log('Triggering Mistral request after animations');
       handleSubmit(mostCommonCards);
       setShouldRequestCohere(false);
     }
@@ -100,7 +93,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);
-    // Don't trigger Cohere request here
   };
 
   useEffect(() => {
@@ -157,7 +149,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   }, [isLoading, isDrawing, canDraw, countdown, getTranslation]);
 
   useEffect(() => {
-    console.log('currentDrawId in CommandTerminal changed:', currentDrawId);
   }, [currentDrawId]);
 
   return (

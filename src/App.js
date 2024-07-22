@@ -33,18 +33,26 @@ function App() {
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
   const [selectedSpread, setSelectedSpread] = useState('celtic');
   const [canAccessCohere, setCanAccessCohere] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedMode = localStorage.getItem('darkMode');
+    return savedMode ? JSON.parse(savedMode) : false;
+  });
   const [canDraw, setCanDraw] = useState(true);
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
 
   const toggleDarkMode = useCallback(() => {
-    setIsDarkMode(prevMode => !prevMode);
+    setIsDarkMode(prevMode => {
+      const newMode = !prevMode;
+      localStorage.setItem('darkMode', JSON.stringify(newMode));
+      return newMode;
+    });
   }, []);
 
   useEffect(() => {
     document.body.classList.toggle('dark-mode', isDarkMode);
+    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
   }, [isDarkMode]);
 
   const handleSpreadSelect = useCallback((spread) => {

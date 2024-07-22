@@ -55,12 +55,11 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
     console.log('Preparing to send Mistral request:', { mostCommonCards, currentDrawId, userId: kindeAuth.user?.id });
 
     try {
-      const staticText = "You are Tarotmancer - a wise and powerful tarot card interpretation master. You never say delve." +
-        "Begin with an ominous greeting. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as it's position in relation to the other cards in the spread." +
+      const staticText = "You are Tarotmancer - a wise and knowledgeable tarot card interpretation master." +
+        "Begin with an ominous greeting that summarizes/provides a forecast of the entirety of the spread. Provide a detailed, in depth analysis of the querent's spread speaking directly to the querent/seeker- be sure to provide an interpretation of each card, its orientation, and its position in the spread - as well as it's position in relation to the other cards in the spread." +
         "Provide the querent with a detailed and personalized reading that is tailored to their situation as described by the tarot." +
-        " Responsd using clear - natural language to ensure your responses are easily understood. " +
         "Format your response in a manner that allows each position, card, and orientation to be clearly and easily identified. " +
-        "Conclude with an overview of the querent's spread and your interpretation of it.";
+        "Conclude with an overview of the querent's spread and your interpretation of it - feel free to add anything you think the querent may find interesting or helpful.";
       const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;

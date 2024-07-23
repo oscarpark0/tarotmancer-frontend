@@ -28,6 +28,38 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
            key;
   };
 
+  const removeDraw = async (drawId: number) => {
+    if (!user) return;
+
+    try {
+      const token = await getToken();
+      const headers: HeadersInit = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      };
+
+      if (user.id) {
+        headers['User-ID'] = user.id;
+      }
+
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/user-draws/${drawId}`, {
+        method: 'DELETE',
+        headers: headers,
+      });
+
+      if (response.ok) {
+        setDraws(draws.filter(draw => draw.id !== drawId));
+        if (selectedDraw && selectedDraw.id === drawId) {
+          setSelectedDraw(null);
+        }
+      } else {
+        console.error('Failed to remove draw');
+      }
+    } catch (error) {
+      console.error('Error removing draw:', error);
+    }
+  };
+
   useEffect(() => {
     const fetchDraws = async () => {
       if (!user) return;
@@ -74,9 +106,15 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
           <div>
             <button 
               onClick={() => setSelectedDraw(null)} 
-              style={{ backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', padding: '10px', cursor: 'pointer' }} 
+              className={styles.backButton}
             >
               {getTranslation('backToList')}
+            </button>
+            <button 
+              onClick={() => removeDraw(selectedDraw.id)} 
+              className={styles.removeButton}
+            >
+              {getTranslation('removeDraw')}
             </button>
             <h3 style={{ color: '#555' }}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
             {selectedDraw.response ? (
@@ -88,8 +126,16 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
         ) : (
           <ul>
             {draws.map((draw) => (
-              <li key={draw.id} onClick={() => setSelectedDraw(draw)}>
-                {draw.spread_type} - {new Date(draw.created_at).toLocaleString()}
+              <li key={draw.id}>
+                <span onClick={() => setSelectedDraw(draw)}>
+                  {draw.spread_type} - {new Date(draw.created_at).toLocaleString()}
+                </span>
+                <button 
+                  onClick={() => removeDraw(draw.id)} 
+                  className={styles.removeButton}
+                >
+                  {getTranslation('removeDraw')}
+                </button>
               </li>
             ))}
           </ul>

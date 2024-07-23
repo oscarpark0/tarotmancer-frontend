@@ -6,7 +6,7 @@ export const useStreamingState = (onNewResponse, onResponseComplete, onStreaming
   const handleNewResponse = useCallback((content) => {
     if (content !== "[DONE]") {
       onNewResponse(content);
-      onMonitorOutput(content); // Add this line
+      onMonitorOutput(content); 
       setIsStreaming(true);
       if (onStreamingStateChange) {
         onStreamingStateChange(true);

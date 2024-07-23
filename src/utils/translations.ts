@@ -1,6 +1,6 @@
 type Language = 'English' | 'Spanish' | 'French' | 'German' | 'Italian' | 'Japanese' | 'Chinese' | 'Russian' | 'Portuguese' | 'Dutch' | 'Korean' | 'Arabic' | 'Hindi' | 'Swedish' | 'Polish' | 'Turkish' | 'Danish' | 'Norwegian' | 'Finnish' | 'Greek';
 
-type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread';
+type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread' | 'removeDraw';
 
 export const buttonTranslations: Record<TranslationKey, Record<Language, string>> = {
   login: {
@@ -431,7 +431,7 @@ export const buttonTranslations: Record<TranslationKey, Record<Language, string>
 
   backToList: {
     English: "Back to List",
-    Spanish: "Volver a la Lista",
+    Spanish: "Volver a Lista",
     French: "Retour à la Liste",
     German: "Zurück zur Liste",
     Italian: "Torna alla Lista",
@@ -519,5 +519,28 @@ export const buttonTranslations: Record<TranslationKey, Record<Language, string>
     Norwegian: "Keltisk Kors Spredning",
     Finnish: "Kelttiläinen Risti Levitys",
     Greek: "Απλωμα Κελτικού Σταυρού"
+  },
+
+  removeDraw: {
+    English: "Remove Draw",
+    Spanish: "Eliminar Tirada",
+    French: "Supprimer le Tirage",
+    German: "Ziehung Entfernen",
+    Italian: "Rimuovi Lettura",
+    Portuguese: "Remover Tiragem",
+    Dutch: "Trekking Verwijderen",
+    Russian: "Удалить Расклад",
+    Chinese: "删除抽牌",
+    Japanese: "ドローを削除",
+    Korean: "드로우 제거",
+    Arabic: "إزالة السحب",
+    Hindi: "ड्रा हटाएं",
+    Swedish: "Ta Bort Dragning",
+    Polish: "Usuń Losowanie",
+    Turkish: "Çekimi Kaldır",
+    Danish: "Fjern Trækning",
+    Norwegian: "Fjern Trekking",
+    Finnish: "Poista Nosto",
+    Greek: "Αφαίρεση Τραβήγματος"
   }
 };

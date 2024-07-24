@@ -21,6 +21,7 @@ function App() {
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
 
   useEffect(() => {
+    console.log("Authentication state:", isAuthenticated);
     // Handle the authentication callback
     if (window.location.search.includes('code=') && kindeAuth?.handleRedirectCallback) {
       kindeAuth.handleRedirectCallback().catch(error => {
@@ -28,7 +29,7 @@ function App() {
         // Consider displaying this error to the user
       });
     }
-  }, [kindeAuth]);
+  }, [kindeAuth, isAuthenticated]);
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });

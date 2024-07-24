@@ -36,19 +36,38 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
       setCaptchaData(data);
     } catch (error) {
       console.error('Error fetching captcha:', error);
-      // Set an error state here to display to the user
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent form submission
     if (captchaData && selectedOption) {
-      const isCorrect = selectedOption === captchaData.correct_card;
-      setIsVerified(isCorrect);
-      onVerify(isCorrect);
-      if (!isCorrect) {
-        setSelectedOption(null);
-        fetchCaptcha();
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/verify-captcha`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            selected_option: selectedOption,
+            correct_card: captchaData.correct_card,
+          }),
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          setIsVerified(result.isCorrect);
+          onVerify(result.isCorrect);
+          if (!result.isCorrect) {
+            setSelectedOption(null);
+            fetchCaptcha();
+          }
+        } else {
+          throw new Error('Failed to verify captcha');
+        }
+      } catch (error) {
+        console.error('Error verifying captcha:', error);
+        onVerify(false);
       }
     }
   };

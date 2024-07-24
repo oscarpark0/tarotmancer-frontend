@@ -35,3 +35,9 @@
     background-color: #a0aec0;
     cursor: not-allowed;
   }
+
+  .verifiedMessage {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+  }

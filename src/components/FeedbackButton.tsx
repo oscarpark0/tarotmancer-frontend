@@ -12,13 +12,19 @@ const FeedbackButton: React.FC = () => {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const { getToken, user } = useKindeAuth();
 
+  const handleCaptchaVerify = (isVerified: boolean) => {
+    console.log("Captcha verified:", isVerified);
+    setIsCaptchaVerified(isVerified);
+  };
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Submitting feedback, captcha verified:", isCaptchaVerified);
     if (!isCaptchaVerified) {
       alert("Please complete the captcha first.");
       return;
     }
-    if (isSubmitting) return; // Prevent multiple submissions
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
     try {
@@ -45,16 +51,11 @@ const FeedbackButton: React.FC = () => {
       }
     } catch (error) {
       setSubmitStatus('error');
-      // Log error safely without exposing details
       console.error('Error submitting feedback');
     } finally {
       setIsSubmitting(false);
     }
   }, [feedback, getToken, user?.id, isSubmitting, isCaptchaVerified]);
-
-  const handleCaptchaVerify = (isVerified: boolean) => {
-    setIsCaptchaVerified(isVerified);
-  };
 
   return (
     <>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { TAROT_IMAGE_BASE_URL } from "../utils/config";
 import styles from './TarotCaptcha.module.css';
 
+const API_BASE_URL = process.env.REACT_APP_BASE_URL;
+
 interface TarotCaptchaProps {
   onVerify: (isVerified: boolean) => void;
 }
@@ -22,7 +24,7 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
 
   const fetchCaptcha = async () => {
     try {
-      const response = await fetch('/api/captcha');
+      const response = await fetch(`${API_BASE_URL}/api/captcha`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -33,7 +35,7 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
       setCaptchaData(data);
     } catch (error) {
       console.error('Error fetching captcha:', error);
-      // You might want to set some error state here to display to the user
+      // Set an error state here to display to the user
     }
   };
 

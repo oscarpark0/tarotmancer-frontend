@@ -23,10 +23,17 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
   const fetchCaptcha = async () => {
     try {
       const response = await fetch('/api/captcha');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
       setCaptchaData(data);
     } catch (error) {
       console.error('Error fetching captcha:', error);
+      // You might want to set some error state here to display to the user
     }
   };
 

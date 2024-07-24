@@ -1,0 +1,58 @@
+.typing-animation-char {
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 1.5em;
+  vertical-align: middle;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+
+.typing-animation-char.flipped {
+  transform: rotateY(180deg);
+}
+
+.letter,
+.card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transition: transform 0.5s;
+}
+
+.letter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-wrapper {
+  transform: rotateY(180deg);
+}
+
+.card-back,
+.card-front {
+  position: absolute;
+  width: 100%;
+  height: 120%;
+  backface-visibility: hidden;
+  border-radius: 3px;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.5s;
+}
+
+.card-front {
+  transform: rotateY(180deg);
+}
+
+.card-wrapper.flipped .card-back {
+  transform: rotateY(180deg);
+}
+
+.card-wrapper.flipped .card-front {
+  transform: rotateY(0);
+}

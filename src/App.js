@@ -5,7 +5,7 @@ import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
-import TypingAnimation from './components/typing-animation.tsx';
+import TypingAnimation from './components/typing-animation';
 import LanguageSelector, { LanguageProvider } from './components/LanguageSelector';
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import PastDrawsModal from './components/PastDrawsModal';

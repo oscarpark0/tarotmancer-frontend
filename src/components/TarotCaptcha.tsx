@@ -6,48 +6,69 @@ interface TarotCaptchaProps {
   onVerify: (isVerified: boolean) => void;
 }
 
+interface CaptchaData {
+  correct_card: string;
+  correct_image: string;
+  options: string[];
+}
+
 const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
-  const [cardImage, setCardImage] = useState('');
-  const [userInput, setUserInput] = useState('');
-  const [correctAnswer, setCorrectAnswer] = useState('');
+  const [captchaData, setCaptchaData] = useState<CaptchaData | null>(null);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchRandomCard();
+    fetchCaptcha();
   }, []);
 
-  const fetchRandomCard = async () => {
+  const fetchCaptcha = async () => {
     try {
-      const response = await fetch('/api/random-tarot-card');
+      const response = await fetch('/api/captcha');
       const data = await response.json();
-      setCardImage(`${TAROT_IMAGE_BASE_URL}/${data.image}`);
-      setCorrectAnswer(data.name.toLowerCase());
+      setCaptchaData(data);
     } catch (error) {
-      console.error('Error fetching random card:', error);
+      console.error('Error fetching captcha:', error);
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const isCorrect = userInput.toLowerCase() === correctAnswer;
-    onVerify(isCorrect);
-    if (!isCorrect) {
-      setUserInput('');
-      fetchRandomCard();
+    if (captchaData && selectedOption) {
+      const isCorrect = selectedOption === captchaData.correct_card;
+      onVerify(isCorrect);
+      if (!isCorrect) {
+        setSelectedOption(null);
+        fetchCaptcha();
+      }
     }
   };
 
+  if (!captchaData) {
+    return <div>Loading captcha...</div>;
+  }
+
   return (
     <div className={styles.captchaContainer}>
-      <img src={cardImage} alt="Tarot Card" className={styles.cardImage} />
+      <img 
+        src={`${TAROT_IMAGE_BASE_URL}/${captchaData.correct_image}`} 
+        alt="Tarot Card" 
+        className={styles.cardImage} 
+      />
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          placeholder="Enter the card name"
-          className={styles.input}
-        />
-        <button type="submit" className={styles.submitButton}>Verify</button>
+        {captchaData.options.map((option, index) => (
+          <label key={index} className={styles.optionLabel}>
+            <input
+              type="radio"
+              name="captchaOption"
+              value={option}
+              checked={selectedOption === option}
+              onChange={() => setSelectedOption(option)}
+            />
+            {option}
+          </label>
+        ))}
+        <button type="submit" className={styles.submitButton} disabled={!selectedOption}>
+          Verify
+        </button>
       </form>
     </div>
   );

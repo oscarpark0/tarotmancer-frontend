@@ -25,7 +25,7 @@ const tarotCards: string[] = [
 
 export default function TypingAnimation({
   children,
-  duration = 10000,
+  duration = 9000,
   className,
 }: TypingAnimationProps) {
   const text = "Tarotmancer";
@@ -117,7 +117,7 @@ export default function TypingAnimation({
           setStage('done');
           return prev;
         });
-      }, duration * 4);
+      }, duration * 2);
 
       return () => clearInterval(flipBack);
     }

@@ -117,7 +117,7 @@ export default function TypingAnimation({
           setStage('done');
           return prev;
         });
-      }, duration * 2);
+      }, duration * 4);
 
       return () => clearInterval(flipBack);
     }
@@ -126,7 +126,7 @@ export default function TypingAnimation({
   return (
     <h1
       className={cn(
-        "font-display text-center text-4xl font-bold leading-[5rem] tracking-[-0.02em] drop-shadow-sm",
+        "font-display text-center text-4xl font-bold leading-[1rem] tracking-[-0.02em] drop-shadow-sm",
         className
       )}
     >

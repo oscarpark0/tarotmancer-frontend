@@ -56,3 +56,12 @@
 .card-wrapper.flipped .card-front {
   transform: rotateY(0);
 }
+
+.welcome-title {
+  font-size: 2.5rem;
+  margin: 0;
+  line-height: 5rem;
+  letter-spacing: 0.05em;
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  color: #f0e68c;
+}

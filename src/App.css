@@ -17,9 +17,8 @@
   .app-title {
     font-size: clamp(1.5rem, 4vw, 3rem);
     margin: 0;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.001em;
     text-align: left;
-    font-family: 'Cinzel', 'Playfair Display', serif;
     color: #f0e68c;
     position: relative;
     overflow: hidden;

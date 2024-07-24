@@ -1,20 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import styles from './FeedbackButton.module.css';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import DOMPurify from 'dompurify';
+import TarotCaptcha from './TarotCaptcha';
 
 const FeedbackButton: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const { getToken, user } = useKindeAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isCaptchaVerified) {
+      alert("Please complete the captcha first.");
+      return;
+    }
+    if (isSubmitting) return; // Prevent multiple submissions
     setIsSubmitting(true);
 
     try {
       const token = await getToken();
+      const sanitizedFeedback = DOMPurify.sanitize(feedback);
       const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/submit-feedback`, {
         method: 'POST',
         headers: {
@@ -22,8 +31,8 @@ const FeedbackButton: React.FC = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          user_id: user?.id, // Change this line from userId to user_id
-          feedback: feedback,
+          user_id: user?.id,
+          feedback: sanitizedFeedback,
         }),
       });
 
@@ -35,11 +44,16 @@ const FeedbackButton: React.FC = () => {
         setSubmitStatus('error');
       }
     } catch (error) {
-      console.error('Error submitting feedback:', error);
       setSubmitStatus('error');
+      // Log error safely without exposing details
+      console.error('Error submitting feedback');
     } finally {
       setIsSubmitting(false);
     }
+  }, [feedback, getToken, user?.id, isSubmitting, isCaptchaVerified]);
+
+  const handleCaptchaVerify = (isVerified: boolean) => {
+    setIsCaptchaVerified(isVerified);
   };
 
   return (
@@ -66,7 +80,8 @@ const FeedbackButton: React.FC = () => {
                 rows={5}
                 required
               />
-              <button type="submit" disabled={isSubmitting}>
+              <TarotCaptcha onVerify={handleCaptchaVerify} />
+              <button type="submit" disabled={isSubmitting || !isCaptchaVerified}>
                 {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
               </button>
             </form>

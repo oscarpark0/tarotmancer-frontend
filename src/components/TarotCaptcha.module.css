@@ -1,0 +1,25 @@
+.captchaContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .cardImage {
+    width: 200px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  
+  .input {
+    padding: 5px;
+    margin-right: 10px;
+  }
+  
+  .submitButton {
+    padding: 5px 10px;
+    background-color: #4a5568;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }

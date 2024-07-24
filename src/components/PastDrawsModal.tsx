@@ -53,10 +53,13 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
           setSelectedDraw(null);
         }
       } else {
-        console.error('Failed to remove draw');
+        const errorText = await response.text();
+        console.error(`Failed to remove draw. Status: ${response.status}, Error: ${errorText}`);
+        // Optionally, you can show an error message to the user here
       }
     } catch (error) {
       console.error('Error removing draw:', error);
+      // Optionally, you can show an error message to the user here
     }
   };
 

@@ -39,8 +39,8 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent form submission
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     if (captchaData && selectedOption) {
       try {
         const response = await fetch(`${API_BASE_URL}/api/verify-captcha`, {
@@ -87,7 +87,7 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
         alt="Tarot Card" 
         className={styles.cardImage} 
       />
-      <form onSubmit={handleSubmit}>
+      <div>
         {captchaData.options.map((option, index) => (
           <label key={index} className={styles.optionLabel}>
             <input
@@ -100,10 +100,14 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
             {option}
           </label>
         ))}
-        <button type="submit" className={styles.submitButton} disabled={!selectedOption}>
+        <button 
+          onClick={handleSubmit} 
+          className={styles.submitButton} 
+          disabled={!selectedOption}
+        >
           Verify
         </button>
-      </form>
+      </div>
     </div>
   );
 };

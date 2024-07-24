@@ -17,6 +17,7 @@ interface CaptchaData {
 const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
   const [captchaData, setCaptchaData] = useState<CaptchaData | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     fetchCaptcha();
@@ -43,6 +44,7 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
     e.preventDefault();
     if (captchaData && selectedOption) {
       const isCorrect = selectedOption === captchaData.correct_card;
+      setIsVerified(isCorrect);
       onVerify(isCorrect);
       if (!isCorrect) {
         setSelectedOption(null);
@@ -53,6 +55,10 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
 
   if (!captchaData) {
     return <div>Loading captcha...</div>;
+  }
+
+  if (isVerified) {
+    return <div className={styles.verifiedMessage}>Captcha verified successfully!</div>;
   }
 
   return (

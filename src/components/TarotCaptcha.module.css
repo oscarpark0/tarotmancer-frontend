@@ -8,18 +8,30 @@
   .cardImage {
     width: 200px;
     height: auto;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
   
-  .input {
-    padding: 5px;
+  .optionLabel {
+    display: block;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .optionLabel input[type="radio"] {
     margin-right: 10px;
   }
   
   .submitButton {
-    padding: 5px 10px;
+    padding: 10px 20px;
     background-color: #4a5568;
     color: white;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
+    margin-top: 15px;
+  }
+
+  .submitButton:disabled {
+    background-color: #a0aec0;
+    cursor: not-allowed;
   }

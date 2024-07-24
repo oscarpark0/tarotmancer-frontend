@@ -9,6 +9,7 @@ import TypingAnimation from './components/typing-animation.tsx';
 import LanguageSelector, { LanguageProvider } from './components/LanguageSelector';
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import PastDrawsModal from './components/PastDrawsModal';
+import FeedbackButton from './components/FeedbackButton.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 
@@ -82,6 +83,7 @@ function App() {
                 </div>
                 <button onClick={() => setIsPastDrawsModalOpen(true)}>Past Draws</button>
                 <SubscribeButton />
+                <FeedbackButton />
                 <LogoutButton />
               </>
             ) : (

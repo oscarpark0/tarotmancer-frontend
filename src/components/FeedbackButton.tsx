@@ -22,7 +22,7 @@ const FeedbackButton: React.FC = () => {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId: user?.id,
+          user_id: user?.id, // Change this line from userId to user_id
           feedback: feedback,
         }),
       });

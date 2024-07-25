@@ -18,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
           <FeedbackButton />
         </div>
         <div className={styles.footerInfo}>
-          <p className={styles.footerText}>&copy; {new Date().getFullYear()} Tarotmancer</p>
+          <p className={styles.footerText}>&copy; {new Date().getFullYear()} tarotmancer</p>
         </div>
       </div>
     </footer>

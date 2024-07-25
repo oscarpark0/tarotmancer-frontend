@@ -15,6 +15,7 @@ import Footer from './components/Footer.tsx';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfUse from './components/TermsOfUse';
 import DailyCardFrequencies from './components/DailyCardFrequencies';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
@@ -36,7 +37,7 @@ function AppContent() {
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
-  const [currentPage, setCurrentPage] = useState('home');
+  const [, setCurrentPage] = useState('home');
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => {
@@ -199,50 +200,40 @@ function AppContent() {
     }
   }, [isAuthenticated, fetchUserDraws]);
 
-  const renderContent = () => {
-    switch (currentPage) {
-      case 'home':
-        return isAuthenticated ? (
-          <Suspense fallback={<div>Loading...</div>}>
-            {selectedSpread === 'celtic' ? (
-              <CelticSpread 
-                {...spreadProps} 
-                isDarkMode={isDarkMode}
-                canDraw={canDraw}
-                timeUntilNextDraw={timeUntilNextDraw}
-                currentDrawId={currentDrawId}
-                setCurrentDrawId={setCurrentDrawId}
-              />
-            ) : (
-              <ThreeCardSpread 
-                {...spreadProps} 
-                isDarkMode={isDarkMode}
-                canDraw={canDraw}
-                timeUntilNextDraw={timeUntilNextDraw}
-                currentDrawId={currentDrawId}
-                setCurrentDrawId={setCurrentDrawId}
-              />
-            )}
-          </Suspense>
-        ) : memoizedWelcomeMessage;
-      case 'dailyFrequencies':
-        return <DailyCardFrequencies />;
-      case 'privacyPolicy':
-        return <PrivacyPolicy />;
-      case 'termsOfUse':
-        return <TermsOfUse />;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'relative', zIndex: 10 }}>
         {memoizedHeader}
       </div>
       <div style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1, padding: isMobileScreen ? 0 : undefined }}>
-        {renderContent()}
+        <Routes>
+          <Route path="/" element={isAuthenticated ? (
+            <Suspense fallback={<div>Loading...</div>}>
+              {selectedSpread === 'celtic' ? (
+                <CelticSpread 
+                  {...spreadProps} 
+                  isDarkMode={isDarkMode}
+                  canDraw={canDraw}
+                  timeUntilNextDraw={timeUntilNextDraw}
+                  currentDrawId={currentDrawId}
+                  setCurrentDrawId={setCurrentDrawId}
+                />
+              ) : (
+                <ThreeCardSpread 
+                  {...spreadProps} 
+                  isDarkMode={isDarkMode}
+                  canDraw={canDraw}
+                  timeUntilNextDraw={timeUntilNextDraw}
+                  currentDrawId={currentDrawId}
+                  setCurrentDrawId={setCurrentDrawId}
+                />
+              )}
+            </Suspense>
+          ) : memoizedWelcomeMessage} />
+          <Route path="/dailyFrequencies" element={<DailyCardFrequencies />} />
+          <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+          <Route path="/termsOfUse" element={<TermsOfUse />} />
+        </Routes>
       </div>
       <div style={{ position: 'relative', zIndex: 5 }}>
         <Footer isDarkMode={isDarkMode} />
@@ -258,9 +249,11 @@ function AppContent() {
 // Main App component
 function App() {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <BrowserRouter>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </BrowserRouter>
   );
 }
 

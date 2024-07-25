@@ -203,7 +203,7 @@ function AppContent() {
       <div style={{ position: 'relative', zIndex: 10 }}>
         {memoizedHeader}
       </div>
-      <div style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1 }}>
+      <div style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1, padding: isMobileScreen ? 0 : undefined }}>
         <Routes>
           <Route path="/celtic-spread" element={
             isAuthenticated ? (

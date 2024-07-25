@@ -64,4 +64,22 @@
   letter-spacing: 0.05em;
   font-family: 'Cinzel', 'Playfair Display', serif;
   color: #f0e68c;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Show ellipsis for overflowing text */
+}
+
+/* Add responsive font sizing */
+@media (max-width: 768px) {
+  .welcome-title {
+    font-size: 2rem;
+    line-height: 4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-title {
+    font-size: 1.5rem;
+    line-height: 3rem;
+  }
 }

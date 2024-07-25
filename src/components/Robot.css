@@ -5,6 +5,7 @@
   left: 5vw;
   transform: translateY(0);
   height: auto; /* Remove fixed height */
+  z-index: 8;
 }
 
 @media (max-width: 768px) {

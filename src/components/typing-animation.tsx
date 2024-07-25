@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../utils";
 import { TAROT_IMAGE_BASE_URL } from "../utils/config";
 import "./TypingAnimation.css";
+import { useWindowSize } from '../hooks/useWindowSize'; // Add this import
 
 interface TypingAnimationProps {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ export default function TypingAnimation({
   const [flippedLetters, setFlippedLetters] = useState<boolean[]>(new Array(text.length).fill(false));
   const [flippedCards, setFlippedCards] = useState<boolean[]>(new Array(text.length).fill(false));
   const [stage, setStage] = useState<'typing' | 'flippingLetters' | 'flippingCards' | 'flippingBack' | 'done'>('typing');
+  const { width } = useWindowSize(); // Add this line
 
   // Pre-select random cards for each position
   const selectedCards = useMemo(() => {
@@ -126,7 +128,7 @@ export default function TypingAnimation({
   return (
     <h1
       className={cn(
-        "font-display text-center text-4xl font-bold leading-[1rem] tracking-[-0.02em] drop-shadow-sm",
+        "welcome-title font-display text-center font-bold tracking-[-0.02em] drop-shadow-sm",
         className
       )}
     >
@@ -137,6 +139,7 @@ export default function TypingAnimation({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            style={{ fontSize: width && width < 480 ? '0.6em' : '1em' }} // Add this line
           >
             <span className="letter">{char}</span>
             <div className={`card-wrapper ${flippedCards[index] ? 'flipped' : ''}`}>

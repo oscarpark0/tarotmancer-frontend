@@ -23,15 +23,16 @@
     position: fixed; /* Change to fixed positioning on mobile */
     left: 0;
     right: 0; /* Ensure it spans the full width */
-    bottom: 0; /* Align to the bottom of the viewport */
+    bottom: 60px; /* Adjust this value to match the height of your footer */
     transform: none;
     width: 100%;
     height: auto; /* Let the height be determined by its content */
-    max-height: calc(100vh - var(--robot-height)); /* Limit the maximum height */
+    max-height: calc(100vh - 60px - var(--robot-height)); /* Limit the maximum height */
     margin-top: 0;
     padding: 10px;
     border-top: 2px solid #444;
     overflow-y: auto; /* Allow scrolling if content exceeds max-height */
+    z-index: 9;
   }
 
   .terminal-screen {
@@ -296,12 +297,16 @@
 .terminal-language-selector {
   margin: 2px 0 10px;
   width: 100%;
+  display: flex;
+  justify-content: flex-start; /* Changed from space-between to flex-start */
+  align-items: center;
+  gap: 10px; /* Add some space between elements */
 }
 
 .terminal-language-selector select {
-  width: 25%; /* Change this to adjust the width */
-  padding: 0.5px;
-  background: #0a0a0a url("data:image/svg+xml;utf8,<svg fill='%2333ff33' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat 98% 50%;
+  width: auto; /* Changed from 120% to auto */
+  padding: 0.5px 20px 0.5px 5px; /* Added right padding for the dropdown arrow */
+  background: #0a0a0a url("data:image/svg+xml;utf8,<svg fill='%2333ff33' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>") no-repeat right 5px center;
   color: #33ff33;
   border: 1px solid #33ff33;
   font-size: 12px;
@@ -310,19 +315,24 @@
   -moz-appearance: none;
 }
 
-@media (max-width: 768px) {
-  .robot-container {
-    margin-top: -40px; 
-  }
+.past-draws-button {
+  background: #0a0a0a;
+  color: #33ff33;
+  border: 1px solid #33ff33;
+  padding: 0.5px 10px; /* Adjusted padding */
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap; /* Prevent text wrapping */
+}
 
-
-  .main-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    min-height: 100vh;
-    padding-top: 10px; 
-  }
+/* Add this new style to ensure proper alignment */
+.terminal-language-selector > * {
+  flex-shrink: 0;
 }
 
 .response-output {
@@ -340,25 +350,3 @@
   margin-bottom: 1rem;
   /* Add any additional styling to fit the cards within the terminal */
 }
-
-.past-draws-button {
-  background: #0a0a0a;
-  color: #33ff33;
-  border: 1px solid #33ff33;
-  padding: 0.5px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-right: 10px;
-  width: 25%;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.past-draws-button:hover {
-  background: #1a1a1a;
-  box-shadow: 0 0 5px #33ff33;
-}
-

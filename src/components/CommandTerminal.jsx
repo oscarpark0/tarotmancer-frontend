@@ -180,14 +180,14 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       <div className="draw-button-container">
         <div className="input-container2">
           <SpreadSelector onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
-          <button
-            className="past-draws-button"
-            onClick={handlePastDrawsClick}
-          >
-            {getTranslation('pastDraws')}
-          </button>
           <div className="terminal-language-selector">
             <LanguageSelector onLanguageSelect={() => {}} selectedLanguage={selectedLanguage} />
+            <button
+              className="past-draws-button"
+              onClick={handlePastDrawsClick}
+            >
+              {getTranslation('pastDraws')}
+            </button>
           </div>
           <form onSubmit={(e) => e.preventDefault()} className="terminal-input-form">
             <input

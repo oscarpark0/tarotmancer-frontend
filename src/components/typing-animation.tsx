@@ -29,7 +29,7 @@ export default function TypingAnimation({
   duration = 9000,
   className,
 }: TypingAnimationProps) {
-  const text = "Tarotmancer";
+  const text = "tarotmancer";
   const [displayedText, setDisplayedText] = useState<string[]>(new Array(text.length).fill(' '));
   const [flippedLetters, setFlippedLetters] = useState<boolean[]>(new Array(text.length).fill(false));
   const [flippedCards, setFlippedCards] = useState<boolean[]>(new Array(text.length).fill(false));

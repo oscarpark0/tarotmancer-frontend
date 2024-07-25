@@ -68,7 +68,7 @@ function AppContent() {
       <header className="app-header">
         <div className="header-content">
           <Link to="/celtic-spread" className="app-title-link">
-            <h1 className="app-title"><span>TarotMancer</span></h1>
+            <h1 className="app-title"><span>tarotmancer</span></h1>
           </Link>
           <div className="auth-container">
             <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />

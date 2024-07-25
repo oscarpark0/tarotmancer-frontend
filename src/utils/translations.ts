@@ -1,6 +1,6 @@
 type Language = 'English' | 'Spanish' | 'French' | 'German' | 'Italian' | 'Japanese' | 'Chinese' | 'Russian' | 'Portuguese' | 'Dutch' | 'Korean' | 'Arabic' | 'Hindi' | 'Swedish' | 'Polish' | 'Turkish' | 'Danish' | 'Norwegian' | 'Finnish' | 'Greek';
 
-type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread' | 'removeDraw';
+type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread' | 'removeDraw' | 'timeRemainingUntilNextDraw';
 
 export const buttonTranslations: Record<TranslationKey, Record<Language, string>> = {
   login: {
@@ -542,5 +542,28 @@ export const buttonTranslations: Record<TranslationKey, Record<Language, string>
     Norwegian: "Fjern Trekking",
     Finnish: "Poista Nosto",
     Greek: "Αφαίρεση Τραβήγματος"
+  },
+
+  timeRemainingUntilNextDraw: {
+    English: "Time remaining until next draw: {time}",
+    Spanish: "Tiempo restante hasta el próximo sorteo: {time}",
+    French: "Temps restant jusqu'au prochain tirage : {time}",
+    German: "Verbleibende Zeit bis zur nächsten Ziehung: {time}",
+    Italian: "Tempo rimanente fino alla prossima pesca: {time}",
+    Japanese: "次のドローまでの残り時間: {time}",
+    Chinese: "距离下次抽牌的剩余时间: {time}",
+    Russian: "Оставшееся время до следующего вытягивания: {time}",
+    Portuguese: "Tempo restante até o próximo sorteio: {time}",
+    Dutch: "Resterende tijd tot volgende trekking: {time}",
+    Korean: "다음 뽑기까지 남은 시간: {time}",
+    Arabic: "الوقت المتبقي حتى السحب التالي: {time}",
+    Hindi: "अगले ड्रा तक बचा समय: {time}",
+    Swedish: "Tid kvar till nästa dragning: {time}",
+    Polish: "Pozostały czas do następnego losowania: {time}",
+    Turkish: "Bir sonraki çekime kalan süre: {time}",
+    Danish: "Tid tilbage til næste trækning: {time}",
+    Norwegian: "Tid igjen til neste trekking: {time}",
+    Finnish: "Aikaa jäljellä seuraavaan nostoon: {time}",
+    Greek: "Χρόνος που απομένει μέχρι το επόμενο τράβηγμα: {time}"
   }
 };

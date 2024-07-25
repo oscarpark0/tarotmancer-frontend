@@ -144,7 +144,10 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const getButtonText = useCallback(() => {
     if (isLoading) return getTranslation('processing');
     if (isDrawing) return getTranslation('drawing');
-    if (!canDraw && countdown > 0) return `${getTranslation('nextDrawIn')} ${formatCountdown(countdown)}`;
+    if (!canDraw && countdown > 0) {
+      const timeString = formatCountdown(countdown);
+      return getTranslation('timeRemainingUntilNextDraw').replace('{time}', timeString);
+    }
     return getTranslation('draw');
   }, [isLoading, isDrawing, canDraw, countdown, getTranslation]);
 

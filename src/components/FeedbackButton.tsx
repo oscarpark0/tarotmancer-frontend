@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import footerStyles from './Footer.module.css'; // Import Footer styles
+import headerStyles from './FeedbackButton.module.css';
 import styles from './FeedbackButton.module.css';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import DOMPurify from 'dompurify';
@@ -71,7 +72,7 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
           Feedback
         </span>
       ) : (
-        <button onClick={handleOpenModal} className={styles.feedbackButton}>
+        <button onClick={handleOpenModal} className={headerStyles.feedbackButton}>
           Feedback
         </button>
       )}

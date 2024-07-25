@@ -5,80 +5,96 @@
   transition: color 0.3s ease;
   font-size: 0.8rem;
   border-style: groove;
+  background-color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-  }
-  
-  
-  .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modalContent {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 500px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-  }
-  
-  .closeButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .modalContent h2 {
-    margin-bottom: 15px;
-  }
-  
-  .modalContent form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .modalContent textarea {
-    margin-bottom: 15px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .modalContent button[type="submit"] {
-    padding: 10px;
-    background-color: #4a5568;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .modalContent button[type="submit"]:disabled {
-    background-color: #a0aec0;
-    cursor: not-allowed;
-  }
-  
-  .successMessage {
-    color: #2f855a;
-    margin-top: 10px;
-  }
-  
-  .errorMessage {
-    color: #e53e3e;
-    margin-top: 10px;
-  }
+/* Footer-specific styles */
+:global(.footer) .feedbackButton {
+  background-color: transparent;
+  border: none;
+  color: #ffffff;
+  text-decoration: underline;
+  padding: 0;
+  font-size: 1rem;
+}
+
+:global(.footer) .feedbackButton:hover {
+  color: #cccccc;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.modalContent h2 {
+  margin-bottom: 15px;
+}
+
+.modalContent form {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalContent textarea {
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.modalContent button[type="submit"] {
+  padding: 10px;
+  background-color: #4a5568;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modalContent button[type="submit"]:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+.successMessage {
+  color: #2f855a;
+  margin-top: 10px;
+}
+
+.errorMessage {
+  color: #e53e3e;
+  margin-top: 10px;
+}

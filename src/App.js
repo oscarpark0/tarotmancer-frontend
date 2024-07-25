@@ -16,6 +16,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfUse from './components/TermsOfUse';
 import DailyCardFrequenciesPage from './components/DailyCardFrequenciesPage';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import styles from './components/SubscribeButton.module.css';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
@@ -80,8 +81,8 @@ function AppContent() {
                 <div className="header-language-selector">
                   <LanguageSelector />
                 </div>
-                <button onClick={() => navigate('/dailyFrequencies')}>Daily Frequencies</button>
-                <button onClick={() => setIsPastDrawsModalOpen(true)}>Past Draws</button>
+                <button onClick={() => navigate('/dailyFrequencies')} className={styles.subscribeButton}>Daily Frequencies</button>
+                <button onClick={() => setIsPastDrawsModalOpen(true)} className={styles.subscribeButton}>Past Draws</button>
                 <SubscribeButton />
                 <FeedbackButton />
                 <LogoutButton />

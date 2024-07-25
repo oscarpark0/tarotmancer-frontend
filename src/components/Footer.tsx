@@ -9,13 +9,13 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
   return (
-    <footer className={`${styles.footer} ${isDarkMode ? styles.darkMode : ''}`}>
+    <footer className={`${styles.footer} ${isDarkMode ? styles.darkMode : ''} footer`}>
       <div className={styles.footerContent}>
         <div className={styles.footerLinks}>
           <Link to="/terms-of-use" className={styles.footerLink}>Terms</Link>
           <Link to="/privacy-policy" className={styles.footerLink}>Privacy</Link>
           <Link to="/contact" className={styles.footerLink}>Contact</Link>
-          <FeedbackButton />
+          <FeedbackButton isFooterLink={true} />
         </div>
         <div className={styles.footerInfo}>
           <p className={styles.footerText}>&copy; {new Date().getFullYear()} tarotmancer</p>

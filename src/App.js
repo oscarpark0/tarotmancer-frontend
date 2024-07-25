@@ -17,6 +17,7 @@ import TermsOfUse from './components/TermsOfUse';
 import DailyCardFrequenciesPage from './components/DailyCardFrequenciesPage';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import styles from './components/SubscribeButton.module.css';
+import Contact from './components/Contact';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
@@ -233,8 +234,9 @@ function AppContent() {
             </Suspense>
           ) : memoizedWelcomeMessage} />
           <Route path="/dailyFrequencies" element={<DailyCardFrequenciesPage />} />
-          <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
-          <Route path="/termsOfUse" element={<TermsOfUse />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </div>
       <div style={{ position: 'relative', zIndex: 5 }}>

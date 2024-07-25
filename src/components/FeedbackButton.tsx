@@ -1,10 +1,15 @@
 import React, { useState, useCallback } from 'react';
+import footerStyles from './Footer.module.css'; // Import Footer styles
 import styles from './FeedbackButton.module.css';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import DOMPurify from 'dompurify';
 import TarotCaptcha from './TarotCaptcha';
 
-const FeedbackButton: React.FC = () => {
+interface FeedbackButtonProps {
+  isFooterLink?: boolean;
+}
+
+const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,11 +60,21 @@ const FeedbackButton: React.FC = () => {
     }
   }, [feedback, getToken, user?.id, isSubmitting, isCaptchaVerified]);
 
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
   return (
     <>
-      <button onClick={() => setIsModalOpen(true)} className={styles.feedbackButton}>
-        Feedback
-      </button>
+      {isFooterLink ? (
+        <span onClick={handleOpenModal} className={footerStyles.footerLink}>
+          Feedback
+        </span>
+      ) : (
+        <button onClick={handleOpenModal} className={styles.feedbackButton}>
+          Feedback
+        </button>
+      )}
       {isModalOpen && (
         <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -84,7 +99,7 @@ const FeedbackButton: React.FC = () => {
                 {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
               </button>
             </form>
-            {submitStatus === 'success' && <p className={styles.successMessage} aria-live="polite">Feedback submitted successfully!</p>}
+            {submitStatus === 'success' && <p className={styles.successMessage} aria-live="polite">Feedback submitted successfully! Thank you for your feedback!</p>}
             {submitStatus === 'error' && <p className={styles.errorMessage} aria-live="polite">Error submitting feedback. Please try again.</p>}
           </div>
         </div>

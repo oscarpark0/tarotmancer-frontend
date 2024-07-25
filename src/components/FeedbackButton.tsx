@@ -13,13 +13,11 @@ const FeedbackButton: React.FC = () => {
   const { getToken, user } = useKindeAuth();
 
   const handleCaptchaVerify = (isVerified: boolean) => {
-    console.log("Captcha verified:", isVerified);
     setIsCaptchaVerified(isVerified);
   };
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Submitting feedback, captcha verified:", isCaptchaVerified);
     if (!isCaptchaVerified) {
       alert("Please complete the captcha first.");
       return;
@@ -51,7 +49,7 @@ const FeedbackButton: React.FC = () => {
       }
     } catch (error) {
       setSubmitStatus('error');
-      console.error('Error submitting feedback');
+      console.error('Error submitting feedback:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -65,8 +63,8 @@ const FeedbackButton: React.FC = () => {
       {isModalOpen && (
         <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button 
-              className={styles.closeButton} 
+            <button
+              className={styles.closeButton}
               onClick={() => setIsModalOpen(false)}
               aria-label="Close feedback form"
             >
@@ -86,8 +84,8 @@ const FeedbackButton: React.FC = () => {
                 {isSubmitting ? 'Submitting...' : 'Submit Feedback'}
               </button>
             </form>
-            {submitStatus === 'success' && <p className={styles.successMessage}>Feedback submitted successfully!</p>}
-            {submitStatus === 'error' && <p className={styles.errorMessage}>Error submitting feedback. Please try again.</p>}
+            {submitStatus === 'success' && <p className={styles.successMessage} aria-live="polite">Feedback submitted successfully!</p>}
+            {submitStatus === 'error' && <p className={styles.errorMessage} aria-live="polite">Error submitting feedback. Please try again.</p>}
           </div>
         </div>
       )}

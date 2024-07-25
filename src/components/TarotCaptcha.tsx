@@ -18,12 +18,14 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
   const [captchaData, setCaptchaData] = useState<CaptchaData | null>(null);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     fetchCaptcha();
   }, []);
 
   const fetchCaptcha = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/api/captcha`);
       if (!response.ok) {
@@ -36,6 +38,8 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
       setCaptchaData(data);
     } catch (error) {
       console.error('Error fetching captcha:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,20 +76,24 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
     }
   };
 
-  if (!captchaData) {
+  if (isLoading) {
     return <div>Loading captcha...</div>;
   }
 
   if (isVerified) {
-    return <div className={styles.verifiedMessage}>Captcha verified successfully!</div>;
+    return <div className={styles.verifiedMessage} aria-live="polite">Captcha verified successfully!</div>;
+  }
+
+  if (!captchaData) {
+    return <div>Error loading captcha. Please try again.</div>;
   }
 
   return (
     <div className={styles.captchaContainer}>
-      <img 
-        src={`${TAROT_IMAGE_BASE_URL}/${captchaData.correct_image}`} 
-        alt="Tarot Card" 
-        className={styles.cardImage} 
+      <img
+        src={`${TAROT_IMAGE_BASE_URL}/${captchaData.correct_image}`}
+        alt="Tarot Card"
+        className={styles.cardImage}
       />
       <div>
         {captchaData.options.map((option, index) => (
@@ -100,9 +108,9 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
             {option}
           </label>
         ))}
-        <button 
-          onClick={handleSubmit} 
-          className={styles.submitButton} 
+        <button
+          onClick={handleSubmit}
+          className={styles.submitButton}
           disabled={!selectedOption}
         >
           Verify

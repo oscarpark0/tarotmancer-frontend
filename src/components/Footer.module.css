@@ -1,0 +1,85 @@
+.footer {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #ccc;
+    padding: 1rem 0;
+    position: relative;
+    overflow: hidden;
+    margin-top: auto;
+    padding: 2px 0;
+    background-color: #f8f8f8;
+    z-index: 5;
+  }
+  
+  .footerContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .footerLinks {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .footerLink {
+    color: #9370DB;
+    text-decoration: none;
+    margin: 0 1rem;
+    transition: color 0.3s ease;
+  }
+  
+  .footerLink:hover {
+    color: #BA55D3;
+  }
+  
+  .footerDivider {
+    width: 50%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #9370DB, transparent);
+    margin: 0.5rem 0;
+  }
+  
+  .footerInfo {
+    text-align: center;
+  }
+  
+  .footerText {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+  }
+  
+  .footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/public/images/tarot-pattern.svg') repeat;
+    opacity: 0.05;
+    z-index: 0;
+  }
+  
+  .footerContent {
+    position: relative;
+    z-index: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .footerLinks {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .footerLink {
+      margin: 0.5rem 0;
+    }
+  }
+  
+  .dark-mode .footer {
+    background-color: #333;
+    color: #fff;
+  }

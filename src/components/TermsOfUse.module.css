@@ -1,0 +1,25 @@
+.termsContainer {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+  }
+  
+  .termsContainer h1 {
+    text-align: center;
+    color: #333;
+  }
+  
+  .termsContainer h2 {
+    color: #444;
+    margin-top: 30px;
+  }
+  
+  .termsContainer p {
+    margin-bottom: 15px;
+  }
+  
+  .termsContainer section {
+    margin-bottom: 30px;
+  }

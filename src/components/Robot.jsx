@@ -64,6 +64,7 @@ const Robot = memo(({
   timeUntilNextDraw,
   user,
   currentDrawId,
+  onOpenPastDraws,
 }) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -246,6 +247,7 @@ const Robot = memo(({
       timeUntilNextDraw={timeUntilNextDraw}
       userId={user?.id}
       currentDrawId={currentDrawId}
+      onOpenPastDraws={onOpenPastDraws}
     />
   ), [
     handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, 
@@ -253,7 +255,7 @@ const Robot = memo(({
     cards, revealCards, shouldDrawNewSpread, fetchSpread, responses, 
     activeTab, setActiveTab, handleNewResponse, handleResponseComplete, 
     animationsComplete, handleAnimationStart, isStreaming, localCanDraw, 
-    timeUntilNextDraw, user, currentDrawId
+    timeUntilNextDraw, user, currentDrawId, onOpenPastDraws
   ]);
 
 
@@ -337,6 +339,7 @@ Robot.propTypes = {
   timeUntilNextDraw: PropTypes.number,
   user: PropTypes.object,
   currentDrawId: PropTypes.number,
+  onOpenPastDraws: PropTypes.func.isRequired,
 };
 
 export default Robot;

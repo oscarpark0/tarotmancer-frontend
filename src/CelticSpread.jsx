@@ -152,6 +152,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     setAnimationStarted(true);
   }, []);
 
+  const handleOpenPastDraws = useCallback(() => {
+    setIsPastDrawsModalOpen(true);
+  }, []);
+
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -186,8 +190,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       canDraw={canDraw}
       timeUntilNextDraw={timeUntilNextDraw}
       currentDrawId={currentDrawId}
+      onOpenPastDraws={handleOpenPastDraws}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -242,15 +247,15 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
           </div>
           {positions.length > 0 && !isMobile && (
             <div className="relative z-10 w-full flex flex-col items-center">
-              <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
-                <section className="relative z-10 mb-16 w-full">
-                  <ErrorBoundary>
-                    {memoizedFloatingCards}
-                  </ErrorBoundary>
-                  {memoizedCardReveal}
-                </section>
-              </div>
+            <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
+              <section className="relative z-10 mb-16 w-full">
+                <ErrorBoundary>
+                  {memoizedFloatingCards}
+                </ErrorBoundary>
+                {memoizedCardReveal}
+              </section>
             </div>
+          </div>
           )}
         </div>
       </div>

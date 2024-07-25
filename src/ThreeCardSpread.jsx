@@ -9,6 +9,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useLanguage } from './components/LanguageSelector';
 import { buttonTranslations } from './utils/translations';
+import PastDrawsModal from './components/PastDrawsModal';
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw }) => {
   const { getToken, user } = useKindeAuth();
@@ -33,6 +34,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
+  const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -170,6 +172,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     }
   }, [canDraw, fetchSpread]);
 
+  const handleOpenPastDraws = useCallback(() => {
+    setIsPastDrawsModalOpen(true);
+  }, []);
+
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -205,8 +211,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       timeUntilNextDraw={timeUntilNextDraw}
       userId={user?.id}
       currentDrawId={currentDrawId}
+      onOpenPastDraws={handleOpenPastDraws}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, user, currentDrawId]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, user, currentDrawId, handleOpenPastDraws]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -262,6 +269,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           </div>
         </div>
       </div>
+      <PastDrawsModal 
+        isOpen={isPastDrawsModalOpen} 
+        onClose={() => setIsPastDrawsModalOpen(false)} 
+      />
     </ErrorBoundary>
   );
 });

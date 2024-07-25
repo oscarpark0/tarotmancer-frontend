@@ -10,7 +10,7 @@ import { getMistralResponse } from '../services/mistralServices';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -151,6 +151,10 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   useEffect(() => {
   }, [currentDrawId]);
 
+  const handlePastDrawsClick = () => {
+    onOpenPastDraws();
+  };
+
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
@@ -176,6 +180,12 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       <div className="draw-button-container">
         <div className="input-container2">
           <SpreadSelector onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
+          <button
+            className="past-draws-button"
+            onClick={handlePastDrawsClick}
+          >
+            {getTranslation('pastDraws')}
+          </button>
           <div className="terminal-language-selector">
             <LanguageSelector onLanguageSelect={() => {}} selectedLanguage={selectedLanguage} />
           </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
@@ -15,6 +14,7 @@ import { useMediaQuery } from 'react-responsive';
 import Footer from './components/Footer.tsx';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfUse from './components/TermsOfUse';
+import DailyCardFrequencies from './components/DailyCardFrequencies';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
@@ -36,6 +36,7 @@ function AppContent() {
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
+  const [currentPage, setCurrentPage] = useState('home');
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => {
@@ -67,9 +68,9 @@ function AppContent() {
     (!isMobileScreen || !isAuthenticated) && (
       <header className="app-header">
         <div className="header-content">
-          <Link to="/celtic-spread" className="app-title-link">
-            <h1 className="app-title"><span>tarotmancer</span></h1>
-          </Link>
+          <h1 className="app-title" onClick={() => setCurrentPage('home')}>
+            <span>tarotmancer</span>
+          </h1>
           <div className="auth-container">
             <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
             {isAuthenticated ? (
@@ -77,6 +78,7 @@ function AppContent() {
                 <div className="header-language-selector">
                   <LanguageSelector />
                 </div>
+                <button onClick={() => setCurrentPage('dailyFrequencies')}>Daily Frequencies</button>
                 <button onClick={() => setIsPastDrawsModalOpen(true)}>Past Draws</button>
                 <SubscribeButton />
                 <FeedbackButton />
@@ -94,7 +96,7 @@ function AppContent() {
         </div>
       </header>
     )
-  ), [isMobileScreen, isAuthenticated, isDarkMode, toggleDarkMode]);
+  ), [isMobileScreen, isAuthenticated, isDarkMode, toggleDarkMode, setCurrentPage]);
 
   const memoizedWelcomeMessage = useMemo(() => (
     <div className="welcome-message">
@@ -197,6 +199,42 @@ function AppContent() {
     }
   }, [isAuthenticated, fetchUserDraws]);
 
+  const renderContent = () => {
+    switch (currentPage) {
+      case 'home':
+        return isAuthenticated ? (
+          <Suspense fallback={<div>Loading...</div>}>
+            {selectedSpread === 'celtic' ? (
+              <CelticSpread 
+                {...spreadProps} 
+                isDarkMode={isDarkMode}
+                canDraw={canDraw}
+                timeUntilNextDraw={timeUntilNextDraw}
+                currentDrawId={currentDrawId}
+                setCurrentDrawId={setCurrentDrawId}
+              />
+            ) : (
+              <ThreeCardSpread 
+                {...spreadProps} 
+                isDarkMode={isDarkMode}
+                canDraw={canDraw}
+                timeUntilNextDraw={timeUntilNextDraw}
+                currentDrawId={currentDrawId}
+                setCurrentDrawId={setCurrentDrawId}
+              />
+            )}
+          </Suspense>
+        ) : memoizedWelcomeMessage;
+      case 'dailyFrequencies':
+        return <DailyCardFrequencies />;
+      case 'privacyPolicy':
+        return <PrivacyPolicy />;
+      case 'termsOfUse':
+        return <TermsOfUse />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -204,44 +242,7 @@ function AppContent() {
         {memoizedHeader}
       </div>
       <div style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1, padding: isMobileScreen ? 0 : undefined }}>
-        <Routes>
-          <Route path="/celtic-spread" element={
-            isAuthenticated ? (
-              <Suspense fallback={<div>Loading...</div>}>
-                <CelticSpread 
-                  {...spreadProps} 
-                  isDarkMode={isDarkMode}
-                  canDraw={canDraw}
-                  timeUntilNextDraw={timeUntilNextDraw}
-                  currentDrawId={currentDrawId}
-                  setCurrentDrawId={setCurrentDrawId}
-                />
-              </Suspense>
-            ) : <Navigate to="/" />
-          } />
-          <Route path="/three-card-spread" element={
-            isAuthenticated ? (
-              <Suspense fallback={<div>Loading...</div>}>
-                <ThreeCardSpread 
-                  {...spreadProps} 
-                  isDarkMode={isDarkMode}
-                  canDraw={canDraw}
-                  timeUntilNextDraw={timeUntilNextDraw}
-                  currentDrawId={currentDrawId}
-                  setCurrentDrawId={setCurrentDrawId}
-                />
-              </Suspense>
-            ) : <Navigate to="/" />
-          } />
-          <Route path="/" element={
-            isAuthenticated ? (
-              <Navigate to={selectedSpread === 'celtic' ? "/celtic-spread" : "/three-card-spread"} />
-            ) : memoizedWelcomeMessage
-          } />
-          <Route path="/callback" element={<Navigate to="/" />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-use" element={<TermsOfUse />} />
-        </Routes>
+        {renderContent()}
       </div>
       <div style={{ position: 'relative', zIndex: 5 }}>
         <Footer isDarkMode={isDarkMode} />
@@ -258,9 +259,7 @@ function AppContent() {
 function App() {
   return (
     <LanguageProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <AppContent />
     </LanguageProvider>
   );
 }

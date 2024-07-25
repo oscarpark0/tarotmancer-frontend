@@ -10,9 +10,10 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import PastDrawsModal from './components/PastDrawsModal';
 import { useLanguage } from './components/LanguageSelector';
 import { buttonTranslations } from './utils/translations';
+import PropTypes from 'prop-types';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw }) => {
-  const { getToken, user } = useKindeAuth();
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken }) => {
+  const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
 
   const getTranslation = (key) => {
@@ -266,5 +267,15 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     </ErrorBoundary>
   );
 });
+
+CelticSpread.propTypes = {
+  isMobile: PropTypes.bool,
+  onSpreadSelect: PropTypes.func,
+  selectedSpread: PropTypes.string,
+  isDarkMode: PropTypes.bool,
+  canDraw: PropTypes.bool,
+  timeUntilNextDraw: PropTypes.string,
+  getToken: PropTypes.func.isRequired,
+};
 
 export default CelticSpread;

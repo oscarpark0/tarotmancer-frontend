@@ -14,8 +14,8 @@ import { useMediaQuery } from 'react-responsive';
 import Footer from './components/Footer.tsx';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfUse from './components/TermsOfUse';
-import DailyCardFrequencies from './components/DailyCardFrequencies';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import DailyCardFrequenciesPage from './components/DailyCardFrequenciesPage';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 
 const CelticSpread = lazy(() => import('./CelticSpread'));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
@@ -37,7 +37,8 @@ function AppContent() {
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
-  const [, setCurrentPage] = useState('home');
+
+  const navigate = useNavigate();
 
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(prevMode => {
@@ -69,7 +70,7 @@ function AppContent() {
     (!isMobileScreen || !isAuthenticated) && (
       <header className="app-header">
         <div className="header-content">
-          <h1 className="app-title" onClick={() => setCurrentPage('home')}>
+          <h1 className="app-title" onClick={() => navigate('/')}>
             <span>tarotmancer</span>
           </h1>
           <div className="auth-container">
@@ -79,7 +80,7 @@ function AppContent() {
                 <div className="header-language-selector">
                   <LanguageSelector />
                 </div>
-                <button onClick={() => setCurrentPage('dailyFrequencies')}>Daily Frequencies</button>
+                <button onClick={() => navigate('/dailyFrequencies')}>Daily Frequencies</button>
                 <button onClick={() => setIsPastDrawsModalOpen(true)}>Past Draws</button>
                 <SubscribeButton />
                 <FeedbackButton />
@@ -97,7 +98,7 @@ function AppContent() {
         </div>
       </header>
     )
-  ), [isMobileScreen, isAuthenticated, isDarkMode, toggleDarkMode, setCurrentPage]);
+  ), [isMobileScreen, isAuthenticated, isDarkMode, toggleDarkMode, navigate]);
 
   const memoizedWelcomeMessage = useMemo(() => (
     <div className="welcome-message">
@@ -230,7 +231,7 @@ function AppContent() {
               )}
             </Suspense>
           ) : memoizedWelcomeMessage} />
-          <Route path="/dailyFrequencies" element={<DailyCardFrequencies />} />
+          <Route path="/dailyFrequencies" element={<DailyCardFrequenciesPage />} />
           <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
           <Route path="/termsOfUse" element={<TermsOfUse />} />
         </Routes>

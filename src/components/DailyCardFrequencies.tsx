@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import './DailyCardFrequencies.css';
 
 interface CardFrequency {
   card_name: string;
@@ -35,17 +36,20 @@ const DailyCardFrequencies: React.FC = () => {
     fetchFrequencies();
   }, [getToken]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className="loading">Loading...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <div className="daily-card-frequencies">
-      <h2>Daily Card Frequencies</h2>
-      <ul>
+      <h2>Today's Card Appearances</h2>
+      <ul className="card-list">
         {frequencies.map((freq) => (
-          <li key={freq.card_name}>
-            <img src={freq.card_img} alt={freq.card_name} width="50" height="100" />
-            <span>{freq.card_name}: {freq.frequency} times</span>
+          <li key={freq.card_name} className="card-item">
+            <img src={freq.card_img} alt={freq.card_name} className="card-image" />
+            <div className="card-info">
+              <span className="card-name">{freq.card_name}</span>
+              <span className="card-frequency">{freq.frequency} times</span>
+            </div>
           </li>
         ))}
       </ul>

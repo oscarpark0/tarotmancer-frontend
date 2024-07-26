@@ -25,7 +25,7 @@ const DailyCardFrequencies: React.FC = () => {
             'Authorization': `Bearer ${token}`
           }
         });
-        setFrequencies(response.data);
+        setFrequencies(response.data.sort((a, b) => b.frequency - a.frequency));
         setLoading(false);
       } catch (err) {
         setError('Failed to fetch card frequencies');
@@ -42,17 +42,27 @@ const DailyCardFrequencies: React.FC = () => {
   return (
     <div className={styles.dailyCardFrequencies}>
       <h2>Today's Tarot Card Appearances</h2>
-      <div className={styles.cardList}>
-        {frequencies.map((freq) => (
-          <div key={freq.card_name} className={styles.cardItem}>
-            <img src={freq.card_img} alt={freq.card_name} className={styles.cardImage} />
-            <div className={styles.cardInfo}>
-              <h3 className={styles.cardName}>{freq.card_name}</h3>
-              <p className={styles.cardFrequencyText}>Appeared {freq.frequency} time{freq.frequency !== 1 ? 's' : ''}</p>
-            </div>
-            <div className={styles.cardFrequencyBadge}>{freq.frequency}</div>
-          </div>
-        ))}
+      <div className={styles.tableContainer}>
+        <table className={styles.frequencyTable}>
+          <thead>
+            <tr>
+              <th>Card</th>
+              <th>Name</th>
+              <th>Frequency</th>
+            </tr>
+          </thead>
+          <tbody>
+            {frequencies.map((freq) => (
+              <tr key={freq.card_name}>
+                <td>
+                  <img src={freq.card_img} alt={freq.card_name} className={styles.cardImage} />
+                </td>
+                <td>{freq.card_name}</td>
+                <td>{freq.frequency}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

@@ -1,9 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './PrivacyPolicy.module.css';
 
 const PrivacyPolicy: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className={styles.privacyContainer}>
+      <button className={styles.backButton} onClick={handleBack}>Back</button>
       <h1>Tarotmancer Privacy Policy</h1>
 
       <section>

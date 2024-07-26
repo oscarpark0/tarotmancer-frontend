@@ -1,9 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './TermsOfUse.module.css';
 
 const TermsOfUse: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className={styles.termsContainer}>
+      <button className={styles.backButton} onClick={handleBack}>Back</button>
       <h1>Tarotmancer Terms of Use</h1>
 
       <section>

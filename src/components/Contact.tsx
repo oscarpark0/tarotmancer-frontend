@@ -1,9 +1,17 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './Contact.module.css';
 
 const Contact: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className={styles.contactContainer}>
+      <button className={styles.backButton} onClick={handleBack}>Back</button>
       <h2 className={styles.title}>Contact</h2>
       <a href="mailto:tb@tarotmancer.com" className={styles.email}>
         tb@tarotmancer.com

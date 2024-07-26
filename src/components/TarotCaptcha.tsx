@@ -77,7 +77,7 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
   };
 
   if (isLoading) {
-    return <div>Loading captcha...</div>;
+    return <div className={styles.captchaContainer}>Loading captcha...</div>;
   }
 
   if (isVerified) {
@@ -85,38 +85,41 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
   }
 
   if (!captchaData) {
-    return <div>Error loading captcha. Please try again.</div>;
+    return <div className={styles.captchaContainer}>Error loading captcha. Please try again.</div>;
   }
 
   return (
-    <div className={styles.captchaContainer}>
-      <img
-        src={`${TAROT_IMAGE_BASE_URL}/${captchaData.correct_image}`}
-        alt="Tarot Card"
-        className={styles.cardImage}
-      />
-      <div>
-        {captchaData.options.map((option, index) => (
-          <label key={index} className={styles.optionLabel}>
-            <input
-              type="radio"
-              name="captchaOption"
-              value={option}
-              checked={selectedOption === option}
-              onChange={() => setSelectedOption(option)}
-            />
-            {option}
-          </label>
-        ))}
-        <button
-          onClick={handleSubmit}
-          className={styles.submitButton}
-          disabled={!selectedOption}
-        >
-          Verify
-        </button>
+    <>
+      <div className={styles.overlay}></div>
+      <div className={styles.captchaContainer}>
+        <img
+          src={`${TAROT_IMAGE_BASE_URL}/${captchaData.correct_image}`}
+          alt="Tarot Card"
+          className={styles.cardImage}
+        />
+        <div>
+          {captchaData.options.map((option, index) => (
+            <label key={index} className={styles.optionLabel}>
+              <input
+                type="radio"
+                name="captchaOption"
+                value={option}
+                checked={selectedOption === option}
+                onChange={() => setSelectedOption(option)}
+              />
+              {option}
+            </label>
+          ))}
+          <button
+            onClick={handleSubmit}
+            className={styles.submitButton}
+            disabled={!selectedOption}
+          >
+            Verify
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

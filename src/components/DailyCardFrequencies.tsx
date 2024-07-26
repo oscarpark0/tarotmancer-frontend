@@ -36,23 +36,26 @@ const DailyCardFrequencies: React.FC = () => {
     fetchFrequencies();
   }, [getToken]);
 
-  if (loading) return <div className="loading">Loading...</div>;
+  if (loading) return <div className="loading">Loading<span>.</span><span>.</span><span>.</span></div>;
   if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <div className="daily-card-frequencies">
-      <h2>Today's Card Appearances</h2>
-      <ul className="card-list">
+      <h2>Today's Tarot Card Appearances</h2>
+      <div className="card-grid">
         {frequencies.map((freq) => (
-          <li key={freq.card_name} className="card-item">
-            <img src={freq.card_img} alt={freq.card_name} className="card-image" />
-            <div className="card-info">
-              <span className="card-name">{freq.card_name}</span>
-              <span className="card-frequency">{freq.frequency} times</span>
+          <div key={freq.card_name} className="card-item">
+            <div className="card-image-container">
+              <img src={freq.card_img} alt={freq.card_name} className="card-image" />
+              <div className="card-frequency-badge">{freq.frequency}</div>
             </div>
-          </li>
+            <div className="card-info">
+              <h3 className="card-name">{freq.card_name}</h3>
+              <p className="card-frequency-text">Appeared {freq.frequency} time{freq.frequency !== 1 ? 's' : ''}</p>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

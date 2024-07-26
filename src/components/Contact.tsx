@@ -11,10 +11,12 @@ const Contact: React.FC = () => {
 
   return (
     <div className={styles.contactContainer}>
-      <button className={styles.backButton} onClick={handleBack}>Back</button>
+      <button className={styles.backButton} onClick={handleBack}>
+        <span className={styles.backButtonIcon}>☽</span> Back
+      </button>
       <h2 className={styles.title}>Contact</h2>
       <a href="mailto:tb@tarotmancer.com" className={styles.email}>
-        tb@tarotmancer.com
+        <span className={styles.emailIcon}>✧</span> tb@tarotmancer.com
       </a>
     </div>
   );

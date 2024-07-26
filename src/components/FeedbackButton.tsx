@@ -69,11 +69,11 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
     <>
       {isFooterLink ? (
         <span onClick={handleOpenModal} className={footerStyles.footerLink}>
-          Feedback
+          <span className={styles.feedbackIcon}>✧</span> Feedback
         </span>
       ) : (
         <button onClick={handleOpenModal} className={headerStyles.feedbackButton}>
-          Feedback
+          <span className={styles.feedbackIcon}>✧</span> Feedback
         </button>
       )}
       {isModalOpen && (
@@ -84,9 +84,9 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
               onClick={() => setIsModalOpen(false)}
               aria-label="Close feedback form"
             >
-              &times;
+              ✶
             </button>
-            <h2>Provide Feedback</h2>
+            <h2 className={styles.modalTitle}>Provide Feedback</h2>
             <form onSubmit={handleSubmit}>
               <textarea
                 value={feedback}

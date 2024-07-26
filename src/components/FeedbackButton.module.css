@@ -1,28 +1,35 @@
 .feedbackButton {
-  color: #000000;
+  color: #ffd700;
   text-decoration: none;
   margin: 0 0.5rem;
-  transition: color 0.3s ease;
-  font-size: 0.8rem;
-  border-style: groove;
-  background-color: #ffffff;
-  padding: 5px 10px;
-  border-radius: 4px;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  border: 2px solid #ffd700;
+  background-color: transparent;
+  padding: 8px 16px;
+  border-radius: 25px;
   cursor: pointer;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+}
+
+.feedbackButton:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
 /* Footer-specific styles */
 :global(.footer) .feedbackButton {
   background-color: transparent;
   border: none;
-  color: #ffffff;
+  color: #ffd700;
   text-decoration: underline;
   padding: 0;
   font-size: 1rem;
 }
 
 :global(.footer) .feedbackButton:hover {
-  color: #cccccc;
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
 .modalOverlay {
@@ -31,7 +38,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -39,14 +46,17 @@
 }
 
 .modalContent {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 5px;
+  background-color: #1a1a2e;
+  padding: 2rem;
+  border-radius: 15px;
   max-width: 500px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+  color: #e0e0e0;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
 }
 
 .closeButton {
@@ -57,10 +67,15 @@
   background: none;
   border: none;
   cursor: pointer;
+  color: #ffd700;
 }
 
-.modalContent h2 {
-  margin-bottom: 15px;
+.modalTitle {
+  font-size: 2rem;
+  color: #ffd700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .modalContent form {
@@ -71,30 +86,46 @@
 .modalContent textarea {
   margin-bottom: 15px;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #ffd700;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  color: #e0e0e0;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .modalContent button[type="submit"] {
   padding: 10px;
-  background-color: #4a5568;
-  color: white;
+  background-color: #ffd700;
+  color: #1a1a2e;
   border: none;
-  border-radius: 4px;
+  border-radius: 25px;
   cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.modalContent button[type="submit"]:hover {
+  background-color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .modalContent button[type="submit"]:disabled {
-  background-color: #a0aec0;
+  background-color: #4a5568;
   cursor: not-allowed;
 }
 
 .successMessage {
-  color: #2f855a;
+  color: #33ff33;
   margin-top: 10px;
+  text-align: center;
 }
 
 .errorMessage {
-  color: #e53e3e;
+  color: #ff3333;
   margin-top: 10px;
+  text-align: center;
+}
+
+.feedbackIcon {
+  margin-right: 5px;
 }

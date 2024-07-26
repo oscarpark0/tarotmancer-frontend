@@ -3,48 +3,55 @@
   flex-direction: column;
   align-items: center;
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(199, 39, 39, 0.1);
+  border-radius: 15px;
+  background-color: #1a1a2e;
+  color: #e0e0e0;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  max-width: 600px;
+  margin: 2rem auto;
 }
 
 .title {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  color: #ffd700;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .email {
   font-size: 1.2rem;
-  color: #f7f7f7;
+  color: #ffd700;
   text-decoration: none;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .email:hover {
-  color: #007bff;
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
 .backButton {
-  background-color: #4a0e78;
-  color: #f0e6ff;
-  border: 2px solid #8a2be2;
-  border-radius: 15px;
-  padding: 6px 12px;
+  background-color: transparent;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 25px;
+  padding: 8px 16px;
   cursor: pointer;
   margin-bottom: 20px;
-  font-size: 0.9rem;
+  font-size: 1rem;
   transition: all 0.3s ease;
-  box-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
   align-self: flex-start;
+  font-family: inherit;
 }
 
 .backButton:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+  background-color: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
 .backButton::before {
-  content: '✦';
-  margin-right: 5px;
-  font-size: 0.8rem;
+  content: '☽';
+  margin-right: 8px;
+  font-size: 1.2rem;
 }

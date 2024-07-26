@@ -1,68 +1,78 @@
 .subscribeButton {
-  /* Improved contrast */
   padding: 10px 20px;
-  background-color: #4a5568; /* Darker shade for better contrast */
-  color: white;
-  border: none;
-  border-radius: 52px;
+  background-color: #1a1a2e;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 25px;
   cursor: pointer;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  font-size: 1rem;
+  transition: all 0.3s ease;
 }
-  
-  .modalOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7); /* Increased opacity for better contrast */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modalContent {
-    background-color: #ffffff; /* Solid white background for better readability */
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 500px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    position: relative;
-  }
-  
-  .closeButton {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .kindeForm {
-    /* Override Kinde's default styles to ensure visibility */
-    color: #000000 !important; /* Black text for maximum contrast */
-  }
-  
-  .kindeForm input,
-  .kindeForm button {
-    color: #000000 !important;
-    background-color: #ffffff !important;
-    border: 1px solid #4a5568 !important; /* Darker border for better visibility */
-  }
-  
-  .kindeForm button[type="submit"] {
-    background-color: #2c5282 !important; /* Darker blue for better contrast */
-    color: white !important;
-    border: none !important;
-  }
-  
-  .successMessage {
-    color: #2f855a; /* Darker green for better readability */
-    font-size: 18px;
-    text-align: center;
-    padding: 20px;
-  }
+
+.subscribeButton:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #1a1a2e;
+  padding: 2rem;
+  border-radius: 15px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  color: #e0e0e0;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ffd700;
+}
+
+.kindeForm {
+  color: #e0e0e0 !important;
+}
+
+.kindeForm input,
+.kindeForm button {
+  color: #e0e0e0 !important;
+  background-color: #1a1a2e !important;
+  border: 1px solid #ffd700 !important;
+}
+
+.kindeForm button[type="submit"] {
+  background-color: #ffd700 !important;
+  color: #1a1a2e !important;
+  border: none !important;
+}
+
+.successMessage {
+  color: #33ff33;
+  font-size: 18px;
+  text-align: center;
+  padding: 20px;
+}

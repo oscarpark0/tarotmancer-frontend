@@ -4,12 +4,13 @@ import './DailyCardFrequenciesPage.module.css';
 
 const DailyFrequenciesPage: React.FC = () => {
   return (
-    <div className="daily-frequencies-page">
-      <header className="page-header">
+    <div className="dailyFrequenciesPage">
+      <header className="pageHeader">
         <h1>Daily Tarot Card Frequencies</h1>
+        <p>Explore the appearance frequency of Tarot cards for a specific date</p>
       </header>
-      <main className="page-content">
-        <section className="frequencies-section">
+      <main className="pageContent">
+        <section className="frequenciesSection">
           <DailyCardFrequencies />
         </section>
       </main>

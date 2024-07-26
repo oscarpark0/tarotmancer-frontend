@@ -191,10 +191,9 @@ function AppContent() {
   }, [lastDrawTime, canDraw]);
 
   const handleDraw = useCallback(() => {
-    // ... existing draw logic
     setLastDrawTime(new Date());
     setCanDraw(false);
-  }, [/* existing dependencies */]);
+  }, []);
 
   const fetchUserDraws = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -243,6 +242,7 @@ function AppContent() {
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={kindeAuth.getToken}
+                  onDraw={handleDraw}
                 />
               ) : (
                 <ThreeCardSpread 

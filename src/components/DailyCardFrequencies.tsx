@@ -22,12 +22,15 @@ const DailyCardFrequencies: React.FC = () => {
       try {
         setLoading(true);
         const token = await getToken();
-        const response = await axios.get<CardFrequency[]>(`${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          params: { date: selectedDate }
-        });
+        const response = await axios.get<CardFrequency[]>(
+          `${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`,
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            params: { date: selectedDate }
+          }
+        );
         setFrequencies(response.data.sort((a, b) => b.frequency - a.frequency));
         setLoading(false);
       } catch (err) {
@@ -41,6 +44,10 @@ const DailyCardFrequencies: React.FC = () => {
 
   if (loading) return <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
+
+  const getAppearanceText = (frequency: number) => {
+    return frequency === 1 ? '1 appearance' : `${frequency} appearances`;
+  };
 
   return (
     <div className={styles.dailyCardFrequencies}>
@@ -57,7 +64,7 @@ const DailyCardFrequencies: React.FC = () => {
           <div key={freq.card_name} className={styles.cardItem}>
             <img src={freq.card_img} alt={freq.card_name} className={styles.cardImage} />
             <h3 className={styles.cardName}>{freq.card_name}</h3>
-            <p className={styles.cardFrequency}>{freq.frequency} appearances</p>
+            <p className={styles.cardFrequency}>{getAppearanceText(freq.frequency)}</p>
           </div>
         ))}
       </div>

@@ -42,17 +42,15 @@ const DailyCardFrequencies: React.FC = () => {
   return (
     <div className={styles.dailyCardFrequencies}>
       <h2>Today's Tarot Card Appearances</h2>
-      <div className={styles.cardGrid}>
+      <div className={styles.cardList}>
         {frequencies.map((freq) => (
           <div key={freq.card_name} className={styles.cardItem}>
-            <div className={styles.cardImageContainer}>
-              <img src={freq.card_img} alt={freq.card_name} className={styles.cardImage} />
-              <div className={styles.cardFrequencyBadge}>{freq.frequency}</div>
-            </div>
+            <img src={freq.card_img} alt={freq.card_name} className={styles.cardImage} />
             <div className={styles.cardInfo}>
               <h3 className={styles.cardName}>{freq.card_name}</h3>
               <p className={styles.cardFrequencyText}>Appeared {freq.frequency} time{freq.frequency !== 1 ? 's' : ''}</p>
             </div>
+            <div className={styles.cardFrequencyBadge}>{freq.frequency}</div>
           </div>
         ))}
       </div>

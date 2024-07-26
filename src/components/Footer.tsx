@@ -15,6 +15,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
           <Link to="/terms-of-use" className={styles.footerLink}>Terms</Link>
           <Link to="/privacy-policy" className={styles.footerLink}>Privacy</Link>
           <Link to="/contact" className={styles.footerLink}>Contact</Link>
+          <Link to="/resources" className={styles.footerLink}>Resources</Link>
           <FeedbackButton isFooterLink={true} />
         </div>
         <div className={styles.footerInfo}>

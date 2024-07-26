@@ -1,6 +1,6 @@
 import React from 'react';
 import DailyCardFrequencies from './DailyCardFrequencies';
-import './DailyCardFrequenciesPage.css';
+import './DailyCardFrequenciesPage.module.css';
 
 const DailyFrequenciesPage: React.FC = () => {
   return (

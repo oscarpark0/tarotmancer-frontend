@@ -18,6 +18,7 @@ import DailyCardFrequenciesPage from './components/DailyCardFrequenciesPage';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import styles from './components/SubscribeButton.module.css';
 import Contact from './components/Contact';
+import ResourcesPage from './components/ResourcesPage';
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
@@ -40,6 +41,7 @@ function AppContent() {
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [drawCount, setDrawCount] = useState(0);
+  const [lastResetTime, setLastResetTime] = useState(null);
 
   const navigate = useNavigate();
 
@@ -234,6 +236,8 @@ function AppContent() {
                   getToken={kindeAuth.getToken}
                   drawCount={drawCount}
                   setDrawCount={setDrawCount}
+                  lastResetTime={lastResetTime}
+                  setLastResetTime={setLastResetTime}
                 />
               )}
             </Suspense>
@@ -242,6 +246,7 @@ function AppContent() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/resources" element={<ResourcesPage />} />
         </Routes>
       </div>
       <div style={{ position: 'relative', zIndex: 5 }}>

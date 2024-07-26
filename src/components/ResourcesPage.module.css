@@ -1,0 +1,76 @@
+.resourcesPage {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+  }
+  
+  .pageHeader {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .pageHeader h1 {
+    font-size: 2.5rem;
+    color: #333;
+  }
+  
+  .pageContent {
+    background-color: #bec4ff;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .introText {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  
+  .resourceList {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .resourceItem {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .resourceItem:last-child {
+    border-bottom: none;
+  }
+  
+  .resourceLink {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #0066cc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .resourceLink:hover {
+    color: #004499;
+  }
+  
+  .resourceDescription {
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  @media (max-width: 600px) {
+    .resourcesPage {
+      padding: 1rem;
+    }
+  
+    .pageHeader h1 {
+      font-size: 2rem;
+    }
+  
+    .pageContent {
+      padding: 1rem;
+    }
+  }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import './DailyCardFrequencies.css';
+import styles from './DailyCardFrequenciesPage.module.css';
 
 interface CardFrequency {
   card_name: string;
@@ -36,22 +36,22 @@ const DailyCardFrequencies: React.FC = () => {
     fetchFrequencies();
   }, [getToken]);
 
-  if (loading) return <div className="loading">Loading<span>.</span><span>.</span><span>.</span></div>;
-  if (error) return <div className="error">Error: {error}</div>;
+  if (loading) return <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>;
+  if (error) return <div className={styles.error}>Error: {error}</div>;
 
   return (
-    <div className="daily-card-frequencies">
+    <div className={styles.dailyCardFrequencies}>
       <h2>Today's Tarot Card Appearances</h2>
-      <div className="card-grid">
+      <div className={styles.cardGrid}>
         {frequencies.map((freq) => (
-          <div key={freq.card_name} className="card-item">
-            <div className="card-image-container">
-              <img src={freq.card_img} alt={freq.card_name} className="card-image" />
-              <div className="card-frequency-badge">{freq.frequency}</div>
+          <div key={freq.card_name} className={styles.cardItem}>
+            <div className={styles.cardImageContainer}>
+              <img src={freq.card_img} alt={freq.card_name} className={styles.cardImage} />
+              <div className={styles.cardFrequencyBadge}>{freq.frequency}</div>
             </div>
-            <div className="card-info">
-              <h3 className="card-name">{freq.card_name}</h3>
-              <p className="card-frequency-text">Appeared {freq.frequency} time{freq.frequency !== 1 ? 's' : ''}</p>
+            <div className={styles.cardInfo}>
+              <h3 className={styles.cardName}>{freq.card_name}</h3>
+              <p className={styles.cardFrequencyText}>Appeared {freq.frequency} time{freq.frequency !== 1 ? 's' : ''}</p>
             </div>
           </div>
         ))}

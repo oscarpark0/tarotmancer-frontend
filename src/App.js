@@ -42,6 +42,8 @@ function AppContent() {
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [drawCount, setDrawCount] = useState(0);
   const [lastResetTime, setLastResetTime] = useState(null);
+  const [lastDrawTime, setLastDrawTime] = useState(null);
+  const [timeUntilNextDraw, setTimeUntilNextDraw] = useState(null);
 
   const navigate = useNavigate();
 
@@ -162,20 +164,37 @@ function AppContent() {
   useEffect(() => {
     checkCanDraw();
   }, [checkCanDraw]);
-  const timeUntilNextDraw = useMemo(() => {
-    if (canDraw) return null; // null = user can draw
 
-    const now = new Date();
-    const tomorrow = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
-    const timeLeft = tomorrow - now;
+  useEffect(() => {
+    const calculateTimeUntilNextDraw = () => {
+      if (!lastDrawTime || canDraw) {
+        setTimeUntilNextDraw(null);
+        return;
+      }
 
-    const seconds = Math.floor(timeLeft / 1000);
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
+      const now = new Date();
+      const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000); // 24 hours after last draw
+      const timeLeft = nextDrawTime - now;
 
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  }, [canDraw]);
+      if (timeLeft <= 0) {
+        setCanDraw(true);
+        setTimeUntilNextDraw(null);
+      } else {
+        setTimeUntilNextDraw(Math.ceil(timeLeft / 1000)); // Convert to seconds
+      }
+    };
+
+    calculateTimeUntilNextDraw();
+    const timer = setInterval(calculateTimeUntilNextDraw, 1000);
+
+    return () => clearInterval(timer);
+  }, [lastDrawTime, canDraw]);
+
+  const handleDraw = useCallback(() => {
+    // ... existing draw logic
+    setLastDrawTime(new Date());
+    setCanDraw(false);
+  }, [/* existing dependencies */]);
 
   const fetchUserDraws = useCallback(async () => {
     if (!isAuthenticated) return;

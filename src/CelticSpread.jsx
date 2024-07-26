@@ -12,7 +12,7 @@ import { useLanguage } from './components/LanguageSelector';
 import { buttonTranslations } from './utils/translations';
 import PropTypes from 'prop-types';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw }) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
 
@@ -192,8 +192,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       timeUntilNextDraw={timeUntilNextDraw}
       currentDrawId={currentDrawId}
       onOpenPastDraws={handleOpenPastDraws}
+      onDraw={onDraw}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -276,6 +277,7 @@ CelticSpread.propTypes = {
   canDraw: PropTypes.bool,
   timeUntilNextDraw: PropTypes.string,
   getToken: PropTypes.func.isRequired,
+  onDraw: PropTypes.func.isRequired,
 };
 
 export default CelticSpread;

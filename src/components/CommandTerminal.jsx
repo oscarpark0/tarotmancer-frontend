@@ -10,7 +10,7 @@ import { getMistralResponse } from '../services/mistralServices';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -215,6 +215,11 @@ Include relevant mythological or archetypal references that enrich the reading.`
             />
           </form>
         </div>
+        {!canDraw && countdown > 0 && (
+          <div className="countdown-timer">
+            Next draw available in: {formatCountdown(countdown)}
+          </div>
+        )}
         <ShimmerButton 
           onClick={handleDrawClick}
           aria-label={getTranslation('drawCardsAriaLabel')}

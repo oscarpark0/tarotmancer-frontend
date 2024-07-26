@@ -103,41 +103,43 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
   return (
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
-        <button className={styles.closeButton} onClick={onClose}>&times;</button>
-        <h2 style={{ color: '#333' }}>{getTranslation('pastDraws')}</h2>
+        <button className={styles.closeButton} onClick={onClose}>
+          <span className={styles.closeButtonIcon}>✶</span>
+        </button>
+        <h2 className={styles.modalTitle}>{getTranslation('pastDraws')}</h2>
         {selectedDraw ? (
-          <div>
+          <div className={styles.selectedDrawContent}>
             <button 
               onClick={() => setSelectedDraw(null)} 
               className={styles.backButton}
             >
-              {getTranslation('backToList')}
+              <span className={styles.buttonIcon}>☽</span> {getTranslation('backToList')}
             </button>
             <button 
               onClick={() => removeDraw(selectedDraw.id)} 
               className={styles.removeButton}
             >
-              {getTranslation('removeDraw')}
+              <span className={styles.buttonIcon}>✧</span> {getTranslation('removeDraw')}
             </button>
-            <h3 style={{ color: '#555' }}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
+            <h3 className={styles.drawInfo}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
             {selectedDraw.response ? (
               <p className={styles.responseText}>{selectedDraw.response}</p>
             ) : (
-              <p>{getTranslation('noResponseAvailable')}</p>
+              <p className={styles.noResponse}>{getTranslation('noResponseAvailable')}</p>
             )}
           </div>
         ) : (
-          <ul>
+          <ul className={styles.drawList}>
             {draws.map((draw) => (
-              <li key={draw.id}>
-                <span onClick={() => setSelectedDraw(draw)}>
-                  {draw.spread_type} - {new Date(draw.created_at).toLocaleString()}
+              <li key={draw.id} className={styles.drawItem}>
+                <span onClick={() => setSelectedDraw(draw)} className={styles.drawInfo}>
+                  <span className={styles.drawIcon}>✧</span> {draw.spread_type} - {new Date(draw.created_at).toLocaleString()}
                 </span>
                 <button 
                   onClick={() => removeDraw(draw.id)} 
                   className={styles.removeButton}
                 >
-                  {getTranslation('removeDraw')}
+                  <span className={styles.buttonIcon}>✧</span> {getTranslation('removeDraw')}
                 </button>
               </li>
             ))}

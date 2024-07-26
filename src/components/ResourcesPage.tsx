@@ -1,7 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './ResourcesPage.module.css';
 
 const ResourcesPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   const resources = [
     {
       name: 'Aeclectic Tarot',
@@ -32,6 +39,9 @@ const ResourcesPage: React.FC = () => {
 
   return (
     <div className={styles.resourcesPage}>
+      <button className={styles.backButton} onClick={handleBack}>
+        <span className={styles.backButtonIcon}>☽</span> Back
+      </button>
       <header className={styles.pageHeader}>
         <h1>Tarot Resources</h1>
       </header>
@@ -43,6 +53,7 @@ const ResourcesPage: React.FC = () => {
           {resources.map((resource, index) => (
             <li key={index} className={styles.resourceItem}>
               <a href={resource.url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
+                <span className={styles.resourceIcon}>✧</span>
                 {resource.name}
               </a>
               <p className={styles.resourceDescription}>{resource.description}</p>

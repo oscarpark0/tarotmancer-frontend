@@ -19,8 +19,8 @@ import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import styles from './components/SubscribeButton.module.css';
 import Contact from './components/Contact';
 
-const CelticSpread = lazy(() => import('./CelticSpread'));
-const ThreeCardSpread = lazy(() => import('./ThreeCardSpread'));
+const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
+const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
 
 // Create a new component to use router-dependent hooks
 function AppContent() {
@@ -39,6 +39,7 @@ function AppContent() {
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
+  const [drawCount, setDrawCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -220,6 +221,7 @@ function AppContent() {
                   timeUntilNextDraw={timeUntilNextDraw}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
+                  getToken={kindeAuth.getToken}
                 />
               ) : (
                 <ThreeCardSpread 
@@ -229,6 +231,9 @@ function AppContent() {
                   timeUntilNextDraw={timeUntilNextDraw}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
+                  getToken={kindeAuth.getToken}
+                  drawCount={drawCount}
+                  setDrawCount={setDrawCount}
                 />
               )}
             </Suspense>
@@ -255,7 +260,9 @@ function App() {
   return (
     <BrowserRouter>
       <LanguageProvider>
-        <AppContent />
+        <Suspense fallback={<div>Loading...</div>}>
+          <AppContent />
+        </Suspense>
       </LanguageProvider>
     </BrowserRouter>
   );

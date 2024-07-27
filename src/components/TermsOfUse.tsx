@@ -12,17 +12,17 @@ const TermsOfUse: React.FC = () => {
   return (
     <div className={styles.termsContainer}>
       <button className={styles.backButton} onClick={handleBack}>Back</button>
-      <h1>Tarotmancer Terms of Use</h1>
+      <h1>tarotmancer Terms of Use</h1>
 
       <section>
         <h2>1. Acceptance of Terms</h2>
-        <p>1.1. By accessing or using the Tarotmancer website and services (collectively, the "Service"), you agree to be bound by these Terms of Use ("Terms"). If you do not agree to these Terms, you may not use the Service.</p>
+        <p>1.1. By accessing or using the tarotmancer website and services (collectively, the "Service"), you agree to be bound by these Terms of Use ("Terms"). If you do not agree to these Terms, you may not use the Service.</p>
         <p>1.2. We reserve the right to update or modify these Terms at any time without prior notice. Your continued use of the Service following any changes constitutes your acceptance of the new Terms.</p>
       </section>
 
       <section>
         <h2>2. Description of Service</h2>
-        <p>Tarotmancer is an online platform that provides digital tarot card readings, spreads, and interpretations for entertainment and spiritual guidance purposes.</p>
+        <p>tarotmancer is an online platform that provides digital tarot card readings, spreads, and interpretations for entertainment and spiritual guidance purposes.</p>
       </section>
 
       <section>
@@ -35,7 +35,7 @@ const TermsOfUse: React.FC = () => {
       <section>
         <h2>4. User Content</h2>
         <p>4.1. <strong>Ownership</strong>. You retain all rights in and to the content you post to the Service.</p>
-        <p>4.2. <strong>License</strong>. By posting content, you grant Tarotmancer a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, and display such content for the purpose of providing and promoting the Service.</p>
+        <p>4.2. <strong>License</strong>. By posting content, you grant tarotmancer a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, and display such content for the purpose of providing and promoting the Service.</p>
         <p>4.3. <strong>Responsibility</strong>. You are solely responsible for your content and any consequences that may arise from posting it. You warrant that you have the necessary rights and permissions to post the content and that it does not infringe upon the intellectual property or other rights of any third party.</p>
       </section>
 
@@ -55,9 +55,9 @@ const TermsOfUse: React.FC = () => {
 
       <section>
         <h2>6. Intellectual Property</h2>
-        <p>6.1. <strong>Ownership</strong>. The Service and its original content, features, and functionality are owned by Tarotmancer and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.</p>
-        <p>6.2. <strong>Limited License</strong>. Subject to these Terms, Tarotmancer grants you a non-exclusive, non-transferable, revocable license to use the Service for your personal, non-commercial use.</p>
-        <p>6.3. <strong>Restrictions</strong>. You may not modify, reproduce, distribute, create derivative works or adaptations of, publicly display or in any way exploit any of the content, in whole or in part, except as expressly authorized by Tarotmancer.</p>
+        <p>6.1. <strong>Ownership</strong>. The Service and its original content, features, and functionality are owned by tarotmancer and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.</p>
+        <p>6.2. <strong>Limited License</strong>. Subject to these Terms, tarotmancer grants you a non-exclusive, non-transferable, revocable license to use the Service for your personal, non-commercial use.</p>
+        <p>6.3. <strong>Restrictions</strong>. You may not modify, reproduce, distribute, create derivative works or adaptations of, publicly display or in any way exploit any of the content, in whole or in part, except as expressly authorized by tarotmancer.</p>
       </section>
 
       <section>
@@ -75,19 +75,19 @@ const TermsOfUse: React.FC = () => {
       <section>
         <h2>9. Disclaimer of Warranties</h2>
         <p>9.1. <strong>As Is</strong>. Your use of the Service is at your sole risk. The Service is provided on an "AS IS" and "AS AVAILABLE" basis.</p>
-        <p>9.2. <strong>No Warranties</strong>. Tarotmancer expressly disclaims all warranties of any kind, whether express or implied, including, but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
-        <p>9.3. <strong>No Guarantees</strong>. Tarotmancer makes no warranty that the Service will meet your requirements or be available on an uninterrupted, secure, or error-free basis.</p>
+        <p>9.2. <strong>No Warranties</strong>. tarotmancer expressly disclaims all warranties of any kind, whether express or implied, including, but not limited to the implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+        <p>9.3. <strong>No Guarantees</strong>. tarotmancer makes no warranty that the Service will meet your requirements or be available on an uninterrupted, secure, or error-free basis.</p>
       </section>
 
       <section>
         <h2>10. Limitation of Liability</h2>
-        <p>10.1. <strong>No Indirect Damages</strong>. Tarotmancer and its affiliates, officers, employees, agents, partners, and licensors shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.</p>
-        <p>10.2. <strong>Liability Cap</strong>. In no event shall Tarotmancer's total liability to you for all damages, losses, and causes of action exceed the amount you have paid Tarotmancer in the last six (6) months, or, if greater, one hundred dollars ($100).</p>
+        <p>10.1. <strong>No Indirect Damages</strong>. tarotmancer and its affiliates, officers, employees, agents, partners, and licensors shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your access to or use of or inability to access or use the Service.</p>
+        <p>10.2. <strong>Liability Cap</strong>. In no event shall tarotmancer's total liability to you for all damages, losses, and causes of action exceed the amount you have paid tarotmancer in the last six (6) months, or, if greater, one hundred dollars ($100).</p>
       </section>
 
       <section>
         <h2>11. Indemnification</h2>
-        <p>You agree to indemnify and hold Tarotmancer and its affiliates, officers, employees, agents, partners, and licensors harmless from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney's fees) arising from: (a) your use of and access to the Service; (b) your violation of these Terms; (c) your violation of any third-party right, including without limitation any copyright, property, or privacy right; or (d) any claim that your content caused damage to a third party.</p>
+        <p>You agree to indemnify and hold tarotmancer and its affiliates, officers, employees, agents, partners, and licensors harmless from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney's fees) arising from: (a) your use of and access to the Service; (b) your violation of these Terms; (c) your violation of any third-party right, including without limitation any copyright, property, or privacy right; or (d) any claim that your content caused damage to a third party.</p>
       </section>
 
       <section>
@@ -102,7 +102,7 @@ const TermsOfUse: React.FC = () => {
 
       <section>
         <h2>14. Termination</h2>
-        <p>14.1. <strong>By Tarotmancer</strong>. We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
+        <p>14.1. <strong>By tarotmancer</strong>. We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
         <p>14.2. <strong>By You</strong>. You may terminate your account at any time by following the instructions on the Service.</p>
         <p>14.3. <strong>Survival</strong>. All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.</p>
       </section>
@@ -119,7 +119,7 @@ const TermsOfUse: React.FC = () => {
 
       <section>
         <h2>17. Entire Agreement</h2>
-        <p>These Terms constitute the entire agreement between you and Tarotmancer regarding the use of the Service and supersede all prior understandings and agreements between you and Tarotmancer.</p>
+        <p>These Terms constitute the entire agreement between you and tarotmancer regarding the use of the Service and supersede all prior understandings and agreements between you and tarotmancer.</p>
       </section>
 
       <p>By using the Service, you acknowledge that you have read and understood these Terms and agree to be bound by them.</p>

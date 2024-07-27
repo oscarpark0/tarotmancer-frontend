@@ -66,7 +66,7 @@ const SubscribeButton: React.FC = () => {
                     <legend>
                       <span className="kuiembed-heading">Updates &amp; Weekly Readings</span>
                       <span className="kuiembed-sub-heading">
-                        Signup to receive updates/improvements to Tarotmancer, and receive a weekly reading delivered to your email.
+                        Signup to receive updates/improvements to tarotmancer, and receive a weekly reading delivered to your email.
                       </span>
                     </legend>
                   </div>

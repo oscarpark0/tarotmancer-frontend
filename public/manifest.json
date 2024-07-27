@@ -1,6 +1,6 @@
 {
-  "name": "Tarotmancer",
-  "short_name": "Tarotmancer",
+  "name": "tarotmancer",
+  "short_name": "tarotmancer",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",

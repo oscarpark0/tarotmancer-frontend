@@ -12,11 +12,11 @@ const PrivacyPolicy: React.FC = () => {
   return (
     <div className={styles.privacyContainer}>
       <button className={styles.backButton} onClick={handleBack}>Back</button>
-      <h1>Tarotmancer Privacy Policy</h1>
+      <h1>tarotmancer Privacy Policy</h1>
 
       <section>
         <h2>1. Introduction</h2>
-        <p>1.1. This Privacy Policy explains how Tarotmancer ("we," "us," or "our") collects, uses, shares, and protects personal information about you when you use our website and services (collectively, the "Service").</p>
+        <p>1.1. This Privacy Policy explains how tarotmancer ("we," "us," or "our") collects, uses, shares, and protects personal information about you when you use our website and services (collectively, the "Service").</p>
         <p>1.2. By using the Service, you consent to the collection, use, and sharing of your personal information as described in this Privacy Policy.</p>
       </section>
 
@@ -33,14 +33,14 @@ const PrivacyPolicy: React.FC = () => {
         <p>3.1. We use the information we collect to provide, maintain, and improve the Service.</p>
         <p>3.2. We will not use your personal information to communicate with you, including sending you updates, newsletters, and promotional materials, unless you subscribe to our service.</p>
         <p>3.3. We may use your information to personalize your experience on the Service and to provide you with content and features tailored to your interests.</p>
-        <p>3.4. We may use your information to detect, investigate, and prevent fraudulent transactions and other illegal activities and to protect the rights and property of Tarotmancer and others.</p>
+        <p>3.4. We may use your information to detect, investigate, and prevent fraudulent transactions and other illegal activities and to protect the rights and property of tarotmancer and others.</p>
       </section>
 
       <section>
         <h2>4. How We Share Your Information</h2>
         <p>4.1. We may share your information with third-party service providers who perform services on our behalf, such as payment processing, data analysis, email delivery, hosting services, and customer service.</p>
         <p>4.2. We may share your information with our affiliates and partners for the purposes described in this Privacy Policy.</p>
-        <p>4.3. We may share your information if we believe it is necessary to comply with a legal obligation, to protect the rights, property, or safety of Tarotmancer, our users, or others, or to enforce our Terms of Use and other agreements.</p>
+        <p>4.3. We may share your information if we believe it is necessary to comply with a legal obligation, to protect the rights, property, or safety of tarotmancer, our users, or others, or to enforce our Terms of Use and other agreements.</p>
         <p>4.4. We may share aggregated or de-identified information that cannot reasonably be used to identify you with third parties for any purpose.</p>
       </section>
 

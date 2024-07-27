@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import footerStyles from './Footer.module.css';
 import headerStyles from './FeedbackButton.module.css';
 import styles from './FeedbackButton.module.css';
@@ -19,6 +19,18 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const { getToken, user } = useKindeAuth();
   const { getTranslation } = useTranslation();
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isModalOpen]);
 
   const handleCaptchaVerify = (isVerified: boolean) => {
     setIsCaptchaVerified(isVerified);

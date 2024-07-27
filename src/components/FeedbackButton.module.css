@@ -42,7 +42,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10000; /* Increased z-index */
 }
 
 .modalContent {
@@ -50,13 +50,32 @@
   padding: 2rem;
   border-radius: 15px;
   max-width: 500px;
-  width: 100%;
+  width: 90%; /* Changed from 100% to 90% */
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
   color: #e0e0e0;
   font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  z-index: 10001; /* Increased z-index */
+}
+
+/* Add responsive styles for mobile */
+@media (max-width: 768px) {
+  .modalContent {
+    width: 95%;
+    padding: 1.5rem;
+    max-height: 80vh;
+  }
+
+  .modalTitle {
+    font-size: 1.5rem;
+  }
+
+  .closeButton {
+    top: 5px;
+    right: 5px;
+  }
 }
 
 .closeButton {
@@ -89,8 +108,7 @@
   border: 1px solid #ffd700;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.3);
-  color: #e0e0e0;
-  font-family: 'Courier New', Courier, monospace;
+  color: #000000;
 }
 
 .modalContent button[type="submit"] {

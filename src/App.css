@@ -227,3 +227,19 @@
 .dark-mode .next-draw-time {
   color: #aaa;
 }
+
+/* Add this at the end of the file */
+body.feedback-modal-open {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+body.feedback-modal-open .feedback-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000000; /* Extremely high z-index */
+}

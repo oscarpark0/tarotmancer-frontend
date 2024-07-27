@@ -23,12 +23,15 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
   useEffect(() => {
     if (isModalOpen) {
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('feedback-modal-open');
     } else {
       document.body.style.overflow = 'unset';
+      document.body.classList.remove('feedback-modal-open');
     }
 
     return () => {
       document.body.style.overflow = 'unset';
+      document.body.classList.remove('feedback-modal-open');
     };
   }, [isModalOpen]);
 

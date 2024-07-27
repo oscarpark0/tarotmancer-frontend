@@ -42,7 +42,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000; /* Increased z-index */
+  z-index: 100000; /* Extremely high z-index */
 }
 
 .modalContent {
@@ -50,22 +50,28 @@
   padding: 2rem;
   border-radius: 15px;
   max-width: 500px;
-  width: 90%; /* Changed from 100% to 90% */
+  width: 90%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
   color: #e0e0e0;
   font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-  z-index: 10001; /* Increased z-index */
+  z-index: 100001; /* Extremely high z-index */
 }
 
 /* Add responsive styles for mobile */
 @media (max-width: 768px) {
+  .modalOverlay {
+    align-items: flex-start; /* Align to top on mobile */
+    padding-top: 20px; /* Add some top padding */
+  }
+
   .modalContent {
     width: 95%;
     padding: 1.5rem;
     max-height: 80vh;
+    margin-top: 20px; /* Add top margin */
   }
 
   .modalTitle {

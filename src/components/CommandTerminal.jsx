@@ -48,19 +48,14 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
       const staticText = `You are Tarotmancer - a wise and knowledgeable tarot card interpretation master.
 Begin with a greeting that encapsulates the essence of the spread, hinting at the energies and themes present.
 For each card in the spread, provide a detailed analysis:
-1. Card name and associated suit/major arcana
-2. Orientation (upright or reversed)
-3. Position in the spread and its significance
-4. Interpretation, considering:
+1. Interpretation, considering:
    a) The card's inherent symbolism and meaning
    b) Its orientation
    c) Its position in the spread
    d) Its relationships and interactions with other cards
-5. How the card's energy influences the querent's situation
+2. How the card's energy influences the querent's situation
 As you interpret each card, weave a cohesive narrative that connects the individual card meanings into a holistic reading.
-Draw connections between cards that have symbolic, elemental, or numerical relationships, explaining how these connections add depth to the reading.
-Conclude with a comprehensive overview of the querent's spread, providing actionable insights and guidance - suggesting potential areas for growth, reflection, or caution.'
-Include relevant mythological or archetypal references that enrich the reading.`;
+Draw connections between cards that have symbolic, elemental, or numerical relationships, explaining how these connections add depth to the reading.`;
       const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;

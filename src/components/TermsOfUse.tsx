@@ -108,18 +108,23 @@ const TermsOfUse: React.FC = () => {
       </section>
 
       <section>
-        <h2>14. Contact Us</h2>
+        <h2>15. Contact Us</h2>
         <p>If you have any questions about these Terms, please contact us at tb@tarotmancer.com.</p>
       </section>
 
       <section>
-        <h2>15. Entire Agreement</h2>
+        <h2>16. Language</h2>
+        <p>These Terms are only provided in English (US). By using the Service, you acknowledge that you have sufficient proficiency in English to understand these Terms. If you do not understand English, you should not use the Service.</p>
+      </section>
+
+      <section>
+        <h2>17. Entire Agreement</h2>
         <p>These Terms constitute the entire agreement between you and Tarotmancer regarding the use of the Service and supersede all prior understandings and agreements between you and Tarotmancer.</p>
       </section>
 
       <p>By using the Service, you acknowledge that you have read and understood these Terms and agree to be bound by them.</p>
 
-      <p>Last updated: July 24, 2024</p>
+      <p>Last updated: July 26, 2024</p>
     </div>
   );
 };

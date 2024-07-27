@@ -31,7 +31,7 @@ const PrivacyPolicy: React.FC = () => {
       <section>
         <h2>3. How We Use Your Information</h2>
         <p>3.1. We use the information we collect to provide, maintain, and improve the Service.</p>
-        <p>3.2. We may use your personal information to communicate with you, including sending you updates, newsletters, and promotional materials.</p>
+        <p>3.2. We will not use your personal information to communicate with you, including sending you updates, newsletters, and promotional materials, unless you subscribe to our service.</p>
         <p>3.3. We may use your information to personalize your experience on the Service and to provide you with content and features tailored to your interests.</p>
         <p>3.4. We may use your information to detect, investigate, and prevent fraudulent transactions and other illegal activities and to protect the rights and property of Tarotmancer and others.</p>
       </section>
@@ -71,7 +71,7 @@ const PrivacyPolicy: React.FC = () => {
         <p>If you have any questions about this Privacy Policy, please contact us at tb@tarotmancer.com.</p>
       </section>
 
-      <p>Last updated: July 24, 2024</p>
+      <p>Last updated: July 26, 2024</p>
     </div>
   );
 };

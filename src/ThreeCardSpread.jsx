@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
@@ -7,17 +7,14 @@ import { API_BASE_URL } from './utils/config.tsx';
 import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useLanguage } from './components/LanguageSelector';
-import { buttonTranslations } from './utils/translations';
+import { useLanguage } from './contexts/LanguageContext';
+import { useTranslation } from './utils/translations'; // Import useTranslation
 import PastDrawsModal from './components/PastDrawsModal';
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw }) => {
   const { getToken, user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
-
-  const getTranslation = (key) => {
-    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'];
-  };
+  const { getTranslation } = useTranslation(); // Use the hook
 
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -176,6 +173,20 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     setIsPastDrawsModalOpen(true);
   }, []);
 
+  const handleAnimationStart = useCallback(() => {
+    // Add your animation start logic here
+  }, []);
+
+  const handleDraw = useCallback(() => {
+    // Add your draw logic here
+    handleDrawSpread();
+  }, [handleDrawSpread]);
+
+  // Add this effect to force re-render when language changes
+  useEffect(() => {
+    // This empty dependency array ensures the effect runs when selectedLanguage changes
+  }, [selectedLanguage]);
+
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -212,8 +223,19 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       userId={user?.id}
       currentDrawId={currentDrawId}
       onOpenPastDraws={handleOpenPastDraws}
+      onAnimationStart={handleAnimationStart}
+      onDraw={handleDraw}
+      selectedLanguage={selectedLanguage}
+      getTranslation={getTranslation}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, user, currentDrawId, handleOpenPastDraws]);
+  ), [
+    dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread,
+    handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput,
+    cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete,
+    isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, user,
+    currentDrawId, handleOpenPastDraws, handleAnimationStart, handleDraw, selectedLanguage,
+    getTranslation
+  ]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

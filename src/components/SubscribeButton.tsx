@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './SubscribeButton.module.css';
-import { LanguageContext } from './LanguageSelector';
-import { buttonTranslations } from '../utils/translations';
+import { useTranslation } from '../utils/translations'; // Import the useTranslation hook
 
 const loadKindeWidgetScripts = () => {
   const link = document.createElement('link');
@@ -17,17 +16,7 @@ const loadKindeWidgetScripts = () => {
 
 const SubscribeButton: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { selectedLanguage } = useContext(LanguageContext);
-
-  const getTranslation = (key: string) => {
-    if (!buttonTranslations[key as keyof typeof buttonTranslations]) {
-      console.error(`Translation key not found: ${key}`);
-      return key; // Return the key itself as a fallback
-    }
-    return buttonTranslations[key as keyof typeof buttonTranslations][selectedLanguage as keyof (typeof buttonTranslations)[keyof typeof buttonTranslations]] || 
-           buttonTranslations[key as keyof typeof buttonTranslations]['English'] ||
-           key; // Fallback to the key itself if both selected language and English are not available
-  };
+  const { getTranslation } = useTranslation(); // Use the hook to get translation function
 
   useEffect(() => {
     const { script, link } = loadKindeWidgetScripts();
@@ -69,7 +58,7 @@ const SubscribeButton: React.FC = () => {
                     id="id__kui_p_0fb67a0e1d7d47c0b12ec7c0af02dd16"
                     name="p_0fb67a0e1d7d47c0b12ec7c0af02dd16"
                     tabIndex={-1}
-                    value=""
+                    defaultValue=""
                   />
                 </div>
                 <fieldset>

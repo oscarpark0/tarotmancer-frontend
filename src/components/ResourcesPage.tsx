@@ -46,9 +46,6 @@ const ResourcesPage: React.FC = () => {
         <h1>Tarot Resources</h1>
       </header>
       <main className={styles.pageContent}>
-        <p className={styles.introText}>
-          Tarot Resources:
-        </p>
         <ul className={styles.resourceList}>
           {resources.map((resource, index) => (
             <li key={index} className={styles.resourceItem}>

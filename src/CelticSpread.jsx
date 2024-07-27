@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
@@ -8,17 +8,14 @@ import { generateCelticCrossPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary'; 
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import PastDrawsModal from './components/PastDrawsModal';
-import { useLanguage } from './components/LanguageSelector';
-import { buttonTranslations } from './utils/translations';
+import { useLanguage } from './contexts/LanguageContext';
+import { useTranslation } from './utils/translations';
 import PropTypes from 'prop-types';
 
 const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw }) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
-
-  const getTranslation = (key) => {
-    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'];
-  };
+  const { getTranslation } = useTranslation();
 
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -157,6 +154,11 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     setIsPastDrawsModalOpen(true);
   }, []);
 
+  // Add this effect to force re-render when language changes
+  useEffect(() => {
+    // This empty dependency array ensures the effect runs when selectedLanguage changes
+  }, [selectedLanguage]);
+
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -193,8 +195,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       currentDrawId={currentDrawId}
       onOpenPastDraws={handleOpenPastDraws}
       onDraw={onDraw}
+      selectedLanguage={selectedLanguage}
+      getTranslation={getTranslation}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

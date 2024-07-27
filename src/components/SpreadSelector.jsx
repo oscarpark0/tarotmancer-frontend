@@ -1,17 +1,8 @@
 import React, { memo } from 'react';
-import { useLanguage } from './LanguageSelector';
-import { buttonTranslations } from '../utils/translations';
+import { useTranslation } from '../utils/translations';
 
 const SpreadSelector = memo(({ onSpreadSelect, selectedSpread }) => {
-
-  const { selectedLanguage } = useLanguage();
-
-  const getTranslation = (key) => {
-    if (buttonTranslations[key] && buttonTranslations[key][selectedLanguage]) {
-      return buttonTranslations[key][selectedLanguage];
-    }
-    return buttonTranslations[key]['English'] || key;
-  };
+  const { getTranslation } = useTranslation();
 
   return (
     <div className="spread-selector">

@@ -4,8 +4,8 @@ import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
-import { useLanguage } from './LanguageSelector';
-import { buttonTranslations } from '../utils/translations';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
@@ -17,17 +17,10 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const [showCards, setShowCards] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const { selectedLanguage } = useLanguage();
+  const { getTranslation } = useTranslation();
   const [isDrawing, setIsDrawing] = useState(false);
   const [countdown, setCountdown] = useState(timeUntilNextDraw);
   const kindeAuth = useKindeAuth();
-
-  const getTranslation = (key) => {
-    if (!buttonTranslations[key]) {
-      console.warn(`Translation key "${key}" not found`);
-      return key; // Return the key itself as a fallback
-    }
-    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'] || key;
-  };
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {

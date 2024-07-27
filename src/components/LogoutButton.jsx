@@ -1,15 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { LanguageContext } from './LanguageSelector';
-import { buttonTranslations } from '../utils/translations';
+import { useTranslation } from '../utils/translations';
+import { useLanguage } from '../contexts/LanguageContext'; // Import useLanguage
 
 const LogoutButton = () => {
   const { logout } = useKindeAuth();
-  const { selectedLanguage } = useContext(LanguageContext);
-
-  const getTranslation = (key) => {
-    return buttonTranslations[key][selectedLanguage] || buttonTranslations[key]['English'];
-  };
+  const { getTranslation } = useTranslation();
+  useLanguage(); // Use useLanguage hook
 
   const handleLogout = () => {
     // Store the current drawCount and lastResetTime in sessionStorage
@@ -27,7 +24,6 @@ const LogoutButton = () => {
       alert(getTranslation('logoutUnavailable'));
       return;
     }
-
 
     window.location.href = '/';
   };

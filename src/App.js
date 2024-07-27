@@ -5,7 +5,8 @@ import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import TypingAnimation from './components/typing-animation';
-import LanguageSelector, { LanguageProvider } from './components/LanguageSelector';
+import LanguageSelector from './components/LanguageSelector';
+import { LanguageProvider } from './contexts/LanguageContext';
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import PastDrawsModal from './components/PastDrawsModal';
 import FeedbackButton from './components/FeedbackButton.tsx';
@@ -19,14 +20,16 @@ import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import styles from './components/SubscribeButton.module.css';
 import Contact from './components/Contact';
 import ResourcesPage from './components/ResourcesPage';
+import { useTranslation } from './utils/translations';
+import { initializeTranslations } from './utils/translations';
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
 
-// Create a new component to use router-dependent hooks
 function AppContent() {
   const kindeAuth = useKindeAuth();
   const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
+  const { getTranslation } = useTranslation(); 
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
@@ -73,12 +76,12 @@ function AppContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const memoizedHeader = useMemo(() => (
-    (!isMobileScreen || !isAuthenticated) && (
+  const memoizedHeader = useMemo(() => {
+    return (!isMobileScreen || !isAuthenticated) && (
       <header className="app-header">
         <div className="header-content">
           <h1 className="app-title" onClick={() => navigate('/')}>
-            <span>tarotmancer</span>
+            <span>{getTranslation('tarotmancer')}</span>
           </h1>
           <div className="auth-container">
             <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
@@ -87,8 +90,8 @@ function AppContent() {
                 <div className="header-language-selector">
                   <LanguageSelector />
                 </div>
-                <button onClick={() => navigate('/dailyFrequencies')} className={styles.subscribeButton}>Daily Frequencies</button>
-                <button onClick={() => setIsPastDrawsModalOpen(true)} className={styles.subscribeButton}>Past Draws</button>
+                <button onClick={() => navigate('/dailyFrequencies')} className={styles.subscribeButton}>{getTranslation('dailyFrequencies')}</button>
+                <button onClick={() => setIsPastDrawsModalOpen(true)} className={styles.subscribeButton}>{getTranslation('pastDraws')}</button>
                 <SubscribeButton />
                 <FeedbackButton />
                 <LogoutButton />
@@ -105,22 +108,24 @@ function AppContent() {
         </div>
       </header>
     )
-  ), [isMobileScreen, isAuthenticated, isDarkMode, toggleDarkMode, navigate]);
+  }, [isMobileScreen, isAuthenticated, isDarkMode, toggleDarkMode, navigate, getTranslation]);
 
-  const memoizedWelcomeMessage = useMemo(() => (
-    <div className="welcome-message">
-      <AnimatedGridPattern className="absolute inset-0 z-0" isDarkMode={isDarkMode} />
-      <div className="relative z-10 welcome-content">
-        <div className="animation-container">
-          <TypingAnimation duration={100}>TarotMancer</TypingAnimation>
-        </div>
-        <div className="welcome-buttons">
-          <LoginButton />
-          <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+  const memoizedWelcomeMessage = useMemo(() => {
+    return (
+      <div className="welcome-message">
+        <AnimatedGridPattern className="absolute inset-0 z-0" isDarkMode={isDarkMode} />
+        <div className="relative z-10 welcome-content">
+          <div className="animation-container">
+            <TypingAnimation duration={100}>{getTranslation('tarotmancer')}</TypingAnimation>
+          </div>
+          <div className="welcome-buttons">
+            <LoginButton />
+            <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          </div>
         </div>
       </div>
-    </div>
-  ), [isDarkMode, toggleDarkMode]);
+    )
+  }, [isDarkMode, toggleDarkMode, getTranslation]);
 
   const spreadProps = useMemo(() => ({
     isMobile,
@@ -131,35 +136,42 @@ function AppContent() {
     kindeAuth,
   }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, kindeAuth]);
 
-  const checkCanDraw = useCallback(async () => {
-    if (!isAuthenticated) return;
+  const makeAuthenticatedRequest = useCallback(async (endpoint, errorMessage) => {
+    if (!isAuthenticated) return null;
 
     try {
       const token = await kindeAuth.getToken();
-      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/can-draw`, {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}${endpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'User-ID': kindeAuth.user.id
         }
       });
       
-      
-      const text = await response.text();
-      
-      if (response.ok) {
-        try {
-          const data = JSON.parse(text);
-          setCanDraw(data.can_draw);
-        } catch (e) {
-          console.error('Failed to parse response as JSON:', e);
-        }
-      } else {
-        console.error('Server returned an error:', response.status, text);
+      if (!response.ok) {
+        throw new Error(`${errorMessage}: ${response.status}`);
       }
+      
+      return await response.json();
     } catch (error) {
-      console.error('Error checking draw status:', error);
+      console.error(errorMessage, error);
+      return null;
     }
   }, [isAuthenticated, kindeAuth]);
+
+  const checkCanDraw = useCallback(async () => {
+    const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');
+    if (data) {
+      setCanDraw(data.can_draw);
+    }
+  }, [makeAuthenticatedRequest]);
+
+  const fetchUserDraws = useCallback(async () => {
+    const draws = await makeAuthenticatedRequest('/api/user-draws', 'Error fetching user draws');
+    if (draws) {
+      setUserDraws(draws);
+    }
+  }, [makeAuthenticatedRequest]);
 
   useEffect(() => {
     checkCanDraw();
@@ -191,32 +203,10 @@ function AppContent() {
   }, [lastDrawTime, canDraw]);
 
   const handleDraw = useCallback(() => {
+
     setLastDrawTime(new Date());
     setCanDraw(false);
   }, []);
-
-  const fetchUserDraws = useCallback(async () => {
-    if (!isAuthenticated) return;
-
-    try {
-      const token = await kindeAuth.getToken();
-      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/user-draws`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'User-ID': kindeAuth.user.id
-        }
-      });
-      
-      if (response.ok) {
-        const draws = await response.json();
-        setUserDraws(draws);
-      } else {
-        console.error('Failed to fetch user draws');
-      }
-    } catch (error) {
-      console.error('Error fetching user draws:', error);
-    }
-  }, [isAuthenticated, kindeAuth]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -281,6 +271,10 @@ function AppContent() {
 
 // Main App component
 function App() {
+  useEffect(() => {
+    initializeTranslations();
+  }, []);
+
   return (
     <BrowserRouter>
       <LanguageProvider>

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import styles from './PastDrawsModal.module.css';
-import { useLanguage } from './LanguageSelector';
-import { buttonTranslations } from '../utils/translations';
+import { useTranslation } from '../utils/translations';
 
 interface Draw {
   id: number;
@@ -20,13 +19,7 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
   const [draws, setDraws] = useState<Draw[]>([]);
   const [selectedDraw, setSelectedDraw] = useState<Draw | null>(null);
   const { getToken, user } = useKindeAuth();
-  const { selectedLanguage } = useLanguage();
-
-  const getTranslation = (key: keyof typeof buttonTranslations) => {
-    return buttonTranslations[key][selectedLanguage as keyof (typeof buttonTranslations)[typeof key]] || 
-           buttonTranslations[key]['English'] || 
-           key;
-  };
+  const { getTranslation } = useTranslation();
 
   const removeDraw = async (drawId: number) => {
     if (!user) return;

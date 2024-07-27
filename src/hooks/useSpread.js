@@ -2,9 +2,11 @@ import { useState, useCallback, useEffect } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { generateCelticCrossPositions, generateThreeCardPositions } from '../utils/cardPositions';
 import { useMistralResponse } from './useMistralResponse';
+import { useTranslation } from '../utils/translations';
 
-export const useSpread = (spreadType, selectedLanguage) => {
+export const useSpread = (spreadType) => {
   const { getToken, user } = useKindeAuth();
+  const { selectedLanguage, getTranslation } = useTranslation();
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -53,6 +55,7 @@ export const useSpread = (spreadType, selectedLanguage) => {
         'Origin': origin,
         'Authorization': `Bearer ${token}`,
         'User-ID': user?.id,
+        'Language': selectedLanguage,
       };
 
       const endpoint = spreadType === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
@@ -73,7 +76,6 @@ export const useSpread = (spreadType, selectedLanguage) => {
       }
 
       const responseText = await response.text();
-
       const data = JSON.parse(responseText);
 
       setCurrentDrawId(data.id);
@@ -88,7 +90,7 @@ export const useSpread = (spreadType, selectedLanguage) => {
         ...data.positions[index],
         left: pos.left,
         top: pos.top,
-        tooltip: data.positions[index].position_name
+        tooltip: getTranslation(data.positions[index].position_name)
       }));
       
       setPositions(newPositions);
@@ -96,25 +98,25 @@ export const useSpread = (spreadType, selectedLanguage) => {
         name: pos.most_common_card,
         img: pos.most_common_card_img,
         orientation: pos.orientation,
-        position_name: pos.position_name,
-        tooltip: pos.position_name
+        position_name: getTranslation(pos.position_name),
+        tooltip: getTranslation(pos.position_name)
       }));
       setCards(newCards);
   
       const formattedMostCommonCards = data.positions.map(
-        (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
+        (pos) => `${getTranslation('mostCommonCardAt')} ${getTranslation(pos.position_name)}: ${pos.most_common_card} - ${getTranslation('orientation')}: ${getTranslation(pos.orientation)}`
       ).join('\n');
       setDealCards(true); 
       setMostCommonCards(formattedMostCommonCards);
     } catch (error) {
       console.error('Error drawing spread:', error);
-      setError({ message: `Failed to draw spread: ${error.message}. Please check your network connection and try again.` });
+      setError({ message: `${getTranslation('failedToDrawSpread')}: ${error.message}. ${getTranslation('checkNetworkAndTryAgain')}` });
       setCards([]);
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, spreadType, user]);
+  }, [getToken, spreadType, user, selectedLanguage, getTranslation]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -197,6 +199,8 @@ export const useSpread = (spreadType, selectedLanguage) => {
     handleSubmit: handleMistralSubmit,
     setRevealedCards,
     mistralError,
-    fullResponse
+    fullResponse,
+    selectedLanguage,
+    getTranslation
   };
 };

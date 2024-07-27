@@ -28,6 +28,7 @@
     display: block;
     margin-bottom: 10px;
     cursor: pointer;
+    color: #000000;
   }
 
   .optionLabel input[type="radio"] {

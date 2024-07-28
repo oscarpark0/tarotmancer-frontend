@@ -222,6 +222,23 @@ function AppContent() {
     }
   }, [isAuthenticated, fetchUserDraws]);
 
+  // Add this effect to update timeUntilNextDraw
+  useEffect(() => {
+    if (!canDraw) {
+      const interval = setInterval(() => {
+        setTimeUntilNextDraw(prevTime => {
+          if (prevTime <= 0) {
+            setCanDraw(true);
+            clearInterval(interval);
+            return null;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [canDraw]);
+
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'relative', zIndex: 10 }}>

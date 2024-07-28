@@ -147,12 +147,12 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   const getButtonText = useCallback(() => {
     if (isLoading) return getTranslation('processing');
     if (isDrawing) return getTranslation('drawing');
-    if (!canDraw && countdown > 0) {
-      const timeString = formatCountdown(countdown);
+    if (!canDraw && timeUntilNextDraw > 0) {
+      const timeString = formatCountdown(timeUntilNextDraw);
       return getTranslation('timeRemainingUntilNextDraw').replace('{time}', timeString);
     }
     return getTranslation('draw');
-  }, [isLoading, isDrawing, canDraw, countdown, getTranslation]);
+  }, [isLoading, isDrawing, canDraw, timeUntilNextDraw, getTranslation]);
 
   useEffect(() => {
   }, [currentDrawId]);
@@ -163,6 +163,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
+      <div>Can Draw: {canDraw ? 'Yes' : 'No'}, Time Until Next Draw: {timeUntilNextDraw}</div>
       <div className="terminal-screen">
         <div className="terminal-content">
           {isMobile && showCards && (
@@ -177,7 +178,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
             {isLoading ? getTranslation('processing') : 
-             !canDraw && countdown > 0 ? `${getTranslation('nextDrawAvailable')} ${formatCountdown(countdown)}` : ''}
+             !canDraw && timeUntilNextDraw > 0 ? `${getTranslation('nextDrawAvailable')} ${formatCountdown(timeUntilNextDraw)}` : ''}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -207,9 +208,9 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
             />
           </form>
         </div>
-        {!canDraw && countdown > 0 && (
+        {!canDraw && timeUntilNextDraw > 0 && (
           <div className="countdown-timer">
-            {getTranslation('nextDrawAvailable')} {formatCountdown(countdown)}
+            {getTranslation('nextDrawAvailable')} {formatCountdown(timeUntilNextDraw)}
           </div>
         )}
         <ShimmerButton 

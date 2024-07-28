@@ -232,7 +232,7 @@ const Robot = memo((props) => {
       animationsComplete={animationsComplete}
       onAnimationStart={handleAnimationStart}
       isStreaming={isStreaming}
-      canDraw={localCanDraw}
+      canDraw={canDraw} // Not localCanDraw
       timeUntilNextDraw={timeUntilNextDraw}
       userId={user?.id}
       currentDrawId={currentDrawId}
@@ -240,7 +240,7 @@ const Robot = memo((props) => {
       onDraw={onDraw}
       getTranslation={getTranslation}
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, onSpreadSelect, selectedSpread, isMobile, props.cards, props.revealCards, props.shouldDrawNewSpread, fetchSpread, responses, activeTab, setActiveTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, localCanDraw, timeUntilNextDraw, user, currentDrawId, onOpenPastDraws, onDraw, getTranslation]);
+  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, onSpreadSelect, selectedSpread, isMobile, props.cards, props.revealCards, props.shouldDrawNewSpread, fetchSpread, responses, activeTab, setActiveTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, user, currentDrawId, onOpenPastDraws, onDraw, getTranslation]);
 
   console.log('Robot - canDraw:', canDraw, 'timeUntilNextDraw:', timeUntilNextDraw); // Added this line
 

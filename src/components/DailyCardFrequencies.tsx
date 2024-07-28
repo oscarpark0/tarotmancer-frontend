@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react"; // Ensure correct import
 import styles from './DailyCardFrequenciesPage.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
@@ -19,7 +19,7 @@ const DailyCardFrequencies: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [isFlipping, setIsFlipping] = useState(false);
-  const { getToken } = useKindeAuth();
+  const { getToken } = useKindeAuth(); // Ensure this is called correctly
 
   const fetchFrequencies = useCallback(async (date: string) => {
     try {

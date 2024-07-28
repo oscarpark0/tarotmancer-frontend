@@ -10,7 +10,7 @@ import { getMistralResponse } from '../services/mistralServices';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw, lastDrawTime }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, lastDrawTime }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);

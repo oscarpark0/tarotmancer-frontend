@@ -47,8 +47,9 @@ const Robot = memo((props) => {
     onNewResponse, dealingComplete, onExitComplete, mostCommonCards, 
     onSubmitInput, selectedSpread, onSpreadSelect, isMobile, 
     fetchSpread, animationsComplete, onAnimationStart, 
-    timeUntilNextDraw, user, currentDrawId, onOpenPastDraws, onDraw, 
-    dealCards, lastDrawTime // Destructure lastDrawTime from props
+    timeUntilNextDraw, user, currentDrawId, setCurrentDrawId, // Add setCurrentDrawId here
+    onOpenPastDraws, onDraw, 
+    dealCards, lastDrawTime
   } = props; // Destructure props
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -245,11 +246,12 @@ const Robot = memo((props) => {
       lastDrawTime={lastDrawTime} // Pass lastDrawTime to CommandTerminal
       userId={user?.id}
       currentDrawId={currentDrawId}
+      setCurrentDrawId={setCurrentDrawId}
       onOpenPastDraws={onOpenPastDraws}
       onDraw={onDraw}
       getTranslation={getTranslation}
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, onSpreadSelect, selectedSpread, isMobile, props.cards, props.revealCards, props.shouldDrawNewSpread, fetchSpread, responses, activeTab, setActiveTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user, currentDrawId, onOpenPastDraws, onDraw, getTranslation]);
+  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation]);
 
   console.log('Robot - canDraw:', canDraw, 'timeUntilNextDraw:', timeUntilNextDraw); // Added this line
 
@@ -333,6 +335,7 @@ Robot.propTypes = {
   timeUntilNextDraw: PropTypes.number,
   user: PropTypes.object,
   currentDrawId: PropTypes.number,
+  setCurrentDrawId: PropTypes.func.isRequired,
   onOpenPastDraws: PropTypes.func.isRequired,
   onDraw: PropTypes.func.isRequired,
   selectedLanguage: PropTypes.string.isRequired,

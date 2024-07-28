@@ -55,11 +55,18 @@
   gap: 1rem;
 }
 
-.barLabel {
-  width: 150px;
-  text-align: right;
-  font-weight: bold;
-  font-size: 0.9rem;
+.cardImage {
+  width: 60px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.cardImage:hover {
+  transform: scale(1.5);
+  z-index: 1;
 }
 
 .barWrapper {
@@ -67,6 +74,14 @@
   display: flex;
   align-items: center;
   height: 40px;
+}
+
+.barLabel {
+  width: 150px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-right: 1rem;
 }
 
 .bar {
@@ -78,26 +93,12 @@
   justify-content: flex-end;
   padding-right: 10px;
   transition: width 0.5s ease-in-out;
+  max-width: calc(100% - 150px);
 }
 
 .barValue {
   color: #333;
   font-weight: bold;
-}
-
-.cardImage {
-  width: 30px;
-  height: 50px;
-  object-fit: cover;
-  border-radius: 4px;
-  margin-left: -15px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-}
-
-.cardImage:hover {
-  transform: scale(1.5);
-  z-index: 1;
 }
 
 .loading, .error {

@@ -62,19 +62,19 @@ const DailyCardFrequencies: React.FC = () => {
       <div className={styles.barChartContainer}>
         {frequencies.map((freq) => (
           <div key={freq.card_name} className={styles.barChartItem}>
-            <div className={styles.barLabel}>{freq.card_name}</div>
+            <img 
+              src={freq.card_img} 
+              alt={freq.card_name} 
+              className={styles.cardImage} 
+            />
             <div className={styles.barWrapper}>
+              <div className={styles.barLabel}>{freq.card_name}</div>
               <div 
                 className={styles.bar} 
                 style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
               >
                 <span className={styles.barValue}>{freq.frequency}</span>
               </div>
-              <img 
-                src={freq.card_img} 
-                alt={freq.card_name} 
-                className={styles.cardImage} 
-              />
             </div>
           </div>
         ))}

@@ -159,6 +159,11 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     // This empty dependency array ensures the effect runs when selectedLanguage changes
   }, [selectedLanguage]);
 
+  // Add this effect to log the timeUntilNextDraw value
+  useEffect(() => {
+    console.log('timeUntilNextDraw:', timeUntilNextDraw);
+  }, [timeUntilNextDraw]);
+
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}

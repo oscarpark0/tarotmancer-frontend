@@ -203,9 +203,10 @@ function AppContent() {
   }, [lastDrawTime, canDraw]);
 
   const handleDraw = useCallback(() => {
-
-    setLastDrawTime(new Date());
+    const now = new Date();
+    setLastDrawTime(now);
     setCanDraw(false);
+    setTimeUntilNextDraw(24 * 60 * 60); // Set to 24 hours in seconds
   }, []);
 
   useEffect(() => {

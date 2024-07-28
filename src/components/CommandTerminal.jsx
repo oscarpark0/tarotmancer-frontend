@@ -140,6 +140,10 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     return () => clearInterval(interval);
   }, [canDraw, timeUntilNextDraw]);
 
+  useEffect(() => {
+    console.log('Countdown value:', countdown);
+  }, [countdown]);
+
   const getButtonText = useCallback(() => {
     if (isLoading) return getTranslation('processing');
     if (isDrawing) return getTranslation('drawing');
@@ -205,7 +209,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
         </div>
         {!canDraw && countdown > 0 && (
           <div className="countdown-timer">
-            Next draw available in: {formatCountdown(countdown)}
+            {getTranslation('nextDrawAvailable')} {formatCountdown(countdown)}
           </div>
         )}
         <ShimmerButton 

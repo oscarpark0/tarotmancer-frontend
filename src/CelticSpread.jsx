@@ -205,6 +205,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     />
   ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation]);
 
+  console.log('CelticSpread - canDraw:', canDraw, 'timeUntilNextDraw:', timeUntilNextDraw);
+
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
       dealCards={dealCards}

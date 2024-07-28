@@ -77,6 +77,10 @@
 .terminal-output {
   overflow-y: auto;
   margin-bottom: 10px;
+  color: #33ff33; /* Ensure text is visible */
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 10px;
 }
 
 @media (max-width: 768px) {

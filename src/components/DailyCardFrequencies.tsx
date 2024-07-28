@@ -58,16 +58,14 @@ const DailyCardFrequencies: React.FC = () => {
     // Fetch new frequencies
     const newFrequencies = await fetchFrequencies(newDate);
     
-    // Short delay to ensure card backs are visible
+    // Update frequencies and trigger transition
+    setFrequencies(newFrequencies);
+    
+    // Short delay to ensure new data is rendered before revealing
     setTimeout(() => {
-      setFrequencies(newFrequencies);
       setShowCardBacks(false);
-      
-      // End the transition after the flip is complete
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 300);
-    }, 150);
+      setTimeout(() => setIsTransitioning(false), 300); // Duration of fade transition
+    }, 50);
   };
 
   const getMaxFrequency = () => {
@@ -95,11 +93,16 @@ const DailyCardFrequencies: React.FC = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className={`${styles.cardImageWrapper} ${isTransitioning ? styles.flipping : ''}`}>
+              <div className={`${styles.cardImageWrapper} ${isTransitioning ? styles.transitioning : ''}`}>
                 <img 
-                  src={showCardBacks ? `${TAROT_IMAGE_BASE_URL}/cardback.webp` : freq.card_img}
+                  src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
+                  alt="Card Back" 
+                  className={`${styles.cardImage} ${styles.cardBack}`}
+                />
+                <img 
+                  src={freq.card_img}
                   alt={freq.card_name} 
-                  className={styles.cardImage}
+                  className={`${styles.cardImage} ${styles.cardFront}`}
                 />
               </div>
               <div className={styles.barWrapper}>

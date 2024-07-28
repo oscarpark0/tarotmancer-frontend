@@ -102,18 +102,20 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
         <h2 className={styles.modalTitle}>{getTranslation('pastDraws')}</h2>
         {selectedDraw ? (
           <div className={styles.selectedDrawContent}>
-            <button 
-              onClick={() => setSelectedDraw(null)} 
-              className={styles.backButton}
-            >
-              <span className={styles.buttonIcon}>☽</span> {getTranslation('backToList')}
-            </button>
-            <button 
-              onClick={() => removeDraw(selectedDraw.id)} 
-              className={styles.removeButton}
-            >
-              <span className={styles.buttonIcon}>✧</span> {getTranslation('removeDraw')}
-            </button>
+            <div className={styles.buttonContainer}>
+              <button 
+                onClick={() => setSelectedDraw(null)} 
+                className={styles.backButton}
+              >
+                <span className={styles.buttonIcon}>☽</span> {getTranslation('backToList')}
+              </button>
+              <button 
+                onClick={() => removeDraw(selectedDraw.id)} 
+                className={styles.removeButton}
+              >
+                <span className={styles.buttonIcon}>✧</span> {getTranslation('removeDraw')}
+              </button>
+            </div>
             <h3 className={styles.drawInfo}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
             {selectedDraw.response ? (
               <p className={styles.responseText}>{selectedDraw.response}</p>

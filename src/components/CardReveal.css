@@ -48,7 +48,7 @@
   width: 150px;
   pointer-events: none;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999992200;
+  z-index: 9999100;
   backdrop-filter: blur(8px);
   text-align: center;
   transition: all 0.3s ease-in-out;
@@ -241,7 +241,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   background-size: cover;
-  z-index: 150000000; 
+  z-index: 9999100; 
 }
 
 .card-back {
@@ -317,7 +317,7 @@
   backface-visibility: hidden;
   transform-style: preserve-3d;
   transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
-  z-index: 150000000; 
+  z-index: 9999100; 
 }
 
 .revealed-card.flipped {
@@ -327,7 +327,7 @@
 
 .card-reveal-container.exit-animation {
   animation: exitAnimation 1s ease-out forwards;
-  z-index: 150000000; 
+  z-index: 9999100; 
 }
 
 @keyframes exitAnimation {

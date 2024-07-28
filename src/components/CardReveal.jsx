@@ -101,14 +101,14 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
         <motion.div
           key={index}
           className={`card pointer-events-auto ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${cards.length > 3 && index === 1 ? 'cross-card' : ''} ${hoveredCard === index ? 'hovered' : ''}`}
-          initial={{ opacity: 0, x: -200, y: -1, scale: 1 }}
+          initial={{ opacity: 0, x: '-100vw', y: cardPositions[index].top, scale: 1 }}
           animate={{
             opacity: 1,
             x: cardPositions[index].left,
             y: cardPositions[index].top,
             scale: 1,
             zIndex: cardPositions[index].zIndex,
-            transition: { duration: 0.5, delay: index * 0.1, ease: 'easeIn', opacity: { duration: 2, ease: 'linear' } }
+            transition: { duration: 0.8, delay: index * 0.1, ease: 'easeOut', opacity: { duration: 0.5, ease: 'linear' } }
           }}
           exit={{
             opacity: 0,

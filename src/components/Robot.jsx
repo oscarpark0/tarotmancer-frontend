@@ -256,6 +256,7 @@ const Robot = memo((props) => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         height: 'auto',
+        zIndex: 1001, // Add this line to ensure the Robot stays on top
       }}
     >
       <div ref={robotRef} className="robot-body">

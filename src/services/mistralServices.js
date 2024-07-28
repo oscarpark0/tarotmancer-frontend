@@ -82,10 +82,12 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
 
 async function storeMistralResponse(drawId, response, userId) {
   if (!userId) {
-    throw new Error('User ID not provided');
+    console.error('User ID not provided');
+    return;
   }
   if (!drawId) {
-    throw new Error('Draw ID not provided');
+    console.error('Draw ID not provided');
+    return;
   }
 
   try {

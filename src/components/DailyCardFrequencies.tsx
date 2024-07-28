@@ -12,15 +12,17 @@ interface CardFrequency {
 
 const DailyCardFrequencies: React.FC = () => {
   const [frequencies, setFrequencies] = useState<CardFrequency[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [animate, setAnimate] = useState(false);
   const { getToken } = useKindeAuth();
 
   useEffect(() => {
     const fetchFrequencies = async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
+        setError(null);
         const token = await getToken();
         const response = await axios.get<CardFrequency[]>(
           `${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`,
@@ -32,22 +34,35 @@ const DailyCardFrequencies: React.FC = () => {
           }
         );
         setFrequencies(response.data.sort((a, b) => b.frequency - a.frequency));
-        setLoading(false);
+        setIsLoading(false);
+        setAnimate(true);
+        setTimeout(() => setAnimate(false), 1000); // Reset animation after 1 second
       } catch (err) {
         setError('Failed to fetch card frequencies');
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchFrequencies();
   }, [getToken, selectedDate]);
 
-  if (loading) return <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>;
-  if (error) return <div className={styles.error}>Error: {error}</div>;
-
   const getMaxFrequency = () => {
     return Math.max(...frequencies.map(freq => freq.frequency));
   };
+
+  const getRandomPosition = () => {
+    const randomX = Math.random() * 20 - 10; // Random value between -10 and 10
+    const randomY = Math.random() * 20 - 10; // Random value between -10 and 10
+    return `translate(${randomX}px, ${randomY}px) rotate(${Math.random() * 10 - 5}deg)`;
+  };
+
+  if (isLoading) {
+    return <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>;
+  }
+
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
 
   return (
     <div className={styles.dailyCardFrequencies}>
@@ -65,7 +80,8 @@ const DailyCardFrequencies: React.FC = () => {
             <img 
               src={freq.card_img} 
               alt={freq.card_name} 
-              className={styles.cardImage} 
+              className={`${styles.cardImage} ${animate ? styles.animate : ''}`}
+              style={{ transform: animate ? getRandomPosition() : 'none' }}
             />
             <div className={styles.barWrapper}>
               <div className={styles.barLabel}>{freq.card_name}</div>

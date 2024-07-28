@@ -40,6 +40,18 @@
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  color: #333;
+  background-color: #fff;
+}
+
+.dateSelector input::placeholder {
+  color: #999;
+}
+
+.dateSelector input:focus {
+  outline: none;
+  border-color: #fda085;
+  box-shadow: 0 0 0 2px rgba(253, 160, 133, 0.2);
 }
 
 .barChartContainer {

@@ -215,6 +215,8 @@
   text-shadow: 
     0 0 5px rgba(4, 22, 5, 0.877),
     0 0 10px rgba(0, 255, 13, 0.5);
+  background-color: transparent;
+  border: none;
 }
 
 .screenOverlay {

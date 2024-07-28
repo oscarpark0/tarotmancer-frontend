@@ -186,19 +186,23 @@ function AppContent() {
 
   useEffect(() => {
     let interval;
-    if (!canDraw && timeUntilNextDraw !== null) {
+    if (lastDrawTime && !canDraw) {
       interval = setInterval(() => {
-        setTimeUntilNextDraw(prevTime => {
-          if (prevTime <= 0) {
-            setCanDraw(true);
-            return null;
-          }
-          return prevTime - 1;
-        });
+        const now = new Date();
+        const timeSinceLastDraw = Math.floor((now - lastDrawTime) / 1000);
+        const remainingTime = 24 * 60 * 60 - timeSinceLastDraw;
+        
+        if (remainingTime <= 0) {
+          setCanDraw(true);
+          setTimeUntilNextDraw(null);
+          clearInterval(interval);
+        } else {
+          setTimeUntilNextDraw(remainingTime);
+        }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [canDraw, timeUntilNextDraw]);
+  }, [lastDrawTime, canDraw]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -221,6 +225,7 @@ function AppContent() {
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
                   timeUntilNextDraw={timeUntilNextDraw}
+                  lastDrawTime={lastDrawTime}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={kindeAuth.getToken}
@@ -232,6 +237,7 @@ function AppContent() {
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
                   timeUntilNextDraw={timeUntilNextDraw}
+                  lastDrawTime={lastDrawTime}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={kindeAuth.getToken}

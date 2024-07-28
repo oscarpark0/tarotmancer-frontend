@@ -48,7 +48,7 @@ const Robot = memo((props) => {
     onSubmitInput, selectedSpread, onSpreadSelect, isMobile, 
     fetchSpread, animationsComplete, onAnimationStart, 
     timeUntilNextDraw, user, currentDrawId, onOpenPastDraws, onDraw, 
-    dealCards // Destructure dealCards from props
+    dealCards, lastDrawTime // Destructure lastDrawTime from props
   } = props; // Destructure props
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -242,13 +242,14 @@ const Robot = memo((props) => {
       isStreaming={isStreaming}
       canDraw={canDraw} // Not localCanDraw
       timeUntilNextDraw={timeUntilNextDraw}
+      lastDrawTime={lastDrawTime} // Pass lastDrawTime to CommandTerminal
       userId={user?.id}
       currentDrawId={currentDrawId}
       onOpenPastDraws={onOpenPastDraws}
       onDraw={onDraw}
       getTranslation={getTranslation}
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, onSpreadSelect, selectedSpread, isMobile, props.cards, props.revealCards, props.shouldDrawNewSpread, fetchSpread, responses, activeTab, setActiveTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, user, currentDrawId, onOpenPastDraws, onDraw, getTranslation]);
+  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, onSpreadSelect, selectedSpread, isMobile, props.cards, props.revealCards, props.shouldDrawNewSpread, fetchSpread, responses, activeTab, setActiveTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user, currentDrawId, onOpenPastDraws, onDraw, getTranslation]);
 
   console.log('Robot - canDraw:', canDraw, 'timeUntilNextDraw:', timeUntilNextDraw); // Added this line
 
@@ -336,6 +337,7 @@ Robot.propTypes = {
   onDraw: PropTypes.func.isRequired,
   selectedLanguage: PropTypes.string.isRequired,
   getTranslation: PropTypes.func.isRequired,
+  lastDrawTime: PropTypes.object, // Add lastDrawTime prop type
 };
 
 export default Robot;

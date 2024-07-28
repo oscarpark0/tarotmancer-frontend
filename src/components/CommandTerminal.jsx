@@ -10,7 +10,7 @@ import { getMistralResponse } from '../services/mistralServices';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw, lastDrawTime }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -169,10 +169,13 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     if (isLoading) {
       return getTranslation('processing');
     } else if (!canDraw && timeUntilNextDraw !== null && timeUntilNextDraw > 0) {
-      return `${getTranslation('nextDrawAvailable')} ${formatCountdown(timeUntilNextDraw)}`;
+      const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000);
+      return `${getTranslation('nextDrawAvailable')} ${formatCountdown(timeUntilNextDraw)}
+Last draw: ${lastDrawTime.toLocaleString()}
+Next draw available: ${nextDrawTime.toLocaleString()}`;
     }
     return ''; // Return empty string if no specific content to show
-  }, [isLoading, canDraw, timeUntilNextDraw, getTranslation]);
+  }, [isLoading, canDraw, timeUntilNextDraw, lastDrawTime, getTranslation]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>

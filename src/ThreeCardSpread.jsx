@@ -11,7 +11,7 @@ import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations'; // Import useTranslation
 import PastDrawsModal from './components/PastDrawsModal';
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw, lastDrawTime }) => {
   const { getToken, user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation(); // Use the hook
@@ -220,6 +220,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       isStreaming={isStreaming}
       canDraw={canDraw}
       timeUntilNextDraw={timeUntilNextDraw}
+      lastDrawTime={lastDrawTime}
       userId={user?.id}
       currentDrawId={currentDrawId}
       onOpenPastDraws={handleOpenPastDraws}
@@ -228,14 +229,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       selectedLanguage={selectedLanguage}
       getTranslation={getTranslation}
     />
-  ), [
-    dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread,
-    handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput,
-    cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete,
-    isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, user,
-    currentDrawId, handleOpenPastDraws, handleAnimationStart, handleDraw, selectedLanguage,
-    getTranslation
-  ]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user?.id, currentDrawId, handleOpenPastDraws, handleAnimationStart, handleDraw, selectedLanguage, getTranslation]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

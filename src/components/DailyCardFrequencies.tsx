@@ -53,18 +53,12 @@ const DailyCardFrequencies: React.FC = () => {
     setSelectedDate(newDate);
     setIsFlipping(true);
     
-    // Fetch new frequencies
     const newFrequencies = await fetchFrequencies(newDate);
     
-    // Update frequencies and trigger flip
     setTimeout(() => {
       setFrequencies(newFrequencies);
-      
-      // End the flip after the animation is complete
-      setTimeout(() => {
-        setIsFlipping(false);
-      }, 300); // Half duration of flip animation
-    }, 300); // Half duration of flip animation
+      setTimeout(() => setIsFlipping(false), 300);
+    }, 300);
   };
 
   const getMaxFrequency = () => {
@@ -112,12 +106,14 @@ const DailyCardFrequencies: React.FC = () => {
               </div>
               <div className={styles.barWrapper}>
                 <div className={styles.barLabel}>{freq.card_name}</div>
-                <div 
+                <motion.div 
                   className={styles.bar} 
-                  style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                  transition={{ duration: 0.5 }}
                 >
                   <span className={styles.barValue}>{freq.frequency}</span>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
           ))}

@@ -45,8 +45,8 @@ const DailyCardFrequencies: React.FC = () => {
   if (loading) return <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>;
   if (error) return <div className={styles.error}>Error: {error}</div>;
 
-  const getAppearanceText = (frequency: number) => {
-    return frequency === 1 ? '1 appearance' : `${frequency} appearances`;
+  const getMaxFrequency = () => {
+    return Math.max(...frequencies.map(freq => freq.frequency));
   };
 
   return (
@@ -59,12 +59,23 @@ const DailyCardFrequencies: React.FC = () => {
           max={new Date().toISOString().split('T')[0]}
         />
       </div>
-      <div className={styles.cardGrid}>
+      <div className={styles.barChartContainer}>
         {frequencies.map((freq) => (
-          <div key={freq.card_name} className={styles.cardItem}>
-            <img src={freq.card_img} alt={freq.card_name} className={styles.cardImage} />
-            <h3 className={styles.cardName}>{freq.card_name}</h3>
-            <p className={styles.cardFrequency}>{getAppearanceText(freq.frequency)}</p>
+          <div key={freq.card_name} className={styles.barChartItem}>
+            <div className={styles.barLabel}>{freq.card_name}</div>
+            <div className={styles.barWrapper}>
+              <div 
+                className={styles.bar} 
+                style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+              >
+                <span className={styles.barValue}>{freq.frequency}</span>
+              </div>
+              <img 
+                src={freq.card_img} 
+                alt={freq.card_name} 
+                className={styles.cardImage} 
+              />
+            </div>
           </div>
         ))}
       </div>

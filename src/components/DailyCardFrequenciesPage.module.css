@@ -42,46 +42,62 @@
   border-radius: 4px;
 }
 
-.cardGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
-}
-
-.cardItem {
-  background-color: white;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.barChartContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transition: transform 0.2s ease-in-out;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-.cardItem:hover {
-  transform: translateY(-5px);
+.barChartItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.barLabel {
+  width: 150px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.barWrapper {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+
+.bar {
+  background: linear-gradient(90deg, #f6d365 0%, #fda085 100%);
+  height: 100%;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 10px;
+  transition: width 0.5s ease-in-out;
+}
+
+.barValue {
+  color: #333;
+  font-weight: bold;
 }
 
 .cardImage {
-  width: 120px;
-  height: 200px;
+  width: 30px;
+  height: 50px;
   object-fit: cover;
   border-radius: 4px;
-  margin-bottom: 1rem;
+  margin-left: -15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
 }
 
-.cardName {
-  font-size: 1rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 0.5rem;
-}
-
-.cardFrequency {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #4a4a4a;
+.cardImage:hover {
+  transform: scale(1.5);
+  z-index: 1;
 }
 
 .loading, .error {

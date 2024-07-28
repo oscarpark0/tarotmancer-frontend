@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import styles from './DailyCardFrequenciesPage.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 
-const TAROT_IMAGE_BASE_URL = 'https://tarot-mancer.twic.pics/tarot';
 
 interface CardFrequency {
   card_name: string;

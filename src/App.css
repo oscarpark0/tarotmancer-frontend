@@ -2,7 +2,7 @@
   background-color: #282c34;
   padding: 10px;
   color: rgb(0, 0, 0);
-  z-index: -1000; 
+  z-index: 10200; 
   width: 100%;
 }
 

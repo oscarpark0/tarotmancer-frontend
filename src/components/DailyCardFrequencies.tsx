@@ -18,8 +18,7 @@ const DailyCardFrequencies: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [showCardBacks, setShowCardBacks] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
   const { getToken } = useKindeAuth();
 
   const fetchFrequencies = useCallback(async (date: string) => {
@@ -52,20 +51,20 @@ const DailyCardFrequencies: React.FC = () => {
   const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    setIsTransitioning(true);
-    setShowCardBacks(true);
+    setIsFlipping(true);
     
     // Fetch new frequencies
     const newFrequencies = await fetchFrequencies(newDate);
     
-    // Update frequencies and trigger transition
-    setFrequencies(newFrequencies);
-    
-    // Short delay to ensure new data is rendered before revealing
+    // Update frequencies and trigger flip
     setTimeout(() => {
-      setShowCardBacks(false);
-      setTimeout(() => setIsTransitioning(false), 300); // Duration of fade transition
-    }, 50);
+      setFrequencies(newFrequencies);
+      
+      // End the flip after the animation is complete
+      setTimeout(() => {
+        setIsFlipping(false);
+      }, 500); // Duration of flip animation
+    }, 250); // Half of the flip duration
   };
 
   const getMaxFrequency = () => {
@@ -93,17 +92,21 @@ const DailyCardFrequencies: React.FC = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className={`${styles.cardImageWrapper} ${isTransitioning ? styles.transitioning : ''}`}>
-                <img 
-                  src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
-                  alt="Card Back" 
-                  className={`${styles.cardImage} ${styles.cardBack}`}
-                />
-                <img 
-                  src={freq.card_img}
-                  alt={freq.card_name} 
-                  className={`${styles.cardImage} ${styles.cardFront}`}
-                />
+              <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>
+                <div className={styles.cardBack}>
+                  <img 
+                    src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
+                    alt="Card Back"
+                    className={styles.cardImage}
+                  />
+                </div>
+                <div className={styles.cardFront}>
+                  <img 
+                    src={freq.card_img}
+                    alt={freq.card_name}
+                    className={styles.cardImage}
+                  />
+                </div>
               </div>
               <div className={styles.barWrapper}>
                 <div className={styles.barLabel}>{freq.card_name}</div>

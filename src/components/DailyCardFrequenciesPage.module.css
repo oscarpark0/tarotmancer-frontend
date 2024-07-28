@@ -71,34 +71,33 @@
   position: relative;
   width: 125px;
   height: 220px;
+  transform-style: preserve-3d;
+  transition: transform 0.5s;
+}
+
+.cardImageWrapper.flipping {
+  transform: rotateY(180deg);
+}
+
+.cardBack,
+.cardFront {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cardFront {
+  transform: rotateY(180deg);
 }
 
 .cardImage {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: opacity 0.3s ease-in-out;
-}
-
-.cardBack {
-  opacity: 0;
-}
-
-.cardFront {
-  opacity: 1;
-}
-
-.transitioning .cardBack {
-  opacity: 1;
-}
-
-.transitioning .cardFront {
-  opacity: 0;
 }
 
 .cardImage:hover {

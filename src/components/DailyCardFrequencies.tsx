@@ -18,7 +18,7 @@ const DailyCardFrequencies: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [isFlipping, setIsFlipping] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [showCardBacks, setShowCardBacks] = useState(false);
   const { getToken } = useKindeAuth();
 
@@ -52,22 +52,22 @@ const DailyCardFrequencies: React.FC = () => {
   const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    setIsFlipping(true);
+    setIsTransitioning(true);
     setShowCardBacks(true);
     
-    // Fetch new frequencies immediately
+    // Fetch new frequencies
     const newFrequencies = await fetchFrequencies(newDate);
     
-    // After a short delay, start the flip animation
+    // Short delay to ensure card backs are visible
     setTimeout(() => {
       setFrequencies(newFrequencies);
       setShowCardBacks(false);
       
-      // End the flipping animation after the transition is complete
+      // End the transition after the flip is complete
       setTimeout(() => {
-        setIsFlipping(false);
-      }, 300); // Half of the total flip duration
-    }, 300); // Start revealing new cards halfway through the flip
+        setIsTransitioning(false);
+      }, 300);
+    }, 150);
   };
 
   const getMaxFrequency = () => {
@@ -95,7 +95,7 @@ const DailyCardFrequencies: React.FC = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>
+              <div className={`${styles.cardImageWrapper} ${isTransitioning ? styles.flipping : ''}`}>
                 <img 
                   src={showCardBacks ? `${TAROT_IMAGE_BASE_URL}/cardback.webp` : freq.card_img}
                   alt={freq.card_name} 

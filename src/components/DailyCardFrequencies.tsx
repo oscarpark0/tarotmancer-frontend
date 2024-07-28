@@ -4,6 +4,8 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import styles from './DailyCardFrequenciesPage.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const TAROT_IMAGE_BASE_URL = process.env.REACT_APP_BASE_URL;
+
 interface CardFrequency {
   card_name: string;
   card_img: string;
@@ -68,12 +70,6 @@ const DailyCardFrequencies: React.FC = () => {
     return Math.max(...frequencies.map(freq => freq.frequency), 1);
   };
 
-  const getRandomPosition = () => {
-    const randomX = Math.random() * 20 - 10;
-    const randomY = Math.random() * 20 - 10;
-    return `translate(${randomX}px, ${randomY}px) rotate(${Math.random() * 10 - 5}deg)`;
-  };
-
   return (
     <div className={styles.dailyCardFrequencies}>
       <div className={styles.dateSelector}>
@@ -97,7 +93,7 @@ const DailyCardFrequencies: React.FC = () => {
             >
               <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>
                 <img 
-                  src={showCardBacks ? `${process.env.REACT_APP_BASE_URL}/cardback.webp` : freq.card_img}
+                  src={showCardBacks ? `${TAROT_IMAGE_BASE_URL}/cardback.webp` : freq.card_img}
                   alt={freq.card_name} 
                   className={styles.cardImage}
                 />

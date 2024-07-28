@@ -67,38 +67,29 @@
   gap: 1rem;
 }
 
+.cardImageWrapper {
+  perspective: 1000px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.cardImageWrapper.flipping {
+  transform: rotateY(180deg);
+}
+
 .cardImage {
   width: 125px;
   height: 220px;
   object-fit: cover;
   border-radius: 4px;
-  perspective: 1000px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease-in-out;
+  backface-visibility: hidden;
 }
 
 .cardImage:hover {
   transform: scale(1.5);
   z-index: 1;
-}
-
-.cardImage.animate {
-  animation: shuffleCards 0.6s ease-in-out;
-}
-
-@keyframes shuffleCards {
-  0% {
-    opacity: 0.5;
-    transform: scale(0.9) rotate(-5deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.1) rotate(5deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
 }
 
 .barWrapper {

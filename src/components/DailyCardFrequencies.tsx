@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import styles from './DailyCardFrequenciesPage.module.css';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface CardFrequency {
   card_name: string;
@@ -15,7 +16,8 @@ const DailyCardFrequencies: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
-  const [animate, setAnimate] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
+  const [showCardBacks, setShowCardBacks] = useState(false);
   const { getToken } = useKindeAuth();
 
   const fetchFrequencies = useCallback(async (date: string) => {
@@ -48,10 +50,18 @@ const DailyCardFrequencies: React.FC = () => {
   const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    setAnimate(true);
-    const newFrequencies = await fetchFrequencies(newDate);
-    setFrequencies(newFrequencies);
-    setTimeout(() => setAnimate(false), 600);
+    setIsFlipping(true);
+    setShowCardBacks(true);
+    
+    setTimeout(async () => {
+      setShowCardBacks(false);
+      const newFrequencies = await fetchFrequencies(newDate);
+      setFrequencies(newFrequencies);
+      
+      setTimeout(() => {
+        setIsFlipping(false);
+      }, 600);
+    }, 600);
   };
 
   const getMaxFrequency = () => {
@@ -75,25 +85,35 @@ const DailyCardFrequencies: React.FC = () => {
         />
       </div>
       <div className={styles.barChartContainer}>
-        {frequencies.map((freq) => (
-          <div key={freq.card_name} className={styles.barChartItem}>
-            <img 
-              src={freq.card_img} 
-              alt={freq.card_name} 
-              className={`${styles.cardImage} ${animate ? styles.animate : ''}`}
-              style={{ transform: animate ? getRandomPosition() : 'none' }}
-            />
-            <div className={styles.barWrapper}>
-              <div className={styles.barLabel}>{freq.card_name}</div>
-              <div 
-                className={styles.bar} 
-                style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
-              >
-                <span className={styles.barValue}>{freq.frequency}</span>
+        <AnimatePresence>
+          {frequencies.map((freq) => (
+            <motion.div
+              key={freq.card_name}
+              className={styles.barChartItem}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>
+                <img 
+                  src={showCardBacks ? `${process.env.REACT_APP_BASE_URL}/cardback.webp` : freq.card_img}
+                  alt={freq.card_name} 
+                  className={styles.cardImage}
+                />
               </div>
-            </div>
-          </div>
-        ))}
+              <div className={styles.barWrapper}>
+                <div className={styles.barLabel}>{freq.card_name}</div>
+                <div 
+                  className={styles.bar} 
+                  style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                >
+                  <span className={styles.barValue}>{freq.frequency}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
       {isLoading && <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>}
       {error && <div className={styles.error}>{error}</div>}

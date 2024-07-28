@@ -63,8 +63,8 @@ const DailyCardFrequencies: React.FC = () => {
       // End the flip after the animation is complete
       setTimeout(() => {
         setIsFlipping(false);
-      }, 600); // Duration of flip animation
-    }, 300); // Half of the flip duration
+      }, 300); // Half duration of flip animation
+    }, 300); // Half duration of flip animation
   };
 
   const getMaxFrequency = () => {
@@ -94,17 +94,17 @@ const DailyCardFrequencies: React.FC = () => {
             >
               <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>
                 <div className={styles.cardInner}>
-                  <div className={styles.cardBack}>
-                    <img 
-                      src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
-                      alt="Card Back"
-                      className={styles.cardImage}
-                    />
-                  </div>
                   <div className={styles.cardFront}>
                     <img 
                       src={freq.card_img}
                       alt={freq.card_name}
+                      className={styles.cardImage}
+                    />
+                  </div>
+                  <div className={styles.cardBack}>
+                    <img 
+                      src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
+                      alt="Card Back"
                       className={styles.cardImage}
                     />
                   </div>

@@ -55,15 +55,19 @@ const DailyCardFrequencies: React.FC = () => {
     setIsFlipping(true);
     setShowCardBacks(true);
     
-    setTimeout(async () => {
-      setShowCardBacks(false);
-      const newFrequencies = await fetchFrequencies(newDate);
+    // Fetch new frequencies immediately
+    const newFrequencies = await fetchFrequencies(newDate);
+    
+    // After a short delay, start the flip animation
+    setTimeout(() => {
       setFrequencies(newFrequencies);
+      setShowCardBacks(false);
       
+      // End the flipping animation after the transition is complete
       setTimeout(() => {
         setIsFlipping(false);
-      }, 600);
-    }, 600);
+      }, 300); // Half of the total flip duration
+    }, 300); // Start revealing new cards halfway through the flip
   };
 
   const getMaxFrequency = () => {

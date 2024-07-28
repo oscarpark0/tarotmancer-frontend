@@ -77,6 +77,10 @@
   transform: rotateY(180deg);
 }
 
+.cardImageWrapper.flipping .cardImage {
+  transition: none;
+}
+
 .cardImage {
   width: 125px;
   height: 220px;

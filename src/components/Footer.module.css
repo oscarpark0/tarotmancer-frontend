@@ -70,18 +70,27 @@
   }
   
   @media (max-width: 768px) {
-    .footerContent {
-      flex-direction: column;
+    .footer {
       padding: 0.25rem 0;
     }
-  
+
+    .footerContent {
+      flex-direction: column;
+      padding: 0;
+    }
+
     .footerLinks {
       flex-direction: row;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.1rem;
     }
-  
+
     .footerLink {
       margin: 0 0.25rem;
+      font-size: 0.6rem;
+    }
+
+    .footerText {
+      font-size: 0.6rem;
     }
   }
   

@@ -36,5 +36,8 @@
   "logoutUnavailable": "登出不可用",
   "mostCommonCardAt": "最常见的牌在",
   "orientation": "方向",
-  "feedback": "反馈"
+  "feedback": "反馈",
+  "confirmRemoveDraw": "您确定要删除这次抽牌吗？",
+  "yes": "是",
+  "no": "否"
 }

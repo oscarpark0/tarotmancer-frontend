@@ -36,5 +36,8 @@
     "logoutUnavailable": "Wylogowanie jest niedostępne",
     "mostCommonCardAt": "Najczęstsza karta na",
     "orientation": "Orientacja",
-    "feedback": "Opinia"
+    "feedback": "Opinia",
+    "confirmRemoveDraw": "Czy na pewno chcesz usunąć to losowanie?",
+    "yes": "Tak",
+    "no": "Nie"
 }

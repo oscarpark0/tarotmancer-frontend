@@ -36,5 +36,8 @@
   "logoutUnavailable": "लॉगआउट अभी उपलब्ध नहीं है",
   "mostCommonCardAt": "सबसे सामान्य कार्ड स्थिति पर",
   "orientation": "अभिविन्यास",
-  "feedback": "प्रतिक्रिया"
+  "feedback": "प्रतिक्रिया",
+  "confirmRemoveDraw": "क्या आप वाकई इस ड्रा को हटाना चाहते हैं?",
+  "yes": "हाँ",
+  "no": "नहीं"
 }

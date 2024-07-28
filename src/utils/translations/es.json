@@ -36,5 +36,8 @@
     "logoutUnavailable": "Cierre de sesión no disponible",
     "mostCommonCardAt": "Carta más común en",
     "orientation": "Orientación",
-    "feedback": "Comentarios"
+    "feedback": "Comentarios",
+    "confirmRemoveDraw": "¿Está seguro de que desea eliminar esta tirada?",
+    "yes": "Sí",
+    "no": "No"
 }

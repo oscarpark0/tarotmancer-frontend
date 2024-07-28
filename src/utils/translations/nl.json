@@ -36,5 +36,8 @@
     "logoutUnavailable": "Uitloggen niet beschikbaar",
     "mostCommonCardAt": "Meest voorkomende kaart op",
     "orientation": "Oriëntatie",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "confirmRemoveDraw": "Weet u zeker dat u deze trekking wilt verwijderen?",
+    "yes": "Ja",
+    "no": "Nee"
 }

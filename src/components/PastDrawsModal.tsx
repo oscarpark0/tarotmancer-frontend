@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import styles from './PastDrawsModal.module.css';
-import { useTranslation } from '../utils/translations';
+import { useTranslation, TranslationKey } from '../utils/translations';
 
 interface Draw {
   id: number;
@@ -18,6 +18,8 @@ interface PastDrawsModalProps {
 const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
   const [draws, setDraws] = useState<Draw[]>([]);
   const [selectedDraw, setSelectedDraw] = useState<Draw | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [drawToRemove, setDrawToRemove] = useState<number | null>(null);
   const { getToken, user } = useKindeAuth();
   const { getTranslation } = useTranslation();
 
@@ -91,6 +93,24 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen, getToken, user]);
 
+  const handleRemoveClick = (drawId: number) => {
+    setDrawToRemove(drawId);
+    setShowConfirmDialog(true);
+  };
+
+  const confirmRemove = async () => {
+    if (drawToRemove !== null) {
+      await removeDraw(drawToRemove);
+      setShowConfirmDialog(false);
+      setDrawToRemove(null);
+    }
+  };
+
+  const cancelRemove = () => {
+    setShowConfirmDialog(false);
+    setDrawToRemove(null);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -110,7 +130,7 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
                 <span className={styles.buttonIcon}>☽</span> {getTranslation('backToList')}
               </button>
               <button 
-                onClick={() => removeDraw(selectedDraw.id)} 
+                onClick={() => handleRemoveClick(selectedDraw.id)} 
                 className={styles.removeButton}
               >
                 <span className={styles.buttonIcon}>✧</span> {getTranslation('removeDraw')}
@@ -137,7 +157,7 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
                   <span className={styles.drawIcon}>✧</span> {draw.spread_type} - {new Date(draw.created_at).toLocaleString()}
                 </span>
                 <button 
-                  onClick={() => removeDraw(draw.id)} 
+                  onClick={() => handleRemoveClick(draw.id)} 
                   className={styles.removeButton}
                 >
                   <span className={styles.buttonIcon}>✧</span> {getTranslation('removeDraw')}
@@ -145,6 +165,19 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
               </li>
             ))}
           </ul>
+        )}
+        {showConfirmDialog && (
+          <div className={styles.confirmDialog}>
+            <p>{getTranslation('confirmRemoveDraw' as TranslationKey)}</p>
+            <div className={styles.confirmButtons}>
+              <button onClick={confirmRemove} className={styles.confirmButton}>
+                {getTranslation('yes' as TranslationKey)}
+              </button>
+              <button onClick={cancelRemove} className={styles.cancelButton}>
+                {getTranslation('no' as TranslationKey)}
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

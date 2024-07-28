@@ -7,7 +7,7 @@ const LanguageSelector: React.FC = memo(() => {
 
   const languages: Language[] = [
     'ar', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hi', 'it',
-    'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ru', 'sv', 'tr', 'zh'
+    'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ru', 'sv', 'tl', 'tr', 'zh'
   ];
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

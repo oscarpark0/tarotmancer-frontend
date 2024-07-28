@@ -45,5 +45,8 @@
     "submitFeedback": "Submit Feedback",
     "feedbackSubmittedSuccess": "Feedback submitted successfully! Thank you for your feedback!",
     "feedbackSubmitError": "Error submitting feedback. Please try again.",
-    "completeCaptchaFirst": "Please complete the captcha first."
+    "completeCaptchaFirst": "Please complete the captcha first.",
+    "confirmRemoveDraw": "Are you sure you want to remove this draw?",
+    "yes": "Yes",
+    "no": "No"
   }

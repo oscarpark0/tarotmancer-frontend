@@ -36,5 +36,8 @@
     "logoutUnavailable": "Выход недоступен",
     "mostCommonCardAt": "Самая частая карта в",
     "orientation": "Ориентация",
-    "feedback": "Обратная связь"
+    "feedback": "Обратная связь",
+    "confirmRemoveDraw": "Вы уверены, что хотите удалить этот расклад?",
+    "yes": "Да",
+    "no": "Нет"
 }

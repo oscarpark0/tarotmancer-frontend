@@ -36,5 +36,8 @@
     "logoutUnavailable": "Abmelden nicht verfügbar",
     "mostCommonCardAt": "Häufigste Karte bei",
     "orientation": "Ausrichtung",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "confirmRemoveDraw": "Sind Sie sicher, dass Sie diese Ziehung entfernen möchten?",
+    "yes": "Ja",
+    "no": "Nein"
 }

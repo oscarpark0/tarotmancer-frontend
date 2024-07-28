@@ -36,5 +36,8 @@
   "logoutUnavailable": "تسجيل الخروج غير متاح",
   "mostCommonCardAt": "البطاقة الأكثر شيوعًا في",
   "orientation": "الاتجاه",
-  "feedback": "ملاحظات"
+  "feedback": "ملاحظات",
+  "confirmRemoveDraw": "هل أنت متأكد أنك تريد إزالة هذا السحب؟",
+  "yes": "نعم",
+  "no": "لا"
 }

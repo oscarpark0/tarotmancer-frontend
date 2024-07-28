@@ -36,5 +36,8 @@
     "logoutUnavailable": "Logout indisponível",
     "mostCommonCardAt": "Carta mais comum em",
     "orientation": "Orientação",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "confirmRemoveDraw": "Tem certeza de que deseja remover esta tiragem?",
+    "yes": "Sim",
+    "no": "Não"
 }

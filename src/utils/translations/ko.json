@@ -36,5 +36,8 @@
     "logoutUnavailable": "로그아웃을 사용할 수 없습니다",
     "mostCommonCardAt": "가장 흔한 카드",
     "orientation": "방향",
-    "feedback": "피드백"
+    "feedback": "피드백",
+    "confirmRemoveDraw": "이 뽑기를 정말로 삭제하시겠습니까?",
+    "yes": "예",
+    "no": "아니오"
 }

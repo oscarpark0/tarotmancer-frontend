@@ -36,5 +36,8 @@
     "logoutUnavailable": "ログアウトは現在利用できません",
     "mostCommonCardAt": "最も一般的なカードは",
     "orientation": "向き",
-    "feedback": "フィードバック"
+    "feedback": "フィードバック",
+    "confirmRemoveDraw": "このドローを削除してもよろしいですか？",
+    "yes": "はい",
+    "no": "いいえ"
   }

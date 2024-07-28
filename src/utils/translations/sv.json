@@ -36,5 +36,8 @@
     "logoutUnavailable": "Utloggning är inte tillgänglig",
     "mostCommonCardAt": "Vanligaste kortet på",
     "orientation": "Orientering",
-    "feedback": "Återkoppling"
+    "feedback": "Återkoppling",
+    "confirmRemoveDraw": "Är du säker på att du vill ta bort denna dragning?",
+    "yes": "Ja",
+    "no": "Nej"
 }

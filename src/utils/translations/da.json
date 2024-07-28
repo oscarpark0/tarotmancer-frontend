@@ -36,5 +36,8 @@
     "logoutUnavailable": "Log ud er ikke tilgængelig",
     "mostCommonCardAt": "Det mest almindelige kort på",
     "orientation": "Orientering",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "confirmRemoveDraw": "Er du sikker på, at du vil fjerne denne trækning?",
+    "yes": "Ja",
+    "no": "Nej"
 }

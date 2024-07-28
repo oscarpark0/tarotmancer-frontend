@@ -248,7 +248,6 @@ const Robot = memo((props) => {
       className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
       style={{
         position: 'absolute',
-        zIndex: isMobile ? 1000 : 100,
         top: 0,
         left: isMobile ? 0 : '20px',
         width: isMobile ? '100%' : '400px',
@@ -256,7 +255,7 @@ const Robot = memo((props) => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         height: 'auto',
-        zIndex: 1001, // Add this line to ensure the Robot stays on top
+        zIndex: 1001,
       }}
     >
       <div ref={robotRef} className="robot-body">

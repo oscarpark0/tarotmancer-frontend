@@ -36,5 +36,8 @@
     "logoutUnavailable": "Utlogging er ikke tilgjengelig",
     "mostCommonCardAt": "Mest vanlige kort på",
     "orientation": "Orientering",
-    "feedback": "Tilbakemelding"
+    "feedback": "Tilbakemelding",
+    "confirmRemoveDraw": "Er du sikker på at du vil fjerne denne trekningen?",
+    "yes": "Ja",
+    "no": "Nei"
 }

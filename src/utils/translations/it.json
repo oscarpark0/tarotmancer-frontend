@@ -36,5 +36,8 @@
     "logoutUnavailable": "Logout non disponibile",
     "mostCommonCardAt": "Carta più comune a",
     "orientation": "Orientamento",
-    "feedback": "Feedback"
+    "feedback": "Feedback",
+    "confirmRemoveDraw": "Sei sicuro di voler rimuovere questa lettura?",
+    "yes": "Sì",
+    "no": "No"
 }

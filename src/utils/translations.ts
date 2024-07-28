@@ -1,7 +1,7 @@
 import { useLanguage } from '../contexts/LanguageContext';
 import { useMemo } from 'react';
 
-export type Language = 'ar' | 'da' | 'de' | 'el' | 'en' | 'es' | 'fi' | 'fr' | 'hi' | 'it' | 'ja' | 'ko' | 'nl' | 'no' | 'pl' | 'pt' | 'ru' | 'sv' | 'tr' | 'zh';
+export type Language = 'ar' | 'da' | 'de' | 'el' | 'en' | 'es' | 'fi' | 'fr' | 'hi' | 'it' | 'ja' | 'ko' | 'nl' | 'no' | 'pl' | 'pt' | 'ru' | 'sv' | 'tl' | 'tr' | 'zh';
 
 export const languageNames: Record<Language, string> = {
   ar: 'العربية',
@@ -22,11 +22,12 @@ export const languageNames: Record<Language, string> = {
   pt: 'Português',
   ru: 'Русский',
   sv: 'Svenska',
+  tl: 'Filipino',
   tr: 'Türkçe',
   zh: '中文'
 };
 
-export type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread' | 'removeDraw' | 'timeRemainingUntilNextDraw' | 'tarotmancer' | 'closeModal' | 'terms' | 'privacy' | 'contact' | 'resources' | 'dailyFrequencies' | 'checkNetworkAndTryAgain' | 'failedToDrawSpread' | 'logoutUnavailable' | 'mostCommonCardAt' | 'orientation' | 'selectLanguage' | 'feedback' | 'closeFeedbackForm' | 'provideFeedback' | 'enterFeedbackHere' | 'submitting' | 'submitFeedback' | 'feedbackSubmittedSuccess' | 'feedbackSubmitError' | 'completeCaptchaFirst';
+export type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread' | 'removeDraw' | 'timeRemainingUntilNextDraw' | 'tarotmancer' | 'closeModal' | 'terms' | 'privacy' | 'contact' | 'resources' | 'dailyFrequencies' | 'checkNetworkAndTryAgain' | 'failedToDrawSpread' | 'logoutUnavailable' | 'mostCommonCardAt' | 'orientation' | 'selectLanguage' | 'feedback' | 'closeFeedbackForm' | 'provideFeedback' | 'enterFeedbackHere' | 'submitting' | 'submitFeedback' | 'feedbackSubmittedSuccess' | 'feedbackSubmitError' | 'completeCaptchaFirst' | 'confirmRemoveDraw' | 'yes' | 'no';
 
 export const buttonTranslations: Record<Language, Record<TranslationKey, string>> = {
   ar: {} as Record<TranslationKey, string>,
@@ -47,6 +48,7 @@ export const buttonTranslations: Record<Language, Record<TranslationKey, string>
   pt: {} as Record<TranslationKey, string>,
   ru: {} as Record<TranslationKey, string>,
   sv: {} as Record<TranslationKey, string>,
+  tl: {} as Record<TranslationKey, string>,
   tr: {} as Record<TranslationKey, string>,
   zh: {} as Record<TranslationKey, string>,
 };
@@ -84,7 +86,7 @@ export const useTranslation = () => {
 
 // Initialize translations for all languages
 export const initializeTranslations = async () => {
-  const languages: Language[] = ['ar', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hi', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ru', 'sv', 'tr', 'zh'];
+  const languages: Language[] = ['ar', 'da', 'de', 'el', 'en', 'es', 'fi', 'fr', 'hi', 'it', 'ja', 'ko', 'nl', 'no', 'pl', 'pt', 'ru', 'sv', 'tl', 'tr', 'zh'];
   
   for (const language of languages) {
     await loadTranslations(language);

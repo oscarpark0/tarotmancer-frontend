@@ -36,5 +36,8 @@
     "logoutUnavailable": "Uloskirjautuminen ei ole käytettävissä",
     "mostCommonCardAt": "Yleisin kortti kohdassa",
     "orientation": "Suunta",
-    "feedback": "Palaute"
+    "feedback": "Palaute",
+    "confirmRemoveDraw": "Haluatko varmasti poistaa tämän noston?",
+    "yes": "Kyllä",
+    "no": "Ei"
 }

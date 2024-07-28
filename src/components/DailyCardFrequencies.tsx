@@ -129,4 +129,4 @@ const DailyCardFrequencies: React.FC = () => {
   );
 };
 
-export default DailyCardFrequencies;
+export default DailyCardFrequencies;  

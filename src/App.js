@@ -22,6 +22,7 @@ import Contact from './components/Contact';
 import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import { initializeTranslations } from './utils/translations';
+import { KindeCallback } from "@kinde-oss/kinde-auth-react";
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
@@ -256,6 +257,7 @@ function AppContent() {
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/kinde_callback" element={<KindeCallback />} />
         </Routes>
       </div>
       <div style={{ position: 'relative', zIndex: 5 }}>
@@ -280,7 +282,7 @@ function App() {
       <KindeProvider
         clientId={process.env.REACT_APP_KINDE_CLIENT_ID}
         domain={process.env.REACT_APP_KINDE_DOMAIN}
-        redirectUri={window.location.origin}
+        redirectUri={`${window.location.origin}/kinde_callback`}
         logoutUri={window.location.origin}
       >
         <LanguageProvider>

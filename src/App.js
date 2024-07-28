@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { KindeProvider, useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
@@ -27,8 +27,7 @@ const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ defau
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
 
 function AppContent() {
-  const kindeAuth = useKindeAuth();
-  const isAuthenticated = kindeAuth?.isAuthenticated ?? false;
+  const { isAuthenticated, user, getToken } = useKindeAuth();
   const { getTranslation } = useTranslation(); 
 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -133,18 +132,18 @@ function AppContent() {
     selectedSpread,
     canAccessCohere,
     setCanAccessCohere,
-    kindeAuth,
-  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, kindeAuth]);
+    kindeAuth: { user, getToken },
+  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken]);
 
   const makeAuthenticatedRequest = useCallback(async (endpoint, errorMessage) => {
     if (!isAuthenticated) return null;
 
     try {
-      const token = await kindeAuth.getToken();
+      const token = await getToken();
       const response = await fetch(`${process.env.REACT_APP_BASE_URL}${endpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'User-ID': kindeAuth.user.id
+          'User-ID': user.id
         }
       });
       
@@ -157,7 +156,7 @@ function AppContent() {
       console.error(errorMessage, error);
       return null;
     }
-  }, [isAuthenticated, kindeAuth]);
+  }, [isAuthenticated, getToken, user]);
 
   const checkCanDraw = useCallback(async () => {
     const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');
@@ -232,7 +231,7 @@ function AppContent() {
                   timeUntilNextDraw={timeUntilNextDraw}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
-                  getToken={kindeAuth.getToken}
+                  getToken={getToken}
                   onDraw={handleDraw}
                 />
               ) : (
@@ -243,7 +242,7 @@ function AppContent() {
                   timeUntilNextDraw={timeUntilNextDraw}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
-                  getToken={kindeAuth.getToken}
+                  getToken={getToken}
                   drawCount={drawCount}
                   setDrawCount={setDrawCount}
                   lastResetTime={lastResetTime}
@@ -278,11 +277,18 @@ function App() {
 
   return (
     <BrowserRouter>
-      <LanguageProvider>
-        <Suspense fallback={<div>Loading...</div>}>
-          <AppContent />
-        </Suspense>
-      </LanguageProvider>
+      <KindeProvider
+        clientId={process.env.REACT_APP_KINDE_CLIENT_ID}
+        domain={process.env.REACT_APP_KINDE_DOMAIN}
+        redirectUri={window.location.origin}
+        logoutUri={window.location.origin}
+      >
+        <LanguageProvider>
+          <Suspense fallback={<div>Loading...</div>}>
+            <AppContent />
+          </Suspense>
+        </LanguageProvider>
+      </KindeProvider>
     </BrowserRouter>
   );
 }

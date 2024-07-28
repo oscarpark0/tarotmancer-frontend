@@ -117,11 +117,17 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
               </button>
             </div>
             <h3 className={styles.drawInfo}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
-            {selectedDraw.response ? (
-              <p className={styles.responseText}>{selectedDraw.response}</p>
-            ) : (
-              <p className={styles.noResponse}>{getTranslation('noResponseAvailable')}</p>
-            )}
+            <div className={styles.robotMonitor}>
+              <div className={styles.screenContent}>
+                {selectedDraw.response ? (
+                  <p className={styles.responseText}>{selectedDraw.response}</p>
+                ) : (
+                  <p className={styles.noResponse}>{getTranslation('noResponseAvailable')}</p>
+                )}
+                <div className={styles.screenOverlay}></div>
+                <div className={styles.screenScanlines}></div>
+              </div>
+            </div>
           </div>
         ) : (
           <ul className={styles.drawList}>

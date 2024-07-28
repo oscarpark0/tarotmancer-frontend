@@ -163,6 +163,112 @@
   margin-top: 1rem;
 }
 
+.robotMonitor {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  background-color: transparent;
+  align-items: flex-start;
+  overflow: hidden;
+  border-radius: 10px;
+  transform-style: preserve-3d;
+  position: relative;
+  background: 
+    linear-gradient(to bottom, #2b2b2b, #1a1a1a),
+    radial-gradient(ellipse at center, #3a3a3a 0%, #191919 90%);
+  background-blend-mode: multiply;
+  box-shadow: 
+    0 0 0 2px #333,
+    0 0 0 4px #222,
+    0 0 10px 5px rgba(0, 0, 0, 0.5),
+    inset 0 0 100px rgba(0, 0, 0, 0.5);
+}
+
+.screenContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.responseText {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  color: #b7ff10;
+  text-shadow: 0 0 5px rgba(0, 255, 13, 0.596);
+  font-size: 16px;
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 10;
+  font-family: 'VT323', monospace;
+  line-height: 1.5;
+  animation: textFlicker 0.01s infinite;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-shadow: 
+    0 0 5px rgba(4, 22, 5, 0.877),
+    0 0 10px rgba(0, 255, 13, 0.5);
+}
+
+.screenOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.screenScanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.05) 51%);
+  background-size: 100% 4px;
+  animation: scanlines 10s linear infinite;
+  pointer-events: none;
+  z-index: 3;
+}
+
+@keyframes scanlines {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes textFlicker {
+  0% {
+    opacity: 0.99;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.noResponse {
+  color: #b7ff10;
+  font-style: italic;
+  text-align: center;
+  margin-top: 1rem;
+  font-family: 'VT323', monospace;
+  font-size: 16px;
+}
+
 @media (max-width: 600px) {
   .modalContent {
     padding: 1.5rem;

@@ -69,6 +69,25 @@
   z-index: 1;
 }
 
+.cardImage.animate {
+  animation: shuffleCards 0.5s ease-out;
+}
+
+@keyframes shuffleCards {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
 .barWrapper {
   flex-grow: 1;
   display: flex;

@@ -177,7 +177,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
             {isLoading ? getTranslation('processing') : 
-             !canDraw && timeUntilNextDraw ? `${getTranslation('nextDrawAvailable')} ${timeUntilNextDraw}` : ''}
+             !canDraw && countdown > 0 ? `${getTranslation('nextDrawAvailable')} ${formatCountdown(countdown)}` : ''}
           </div>
         </div>
         <div className="screen-overlay"></div>

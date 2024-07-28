@@ -242,7 +242,6 @@ const Robot = memo((props) => {
     />
   ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, onSpreadSelect, selectedSpread, isMobile, props.cards, props.revealCards, props.shouldDrawNewSpread, fetchSpread, responses, activeTab, setActiveTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, localCanDraw, timeUntilNextDraw, user, currentDrawId, onOpenPastDraws, onDraw, getTranslation]);
 
-
   console.log('Robot - canDraw:', canDraw, 'timeUntilNextDraw:', timeUntilNextDraw); // Added this line
 
   return (

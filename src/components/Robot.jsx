@@ -65,6 +65,14 @@ const Robot = memo((props) => {
     setLocalCanDraw(canDraw);
   }, [canDraw]);
 
+  useEffect(() => {
+    console.log('Robot - canDraw changed:', canDraw);
+  }, [canDraw]);
+
+  useEffect(() => {
+    console.log('Robot - timeUntilNextDraw changed:', timeUntilNextDraw);
+  }, [timeUntilNextDraw]);
+
   const handleDrawSpread = useCallback(() => {
     if (localCanDraw) {
       drawSpread();

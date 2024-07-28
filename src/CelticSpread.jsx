@@ -164,6 +164,16 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     console.log('timeUntilNextDraw:', timeUntilNextDraw);
   }, [timeUntilNextDraw]);
 
+  // Add this effect to log when canDraw changes
+  useEffect(() => {
+    console.log('CelticSpread - canDraw changed:', canDraw);
+  }, [canDraw]);
+
+  // Add this effect to log when timeUntilNextDraw changes
+  useEffect(() => {
+    console.log('CelticSpread - timeUntilNextDraw changed:', timeUntilNextDraw);
+  }, [timeUntilNextDraw]);
+
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}

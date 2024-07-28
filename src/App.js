@@ -177,38 +177,6 @@ function AppContent() {
     checkCanDraw();
   }, [checkCanDraw]);
 
-  useEffect(() => {
-    const calculateTimeUntilNextDraw = () => {
-      if (!lastDrawTime || canDraw) {
-        setTimeUntilNextDraw(null);
-        return;
-      }
-
-      const now = new Date();
-      const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000); // 24 hours after last draw
-      const timeLeft = nextDrawTime - now;
-
-      if (timeLeft <= 0) {
-        setCanDraw(true);
-        setTimeUntilNextDraw(null);
-      } else {
-        setTimeUntilNextDraw(Math.ceil(timeLeft / 1000)); // Convert to seconds
-      }
-    };
-
-    calculateTimeUntilNextDraw();
-    const timer = setInterval(calculateTimeUntilNextDraw, 1000);
-
-    return () => clearInterval(timer);
-  }, [lastDrawTime, canDraw]);
-
-  useEffect(() => {
-    if (timeUntilNextDraw !== null && timeUntilNextDraw <= 0) {
-      setCanDraw(true);
-      setTimeUntilNextDraw(null);
-    }
-  }, [timeUntilNextDraw]);
-
   const handleDraw = useCallback(() => {
     const now = new Date();
     setLastDrawTime(now);
@@ -217,27 +185,26 @@ function AppContent() {
   }, []);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchUserDraws();
-    }
-  }, [isAuthenticated, fetchUserDraws]);
-
-  // Add this effect to update timeUntilNextDraw
-  useEffect(() => {
-    if (!canDraw) {
-      const interval = setInterval(() => {
+    let interval;
+    if (!canDraw && timeUntilNextDraw !== null) {
+      interval = setInterval(() => {
         setTimeUntilNextDraw(prevTime => {
           if (prevTime <= 0) {
             setCanDraw(true);
-            clearInterval(interval);
             return null;
           }
           return prevTime - 1;
         });
       }, 1000);
-      return () => clearInterval(interval);
     }
-  }, [canDraw]);
+    return () => clearInterval(interval);
+  }, [canDraw, timeUntilNextDraw]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUserDraws();
+    }
+  }, [isAuthenticated, fetchUserDraws]);
 
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

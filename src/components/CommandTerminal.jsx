@@ -147,7 +147,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   const getButtonText = useCallback(() => {
     if (isLoading) return getTranslation('processing');
     if (isDrawing) return getTranslation('drawing');
-    if (!canDraw && timeUntilNextDraw > 0) {
+    if (!canDraw && timeUntilNextDraw !== null && timeUntilNextDraw > 0) {
       const timeString = formatCountdown(timeUntilNextDraw);
       return getTranslation('timeRemainingUntilNextDraw').replace('{time}', timeString);
     }
@@ -160,6 +160,19 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   const handlePastDrawsClick = () => {
     onOpenPastDraws();
   };
+
+  useEffect(() => {
+    console.log('CommandTerminal - props changed:', { canDraw, timeUntilNextDraw });
+  }, [canDraw, timeUntilNextDraw]);
+
+  const getTerminalContent = useCallback(() => {
+    if (isLoading) {
+      return getTranslation('processing');
+    } else if (!canDraw && timeUntilNextDraw !== null && timeUntilNextDraw > 0) {
+      return `${getTranslation('nextDrawAvailable')} ${formatCountdown(timeUntilNextDraw)}`;
+    }
+    return ''; // Return empty string if no specific content to show
+  }, [isLoading, canDraw, timeUntilNextDraw, getTranslation]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
@@ -177,8 +190,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? getTranslation('processing') : 
-             !canDraw && timeUntilNextDraw > 0 ? `${getTranslation('nextDrawAvailable')} ${formatCountdown(timeUntilNextDraw)}` : ''}
+            {getTerminalContent()}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -208,11 +220,6 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
             />
           </form>
         </div>
-        {!canDraw && timeUntilNextDraw > 0 && (
-          <div className="countdown-timer">
-            {getTranslation('nextDrawAvailable')} {formatCountdown(timeUntilNextDraw)}
-          </div>
-        )}
         <ShimmerButton 
           onClick={handleDrawClick}
           aria-label={getTranslation('drawCardsAriaLabel')}

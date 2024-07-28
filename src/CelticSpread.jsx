@@ -12,7 +12,7 @@ import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations';
 import PropTypes from 'prop-types';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, currentDrawId, setCurrentDrawId }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw }) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -32,6 +32,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
+  const [currentDrawId, setCurrentDrawId] = useState(null);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
 
   const handleStreamingStateChange = useCallback((streaming) => {
@@ -79,7 +80,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
 
       const data = await response.json();
       const drawId = data.id || data.drawId || data.draw_id; // Try different possible names
-      setCurrentDrawId(drawId); // Use setCurrentDrawId instead of currentDrawId function
+      setCurrentDrawId(drawId);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
@@ -114,7 +115,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [user, canDraw, timeUntilNextDraw, getToken, selectedSpread, setCurrentDrawId]);
+  }, [getToken, selectedSpread, user, canDraw, timeUntilNextDraw]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -163,16 +164,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     console.log('timeUntilNextDraw:', timeUntilNextDraw);
   }, [timeUntilNextDraw]);
 
-  // Add this effect to log when canDraw changes
-  useEffect(() => {
-    console.log('CelticSpread - canDraw changed:', canDraw);
-  }, [canDraw]);
-
-  // Add this effect to log when timeUntilNextDraw changes
-  useEffect(() => {
-    console.log('CelticSpread - timeUntilNextDraw changed:', timeUntilNextDraw);
-  }, [timeUntilNextDraw]);
-
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -206,15 +197,13 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       isStreaming={isStreaming}
       canDraw={canDraw}
       timeUntilNextDraw={timeUntilNextDraw}
-      lastDrawTime={lastDrawTime}
       currentDrawId={currentDrawId}
-      setCurrentDrawId={setCurrentDrawId}
       onOpenPastDraws={handleOpenPastDraws}
       onDraw={onDraw}
       selectedLanguage={selectedLanguage}
       getTranslation={getTranslation}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation]);
 
   console.log('CelticSpread - canDraw:', canDraw, 'timeUntilNextDraw:', timeUntilNextDraw);
 
@@ -300,9 +289,6 @@ CelticSpread.propTypes = {
   timeUntilNextDraw: PropTypes.string,
   getToken: PropTypes.func.isRequired,
   onDraw: PropTypes.func.isRequired,
-  lastDrawTime: PropTypes.object,
-  currentDrawId: PropTypes.number,
-  setCurrentDrawId: PropTypes.func.isRequired,
 };
 
 export default CelticSpread;

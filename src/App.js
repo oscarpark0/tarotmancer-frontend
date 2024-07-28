@@ -177,32 +177,37 @@ function AppContent() {
     checkCanDraw();
   }, [checkCanDraw]);
 
+  useEffect(() => {
+    const calculateTimeUntilNextDraw = () => {
+      if (!lastDrawTime || canDraw) {
+        setTimeUntilNextDraw(null);
+        return;
+      }
+
+      const now = new Date();
+      const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000); // 24 hours after last draw
+      const timeLeft = nextDrawTime - now;
+
+      if (timeLeft <= 0) {
+        setCanDraw(true);
+        setTimeUntilNextDraw(null);
+      } else {
+        setTimeUntilNextDraw(Math.ceil(timeLeft / 1000)); // Convert to seconds
+      }
+    };
+
+    calculateTimeUntilNextDraw();
+    const timer = setInterval(calculateTimeUntilNextDraw, 1000);
+
+    return () => clearInterval(timer);
+  }, [lastDrawTime, canDraw]);
+
   const handleDraw = useCallback(() => {
     const now = new Date();
     setLastDrawTime(now);
     setCanDraw(false);
     setTimeUntilNextDraw(24 * 60 * 60); // Set to 24 hours in seconds
   }, []);
-
-  useEffect(() => {
-    let interval;
-    if (lastDrawTime && !canDraw) {
-      interval = setInterval(() => {
-        const now = new Date();
-        const timeSinceLastDraw = Math.floor((now - lastDrawTime) / 1000);
-        const remainingTime = 24 * 60 * 60 - timeSinceLastDraw;
-        
-        if (remainingTime <= 0) {
-          setCanDraw(true);
-          setTimeUntilNextDraw(null);
-          clearInterval(interval);
-        } else {
-          setTimeUntilNextDraw(remainingTime);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [lastDrawTime, canDraw]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -225,7 +230,6 @@ function AppContent() {
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
                   timeUntilNextDraw={timeUntilNextDraw}
-                  lastDrawTime={lastDrawTime}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={kindeAuth.getToken}
@@ -237,7 +241,6 @@ function AppContent() {
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
                   timeUntilNextDraw={timeUntilNextDraw}
-                  lastDrawTime={lastDrawTime}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={kindeAuth.getToken}

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
@@ -19,7 +20,6 @@ const DailyCardFrequencies: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [isFlipping, setIsFlipping] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
   const { getToken } = useKindeAuth();
 
   const fetchFrequencies = useCallback(async (date: string) => {
@@ -52,15 +52,20 @@ const DailyCardFrequencies: React.FC = () => {
   const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    setIsTransitioning(true);
+    setIsFlipping(true);
     
+    // Fetch new frequencies
     const newFrequencies = await fetchFrequencies(newDate);
     
-    // Use AnimatePresence's onExitComplete to ensure smooth transition
+    // Update frequencies and trigger flip
     setTimeout(() => {
       setFrequencies(newFrequencies);
-      setIsTransitioning(false);
-    }, 300); // Adjust this timing to match your exit animation duration
+      
+      // End the flip after the animation is complete
+      setTimeout(() => {
+        setIsFlipping(false);
+      }, 300); // Half duration of flip animation
+    }, 300); // Half duration of flip animation
   };
 
   const getMaxFrequency = () => {
@@ -78,14 +83,14 @@ const DailyCardFrequencies: React.FC = () => {
         />
       </div>
       <div className={styles.barChartContainer}>
-        <AnimatePresence mode="wait" onExitComplete={() => setIsFlipping(false)}>
-          {!isTransitioning && frequencies.map((freq) => (
+        <AnimatePresence>
+          {frequencies.map((freq) => (
             <motion.div
-              key={`${selectedDate}-${freq.card_name}`}
+              key={freq.card_name}
               className={styles.barChartItem}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
               <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>
@@ -108,14 +113,12 @@ const DailyCardFrequencies: React.FC = () => {
               </div>
               <div className={styles.barWrapper}>
                 <div className={styles.barLabel}>{freq.card_name}</div>
-                <motion.div 
+                <div 
                   className={styles.bar} 
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
-                  transition={{ duration: 0.5 }}
+                  style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
                 >
                   <span className={styles.barValue}>{freq.frequency}</span>
-                </motion.div>
+                </div>
               </div>
             </motion.div>
           ))}

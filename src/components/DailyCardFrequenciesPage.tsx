@@ -1,3 +1,4 @@
+
 import React from 'react';
 import DailyCardFrequencies from './DailyCardFrequencies';
 import './DailyCardFrequenciesPage.module.css';

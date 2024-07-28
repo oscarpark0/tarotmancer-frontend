@@ -125,7 +125,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
 
   useEffect(() => {
     let interval;
-    if (!canDraw && timeUntilNextDraw) {
+    if (!canDraw && timeUntilNextDraw !== null) {
       setCountdown(timeUntilNextDraw);
       interval = setInterval(() => {
         setCountdown(prevCountdown => {

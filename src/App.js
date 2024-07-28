@@ -202,6 +202,13 @@ function AppContent() {
     return () => clearInterval(timer);
   }, [lastDrawTime, canDraw]);
 
+  useEffect(() => {
+    if (timeUntilNextDraw !== null && timeUntilNextDraw <= 0) {
+      setCanDraw(true);
+      setTimeUntilNextDraw(null);
+    }
+  }, [timeUntilNextDraw]);
+
   const handleDraw = useCallback(() => {
     const now = new Date();
     setLastDrawTime(now);

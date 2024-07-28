@@ -19,6 +19,7 @@ const DailyCardFrequencies: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [isFlipping, setIsFlipping] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const { getToken } = useKindeAuth();
 
   const fetchFrequencies = useCallback(async (date: string) => {
@@ -51,14 +52,15 @@ const DailyCardFrequencies: React.FC = () => {
   const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
     setSelectedDate(newDate);
-    setIsFlipping(true);
+    setIsTransitioning(true);
     
     const newFrequencies = await fetchFrequencies(newDate);
     
+    // Use AnimatePresence's onExitComplete to ensure smooth transition
     setTimeout(() => {
       setFrequencies(newFrequencies);
-      setTimeout(() => setIsFlipping(false), 300);
-    }, 300);
+      setIsTransitioning(false);
+    }, 300); // Adjust this timing to match your exit animation duration
   };
 
   const getMaxFrequency = () => {
@@ -76,14 +78,14 @@ const DailyCardFrequencies: React.FC = () => {
         />
       </div>
       <div className={styles.barChartContainer}>
-        <AnimatePresence>
-          {frequencies.map((freq) => (
+        <AnimatePresence mode="wait" onExitComplete={() => setIsFlipping(false)}>
+          {!isTransitioning && frequencies.map((freq) => (
             <motion.div
-              key={freq.card_name}
+              key={`${selectedDate}-${freq.card_name}`}
               className={styles.barChartItem}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
               <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>

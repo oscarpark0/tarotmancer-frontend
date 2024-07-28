@@ -42,7 +42,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100000; /* Extremely high z-index */
+  z-index: 9999999; /* Extremely high z-index */
 }
 
 .modalContent {
@@ -57,7 +57,7 @@
   color: #e0e0e0;
   font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-  z-index: 100001; /* Extremely high z-index */
+  z-index: 10000000; /* Even higher z-index */
 }
 
 /* Add responsive styles for mobile */

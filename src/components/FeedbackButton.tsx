@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import footerStyles from './Footer.module.css';
 import headerStyles from './FeedbackButton.module.css';
 import styles from './FeedbackButton.module.css';
@@ -23,15 +24,18 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
   useEffect(() => {
     if (isModalOpen) {
       document.body.style.overflow = 'hidden';
-      document.body.classList.add('feedback-modal-open');
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
     } else {
-      document.body.style.overflow = 'unset';
-      document.body.classList.remove('feedback-modal-open');
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
-      document.body.classList.remove('feedback-modal-open');
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     };
   }, [isModalOpen]);
 
@@ -82,6 +86,36 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
     setIsModalOpen(true);
   };
 
+  const modalContent = (
+    <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
+      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+        <button
+          className={styles.closeButton}
+          onClick={() => setIsModalOpen(false)}
+          aria-label={getTranslation('closeFeedbackForm')}
+        >
+          ✶
+        </button>
+        <h2 className={styles.modalTitle}>{getTranslation('provideFeedback')}</h2>
+        <form onSubmit={handleSubmit}>
+          <textarea
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+            placeholder={getTranslation('enterFeedbackHere')}
+            rows={5}
+            required
+          />
+          <TarotCaptcha onVerify={handleCaptchaVerify} />
+          <button type="submit" disabled={isSubmitting || !isCaptchaVerified}>
+            {isSubmitting ? getTranslation('submitting') : getTranslation('submitFeedback')}
+          </button>
+        </form>
+        {submitStatus === 'success' && <p className={styles.successMessage} aria-live="polite">{getTranslation('feedbackSubmittedSuccess')}</p>}
+        {submitStatus === 'error' && <p className={styles.errorMessage} aria-live="polite">{getTranslation('feedbackSubmitError')}</p>}
+      </div>
+    </div>
+  );
+
   return (
     <>
       {isFooterLink ? (
@@ -93,34 +127,9 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
           <span className={styles.feedbackIcon}>✧</span> {getTranslation('feedback')}
         </button>
       )}
-      {isModalOpen && (
-        <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button
-              className={styles.closeButton}
-              onClick={() => setIsModalOpen(false)}
-              aria-label={getTranslation('closeFeedbackForm')}
-            >
-              ✶
-            </button>
-            <h2 className={styles.modalTitle}>{getTranslation('provideFeedback')}</h2>
-            <form onSubmit={handleSubmit}>
-              <textarea
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-                placeholder={getTranslation('enterFeedbackHere')}
-                rows={5}
-                required
-              />
-              <TarotCaptcha onVerify={handleCaptchaVerify} />
-              <button type="submit" disabled={isSubmitting || !isCaptchaVerified}>
-                {isSubmitting ? getTranslation('submitting') : getTranslation('submitFeedback')}
-              </button>
-            </form>
-            {submitStatus === 'success' && <p className={styles.successMessage} aria-live="polite">{getTranslation('feedbackSubmittedSuccess')}</p>}
-            {submitStatus === 'error' && <p className={styles.errorMessage} aria-live="polite">{getTranslation('feedbackSubmitError')}</p>}
-          </div>
-        </div>
+      {isModalOpen && ReactDOM.createPortal(
+        modalContent,
+        document.body
       )}
     </>
   );

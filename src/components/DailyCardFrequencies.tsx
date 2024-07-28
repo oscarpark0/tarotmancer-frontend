@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import styles from './DailyCardFrequenciesPage.module.css';
@@ -18,51 +18,51 @@ const DailyCardFrequencies: React.FC = () => {
   const [animate, setAnimate] = useState(false);
   const { getToken } = useKindeAuth();
 
-  useEffect(() => {
-    const fetchFrequencies = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const token = await getToken();
-        const response = await axios.get<CardFrequency[]>(
-          `${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            },
-            params: { date: selectedDate }
-          }
-        );
-        setFrequencies(response.data.sort((a, b) => b.frequency - a.frequency));
-        setIsLoading(false);
-        setAnimate(true);
-        setTimeout(() => setAnimate(false), 1000); // Reset animation after 1 second
-      } catch (err) {
-        setError('Failed to fetch card frequencies');
-        setIsLoading(false);
-      }
-    };
+  const fetchFrequencies = useCallback(async (date: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const token = await getToken();
+      const response = await axios.get<CardFrequency[]>(
+        `${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          params: { date }
+        }
+      );
+      return response.data.sort((a, b) => b.frequency - a.frequency);
+    } catch (err) {
+      setError('Failed to fetch card frequencies');
+      return [];
+    } finally {
+      setIsLoading(false);
+    }
+  }, [getToken]);
 
-    fetchFrequencies();
-  }, [getToken, selectedDate]);
+  useEffect(() => {
+    fetchFrequencies(selectedDate).then(setFrequencies);
+  }, [fetchFrequencies, selectedDate]);
+
+  const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value;
+    setSelectedDate(newDate);
+    setAnimate(true);
+    const newFrequencies = await fetchFrequencies(newDate);
+    setFrequencies(newFrequencies);
+    setTimeout(() => setAnimate(false), 600);
+  };
 
   const getMaxFrequency = () => {
-    return Math.max(...frequencies.map(freq => freq.frequency));
+    return Math.max(...frequencies.map(freq => freq.frequency), 1);
   };
 
   const getRandomPosition = () => {
-    const randomX = Math.random() * 20 - 10; // Random value between -10 and 10
-    const randomY = Math.random() * 20 - 10; // Random value between -10 and 10
+    const randomX = Math.random() * 20 - 10;
+    const randomY = Math.random() * 20 - 10;
     return `translate(${randomX}px, ${randomY}px) rotate(${Math.random() * 10 - 5}deg)`;
   };
-
-  if (isLoading) {
-    return <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>;
-  }
-
-  if (error) {
-    return <div className={styles.error}>{error}</div>;
-  }
 
   return (
     <div className={styles.dailyCardFrequencies}>
@@ -70,7 +70,7 @@ const DailyCardFrequencies: React.FC = () => {
         <input
           type="date"
           value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
+          onChange={handleDateChange}
           max={new Date().toISOString().split('T')[0]}
         />
       </div>
@@ -95,6 +95,8 @@ const DailyCardFrequencies: React.FC = () => {
           </div>
         ))}
       </div>
+      {isLoading && <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>}
+      {error && <div className={styles.error}>{error}</div>}
     </div>
   );
 };

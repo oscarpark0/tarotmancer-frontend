@@ -23,6 +23,7 @@ import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import { initializeTranslations } from './utils/translations';
 import { KindeCallback } from "@kinde-oss/kinde-auth-react";
+import HowItWorks from './components/HowItWorks';
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
@@ -90,6 +91,7 @@ function AppContent() {
                 <div className="header-language-selector">
                   <LanguageSelector />
                 </div>
+                <button onClick={() => navigate('/how-it-works')} className={styles.subscribeButton}>{getTranslation('howItWorks')}</button>
                 <button onClick={() => navigate('/dailyFrequencies')} className={styles.subscribeButton}>{getTranslation('dailyFrequencies')}</button>
                 <button onClick={() => setIsPastDrawsModalOpen(true)} className={styles.subscribeButton}>{getTranslation('pastDraws')}</button>
                 <SubscribeButton />
@@ -253,6 +255,7 @@ function AppContent() {
             </Suspense>
           ) : memoizedWelcomeMessage} />
           <Route path="/dailyFrequencies" element={<DailyCardFrequenciesPage />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/contact" element={<Contact />} />

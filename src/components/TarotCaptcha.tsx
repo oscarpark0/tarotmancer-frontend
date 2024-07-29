@@ -97,6 +97,9 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
           alt="Tarot Card"
           className={styles.cardImage}
         />
+        <p className={styles.instructionText}>
+          Please select the name of the Tarot card shown above:
+        </p>
         <div>
           {captchaData.options.map((option, index) => (
             <label key={index} className={styles.optionLabel}>

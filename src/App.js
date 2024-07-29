@@ -44,6 +44,7 @@ function KindeCallbackHandler() {
         });
     } else {
       console.error('handleRedirectCallback is not a function:', handleRedirectCallback);
+      // If handleRedirectCallback is not available, just navigate to the home page
       navigate('/');
     }
   }, [handleRedirectCallback, navigate]);

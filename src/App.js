@@ -29,27 +29,25 @@ const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ defau
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
 
 function KindeCallbackHandler() {
-  const { handleRedirectCallback } = useKindeAuth();
+  const { isLoading, isAuthenticated, error } = useKindeAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (typeof handleRedirectCallback === 'function') {
-      handleRedirectCallback()
-        .then(() => {
-          navigate('/');
-        })
-        .catch((err) => {
-          console.error('Error handling redirect callback:', err);
-          navigate('/');
-        });
-    } else {
-      console.error('handleRedirectCallback is not a function:', handleRedirectCallback);
-      // If handleRedirectCallback is not available, just navigate to the home page
-      navigate('/');
+    if (!isLoading) {
+      if (isAuthenticated) {
+        navigate('/');
+      } else if (error) {
+        console.error('Authentication error:', error);
+        navigate('/');
+      }
     }
-  }, [handleRedirectCallback, navigate]);
+  }, [isLoading, isAuthenticated, error, navigate]);
 
-  return <div>Processing login...</div>;
+  if (isLoading) {
+    return <div>Processing login...</div>;
+  }
+
+  return null;
 }
 
 function AppContent() {

@@ -95,6 +95,7 @@ const DailyCardFrequencies: React.FC = () => {
       setThreeCardSpread(response.data.three_card_spread);
     } catch (err) {
       console.error('Failed to fetch most common cards:', err);
+      setError('Failed to fetch most common cards. Please try again later.');
     }
   }, [getToken]);
 

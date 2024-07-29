@@ -5,7 +5,6 @@ import styles from './DailyCardFrequenciesPage.module.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 
-
 interface CardFrequency {
   card_name: string;
   card_img: string;
@@ -13,13 +12,49 @@ interface CardFrequency {
   date: string;
 }
 
+interface SpreadProps {
+  spread: PositionInfo[];
+  title: string;
+}
+
+interface PositionInfo {
+  position_name: string;
+  most_common_card: string;
+  most_common_card_img: string;
+  orientation: 'upright' | 'reversed';
+}
+
+const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
+  return (
+    <div className={styles.spreadContainer}>
+      <h2>{title}</h2>
+      <div className={styles.spreadCards}>
+        {spread.map((position, index) => (
+          <div key={index} className={styles.spreadCard}>
+            <img 
+              src={position.most_common_card_img} 
+              alt={position.most_common_card} 
+              className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
+            />
+            <p>{position.position_name}</p>
+            <p>{position.most_common_card}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const DailyCardFrequencies: React.FC = () => {
   const [frequencies, setFrequencies] = useState<CardFrequency[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [isFlipping, setIsFlipping] = useState(false);
-  const { getToken } = useKindeAuth(); // Ensure this is called correctly
+  const { getToken } = useKindeAuth();
+
+  const [celticSpread, setCelticSpread] = useState<PositionInfo[]>([]);
+  const [threeCardSpread, setThreeCardSpread] = useState<PositionInfo[]>([]);
 
   const fetchFrequencies = useCallback(async (date: string) => {
     try {
@@ -44,9 +79,29 @@ const DailyCardFrequencies: React.FC = () => {
     }
   }, [getToken]);
 
+  const fetchMostCommonCards = useCallback(async (date: string) => {
+    try {
+      const token = await getToken();
+      const response = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/api/most-common-cards`,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          params: { date }
+        }
+      );
+      setCelticSpread(response.data.celtic_spread);
+      setThreeCardSpread(response.data.three_card_spread);
+    } catch (err) {
+      console.error('Failed to fetch most common cards:', err);
+    }
+  }, [getToken]);
+
   useEffect(() => {
     fetchFrequencies(selectedDate).then(setFrequencies);
-  }, [fetchFrequencies, selectedDate]);
+    fetchMostCommonCards(selectedDate);
+  }, [fetchFrequencies, fetchMostCommonCards, selectedDate]);
 
   const handleDateChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = e.target.value;
@@ -81,6 +136,8 @@ const DailyCardFrequencies: React.FC = () => {
           max={new Date().toISOString().split('T')[0]}
         />
       </div>
+      <Spread spread={celticSpread} title="Celtic Cross Spread" />
+      <Spread spread={threeCardSpread} title="Three Card Spread" />
       <div className={styles.barChartContainer}>
         <AnimatePresence>
           {frequencies.map((freq) => (

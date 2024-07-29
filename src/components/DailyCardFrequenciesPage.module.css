@@ -1,4 +1,3 @@
-
 .dailyFrequenciesPage {
   max-width: 1200px;
   margin: 0 auto;
@@ -168,4 +167,44 @@
 @keyframes dots {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
+}
+
+.spreadContainer {
+  margin-bottom: 2rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.spreadCards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.spreadCard {
+  text-align: center;
+  width: 120px;
+}
+
+.cardImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.cardImage:hover {
+  transform: scale(1.05);
+}
+
+.reversed {
+  transform: rotate(180deg);
+}
+
+.spreadCard p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
 }

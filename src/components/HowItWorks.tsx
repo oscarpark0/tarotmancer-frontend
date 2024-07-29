@@ -22,7 +22,7 @@ const HowItWorks: React.FC = () => {
       </ProcessStep>
 
       <ProcessStep number={2} title="Multiple Draws">
-        <p>For each shuffle, the app draws the required number of cards (10 or 3) and records which card appears in each position.</p>
+        <p>For each shuffle, the app draws the required number of cards (Celtic Cross - 10 |  Three Card Spread - 3) and records which card appears in each position.</p>
       </ProcessStep>
 
       <ProcessStep number={3} title="Counting Appearances">

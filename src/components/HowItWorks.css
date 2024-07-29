@@ -1,49 +1,78 @@
-.how-it-works {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f4f4f4;
+.howItWorksContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 15px;
+  background-color: #1a1a2e;
+  color: #e0e0e0;
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  max-width: 800px;
+  margin: 2rem auto;
 }
 
-.how-it-works h1 {
-    color: #4a4a4a;
-    text-align: center;
+.title {
+  font-size: 2.5rem;
+  color: #ffd700;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
-.how-it-works h2 {
-    color: #6a6a6a;
+.intro {
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #ffd700;
 }
 
-.how-it-works .intro {
-    font-style: italic;
-    text-align: center;
-    margin-bottom: 30px;
+.processStep {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.how-it-works .process-step {
-    background-color: white;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.processStep h3 {
+  margin-top: 0;
+  color: #ffd700;
 }
 
-.how-it-works .process-step h3 {
-    margin-top: 0;
-    color: #4a4a4a;
+.highlight {
+  background-color: rgba(255, 215, 0, 0.2);
+  padding: 5px;
+  border-radius: 3px;
 }
 
-.how-it-works .highlight {
-    background-color: #fffacd;
-    padding: 5px;
-    border-radius: 3px;
+.conclusion {
+  font-weight: bold;
+  text-align: center;
+  margin-top: 30px;
+  color: #ffd700;
 }
 
-.how-it-works .conclusion {
-    font-weight: bold;
-    text-align: center;
-    margin-top: 30px;
+.backButton {
+  background-color: transparent;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 25px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  font-family: inherit;
+}
+
+.backButton:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.backButton::before {
+  content: '☽';
+  margin-right: 8px;
+  font-size: 1.2rem;
 }

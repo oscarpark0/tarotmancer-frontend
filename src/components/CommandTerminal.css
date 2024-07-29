@@ -59,6 +59,7 @@
   height: 100%;
   overflow-y: auto;
   padding: 10px;
+  min-height: 100px; /* Add this line to ensure minimum height */
 }
 
 .terminal-card-reveal-container {
@@ -87,6 +88,8 @@
   font-family: monospace;
   white-space: pre-wrap;
   word-wrap: break-word;
+  flex-grow: 1; /* Add this line to allow the output to grow */
+  min-height: 50px; /* Add this line to ensure minimum height */
 }
 
 @media (max-width: 768px) {

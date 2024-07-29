@@ -33,14 +33,19 @@ function KindeCallbackHandler() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    handleRedirectCallback()
-      .then(() => {
-        navigate('/');
-      })
-      .catch((err) => {
-        console.error('Error handling redirect callback:', err);
-        navigate('/');
-      });
+    if (typeof handleRedirectCallback === 'function') {
+      handleRedirectCallback()
+        .then(() => {
+          navigate('/');
+        })
+        .catch((err) => {
+          console.error('Error handling redirect callback:', err);
+          navigate('/');
+        });
+    } else {
+      console.error('handleRedirectCallback is not a function:', handleRedirectCallback);
+      navigate('/');
+    }
   }, [handleRedirectCallback, navigate]);
 
   return <div>Processing login...</div>;

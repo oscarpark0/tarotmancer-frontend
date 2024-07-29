@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { KindeProvider, useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useNavigate } from 'react-router-dom';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
@@ -16,17 +17,34 @@ import Footer from './components/Footer.tsx';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfUse from './components/TermsOfUse';
 import DailyCardFrequenciesPage from './components/DailyCardFrequenciesPage';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styles from './components/SubscribeButton.module.css';
 import Contact from './components/Contact';
 import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import { initializeTranslations } from './utils/translations';
-import { KindeCallback } from "@kinde-oss/kinde-auth-react";
 import HowItWorks from './components/HowItWorks';
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
+
+function KindeCallbackHandler() {
+  const { handleRedirectCallback } = useKindeAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    handleRedirectCallback()
+      .then(() => {
+        navigate('/');
+      })
+      .catch((err) => {
+        console.error('Error handling redirect callback:', err);
+        navigate('/');
+      });
+  }, [handleRedirectCallback, navigate]);
+
+  return <div>Processing login...</div>;
+}
 
 function AppContent() {
   const { isAuthenticated, user, getToken } = useKindeAuth();
@@ -260,7 +278,7 @@ function AppContent() {
           <Route path="/terms-of-use" element={<TermsOfUse />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/resources" element={<ResourcesPage />} />
-          <Route path="/kinde_callback" element={<KindeCallback />} />
+          <Route path="/kinde_callback" element={<KindeCallbackHandler />} />
         </Routes>
       </div>
       <div style={{ position: 'relative', zIndex: 5 }}>

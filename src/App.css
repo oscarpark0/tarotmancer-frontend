@@ -12,11 +12,13 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px; /* Add padding for better spacing on smaller screens */
 }
 
 .app-title-link {
   text-decoration: none;
   color: inherit;
+  flex-grow: 1; /* Allow the title to take up available space */
 }
 
 .app-title-link:hover {
@@ -25,14 +27,15 @@
 }
 
 .app-title {
-  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-size: clamp(1.5rem, 3vw, 2.5rem); /* Adjust font size range */
   margin: 0;
-  letter-spacing: 0.001em;
+  letter-spacing: 0.02em; /* Slightly increase letter spacing */
   text-align: left;
   color: #f0e68c;
   position: relative;
   overflow: hidden;
   transition: color 0.3s ease;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add subtle text shadow */
 }
 
 .app-title::before {
@@ -58,10 +61,26 @@
 }
 
 @media (max-width: 767px) {
+  .header-content {
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    justify-content: center; /* Center items on smaller screens */
+  }
+
+  .app-title-link {
+    flex-basis: 100%; /* Full width on smaller screens */
+    text-align: center; /* Center the title on smaller screens */
+    margin-bottom: 10px; /* Add space below the title */
+  }
+
   .app-title {
-    font-size: 1.2rem;
+    font-size: 1.5rem; /* Slightly increase minimum font size */
+  }
+
+  .auth-container {
+    justify-content: center; /* Center auth buttons on smaller screens */
   }
 }
+
 .auth-container {
   display: flex;
   align-items: center;

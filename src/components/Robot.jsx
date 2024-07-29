@@ -38,6 +38,7 @@ const adjustFontSize = () => {
 
 const debouncedAdjustFontSize = debounce(adjustFontSize, 100);
 
+
 const Robot = memo((props) => {
   const { selectedLanguage } = useLanguage(); // Use useLanguage hook
   const { getTranslation } = useTranslation(); // Use getTranslation hook

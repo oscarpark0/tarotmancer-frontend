@@ -252,8 +252,6 @@ const Robot = memo((props) => {
     />
   ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation]);
 
-  console.log('Robot - canDraw:', canDraw, 'timeUntilNextDraw:', timeUntilNextDraw); // Added this line
-
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}

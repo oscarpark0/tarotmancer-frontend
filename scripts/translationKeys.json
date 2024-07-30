@@ -14,7 +14,7 @@
   "loading",
   "dailyTarotCardFrequencies",
   "frequenciesDescription",
-  "mostCommonCardsInSpreads",
+  "mostCommonCardOccurrencesByPosition",
   "individualCardFrequencies",
   "chooseDate",
   "completeCaptchaFirst",

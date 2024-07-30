@@ -14,7 +14,7 @@
     "loading": "로딩 중...",
     "dailyTarotCardFrequencies": "일일 타로 카드 빈도",
     "frequenciesDescription": "빈도 설명",
-    "mostCommonCardsInSpreads": "스프레드에서 가장 흔한 카드",
+    "mostCommonCardOccurrencesByPosition": "스프레드에서 가장 흔한 카드",
     "individualCardFrequencies": "개별 카드 빈도",
     "chooseDate": "날짜 선택",
     "completeCaptchaFirst": "먼저 캡차를 완료해주세요",

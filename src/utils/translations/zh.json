@@ -14,7 +14,7 @@
   "loading": "加载中...",
   "dailyTarotCardFrequencies": "每日塔罗牌频率",
   "frequenciesDescription": "频率描述",
-  "mostCommonCardsInSpreads": "牌阵中最常见的牌",
+  "mostCommonCardOccurrencesByPosition": "牌阵中最常见的牌",
   "individualCardFrequencies": "单张牌频率",
   "chooseDate": "选择日期",
   "completeCaptchaFirst": "请先完成验证码",

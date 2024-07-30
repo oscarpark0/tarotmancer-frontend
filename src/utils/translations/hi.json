@@ -44,7 +44,7 @@
   "loading": "लोड हो रहा है...",
   "dailyTarotCardFrequencies": "दैनिक टैरो कार्ड आवृत्तियाँ",
   "frequenciesDescription": "यह चार्ट दिखाता है कि प्रत्येक टैरो कार्ड कितनी बार खींचा गया है।",
-  "mostCommonCardsInSpreads": "स्प्रेड में सबसे सामान्य कार्ड",
+  "mostCommonCardOccurrencesByPosition": "स्प्रेड में सबसे सामान्य कार्ड",
   "individualCardFrequencies": "व्यक्तिगत कार्ड आवृत्तियाँ",
   "chooseDate": "तारीख चुनें",
   "completeCaptchaFirst": "कृपया पहले कैप्चा पूरा करें",

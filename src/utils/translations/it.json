@@ -14,7 +14,7 @@
     "loading": "Caricamento...",
     "dailyTarotCardFrequencies": "Frequenze Giornaliere delle Carte dei Tarocchi",
     "frequenciesDescription": "Descrizione delle frequenze",
-    "mostCommonCardsInSpreads": "Carte più comuni nelle stesure",
+    "mostCommonCardOccurrencesByPosition": "Carte più comuni nelle stesure",
     "individualCardFrequencies": "Frequenze delle carte individuali",
     "chooseDate": "Scegli una data",
     "completeCaptchaFirst": "Completa prima il captcha",

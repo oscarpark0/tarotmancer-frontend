@@ -14,7 +14,7 @@
     "loading": "Cargando...",
     "dailyTarotCardFrequencies": "Frecuencias Diarias de Cartas del Tarot",
     "frequenciesDescription": "Descripción de las frecuencias",
-    "mostCommonCardsInSpreads": "Cartas más comunes en las tiradas",
+    "mostCommonCardOccurrencesByPosition": "Cartas más comunes en las tiradas",
     "individualCardFrequencies": "Frecuencias de cartas individuales",
     "chooseDate": "Elegir fecha",
     "completeCaptchaFirst": "Por favor, complete el captcha primero",

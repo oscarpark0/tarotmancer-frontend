@@ -14,7 +14,7 @@
     "loading": "Naglo-load...",
     "dailyTarotCardFrequencies": "Pang-araw-araw na Dalas ng Tarot Card",
     "frequenciesDescription": "Paglalarawan ng mga dalas",
-    "mostCommonCardsInSpreads": "Pinakakaraniwang mga card sa mga paglalatag",
+    "mostCommonCardOccurrencesByPosition": "Pinakakaraniwang mga card sa mga paglalatag",
     "individualCardFrequencies": "Dalas ng bawat card",
     "chooseDate": "Pumili ng petsa",
     "completeCaptchaFirst": "Kumpletuhin muna ang captcha",

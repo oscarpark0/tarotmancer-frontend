@@ -14,7 +14,7 @@
     "loading": "Ladataan...",
     "dailyTarotCardFrequencies": "Päivittäiset Tarot-korttien Taajuudet",
     "frequenciesDescription": "Taajuuksien kuvaus",
-    "mostCommonCardsInSpreads": "Yleisimmät kortit levityksissä",
+    "mostCommonCardOccurrencesByPosition": "Yleisimmät kortit levityksissä",
     "individualCardFrequencies": "Yksittäisten korttien taajuudet",
     "chooseDate": "Valitse päivämäärä",
     "completeCaptchaFirst": "Täytä ensin captcha",

@@ -113,7 +113,7 @@ const DailyFrequenciesPage: React.FC = () => {
           {getTranslation('frequenciesDescription')}
         </p>
         <ol>
-          <li>{getTranslation('mostCommonCardsInSpreads')}</li>
+          <li>{getTranslation('mostCommonCardOccurrencesByPosition')}</li>
           <li>{getTranslation('individualCardFrequencies')}</li>
         </ol>
         <p>{getTranslation('chooseDate')}</p>
@@ -128,7 +128,7 @@ const DailyFrequenciesPage: React.FC = () => {
           />
         </div>
         <section className={styles.spreadsSection}>
-          <h2>{getTranslation('mostCommonCardsInSpreads')}</h2>
+          <h2>{getTranslation('mostCommonCardOccurrencesByPosition')}</h2>
           <div className={styles.spreadsContainer}>
             <Spread spread={celticSpread} title="celticCrossSpread" />
             <Spread spread={threeCardSpread} title="threeCardSpread" />
@@ -136,12 +136,14 @@ const DailyFrequenciesPage: React.FC = () => {
         </section>
         <section className={styles.frequenciesSection}>
           <h2>{getTranslation('individualCardFrequencies')}</h2>
-          <DailyCardFrequencies 
-            frequencies={frequencies}
-            isLoading={isLoading}
-            error={error}
-            selectedDate={selectedDate}
-          />
+          <div className={styles.frequenciesWrapper}>
+            <DailyCardFrequencies 
+              frequencies={frequencies}
+              isLoading={isLoading}
+              error={error}
+              selectedDate={selectedDate}
+            />
+          </div>
         </section>
       </main>
       {isLoading && <div className={styles.loading}>{getTranslation('loading')}<span>.</span><span>.</span><span>.</span></div>}

@@ -14,7 +14,7 @@
     "loading": "Φόρτωση...",
     "dailyTarotCardFrequencies": "Ημερήσιες Συχνότητες Καρτών Ταρώ",
     "frequenciesDescription": "Περιγραφή συχνοτήτων",
-    "mostCommonCardsInSpreads": "Πιο συχνές κάρτες στα απλώματα",
+    "mostCommonCardOccurrencesByPosition": "Πιο συχνές κάρτες στα απλώματα",
     "individualCardFrequencies": "Συχνότητες μεμονωμένων καρτών",
     "chooseDate": "Επιλέξτε ημερομηνία",
     "completeCaptchaFirst": "Συμπληρώστε πρώτα το captcha",

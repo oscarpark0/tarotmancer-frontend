@@ -14,7 +14,7 @@
     "loading": "Laster...",
     "dailyTarotCardFrequencies": "Daglige Tarotkort Frekvenser",
     "frequenciesDescription": "Oversikt over kortfrekvenser",
-    "mostCommonCardsInSpreads": "Mest vanlige kort i spredninger",
+    "mostCommonCardOccurrencesByPosition": "Mest vanlige kort i spredninger",
     "individualCardFrequencies": "Individuelle kortfrekvenser",
     "chooseDate": "Velg dato",
     "completeCaptchaFirst": "Fullfør captcha først",

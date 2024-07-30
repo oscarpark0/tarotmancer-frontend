@@ -14,7 +14,7 @@
     "loading": "Загрузка...",
     "dailyTarotCardFrequencies": "Ежедневные частоты карт Таро",
     "frequenciesDescription": "Описание частот",
-    "mostCommonCardsInSpreads": "Самые частые карты в раскладах",
+    "mostCommonCardOccurrencesByPosition": "Самые частые карты в раскладах",
     "individualCardFrequencies": "Частоты отдельных карт",
     "chooseDate": "Выберите дату",
     "completeCaptchaFirst": "Сначала пройдите капчу",

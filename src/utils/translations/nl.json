@@ -14,7 +14,7 @@
     "loading": "Laden...",
     "dailyTarotCardFrequencies": "Dagelijkse Tarotkaart Frequenties",
     "frequenciesDescription": "Beschrijving van frequenties",
-    "mostCommonCardsInSpreads": "Meest voorkomende kaarten in leggingen",
+    "mostCommonCardOccurrencesByPosition": "Meest voorkomende kaarten in leggingen",
     "individualCardFrequencies": "Individuele kaartfrequenties",
     "chooseDate": "Kies een datum",
     "completeCaptchaFirst": "Voltooi eerst de captcha",

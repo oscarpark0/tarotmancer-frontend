@@ -221,18 +221,30 @@
 .barChartContainer {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .barChartItem {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 20px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  transition: background 0.3s ease;
+}
+
+.barChartItem:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .cardImageWrapper {
-  width: 60px;
-  height: 100px;
+  width: 70px;
+  height: 120px;
   perspective: 1000px;
 }
 
@@ -270,26 +282,30 @@
   flex-grow: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 }
 
 .barLabel {
-  width: 150px;
+  width: 180px;
   text-align: right;
-  font-size: 0.9rem;
+  font-size: 1rem;
+  color: #ffd700;
+  font-weight: 500;
 }
 
 .bar {
-  height: 20px;
-  background-color: #ffd700;
-  border-radius: 10px;
+  height: 25px;
+  background: linear-gradient(90deg, #ffd700, #ffaa00);
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 15px;
   box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
 }
 
 .barValue {
   color: #1a1a2e;
   font-weight: bold;
+  font-size: 0.9rem;
 }

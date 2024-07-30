@@ -14,7 +14,7 @@
     "loading": "Laden...",
     "dailyTarotCardFrequencies": "Tägliche Tarotkarten-Frequenzen",
     "frequenciesDescription": "Beschreibung der Frequenzen",
-    "mostCommonCardsInSpreads": "Häufigste Karten in Legungen",
+    "mostCommonCardOccurrencesByPosition": "Häufigste Karten in Legungen",
     "individualCardFrequencies": "Individuelle Kartenfrequenzen",
     "chooseDate": "Datum auswählen",
     "completeCaptchaFirst": "Bitte zuerst das Captcha ausfüllen",

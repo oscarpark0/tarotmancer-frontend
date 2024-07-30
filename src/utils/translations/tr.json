@@ -14,7 +14,7 @@
     "loading": "Yükleniyor...",
     "dailyTarotCardFrequencies": "Günlük Tarot Kart Frekansları",
     "frequenciesDescription": "Bu, son 24 saat içinde çekilen kartların frekanslarını gösterir.",
-    "mostCommonCardsInSpreads": "Açılımlarda En Sık Görülen Kartlar",
+    "mostCommonCardOccurrencesByPosition": "Açılımlarda En Sık Görülen Kartlar",
     "individualCardFrequencies": "Bireysel Kart Frekansları",
     "chooseDate": "Tarih Seçin",
     "completeCaptchaFirst": "Lütfen önce captcha'yı tamamlayın",

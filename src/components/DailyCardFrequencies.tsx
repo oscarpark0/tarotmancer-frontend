@@ -43,14 +43,14 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
     <div className={styles.dailyCardFrequencies}>
       <div className={styles.barChartContainer}>
         <AnimatePresence>
-          {frequencies.map((freq) => (
+          {frequencies.map((freq, index) => (
             <motion.div
               key={freq.card_name}
               className={styles.barChartItem}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
             >
               <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>
                 <div className={styles.cardInner}>
@@ -72,12 +72,15 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
               </div>
               <div className={styles.barWrapper}>
                 <div className={styles.barLabel}>{freq.card_name}</div>
-                <div 
+                <motion.div 
                   className={styles.bar} 
                   style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
                 >
                   <span className={styles.barValue}>{freq.frequency}</span>
-                </div>
+                </motion.div>
               </div>
             </motion.div>
           ))}

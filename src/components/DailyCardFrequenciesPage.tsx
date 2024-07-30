@@ -106,7 +106,10 @@ const DailyFrequenciesPage: React.FC = () => {
     <div className={styles.dailyFrequenciesPage}>
       <header className={styles.pageHeader}>
         <h1>Daily Tarot Card Frequencies</h1>
-        <p>Explore the appearance frequency of Tarot cards for a specific date</p>
+        <p>This page displays aggregated Tarot card data across all users for a selected date. It shows:
+        1. The most frequently drawn card for each position in Celtic Cross and Three Card spreads.
+        2. A bar chart of individual card frequencies from all readings.
+        Choose a date to view the collective data for that day.</p>
       </header>
       <main className={styles.pageContent}>
         <div className={styles.dateSelector}>

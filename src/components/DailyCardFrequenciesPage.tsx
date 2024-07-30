@@ -28,17 +28,17 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
 
   return (
     <div className={styles.spreadContainer}>
-      <h2>{title}</h2>
+      <h3>{title}</h3>
       <div className={`${styles.spreadCards} ${isThreeCardSpread ? styles.threeCardSpread : styles.celticCrossSpread}`}>
         {spread.map((position, index) => (
           <div 
             key={index} 
-            className={`${styles.spreadCard} ${styles[`position${index}`]} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
+            className={`${styles.spreadCard} ${styles[`position${index}`]}`}
           >
             <img 
               src={position.most_common_card_img} 
               alt={position.most_common_card} 
-              className={styles.cardImage}
+              className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
             />
             <div className={styles.cardInfo}>
               <p className={styles.positionName}>{position.position_name}</p>
@@ -122,8 +122,10 @@ const DailyFrequenciesPage: React.FC = () => {
         </div>
         <section className={styles.spreadsSection}>
           <h2>Most Common Cards in Spreads</h2>
-          <Spread spread={celticSpread} title="Celtic Cross Spread" />
-          <Spread spread={threeCardSpread} title="Three Card Spread" />
+          <div className={styles.spreadsContainer}>
+            <Spread spread={celticSpread} title="Celtic Cross Spread" />
+            <Spread spread={threeCardSpread} title="Three Card Spread" />
+          </div>
         </section>
         <section className={styles.frequenciesSection}>
           <h2>Individual Card Frequencies</h2>

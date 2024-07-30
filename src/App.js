@@ -59,6 +59,7 @@ const TrackedThreeCardSpread = withComponentTracking(ThreeCardSpread, 'ThreeCard
 
 function AppContent() {
   const { isAuthenticated, user, getToken } = useKindeAuth();
+  console.log('AppContent - isAuthenticated:', isAuthenticated);
   const { getTranslation } = useTranslation(); 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
@@ -319,11 +320,15 @@ const TrackedAppContent = withComponentTracking(AppContent, 'AppContent');
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useKindeAuth();
 
+  console.log('ProtectedRoute - isAuthenticated:', isAuthenticated);
+  console.log('ProtectedRoute - isLoading:', isLoading);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (!isAuthenticated) {
+    console.log('ProtectedRoute - Redirecting to home');
     return <Navigate to="/" replace />;
   }
 

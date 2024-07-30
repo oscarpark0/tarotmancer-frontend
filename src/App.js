@@ -291,7 +291,14 @@ function AppContent() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/resources" element={<ResourcesPage />} />
             <Route path="/kinde_callback" element={<KindeCallbackHandler />} />
-            <Route path="/dashboard" element={<RealTimeDashboard />} />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <RealTimeDashboard />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </div>
         <div style={{ position: 'relative', zIndex: 5 }}>
@@ -308,6 +315,24 @@ function AppContent() {
 
 // Wrap AppContent with component tracking
 const TrackedAppContent = withComponentTracking(AppContent, 'AppContent');
+
+// Add ProtectedRoute component definition
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, isLoading } = useKindeAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate('/', { replace: true });
+    }
+  }, [isLoading, isAuthenticated, navigate]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return isAuthenticated ? children : null;
+};
 
 // Main App component
 function App() {

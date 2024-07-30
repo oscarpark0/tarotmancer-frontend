@@ -17,5 +17,3 @@ root.render(
     </KindeProvider>
   </React.StrictMode>
 );
-
-

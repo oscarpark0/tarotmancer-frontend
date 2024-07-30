@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Routes, Route, Navigate } from 'react-router-dom';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
@@ -17,7 +17,6 @@ import Footer from './components/Footer.tsx';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import TermsOfUse from './components/TermsOfUse';
 import DailyCardFrequenciesPage from './components/DailyCardFrequenciesPage';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styles from './components/SubscribeButton.module.css';
 import Contact from './components/Contact';
 import ResourcesPage from './components/ResourcesPage';
@@ -319,19 +318,16 @@ const TrackedAppContent = withComponentTracking(AppContent, 'AppContent');
 // Add ProtectedRoute component definition
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useKindeAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate('/', { replace: true });
-    }
-  }, [isLoading, isAuthenticated, navigate]);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  return isAuthenticated ? children : null;
+  if (!isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
 };
 
 // Main App component
@@ -347,15 +343,13 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      <LanguageProvider>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ComponentProvider>
-            <TrackedAppContent />
-          </ComponentProvider>
-        </Suspense>
-      </LanguageProvider>
-    </BrowserRouter>
+    <LanguageProvider>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ComponentProvider>
+          <TrackedAppContent />
+        </ComponentProvider>
+      </Suspense>
+    </LanguageProvider>
   );
 }
 

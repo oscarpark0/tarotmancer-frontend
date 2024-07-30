@@ -1,31 +1,49 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import DailyCardFrequencies from './DailyCardFrequencies';
-import './DailyCardFrequenciesPage.module.css';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import DailyCardFrequencies from './DailyCardFrequencies';
+import styles from './DailyCardFrequenciesPage.module.css';
 
 interface PositionInfo {
   position_name: string;
   most_common_card: string;
   most_common_card_img: string;
-  count: number;
-  orientation: string;
+  orientation: 'upright' | 'reversed';
 }
 
-const Spread: React.FC<{ spread: PositionInfo[], title: string }> = ({ spread, title }) => {
+interface CardFrequency {
+  card_name: string;
+  card_img: string;
+  frequency: number;
+  date: string;
+}
+
+interface SpreadProps {
+  spread: PositionInfo[];
+  title: string;
+}
+
+const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
+  const isThreeCardSpread = spread.length === 3;
+
   return (
-    <div className="spreadContainer">
+    <div className={styles.spreadContainer}>
       <h2>{title}</h2>
-      <div className="spreadCards">
+      <div className={`${styles.spreadCards} ${isThreeCardSpread ? styles.threeCardSpread : styles.celticCrossSpread}`}>
         {spread.map((position, index) => (
-          <div key={index} className="spreadCard">
+          <div 
+            key={index} 
+            className={`${styles.spreadCard} ${styles[`position${index}`]} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
+          >
             <img 
               src={position.most_common_card_img} 
               alt={position.most_common_card} 
-              className={`cardImage ${position.orientation === 'reversed' ? 'reversed' : ''}`}
+              className={styles.cardImage}
             />
-            <p>{position.position_name}</p>
-            <p>{position.most_common_card}</p>
+            <div className={styles.cardInfo}>
+              <p className={styles.positionName}>{position.position_name}</p>
+              <p className={styles.cardName}>{position.most_common_card}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -33,73 +51,89 @@ const Spread: React.FC<{ spread: PositionInfo[], title: string }> = ({ spread, t
   );
 };
 
-const DailyCardFrequenciesComponent: React.FC = () => {
+const DailyFrequenciesPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [celticSpread, setCelticSpread] = useState<PositionInfo[]>([]);
   const [threeCardSpread, setThreeCardSpread] = useState<PositionInfo[]>([]);
+  const [frequencies, setFrequencies] = useState<CardFrequency[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { getToken } = useKindeAuth();
 
-  const handleDateChange = (date: string) => {
-    setSelectedDate(date);
-  };
-
-  const fetchMostCommonCards = useCallback(async (date: string) => {
+  const fetchData = useCallback(async (date: string) => {
     try {
+      setIsLoading(true);
+      setError(null);
       const token = await getToken();
-      const response = await axios.get(
-        `${process.env.REACT_APP_BASE_URL}/api/most-common-cards`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          params: { date }
-        }
-      );
-      setCelticSpread(response.data.celtic_spread);
-      setThreeCardSpread(response.data.three_card_spread);
+      
+      const [frequenciesResponse, spreadsResponse] = await Promise.all([
+        axios.get<CardFrequency[]>(
+          `${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`,
+          {
+            headers: { 'Authorization': `Bearer ${token}` },
+            params: { date }
+          }
+        ),
+        axios.get(
+          `${process.env.REACT_APP_BASE_URL}/api/most-common-cards`,
+          {
+            headers: { 'Authorization': `Bearer ${token}` },
+            params: { date }
+          }
+        )
+      ]);
+
+      setFrequencies(frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency));
+      setCelticSpread(spreadsResponse.data.celtic_spread);
+      setThreeCardSpread(spreadsResponse.data.three_card_spread);
     } catch (err) {
-      console.error('Failed to fetch most common cards:', err);
+      console.error('Failed to fetch data:', err);
+      setError('Failed to fetch data. Please try again later.');
+    } finally {
+      setIsLoading(false);
     }
   }, [getToken]);
 
   useEffect(() => {
-    fetchMostCommonCards(selectedDate);
-  }, [fetchMostCommonCards, selectedDate]);
+    fetchData(selectedDate);
+  }, [fetchData, selectedDate]);
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedDate(e.target.value);
+  };
 
   return (
-    <div className="dailyCardFrequencies">
-      <div className="dateSelector">
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => handleDateChange(e.target.value)}
-          max={new Date().toISOString().split('T')[0]}
-        />
-      </div>
-      <Spread spread={celticSpread} title="Celtic Cross Spread" />
-      <Spread spread={threeCardSpread} title="Three Card Spread" />
-      {/* ... existing code for frequency chart ... */}
-    </div>
-  );
-};
-
-const DailyFrequenciesPage: React.FC = () => {
-  return (
-    <div className="dailyFrequenciesPage">
-      <header className="pageHeader">
+    <div className={styles.dailyFrequenciesPage}>
+      <header className={styles.pageHeader}>
         <h1>Daily Tarot Card Frequencies</h1>
         <p>Explore the appearance frequency of Tarot cards for a specific date</p>
       </header>
-      <main className="pageContent">
-        <section className="spreadsSection">
+      <main className={styles.pageContent}>
+        <div className={styles.dateSelector}>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={handleDateChange}
+            max={new Date().toISOString().split('T')[0]}
+          />
+        </div>
+        <section className={styles.spreadsSection}>
           <h2>Most Common Cards in Spreads</h2>
-          <DailyCardFrequenciesComponent />
+          <Spread spread={celticSpread} title="Celtic Cross Spread" />
+          <Spread spread={threeCardSpread} title="Three Card Spread" />
         </section>
-        <section className="frequenciesSection">
+        <section className={styles.frequenciesSection}>
           <h2>Individual Card Frequencies</h2>
-          <DailyCardFrequencies />
+          <DailyCardFrequencies 
+            frequencies={frequencies}
+            isLoading={isLoading}
+            error={error}
+            selectedDate={selectedDate}
+          />
         </section>
       </main>
+      {isLoading && <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>}
+      {error && <div className={styles.error}>{error}</div>}
     </div>
   );
 };

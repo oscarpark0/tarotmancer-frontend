@@ -72,16 +72,17 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  gap: 2rem;
 }
 
 .spreadContainer {
-  margin-bottom: 2rem;
-  width: 48%;
+  flex-basis: calc(50% - 1rem);
   min-width: 300px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
+  border: 2px solid rgba(255, 215, 0, 0.3);
   border-radius: 15px;
-  padding: 1rem;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+  padding: 1.5rem;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+  background-color: rgba(26, 26, 46, 0.7);
 }
 
 .spreadContainer h3 {
@@ -155,12 +156,12 @@
 .threeCardSpread .position2 { right: 10%; }
 
 /* Celtic Cross Spread Positioning */
-.celticCrossSpread .position0 { left: 35%; top: 35%; }
-.celticCrossSpread .position1 { left: 35%; top: 35%; transform: rotate(90deg); }
-.celticCrossSpread .position2 { left: 35%; top: 5%; }
-.celticCrossSpread .position3 { left: 35%; bottom: 5%; }
-.celticCrossSpread .position4 { left: 10%; top: 35%; }
-.celticCrossSpread .position5 { right: 20%; top: 35%; }
+.celticCrossSpread .position0 { left: 30%; top: 35%; }
+.celticCrossSpread .position1 { left: 30%; top: 35%; transform: rotate(90deg); }
+.celticCrossSpread .position2 { left: 30%; top: 5%; }
+.celticCrossSpread .position3 { left: 30%; bottom: 5%; }
+.celticCrossSpread .position4 { left: 5%; top: 35%; }
+.celticCrossSpread .position5 { right: 25%; top: 35%; }
 .celticCrossSpread .position6 { right: 5%; top: 5%; }
 .celticCrossSpread .position7 { right: 5%; top: 28%; }
 .celticCrossSpread .position8 { right: 5%; top: 51%; }
@@ -193,8 +194,7 @@
 
 @media (max-width: 768px) {
   .spreadContainer {
-    width: 100%;
-    margin-bottom: 1rem;
+    flex-basis: 100%;
   }
 
   .spreadCards {
@@ -212,11 +212,11 @@
 
   /* Adjust mobile positioning for Celtic Cross */
   .celticCrossSpread .position0,
-  .celticCrossSpread .position1 { left: 30%; }
-  .celticCrossSpread .position2 { left: 30%; top: 10%; }
-  .celticCrossSpread .position3 { left: 30%; bottom: 10%; }
-  .celticCrossSpread .position4 { left: 5%; }
-  .celticCrossSpread .position5 { right: 15%; }
+  .celticCrossSpread .position1 { left: 25%; }
+  .celticCrossSpread .position2 { left: 25%; top: 10%; }
+  .celticCrossSpread .position3 { left: 25%; bottom: 10%; }
+  .celticCrossSpread .position4 { left: 2%; }
+  .celticCrossSpread .position5 { right: 20%; }
   .celticCrossSpread .position6 { right: 2%; top: 10%; }
   .celticCrossSpread .position7 { right: 2%; top: 32%; }
   .celticCrossSpread .position8 { right: 2%; top: 54%; }

@@ -25,19 +25,26 @@ interface PositionInfo {
 }
 
 const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
+  const isThreeCardSpread = spread.length === 3;
+
   return (
     <div className={styles.spreadContainer}>
       <h2>{title}</h2>
-      <div className={styles.spreadCards}>
+      <div className={`${styles.spreadCards} ${isThreeCardSpread ? styles.threeCardSpread : styles.celticCrossSpread}`}>
         {spread.map((position, index) => (
-          <div key={index} className={styles.spreadCard}>
+          <div 
+            key={index} 
+            className={`${styles.spreadCard} ${styles[`position${index}`]} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
+          >
             <img 
               src={position.most_common_card_img} 
               alt={position.most_common_card} 
-              className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
+              className={styles.cardImage}
             />
-            <p>{position.position_name}</p>
-            <p>{position.most_common_card}</p>
+            <div className={styles.cardInfo}>
+              <p className={styles.positionName}>{position.position_name}</p>
+              <p className={styles.cardName}>{position.most_common_card}</p>
+            </div>
           </div>
         ))}
       </div>

@@ -247,6 +247,13 @@ function AppContent() {
     }
   }, [isAuthenticated, fetchUserDraws]);
 
+  useEffect(() => {
+    console.log('AppContent - Authentication status changed:', isAuthenticated, 'user:', user);
+    if (!isAuthenticated) {
+      console.log('AppContent - User was logged out');
+    }
+  }, [isAuthenticated, user]);
+
   return (
     <ComponentProvider>
       <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -296,7 +303,10 @@ function AppContent() {
               path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <RealTimeDashboard />
+                  {() => {
+                    console.log('Rendering dashboard route');
+                    return <RealTimeDashboard />;
+                  }}
                 </ProtectedRoute>
               } 
             />
@@ -314,22 +324,23 @@ function AppContent() {
   );
 }
 
-// Wrap AppContent with component tracking
-const TrackedAppContent = withComponentTracking(AppContent, 'AppContent');
 
 // Add ProtectedRoute component definition
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useKindeAuth();
+
+  console.log('ProtectedRoute - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (!isAuthenticated) {
+    console.log('ProtectedRoute - Redirecting to home');
     return <Navigate to="/" replace />;
   }
 
-  return children;
+  return typeof children === 'function' ? children() : children;
 };
 
 // Main App component

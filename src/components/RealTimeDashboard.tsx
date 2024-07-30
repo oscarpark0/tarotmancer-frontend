@@ -1,4 +1,12 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
+
+// Add this type definition
+type KindeAuthType = {
+  isAuthenticated?: boolean;
+  user?: any;
+  // Add other properties as needed
+};
 
 // Create a context to store component information
 const ComponentContext = createContext<any>(null);
@@ -29,6 +37,17 @@ export const useRegisterComponent = (name: string, props: any) => {
 // RealTimeDashboard component
 const RealTimeDashboard: React.FC = () => {
   const { components } = useContext(ComponentContext);
+  const kindeAuth = useKindeAuth() as KindeAuthType;
+
+  useEffect(() => {
+    console.log('RealTimeDashboard - Mounted');
+    console.log('RealTimeDashboard - isAuthenticated:', kindeAuth.isAuthenticated);
+    console.log('RealTimeDashboard - user:', kindeAuth.user);
+
+    return () => {
+      console.log('RealTimeDashboard - Unmounted');
+    };
+  }, [kindeAuth.isAuthenticated, kindeAuth.user]);
 
   return (
     <div className="real-time-dashboard">

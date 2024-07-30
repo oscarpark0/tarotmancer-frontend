@@ -91,18 +91,25 @@ const DailyFrequenciesPage: React.FC = () => {
       setThreeCardSpread(spreadsResponse.data.three_card_spread);
     } catch (err) {
       console.error('Failed to fetch data:', err);
-      setError('Failed to fetch data. Please try again later.');
+      if (axios.isAxiosError(err)) {
+        setError(`Failed to fetch data: ${err.message}. Status: ${err.response?.status}`);
+      } else {
+        setError('An unexpected error occurred. Please try again later.');
+      }
     } finally {
       setIsLoading(false);
     }
   }, [getToken]);
 
   useEffect(() => {
+    console.log('Fetching data for date:', selectedDate);
     fetchData(selectedDate);
   }, [fetchData, selectedDate]);
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDate(e.target.value);
+    const newDate = e.target.value;
+    setSelectedDate(newDate);
+    fetchData(newDate);
   };
 
   return (

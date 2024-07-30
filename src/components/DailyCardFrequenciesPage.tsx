@@ -26,26 +26,27 @@ interface SpreadProps {
 }
 
 const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
-  const isThreeCardSpread = spread.length === 3;
   const { getTranslation } = useTranslation();
 
   return (
     <div className={styles.spreadContainer}>
       <h3>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h3>
-      <div className={`${styles.spreadCards} ${isThreeCardSpread ? styles.threeCardSpread : styles.celticCrossSpread}`}>
+      <div className={styles.spreadCards}>
         {spread.map((position, index) => (
           <div 
             key={index} 
-            className={`${styles.spreadCard} ${styles[`position${index}`]}`}
+            className={styles.spreadCard}
           >
-            <img 
-              src={position.most_common_card_img} 
-              alt={position.most_common_card} 
-              className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
-            />
-            <div className={styles.cardInfo}>
-              <p className={styles.positionName}>{position.position_name}</p>
-              <p className={styles.cardName}>{position.most_common_card}</p>
+            <div className={styles.cardWrapper}>
+              <img 
+                src={position.most_common_card_img} 
+                alt={position.most_common_card} 
+                className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
+              />
+              <div className={styles.cardInfo}>
+                <p className={styles.positionName}>{position.position_name}</p>
+                <p className={styles.cardName}>{position.most_common_card}</p>
+              </div>
             </div>
           </div>
         ))}

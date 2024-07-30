@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import styles from './DailyCardFrequenciesPage.module.css';
-import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import { useTranslation } from '../utils/translations';
 
 interface CardFrequency {
@@ -24,67 +23,44 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
   error, 
   selectedDate 
 }) => {
-  const [isFlipping, setIsFlipping] = useState(false);
   const { getTranslation } = useTranslation();
 
   const getMaxFrequency = () => {
     return Math.max(...frequencies.map(freq => freq.frequency), 1);
   };
 
-  useEffect(() => {
-    setIsFlipping(true);
-    const timer = setTimeout(() => {
-      setIsFlipping(false);
-    }, 600);
-    return () => clearTimeout(timer);
-  }, [selectedDate]);
-
   return (
     <div className={styles.dailyCardFrequencies}>
       <div className={styles.barChartContainer}>
-        <AnimatePresence>
-          {frequencies.map((freq, index) => (
-            <motion.div
-              key={freq.card_name}
-              className={styles.barChartItem}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-            >
-              <div className={`${styles.cardImageWrapper} ${isFlipping ? styles.flipping : ''}`}>
-                <div className={styles.cardInner}>
-                  <div className={styles.cardFront}>
-                    <img 
-                      src={freq.card_img}
-                      alt={freq.card_name}
-                      className={styles.cardImage}
-                    />
-                  </div>
-                  <div className={styles.cardBack}>
-                    <img 
-                      src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
-                      alt="Card Back"
-                      className={styles.cardImage}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className={styles.barWrapper}>
-                <div className={styles.barLabel}>{freq.card_name}</div>
-                <motion.div 
-                  className={styles.bar} 
-                  style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                >
-                  <span className={styles.barValue}>{freq.frequency}</span>
-                </motion.div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {frequencies.map((freq, index) => (
+          <motion.div
+            key={freq.card_name}
+            className={styles.barChartItem}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: index * 0.05 }}
+          >
+            <div className={styles.cardImageWrapper}>
+              <img 
+                src={freq.card_img}
+                alt={freq.card_name}
+                className={styles.cardImage}
+              />
+            </div>
+            <div className={styles.barWrapper}>
+              <div className={styles.barLabel}>{freq.card_name}</div>
+              <motion.div 
+                className={styles.bar} 
+                style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                initial={{ width: 0 }}
+                animate={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+              >
+                <span className={styles.barValue}>{freq.frequency}</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        ))}
       </div>
       {isLoading && <div className={styles.loading}>{getTranslation('loading')}<span>.</span><span>.</span><span>.</span></div>}
       {error && <div className={styles.error}>{error}</div>}

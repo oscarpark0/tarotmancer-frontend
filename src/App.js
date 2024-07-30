@@ -165,9 +165,14 @@ function AppContent({ isAuthenticated }) {
   const makeAuthenticatedRequest = useCallback(async (endpoint, errorMessage) => {
     try {
       const token = await getToken();
+      const userId = user?.id; // Get the user ID from the Kinde user object
+      if (!userId) {
+        throw new Error("User ID not available");
+      }
       const response = await fetch(`${process.env.REACT_APP_BASE_URL}${endpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
+          'User-ID': userId, // Add the User-ID header
         },
       });
       if (!response.ok) {
@@ -178,7 +183,7 @@ function AppContent({ isAuthenticated }) {
       console.error(`${errorMessage}:`, error);
       return null;
     }
-  }, [getToken]);
+  }, [getToken, user]);
 
   const checkCanDraw = useCallback(async () => {
     const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
-import { KindeProvider, useKindeAuth } from "@kinde-oss/kinde-auth-react";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useNavigate } from 'react-router-dom';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
@@ -310,18 +310,11 @@ function App() {
 
   return (
     <BrowserRouter>
-      <KindeProvider
-        clientId={process.env.REACT_APP_KINDE_CLIENT_ID}
-        domain={process.env.REACT_APP_KINDE_DOMAIN}
-        redirectUri={`${window.location.origin}/kinde_callback`}
-        logoutUri={window.location.origin}
-      >
-        <LanguageProvider>
-          <Suspense fallback={<div>Loading...</div>}>
-            <AppContent />
-          </Suspense>
-        </LanguageProvider>
-      </KindeProvider>
+      <LanguageProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AppContent />
+        </Suspense>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }

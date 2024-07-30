@@ -1,49 +1,49 @@
 .privacyContainer {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-  }
-  
-  .privacyContainer h1 {
-    text-align: center;
-    color: #333;
-  }
-  
-  .privacyContainer h2 {
-    color: #444;
-    margin-top: 30px;
-  }
-  
-  .privacyContainer p {
-    margin-bottom: 15px;
-  }
-  
-  .privacyContainer section {
-    margin-bottom: 30px;
-  }
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
 
-  .backButton {
-    background-color: #4a0e78;
-    color: #f0e6ff;
-    border: 2px solid #8a2be2;
-    border-radius: 15px;
-    padding: 6px 12px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
-  }
+.privacyContainer h1 {
+  text-align: center;
+  color: #333;
+}
 
-  .backButton:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
-  }
+.privacyContainer h2 {
+  color: #444;
+  margin-top: 30px;
+}
 
-  .backButton::before {
-    content: '✦';
-    margin-right: 5px;
-    font-size: 0.8rem;
-  }
+.privacyContainer p {
+  margin-bottom: 15px;
+}
+
+.privacyContainer section {
+  margin-bottom: 30px;
+}
+
+.backButton {
+  background-color: #4a0e78;
+  color: #f0e6ff;
+  border: 2px solid #8a2be2;
+  border-radius: 15px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
+}
+
+.backButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+}
+
+.backButton::before {
+  content: '✦';
+  margin-right: 5px;
+  font-size: 0.8rem;
+}

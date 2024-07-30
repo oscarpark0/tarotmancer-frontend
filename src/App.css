@@ -262,3 +262,11 @@ body.feedback-modal-open .feedback-modal-overlay {
   bottom: 0;
   z-index: 1000000; /* Extremely high z-index */
 }
+
+-tooltip.right {
+    transform: scale(1) translate(-50%, -50%);
+  }
+
+  .card-tooltip.scaling {
+    transform: scale(1);
+  }

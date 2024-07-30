@@ -209,28 +209,29 @@ function AppContent() {
   }, [checkCanDraw]);
 
   useEffect(() => {
-    const calculateTimeUntilNextDraw = () => {
-      if (!lastDrawTime || canDraw) {
-        setTimeUntilNextDraw(null);
-        return;
-      }
+    let timer;
+    if (!canDraw && lastDrawTime) {
+      const calculateTimeUntilNextDraw = () => {
+        const now = new Date();
+        const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000);
+        const timeLeft = nextDrawTime - now;
 
-      const now = new Date();
-      const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000); // 24 hours after last draw
-      const timeLeft = nextDrawTime - now;
+        if (timeLeft <= 0) {
+          setCanDraw(true);
+          setTimeUntilNextDraw(null);
+          clearInterval(timer);
+        } else {
+          setTimeUntilNextDraw(Math.ceil(timeLeft / 1000));
+        }
+      };
 
-      if (timeLeft <= 0) {
-        setCanDraw(true);
-        setTimeUntilNextDraw(null);
-      } else {
-        setTimeUntilNextDraw(Math.ceil(timeLeft / 1000)); // Convert to seconds
-      }
+      calculateTimeUntilNextDraw();
+      timer = setInterval(calculateTimeUntilNextDraw, 1000);
+    }
+
+    return () => {
+      if (timer) clearInterval(timer);
     };
-
-    calculateTimeUntilNextDraw();
-    const timer = setInterval(calculateTimeUntilNextDraw, 1000);
-
-    return () => clearInterval(timer);
   }, [lastDrawTime, canDraw]);
 
   const handleDraw = useCallback(() => {
@@ -320,15 +321,11 @@ const TrackedAppContent = withComponentTracking(AppContent, 'AppContent');
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, isLoading } = useKindeAuth();
 
-  console.log('ProtectedRoute - isAuthenticated:', isAuthenticated);
-  console.log('ProtectedRoute - isLoading:', isLoading);
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   if (!isAuthenticated) {
-    console.log('ProtectedRoute - Redirecting to home');
     return <Navigate to="/" replace />;
   }
 
@@ -351,7 +348,7 @@ function App() {
     <LanguageProvider>
       <Suspense fallback={<div>Loading...</div>}>
         <ComponentProvider>
-          <TrackedAppContent />
+          <AppContent />
         </ComponentProvider>
       </Suspense>
     </LanguageProvider>

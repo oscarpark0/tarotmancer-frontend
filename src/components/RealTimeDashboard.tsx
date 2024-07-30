@@ -1,10 +1,11 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
-// Add this type definition
-type KindeAuthType = {
+// Update the type definition
+type _KindeAuthType = {
   isAuthenticated?: boolean;
   user?: any;
+  getToken: () => Promise<string>;
   // Add other properties as needed
 };
 
@@ -37,17 +38,21 @@ export const useRegisterComponent = (name: string, props: any) => {
 // RealTimeDashboard component
 const RealTimeDashboard: React.FC = () => {
   const { components } = useContext(ComponentContext);
-  const kindeAuth = useKindeAuth() as KindeAuthType;
+  const { isAuthenticated, user, getToken }: _KindeAuthType = useKindeAuth();
 
   useEffect(() => {
     console.log('RealTimeDashboard - Mounted');
-    console.log('RealTimeDashboard - isAuthenticated:', kindeAuth.isAuthenticated);
-    console.log('RealTimeDashboard - user:', kindeAuth.user);
+    console.log('RealTimeDashboard - isAuthenticated:', isAuthenticated);
+    console.log('RealTimeDashboard - user:', user);
+
+    if (isAuthenticated) {
+      getToken().then((token: string) => console.log('RealTimeDashboard - Token available:', !!token));
+    }
 
     return () => {
       console.log('RealTimeDashboard - Unmounted');
     };
-  }, [kindeAuth.isAuthenticated, kindeAuth.user]);
+  }, [isAuthenticated, user, getToken]);
 
   return (
     <div className="real-time-dashboard">

@@ -21,7 +21,6 @@ import styles from './components/SubscribeButton.module.css';
 import Contact from './components/Contact';
 import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
-import { initializeTranslations } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
 import RealTimeDashboard, { ComponentProvider } from './components/RealTimeDashboard';
 import { withComponentTracking } from './utils/withComponentTracking';
@@ -57,8 +56,8 @@ function KindeCallbackHandler() {
 const TrackedCelticSpread = withComponentTracking(CelticSpread, 'CelticSpread');
 const TrackedThreeCardSpread = withComponentTracking(ThreeCardSpread, 'ThreeCardSpread');
 
-function AppContent() {
-  const { isAuthenticated, user, getToken } = useKindeAuth();
+function AppContent({ isAuthenticated }) {
+  const { user, getToken } = useKindeAuth();
   console.log('AppContent - isAuthenticated:', isAuthenticated);
   const { getTranslation } = useTranslation(); 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -340,26 +339,22 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/" replace />;
   }
 
-  return typeof children === 'function' ? children() : children;
+  return children;
 };
 
 // Main App component
 function App() {
-  useEffect(() => {
-    initializeTranslations();
+  const { isLoading, isAuthenticated } = useKindeAuth();
 
-    // Matomo tracking code
-    var _mtm = window._mtm = window._mtm || [];
-    _mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.async=true; g.src='https://cdn.matomo.cloud/tarotmancer.matomo.cloud/container_YKllof39.js'; s.parentNode.insertBefore(g,s);
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <LanguageProvider>
       <Suspense fallback={<div>Loading...</div>}>
         <ComponentProvider>
-          <AppContent />
+          <AppContent isAuthenticated={isAuthenticated} />
         </ComponentProvider>
       </Suspense>
     </LanguageProvider>

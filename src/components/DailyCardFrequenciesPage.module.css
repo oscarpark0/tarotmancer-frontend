@@ -153,17 +153,25 @@
 .threeCardSpread .position1 { left: 50%; transform: translate(-50%, -50%); }
 .threeCardSpread .position2 { right: 20%; }
 
-/* Celtic Cross Spread Positioning */
-.celticCrossSpread .position0 { left: 40%; top: 35%; }
-.celticCrossSpread .position1 { left: 40%; top: 35%; transform: rotate(90deg); }
-.celticCrossSpread .position2 { left: 40%; top: 5%; }
-.celticCrossSpread .position3 { left: 40%; bottom: 5%; }
-.celticCrossSpread .position4 { left: 15%; top: 35%; }
-.celticCrossSpread .position5 { right: 15%; top: 35%; }
+/* Update the Celtic Cross Spread Positioning */
+.celticCrossSpread .position0 { left: 35%; top: 35%; }
+.celticCrossSpread .position1 { left: 35%; top: 35%; transform: rotate(90deg); }
+.celticCrossSpread .position2 { left: 35%; top: 5%; }
+.celticCrossSpread .position3 { left: 35%; bottom: 5%; }
+.celticCrossSpread .position4 { left: 10%; top: 35%; }
+.celticCrossSpread .position5 { right: 10%; top: 35%; }
 .celticCrossSpread .position6 { right: 5%; top: 5%; }
 .celticCrossSpread .position7 { right: 5%; top: 28%; }
 .celticCrossSpread .position8 { right: 5%; top: 51%; }
 .celticCrossSpread .position9 { right: 5%; top: 74%; }
+
+/* Add a separator style */
+.spreadSeparator {
+  width: 100%;
+  height: 2px;
+  background-color: rgba(255, 215, 0, 0.3);
+  margin: 2rem 0;
+}
 
 .loading, .error {
   text-align: center;
@@ -210,11 +218,11 @@
 
   /* Adjust mobile positioning for Celtic Cross */
   .celticCrossSpread .position0,
-  .celticCrossSpread .position1 { left: 35%; }
-  .celticCrossSpread .position2 { left: 35%; top: 10%; }
-  .celticCrossSpread .position3 { left: 35%; bottom: 10%; }
-  .celticCrossSpread .position4 { left: 10%; }
-  .celticCrossSpread .position5 { right: 10%; }
+  .celticCrossSpread .position1 { left: 30%; }
+  .celticCrossSpread .position2 { left: 30%; top: 10%; }
+  .celticCrossSpread .position3 { left: 30%; bottom: 10%; }
+  .celticCrossSpread .position4 { left: 5%; }
+  .celticCrossSpread .position5 { right: 5%; }
   .celticCrossSpread .position6 { right: 2%; top: 10%; }
   .celticCrossSpread .position7 { right: 2%; top: 32%; }
   .celticCrossSpread .position8 { right: 2%; top: 54%; }

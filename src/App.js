@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
-import { useNavigate, Routes, Route, Navigate } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import LoginButton from './components/LoginButton';
 import LogoutButton from './components/LogoutButton';
 import SubscribeButton from './components/SubscribeButton.tsx';
@@ -22,7 +22,6 @@ import Contact from './components/Contact';
 import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
-import RealTimeDashboard, { ComponentProvider } from './components/RealTimeDashboard';
 import { withComponentTracking } from './utils/withComponentTracking';
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
@@ -254,95 +253,62 @@ function AppContent({ isAuthenticated }) {
   }, [isAuthenticated, user]);
 
   return (
-    <ComponentProvider>
-      <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ position: 'relative', zIndex: 10 }}>
-          {memoizedHeader}
-        </div>
-        <div style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1, padding: isMobileScreen ? 0 : undefined }}>
-          <Routes>
-            <Route path="/" element={isAuthenticated ? (
-              <Suspense fallback={<div>Loading...</div>}>
-                {selectedSpread === 'celtic' ? (
-                  <TrackedCelticSpread 
-                    {...spreadProps} 
-                    isDarkMode={isDarkMode}
-                    canDraw={canDraw}
-                    timeUntilNextDraw={timeUntilNextDraw}
-                    currentDrawId={currentDrawId}
-                    setCurrentDrawId={setCurrentDrawId}
-                    getToken={getToken}
-                    onDraw={handleDraw}
-                  />
-                ) : (
-                  <TrackedThreeCardSpread 
-                    {...spreadProps} 
-                    isDarkMode={isDarkMode}
-                    canDraw={canDraw}
-                    timeUntilNextDraw={timeUntilNextDraw}
-                    currentDrawId={currentDrawId}
-                    setCurrentDrawId={setCurrentDrawId}
-                    getToken={getToken}
-                    drawCount={drawCount}
-                    setDrawCount={setDrawCount}
-                    lastResetTime={lastResetTime}
-                    setLastResetTime={setLastResetTime}
-                  />
-                )}
-              </Suspense>
-            ) : memoizedWelcomeMessage} />
-            <Route path="/dailyFrequencies" element={<DailyCardFrequenciesPage />} />
-            <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-use" element={<TermsOfUse />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/resources" element={<ResourcesPage />} />
-            <Route path="/kinde_callback" element={<KindeCallbackHandler />} />
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  {() => {
-                    console.log('Rendering dashboard route');
-                    return <RealTimeDashboard />;
-                  }}
-                </ProtectedRoute>
-              } 
-            />
-          </Routes>
-        </div>
-        <div style={{ position: 'relative', zIndex: 5 }}>
-          <Footer isDarkMode={isDarkMode} />
-        </div>
-        <PastDrawsModal 
-          isOpen={isPastDrawsModalOpen} 
-          onClose={() => setIsPastDrawsModalOpen(false)} 
-        />
+    <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ position: 'relative', zIndex: 10 }}>
+        {memoizedHeader}
       </div>
-    </ComponentProvider>
+      <div style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1, padding: isMobileScreen ? 0 : undefined }}>
+        <Routes>
+          <Route path="/" element={isAuthenticated ? (
+            <Suspense fallback={<div>Loading...</div>}>
+              {selectedSpread === 'celtic' ? (
+                <TrackedCelticSpread 
+                  {...spreadProps} 
+                  isDarkMode={isDarkMode}
+                  canDraw={canDraw}
+                  timeUntilNextDraw={timeUntilNextDraw}
+                  currentDrawId={currentDrawId}
+                  setCurrentDrawId={setCurrentDrawId}
+                  getToken={getToken}
+                  onDraw={handleDraw}
+                />
+              ) : (
+                <TrackedThreeCardSpread 
+                  {...spreadProps} 
+                  isDarkMode={isDarkMode}
+                  canDraw={canDraw}
+                  timeUntilNextDraw={timeUntilNextDraw}
+                  currentDrawId={currentDrawId}
+                  setCurrentDrawId={setCurrentDrawId}
+                  getToken={getToken}
+                  drawCount={drawCount}
+                  setDrawCount={setDrawCount}
+                  lastResetTime={lastResetTime}
+                  setLastResetTime={setLastResetTime}
+                />
+              )}
+            </Suspense>
+          ) : memoizedWelcomeMessage} />
+          <Route path="/dailyFrequencies" element={<DailyCardFrequenciesPage />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-use" element={<TermsOfUse />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/kinde_callback" element={<KindeCallbackHandler />} />
+        </Routes>
+      </div>
+      <div style={{ position: 'relative', zIndex: 5 }}>
+        <Footer isDarkMode={isDarkMode} />
+      </div>
+      <PastDrawsModal 
+        isOpen={isPastDrawsModalOpen} 
+        onClose={() => setIsPastDrawsModalOpen(false)} 
+      />
+    </div>
   );
 }
 
-
-// Add ProtectedRoute component definition
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, isLoading } = useKindeAuth();
-
-  console.log('ProtectedRoute - isAuthenticated:', isAuthenticated, 'isLoading:', isLoading);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!isAuthenticated) {
-    console.log('ProtectedRoute - Redirecting to home');
-    return <Navigate to="/" replace />;
-  }
-
-  return children;
-};
-
-// Main App component
 function App() {
   const { isLoading, isAuthenticated } = useKindeAuth();
 
@@ -353,9 +319,7 @@ function App() {
   return (
     <LanguageProvider>
       <Suspense fallback={<div>Loading...</div>}>
-        <ComponentProvider>
-          <AppContent isAuthenticated={isAuthenticated} />
-        </ComponentProvider>
+        <AppContent isAuthenticated={isAuthenticated} />
       </Suspense>
     </LanguageProvider>
   );

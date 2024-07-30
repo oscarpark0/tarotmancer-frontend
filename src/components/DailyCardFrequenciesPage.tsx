@@ -131,7 +131,7 @@ const DailyFrequenciesPage: React.FC = () => {
           <h2>{getTranslation('mostCommonCardOccurrencesByPosition')}</h2>
           <div className={styles.spreadsContainer}>
             <Spread spread={celticSpread} title="celticCrossSpread" />
-            <hr style={{ width: '100%', margin: '2rem 0', borderColor: 'rgba(255, 215, 0, 0.3)' }} />
+            <div className={styles.spreadSeparator}></div>
             <Spread spread={threeCardSpread} title="threeCardSpread" />
           </div>
         </section>

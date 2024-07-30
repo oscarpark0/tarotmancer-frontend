@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from './DailyCardFrequenciesPage.module.css';
 import { useTranslation } from '../utils/translations';
 
@@ -32,35 +32,38 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
   return (
     <div className={styles.dailyCardFrequencies}>
       <div className={styles.barChartContainer}>
-        {frequencies.map((freq, index) => (
-          <motion.div
-            key={freq.card_name}
-            className={styles.barChartItem}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
-          >
-            <div className={styles.cardImageWrapper}>
-              <img 
-                src={freq.card_img}
-                alt={freq.card_name}
-                className={styles.cardImage}
-              />
-            </div>
-            <div className={styles.barWrapper}>
-              <div className={styles.barLabel}>{freq.card_name}</div>
-              <motion.div 
-                className={styles.bar} 
-                style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
-                initial={{ width: 0 }}
-                animate={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
-                transition={{ duration: 0.5, delay: index * 0.05 }}
-              >
-                <span className={styles.barValue}>{freq.frequency}</span>
-              </motion.div>
-            </div>
-          </motion.div>
-        ))}
+        <AnimatePresence>
+          {frequencies.map((freq, index) => (
+            <motion.div
+              key={freq.card_name}
+              className={styles.barChartItem}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+            >
+              <div className={styles.cardImageWrapper}>
+                <img 
+                  src={freq.card_img}
+                  alt={freq.card_name}
+                  className={styles.cardImage}
+                />
+              </div>
+              <div className={styles.barWrapper}>
+                <div className={styles.barLabel}>{freq.card_name}</div>
+                <motion.div 
+                  className={styles.bar} 
+                  style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                >
+                  <span className={styles.barValue}>{freq.frequency}</span>
+                </motion.div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
       {isLoading && <div className={styles.loading}>{getTranslation('loading')}<span>.</span><span>.</span><span>.</span></div>}
       {error && <div className={styles.error}>{error}</div>}

@@ -4,7 +4,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import DailyCardFrequencies from './DailyCardFrequencies';
 import styles from './DailyCardFrequenciesPage.module.css';
 import { useTranslation } from '../utils/translations';
-import { API_BASE_URL } from '../utils/config';
+
 
 interface PositionInfo {
   position_name: string;
@@ -26,27 +26,32 @@ interface SpreadProps {
 }
 
 const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
+  const isThreeCardSpread = spread.length === 3;
   const { getTranslation } = useTranslation();
 
   return (
+
     <div className={styles.spreadContainer}>
-      <h3>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h3>
-      <div className={styles.spreadCards}>
+     <h4>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h4>
+      <div className={`${styles.spreadCards} ${isThreeCardSpread ? styles.threeCardSpread : styles.celticCrossSpread}`}>
         {spread.map((position, index) => (
           <div 
             key={index} 
-            className={styles.spreadCard}
+            className={`${styles.spreadCard} ${styles[`position${index}`]}`}
           >
-            <div className={styles.cardWrapper}>
-              <img 
-                src={position.most_common_card_img} 
-                alt={position.most_common_card} 
-                className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
-              />
-              <div className={styles.cardInfo}>
-                <p className={styles.positionName}>{position.position_name}</p>
-                <p className={styles.cardName}>{position.most_common_card}</p>
-              </div>
+            <img 
+              src={position.most_common_card_img} 
+              alt={position.most_common_card} 
+              className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
+            />
+            <div className={styles.cardInfo}>
+              <p className={styles.positionName}>{position.position_name}</p>
+              <p className={styles.cardName}>
+                {position.most_common_card}
+                <span className={styles.orientationIcon}>
+                  {position.orientation === 'upright' ? '↑' : '↓'}
+                </span>
+              </p>
             </div>
           </div>
         ))}
@@ -73,14 +78,14 @@ const DailyFrequenciesPage: React.FC = () => {
       
       const [frequenciesResponse, spreadsResponse] = await Promise.all([
         axios.get<CardFrequency[]>(
-          `${API_BASE_URL}/api/daily-card-frequencies`,
+          `${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`,
           {
             headers: { 'Authorization': `Bearer ${token}` },
             params: { date }
           }
         ),
         axios.get(
-          `${API_BASE_URL}/api/most-common-cards`,
+          `${process.env.REACT_APP_BASE_URL}/api/most-common-cards`,
           {
             headers: { 'Authorization': `Bearer ${token}` },
             params: { date }

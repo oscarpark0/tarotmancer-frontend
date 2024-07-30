@@ -27,14 +27,23 @@ export const languageNames: Record<Language, string> = {
   zh: '中文'
 };
 
-export type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread' | 'removeDraw' | 'timeRemainingUntilNextDraw' | 'tarotmancer' | 'closeModal' | 'terms' | 'privacy' | 'contact' | 'resources' | 'dailyFrequencies' | 'checkNetworkAndTryAgain' | 'failedToDrawSpread' | 'logoutUnavailable' | 'mostCommonCardAt' | 'orientation' | 'selectLanguage' | 'feedback' | 'closeFeedbackForm' | 'provideFeedback' | 'enterFeedbackHere' | 'submitting' | 'submitFeedback' | 'feedbackSubmittedSuccess' | 'feedbackSubmitError' | 'completeCaptchaFirst' | 'confirmRemoveDraw' | 'yes' | 'no' | 'howItWorks';
+export type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread' | 'removeDraw' | 'timeRemainingUntilNextDraw' | 'tarotmancer' | 'closeModal' | 'terms' | 'privacy' | 'contact' | 'resources' | 'dailyFrequencies' | 'checkNetworkAndTryAgain' | 'failedToDrawSpread' | 'logoutUnavailable' | 'mostCommonCardAt' | 'orientation' | 'selectLanguage' | 'feedback' | 'closeFeedbackForm' | 'provideFeedback' | 'enterFeedbackHere' | 'submitting' | 'submitFeedback' | 'feedbackSubmittedSuccess' | 'feedbackSubmitError' | 'completeCaptchaFirst' | 'confirmRemoveDraw' | 'yes' | 'no' | 'howItWorks' | 'dailyTarotCardFrequencies' | 'frequenciesDescription' | 'chooseDate' | 'mostCommonCardsInSpreads' | 'celticCrossSpread' | 'threeCardSpread' | 'individualCardFrequencies' | 'loading';
 
 export const buttonTranslations: Record<Language, Record<TranslationKey, string>> = {
   ar: {} as Record<TranslationKey, string>,
   da: {} as Record<TranslationKey, string>,
   de: {} as Record<TranslationKey, string>,
   el: {} as Record<TranslationKey, string>,
-  en: {} as Record<TranslationKey, string>,
+  en: {
+    dailyTarotCardFrequencies: 'Daily Tarot Card Frequencies',
+    frequenciesDescription: 'This page displays aggregated Tarot card data across all users for a selected date. It shows:',
+    chooseDate: 'Choose a date to view the collective data for that day.',
+    mostCommonCardsInSpreads: 'Most Common Cards in Spreads',
+    celticCrossSpread: 'Celtic Cross Spread',
+    threeCardSpread: 'Three Card Spread',
+    individualCardFrequencies: 'Individual Card Frequencies',
+    loading: 'Loading...',
+  } as Record<TranslationKey, string>,
   es: {} as Record<TranslationKey, string>,
   fi: {} as Record<TranslationKey, string>,
   fr: {} as Record<TranslationKey, string>,

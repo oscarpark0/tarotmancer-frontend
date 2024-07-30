@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import DailyCardFrequencies from './DailyCardFrequencies';
 import styles from './DailyCardFrequenciesPage.module.css';
+import { useTranslation } from '../utils/translations';
 
 interface PositionInfo {
   position_name: string;
@@ -25,10 +26,11 @@ interface SpreadProps {
 
 const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
   const isThreeCardSpread = spread.length === 3;
+  const { getTranslation } = useTranslation();
 
   return (
     <div className={styles.spreadContainer}>
-      <h3>{title}</h3>
+      <h3>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h3>
       <div className={`${styles.spreadCards} ${isThreeCardSpread ? styles.threeCardSpread : styles.celticCrossSpread}`}>
         {spread.map((position, index) => (
           <div 
@@ -59,6 +61,7 @@ const DailyFrequenciesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { getToken } = useKindeAuth();
+  const { getTranslation } = useTranslation();
 
   const fetchData = useCallback(async (date: string) => {
     try {
@@ -105,15 +108,15 @@ const DailyFrequenciesPage: React.FC = () => {
   return (
     <div className={styles.dailyFrequenciesPage}>
       <header className={styles.pageHeader}>
-        <h1>Daily Tarot Card Frequencies</h1>
+        <h1>{getTranslation('dailyTarotCardFrequencies')}</h1>
         <p>
-          This page displays aggregated Tarot card data across all users for a selected date. It shows:
+          {getTranslation('frequenciesDescription')}
         </p>
         <ol>
-          <li>The most frequently drawn card for each position in Celtic Cross and Three Card spreads.</li>
-          <li>A bar chart of individual card frequencies from all readings.</li>
+          <li>{getTranslation('mostCommonCardsInSpreads')}</li>
+          <li>{getTranslation('individualCardFrequencies')}</li>
         </ol>
-        <p>Choose a date to view the collective data for that day.</p>
+        <p>{getTranslation('chooseDate')}</p>
       </header>
       <main className={styles.pageContent}>
         <div className={styles.dateSelector}>
@@ -125,14 +128,14 @@ const DailyFrequenciesPage: React.FC = () => {
           />
         </div>
         <section className={styles.spreadsSection}>
-          <h2>Most Common Cards in Spreads</h2>
+          <h2>{getTranslation('mostCommonCardsInSpreads')}</h2>
           <div className={styles.spreadsContainer}>
-            <Spread spread={celticSpread} title="Celtic Cross Spread" />
-            <Spread spread={threeCardSpread} title="Three Card Spread" />
+            <Spread spread={celticSpread} title="celticCrossSpread" />
+            <Spread spread={threeCardSpread} title="threeCardSpread" />
           </div>
         </section>
         <section className={styles.frequenciesSection}>
-          <h2>Individual Card Frequencies</h2>
+          <h2>{getTranslation('individualCardFrequencies')}</h2>
           <DailyCardFrequencies 
             frequencies={frequencies}
             isLoading={isLoading}
@@ -141,7 +144,7 @@ const DailyFrequenciesPage: React.FC = () => {
           />
         </section>
       </main>
-      {isLoading && <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>}
+      {isLoading && <div className={styles.loading}>{getTranslation('loading')}<span>.</span><span>.</span><span>.</span></div>}
       {error && <div className={styles.error}>{error}</div>}
     </div>
   );

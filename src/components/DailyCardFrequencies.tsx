@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './DailyCardFrequenciesPage.module.css';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
+import { useTranslation } from '../utils/translations';
 
 interface CardFrequency {
   card_name: string;
@@ -24,6 +25,7 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
   selectedDate 
 }) => {
   const [isFlipping, setIsFlipping] = useState(false);
+  const { getTranslation } = useTranslation();
 
   const getMaxFrequency = () => {
     return Math.max(...frequencies.map(freq => freq.frequency), 1);
@@ -81,7 +83,7 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
           ))}
         </AnimatePresence>
       </div>
-      {isLoading && <div className={styles.loading}>Loading<span>.</span><span>.</span><span>.</span></div>}
+      {isLoading && <div className={styles.loading}>{getTranslation('loading')}<span>.</span><span>.</span><span>.</span></div>}
       {error && <div className={styles.error}>{error}</div>}
     </div>
   );

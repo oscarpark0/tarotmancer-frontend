@@ -217,3 +217,56 @@
   .celticCrossSpread .position8 { right: 2%; top: 54%; }
   .celticCrossSpread .position9 { right: 2%; top: 76%; }
 }
+
+.barChartContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.barChartItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cardImageWrapper {
+  width: 60px;
+  height: 100px;
+  flex-shrink: 0;
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.barWrapper {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.barLabel {
+  width: 150px;
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.bar {
+  height: 20px;
+  background-color: #ffd700;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.barValue {
+  color: #1a1a2e;
+  font-weight: bold;
+}

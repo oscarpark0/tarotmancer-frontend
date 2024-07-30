@@ -14,7 +14,7 @@
     "loading": "Indlæser...",
     "dailyTarotCardFrequencies": "Daglige Tarotkort Frekvenser",
     "frequenciesDescription": "Beskrivelse af frekvenser",
-    "mostCommonCardsInSpreads": "Mest almindelige kort i udlægninger",
+    "mostCommonCardOccurrencesByPosition": "Mest almindelige kort i udlægninger",
     "individualCardFrequencies": "Individuelle kort frekvenser",
     "chooseDate": "Vælg dato",
     "completeCaptchaFirst": "Udfyld captcha først",

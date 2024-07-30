@@ -55,5 +55,6 @@
   "frequenciesDescription": "Explore the frequency of Tarot cards drawn each day",
   "mostCommonCardsInSpreads": "Most Common Cards in Spreads",
   "individualCardFrequencies": "Individual Card Frequencies",
-  "chooseDate": "Choose Date"
+  "chooseDate": "Choose Date",
+  "mostCommonCardOccurrencesByPosition": "Most Common Card Occurrences by Position"
 }

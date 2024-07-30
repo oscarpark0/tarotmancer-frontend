@@ -29,47 +29,42 @@ export const languageNames: Record<Language, string> = {
 
 export type TranslationKey = 'login' | 'logout' | 'subscribe' | 'subscribing' | 'updatesAndWeeklyReadings' | 'signupDescription' | 'firstName' | 'email' | 'signUp' | 'processing' | 'errorMessage' | 'inputPlaceholder' | 'draw' | 'drawCardsAriaLabel' | 'drawing' | 'nextDrawAvailable' | 'waitForNextDraw' | 'nextDrawIn' | 'pastDraws' | 'backToList' | 'noResponseAvailable' | 'threeCardSpread' | 'celticCrossSpread' | 'removeDraw' | 'timeRemainingUntilNextDraw' | 'tarotmancer' | 'closeModal' | 'terms' | 'privacy' | 'contact' | 'resources' | 'dailyFrequencies' | 'checkNetworkAndTryAgain' | 'failedToDrawSpread' | 'logoutUnavailable' | 'mostCommonCardAt' | 'orientation' | 'selectLanguage' | 'feedback' | 'closeFeedbackForm' | 'provideFeedback' | 'enterFeedbackHere' | 'submitting' | 'submitFeedback' | 'feedbackSubmittedSuccess' | 'feedbackSubmitError' | 'completeCaptchaFirst' | 'confirmRemoveDraw' | 'yes' | 'no' | 'howItWorks' | 'dailyTarotCardFrequencies' | 'frequenciesDescription' | 'chooseDate' | 'mostCommonCardOccurrencesByPosition' | 'celticCrossSpread' | 'threeCardSpread' | 'individualCardFrequencies' | 'loading';
 
-export const buttonTranslations: Record<Language, Record<TranslationKey, string>> = {
-  ar: {} as Record<TranslationKey, string>,
-  da: {} as Record<TranslationKey, string>,
-  de: {} as Record<TranslationKey, string>,
-  el: {} as Record<TranslationKey, string>,
-  en: {
-    dailyTarotCardFrequencies: 'Daily Tarot Card Frequencies',
-    frequenciesDescription: 'This page displays aggregated Tarot card data across all users for a selected date. It shows:',
-    chooseDate: 'Choose a date to view the collective data for that day.',
-    mostCommonCardOccurrencesByPosition: 'Most Common Cards in Spreads',
-    celticCrossSpread: 'Celtic Cross Spread',
-    threeCardSpread: 'Three Card Spread',
-    individualCardFrequencies: 'Individual Card Frequencies',
-    loading: 'Loading...',
-  } as Record<TranslationKey, string>,
-  es: {} as Record<TranslationKey, string>,
-  fi: {} as Record<TranslationKey, string>,
-  fr: {} as Record<TranslationKey, string>,
-  hi: {} as Record<TranslationKey, string>,
-  it: {} as Record<TranslationKey, string>,
-  ja: {} as Record<TranslationKey, string>,
-  ko: {} as Record<TranslationKey, string>,
-  nl: {} as Record<TranslationKey, string>,
-  no: {} as Record<TranslationKey, string>,
-  pl: {} as Record<TranslationKey, string>,
-  pt: {} as Record<TranslationKey, string>,
-  ru: {} as Record<TranslationKey, string>,
-  sv: {} as Record<TranslationKey, string>,
-  tl: {} as Record<TranslationKey, string>,
-  tr: {} as Record<TranslationKey, string>,
-  zh: {} as Record<TranslationKey, string>,
+export const buttonTranslations: Partial<Record<Language, Partial<Record<TranslationKey, string>>>> = {
+  ar: {},
+  da: {},
+  de: {},
+  el: {},
+  en: {},
+  es: {},
+  fi: {},
+  fr: {},
+  hi: {},
+  it: {},
+  ja: {},
+  ko: {},
+  nl: {},
+  no: {},
+  pl: {},
+  pt: {},
+  ru: {},
+  sv: {},
+  tl: {},
+  tr: {},
+  zh: {},
 };
 
 export const loadTranslations = async (language: Language) => {
   try {
     const module = await import(`./translations/${language}.json`);
-    buttonTranslations[language] = module.default;
+    buttonTranslations[language] = module.default as Record<TranslationKey, string>;
   } catch (error) {
     console.error(`Failed to load translations for ${language}:`, error);
     // Fall back to English translations
-    buttonTranslations[language] = { ...buttonTranslations['en'] };
+    if (language !== 'en') {
+      await loadTranslations('en');
+    } else {
+      console.error('Failed to load English translations as fallback');
+    }
   }
 };
 
@@ -79,13 +74,13 @@ export const useTranslation = () => {
   const getTranslation = useMemo(() => (key: TranslationKey) => {
     if (!(selectedLanguage in buttonTranslations)) {
       console.warn(`Language "${selectedLanguage}" not found, falling back to English.`);
-      return buttonTranslations['en'][key] || key;
+      return (buttonTranslations['en'] as Record<TranslationKey, string>)[key] || key;
     }
     
-    const translation = buttonTranslations[selectedLanguage][key];
+    const translation = (buttonTranslations[selectedLanguage] as Record<TranslationKey, string>)[key];
     if (!translation) {
       console.warn(`Translation for key "${key}" in language "${selectedLanguage}" not found, falling back to English.`);
-      return buttonTranslations['en'][key] || key;
+      return (buttonTranslations['en'] as Record<TranslationKey, string>)[key] || key;
     }
     return translation;
   }, [selectedLanguage]);

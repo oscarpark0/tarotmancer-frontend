@@ -163,27 +163,22 @@ function AppContent({ isAuthenticated }) {
   }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken]);
 
   const makeAuthenticatedRequest = useCallback(async (endpoint, errorMessage) => {
-    if (!isAuthenticated) return null;
-
     try {
       const token = await getToken();
       const response = await fetch(`${process.env.REACT_APP_BASE_URL}${endpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'User-ID': user.id
-        }
+        },
       });
-      
       if (!response.ok) {
-        throw new Error(`${errorMessage}: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
       return await response.json();
     } catch (error) {
-      console.error(errorMessage, error);
+      console.error(`${errorMessage}:`, error);
       return null;
     }
-  }, [isAuthenticated, getToken, user]);
+  }, [getToken]);
 
   const checkCanDraw = useCallback(async () => {
     const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');

@@ -53,6 +53,10 @@ const HowItWorks: React.FC = () => {
         <p>Despite this statistical approach, each reading remains unique. The vast number of possible combinations ensures that your spread is tailored to your specific query or moment in time.</p>
       </ProcessStep>
 
+      <ProcessStep number={9} title="Possibility of Duplicate Cards">
+        <p>Due to the statistical nature of this process, it's possible to see the same card appear in multiple positions of a spread. This occurs when a particular card consistently shows up as the most frequent card for more than one position across the thousands of simulations. While uncommon in traditional tarot readings, in tarotmancer, it represents a strong recurring theme or message that the cards are emphasizing across different aspects of your question or situation.</p>
+      </ProcessStep>
+
       <p className="conclusion">In essence, when you click draw, you're not just getting a simple random draw. You're receiving the distilled wisdom of thousands of virtual tarot readings, all performed in a split second to provide you with a deeply meaningful and statistically robust tarot spread.</p>
     </div>
   );

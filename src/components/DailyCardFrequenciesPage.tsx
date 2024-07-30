@@ -4,6 +4,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import DailyCardFrequencies from './DailyCardFrequencies';
 import styles from './DailyCardFrequenciesPage.module.css';
 import { useTranslation } from '../utils/translations';
+import { API_BASE_URL } from '../utils/config';
 
 interface PositionInfo {
   position_name: string;
@@ -71,14 +72,14 @@ const DailyFrequenciesPage: React.FC = () => {
       
       const [frequenciesResponse, spreadsResponse] = await Promise.all([
         axios.get<CardFrequency[]>(
-          `${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`,
+          `${API_BASE_URL}/api/daily-card-frequencies`,
           {
             headers: { 'Authorization': `Bearer ${token}` },
             params: { date }
           }
         ),
         axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/most-common-cards`,
+          `${API_BASE_URL}/api/most-common-cards`,
           {
             headers: { 'Authorization': `Bearer ${token}` },
             params: { date }
@@ -91,25 +92,18 @@ const DailyFrequenciesPage: React.FC = () => {
       setThreeCardSpread(spreadsResponse.data.three_card_spread);
     } catch (err) {
       console.error('Failed to fetch data:', err);
-      if (axios.isAxiosError(err)) {
-        setError(`Failed to fetch data: ${err.message}. Status: ${err.response?.status}`);
-      } else {
-        setError('An unexpected error occurred. Please try again later.');
-      }
+      setError('Failed to fetch data. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   }, [getToken]);
 
   useEffect(() => {
-    console.log('Fetching data for date:', selectedDate);
     fetchData(selectedDate);
   }, [fetchData, selectedDate]);
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = e.target.value;
-    setSelectedDate(newDate);
-    fetchData(newDate);
+    setSelectedDate(e.target.value);
   };
 
   return (

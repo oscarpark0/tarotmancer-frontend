@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import './CardReveal.css';
-import { withComponentTracking } from '../utils/withComponentTracking';
 
 const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, className }) => {
   const [revealedCards, setRevealedCards] = useState(0);
@@ -186,4 +185,4 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
   );
 };
 
-export default withComponentTracking(CardReveal, 'CardReveal');
+export default CardReveal;

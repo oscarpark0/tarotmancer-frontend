@@ -22,7 +22,7 @@ import Contact from './components/Contact';
 import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
-import { withComponentTracking } from './utils/withComponentTracking';
+
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
@@ -51,9 +51,6 @@ function KindeCallbackHandler() {
 
 
 
-// Wrap your components
-const TrackedCelticSpread = withComponentTracking(CelticSpread, 'CelticSpread');
-const TrackedThreeCardSpread = withComponentTracking(ThreeCardSpread, 'ThreeCardSpread');
 
 function AppContent({ isAuthenticated }) {
   const { user, getToken } = useKindeAuth();
@@ -262,7 +259,7 @@ function AppContent({ isAuthenticated }) {
           <Route path="/" element={isAuthenticated ? (
             <Suspense fallback={<div>Loading...</div>}>
               {selectedSpread === 'celtic' ? (
-                <TrackedCelticSpread 
+                <CelticSpread 
                   {...spreadProps} 
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
@@ -273,7 +270,7 @@ function AppContent({ isAuthenticated }) {
                   onDraw={handleDraw}
                 />
               ) : (
-                <TrackedThreeCardSpread 
+                <ThreeCardSpread 
                   {...spreadProps} 
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}

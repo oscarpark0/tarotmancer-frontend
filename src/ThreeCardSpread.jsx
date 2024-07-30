@@ -10,7 +10,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations'; // Import useTranslation
 import PastDrawsModal from './components/PastDrawsModal';
-import { withComponentTracking } from './utils/withComponentTracking';
+
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw, lastDrawTime }) => {
   const { getToken, user } = useKindeAuth();
@@ -294,4 +294,4 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   );
 });
 
-export default withComponentTracking(ThreeCardSpread, 'ThreeCardSpread');
+export default ThreeCardSpread;

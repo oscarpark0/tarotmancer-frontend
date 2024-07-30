@@ -8,8 +8,7 @@ import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { formatResponse } from '../utils/textFormatting';
 import { useTranslation } from '../utils/translations';
-import { useLanguage } from '../contexts/LanguageContext'; // Import useLanguage
-import { withComponentTracking } from '../utils/withComponentTracking';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -341,4 +340,4 @@ Robot.propTypes = {
   lastDrawTime: PropTypes.object, // Add lastDrawTime prop type
 };
 
-export default withComponentTracking(Robot, 'Robot');
+export default Robot;

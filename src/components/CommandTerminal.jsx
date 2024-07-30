@@ -9,7 +9,7 @@ import { useTranslation } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
-import { withComponentTracking } from '../utils/withComponentTracking';
+
 
 const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw }, ref) => {
   const [input, setInput] = useState('');
@@ -226,6 +226,5 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   );
 });
 
-const TrackedCommandTerminal = withComponentTracking(CommandTerminal, 'CommandTerminal');
 
-export default TrackedCommandTerminal;
+export default CommandTerminal;

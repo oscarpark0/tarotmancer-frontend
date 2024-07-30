@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './DailyCardFrequenciesPage.module.css';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
@@ -31,7 +31,7 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
     return Math.max(...frequencies.map(freq => freq.frequency), 1);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsFlipping(true);
     const timer = setTimeout(() => {
       setIsFlipping(false);

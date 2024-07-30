@@ -142,7 +142,6 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   }, [canDraw, timeUntilNextDraw]);
 
   useEffect(() => {
-    console.log('Countdown value:', countdown);
   }, [countdown]);
 
   const getButtonText = useCallback(() => {

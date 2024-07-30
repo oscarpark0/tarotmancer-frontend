@@ -11,6 +11,7 @@ import PastDrawsModal from './components/PastDrawsModal';
 import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations';
 import PropTypes from 'prop-types';
+import { withComponentTracking } from './utils/withComponentTracking';
 
 const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime }) => {
   const { user } = useKindeAuth();
@@ -290,4 +291,4 @@ CelticSpread.propTypes = {
   onDraw: PropTypes.func.isRequired,
 };
 
-export default CelticSpread;
+export default withComponentTracking(CelticSpread, 'CelticSpread');

@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
+import { withComponentTracking } from '../utils/withComponentTracking';
 
 function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, numCards, isMobile }) {
   const [isAnimating, setIsAnimating] = useState(false);
@@ -106,4 +106,4 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
   );
 }
 
-export default FloatingCards;
+export default withComponentTracking(FloatingCards, 'FloatingCards');

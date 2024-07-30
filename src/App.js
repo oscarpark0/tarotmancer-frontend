@@ -24,7 +24,8 @@ import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import { initializeTranslations } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
-import RealTimeDashboard, { ComponentProvider, useRegisterComponent } from './components/RealTimeDashboard';
+import RealTimeDashboard, { ComponentProvider } from './components/RealTimeDashboard';
+import { withComponentTracking } from './utils/withComponentTracking';
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
@@ -51,13 +52,7 @@ function KindeCallbackHandler() {
   return null;
 }
 
-// Wrap components that you want to track with this HOC
-const withComponentTracking = (WrappedComponent, componentName) => {
-  return (props) => {
-    useRegisterComponent(componentName, props);
-    return <WrappedComponent {...props} />;
-  };
-};
+
 
 // Wrap your components
 const TrackedCelticSpread = withComponentTracking(CelticSpread, 'CelticSpread');
@@ -311,6 +306,9 @@ function AppContent() {
   );
 }
 
+// Wrap AppContent with component tracking
+const TrackedAppContent = withComponentTracking(AppContent, 'AppContent');
+
 // Main App component
 function App() {
   useEffect(() => {
@@ -327,7 +325,9 @@ function App() {
     <BrowserRouter>
       <LanguageProvider>
         <Suspense fallback={<div>Loading...</div>}>
-          <AppContent />
+          <ComponentProvider>
+            <TrackedAppContent />
+          </ComponentProvider>
         </Suspense>
       </LanguageProvider>
     </BrowserRouter>

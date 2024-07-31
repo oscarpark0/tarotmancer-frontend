@@ -68,10 +68,6 @@ function AppContent({ isAuthenticated }) {
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
-  const [drawCount, setDrawCount] = useState(0);
-  const [lastResetTime, setLastResetTime] = useState(null);
-  const [lastDrawTime, setLastDrawTime] = useState(null);
-  const [timeUntilNextDraw, setTimeUntilNextDraw] = useState(null);
   const [remainingDrawsToday, setRemainingDrawsToday] = useState(5);
 
   const navigate = useNavigate();
@@ -193,7 +189,6 @@ function AppContent({ isAuthenticated }) {
       console.log('App.js - can_draw data received:', data);
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
-      setDrawCount(data.draw_count); // Add this line
     }
   }, [makeAuthenticatedRequest]);
 
@@ -216,40 +211,6 @@ function AppContent({ isAuthenticated }) {
       checkCanDraw();
     }
   }, [isAuthenticated, checkCanDraw]);
-
-  useEffect(() => {
-    let timer;
-    if (!canDraw && lastDrawTime) {
-      const calculateTimeUntilNextDraw = () => {
-        const now = new Date();
-        const nextDrawTime = new Date(lastDrawTime.getTime() + 24 * 60 * 60 * 1000);
-        const timeLeft = nextDrawTime - now;
-
-        if (timeLeft <= 0) {
-          setCanDraw(true);
-          setTimeUntilNextDraw(null);
-          clearInterval(timer);
-        } else {
-          setTimeUntilNextDraw(Math.ceil(timeLeft / 1000));
-        }
-      };
-
-      calculateTimeUntilNextDraw();
-      timer = setInterval(calculateTimeUntilNextDraw, 1000);
-    }
-
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [lastDrawTime, canDraw]);
-
-  const handleDraw = useCallback(() => {
-    const now = new Date();
-    setLastDrawTime(now);
-    setCanDraw(false);
-    setTimeUntilNextDraw(24 * 60 * 60); // Set to 24 hours in seconds
-    setRemainingDrawsToday(prev => Math.max(0, prev - 1));
-  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -288,29 +249,22 @@ function AppContent({ isAuthenticated }) {
                   {...spreadProps} 
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
-                  timeUntilNextDraw={timeUntilNextDraw}
+                  remainingDrawsToday={remainingDrawsToday}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={getToken}
-                  onDraw={handleDraw}
-                  remainingDrawsToday={remainingDrawsToday}
-                  drawCount={drawCount}
-                  setDrawCount={setDrawCount}
+                  onDraw={checkCanDraw}
                 />
               ) : (
                 <ThreeCardSpread 
                   {...spreadProps} 
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
-                  timeUntilNextDraw={timeUntilNextDraw}
+                  remainingDrawsToday={remainingDrawsToday}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={getToken}
-                  drawCount={drawCount}
-                  setDrawCount={setDrawCount}
-                  lastResetTime={lastResetTime}
-                  setLastResetTime={setLastResetTime}
-                  remainingDrawsToday={remainingDrawsToday}
+                  onDraw={checkCanDraw}
                 />
               )}
             </Suspense>

@@ -48,9 +48,9 @@ const Robot = memo((props) => {
     onNewResponse, dealingComplete, onExitComplete, mostCommonCards, 
     onSubmitInput, selectedSpread, onSpreadSelect, isMobile, 
     fetchSpread, animationsComplete, onAnimationStart, 
-    timeUntilNextDraw, user, currentDrawId, setCurrentDrawId, 
-    onOpenPastDraws, onDraw, 
-    dealCards, lastDrawTime, remainingDrawsToday, 
+    user, currentDrawId, setCurrentDrawId, 
+    onOpenPastDraws, onDraw,
+    dealCards, lastDrawTime, remainingDrawsToday,
     drawCount,
     setDrawCount,
   } = props; // Destructure props
@@ -72,8 +72,6 @@ const Robot = memo((props) => {
   useEffect(() => {
   }, [canDraw]);
 
-  useEffect(() => {
-  }, [timeUntilNextDraw]);
 
   const handleDrawSpread = useCallback(() => {
     if (localCanDraw) {
@@ -247,7 +245,6 @@ const Robot = memo((props) => {
       onAnimationStart={handleAnimationStart}
       isStreaming={isStreaming}
       canDraw={canDraw} // Not localCanDraw
-      timeUntilNextDraw={timeUntilNextDraw}
       lastDrawTime={lastDrawTime} // Pass lastDrawTime to CommandTerminal
       userId={user?.id}
       currentDrawId={currentDrawId}
@@ -259,7 +256,7 @@ const Robot = memo((props) => {
       drawCount={drawCount} // Pass drawCount prop
       setDrawCount={setDrawCount} // Pass setDrawCount prop
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount]);
+  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount]);
 
   return (
     <motion.div
@@ -338,7 +335,6 @@ Robot.propTypes = {
   onAnimationStart: PropTypes.func.isRequired,
   onStreamingStateChange: PropTypes.func.isRequired,
   canDraw: PropTypes.bool.isRequired,
-  timeUntilNextDraw: PropTypes.number,
   user: PropTypes.object,
   currentDrawId: PropTypes.number,
   setCurrentDrawId: PropTypes.func.isRequired,

@@ -7,11 +7,32 @@ import CardReveal from './CardReveal';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
-import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
 
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw, remainingDrawsToday = 0, drawCount, setDrawCount }, ref) => {
+const CommandTerminal = forwardRef(({ 
+  onMonitorOutput, 
+  drawSpread, 
+  mostCommonCards, 
+  dealingComplete, 
+  onSpreadSelect, 
+  selectedSpread, 
+  isMobile, 
+  cards = [], 
+  revealCards, 
+  shouldDrawNewSpread, 
+  fetchSpread, 
+  onNewResponse, 
+  onResponseComplete, 
+  animationsComplete, 
+  canDraw, 
+  onDraw, 
+  remainingDrawsToday, 
+  setDrawCount,
+  currentDrawId,
+  userId,
+  onOpenPastDraws,
+}, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -20,8 +41,6 @@ const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCar
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
   const [isDrawing, setIsDrawing] = useState(false);
-  const [countdown, setCountdown] = useState(timeUntilNextDraw);
-  const kindeAuth = useKindeAuth();
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -61,7 +80,6 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-
       await getMistralResponse(message, onNewResponse, (fullResponse, error) => {
         if (error) {
           console.error('Error storing Mistral response:', error);
@@ -70,7 +88,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           console.log('Mistral response stored successfully');
         }
         onResponseComplete(fullResponse);
-      }, currentDrawId, kindeAuth.user?.id);
+      }, currentDrawId, userId);
       
     } catch (error) {
       console.error('Error in Mistral request:', error);
@@ -82,7 +100,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     }
 
     setInput('');
-  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, kindeAuth.user]);
+  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
@@ -109,9 +127,9 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     drawSpread();
     setShouldRequestCohere(true);
     onNewResponse('');
-    setDrawCount(prevCount => Math.min(prevCount + 1, 5));
     onDraw();
-  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, setDrawCount, onDraw]);
+    setDrawCount(prevCount => Math.min(prevCount + 1, 5));
+  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, onDraw, setDrawCount]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -119,53 +137,15 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     }
   }, [dealingComplete]);
 
-  const formatCountdown = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
-  useEffect(() => {
-    let interval;
-    if (!canDraw && timeUntilNextDraw) {
-      setCountdown(timeUntilNextDraw);
-      interval = setInterval(() => {
-        setCountdown(prevCountdown => {
-          if (prevCountdown <= 0) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prevCountdown - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [canDraw, timeUntilNextDraw]);
-
-  useEffect(() => {
-  }, [countdown]);
-
   const getButtonText = useCallback(() => {
     if (isLoading) return getTranslation('processing');
     if (isDrawing) return getTranslation('drawing');
-    if (!canDraw && countdown > 0) {
-      const timeString = formatCountdown(countdown);
-      return getTranslation('timeRemainingUntilNextDraw').replace('{time}', timeString);
-    }
-    return `${getTranslation('draw')} (${5 - drawCount} ${getTranslation('remainingDrawsToday')})`;
-  }, [isLoading, isDrawing, canDraw, countdown, getTranslation, drawCount]);
-
-  useEffect(() => {
-  }, [currentDrawId]);
+    return `${getTranslation('draw')} (${remainingDrawsToday} ${getTranslation('remainingDrawsToday')})`;
+  }, [isLoading, isDrawing, getTranslation, remainingDrawsToday]);
 
   const handlePastDrawsClick = () => {
     onOpenPastDraws();
   };
-
-  useEffect(() => {
-    console.log('CommandTerminal.jsx - remainingDrawsToday:', remainingDrawsToday);
-  }, [remainingDrawsToday]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
@@ -182,9 +162,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? getTranslation('processing') : 
-             !canDraw && timeUntilNextDraw ? `${getTranslation('nextDrawAvailable')} ${timeUntilNextDraw}` : 
-             `${getTranslation('remainingDrawsToday')}: ${remainingDrawsToday}`}
+            {isLoading ? getTranslation('processing') : `${getTranslation('remainingDrawsToday')}: ${remainingDrawsToday}`}
           </div>
         </div>
         <div className="screen-overlay"></div>
@@ -214,11 +192,6 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
             />
           </form>
         </div>
-        {!canDraw && countdown > 0 && (
-          <div className="countdown-timer">
-            {getTranslation('nextDrawAvailable')} {formatCountdown(countdown)}
-          </div>
-        )}
         <ShimmerButton 
           onClick={handleDrawClick}
           aria-label={getTranslation('drawCardsAriaLabel')}

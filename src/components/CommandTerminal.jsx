@@ -8,7 +8,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
 import LanguageSelector from './LanguageSelector';
-
+import PropTypes from 'prop-types';
 
 const CommandTerminal = forwardRef(({ 
   onMonitorOutput, 
@@ -147,6 +147,10 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     onOpenPastDraws();
   };
 
+  useEffect(() => {
+    console.log('CommandTerminal.jsx - drawCount:', drawCount);
+  }, [drawCount]);
+
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
       <div className="terminal-screen">
@@ -206,5 +210,30 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   );
 });
 
+
+CommandTerminal.propTypes = {
+  onMonitorOutput: PropTypes.func.isRequired,
+  drawSpread: PropTypes.func.isRequired,
+  mostCommonCards: PropTypes.string.isRequired,
+  dealingComplete: PropTypes.bool.isRequired,
+  onSpreadSelect: PropTypes.func.isRequired,
+  selectedSpread: PropTypes.string.isRequired,
+  isMobile: PropTypes.bool.isRequired,
+  cards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  revealCards: PropTypes.func.isRequired,
+  shouldDrawNewSpread: PropTypes.bool.isRequired,
+  fetchSpread: PropTypes.func.isRequired,
+  onNewResponse: PropTypes.func.isRequired,
+  onResponseComplete: PropTypes.func.isRequired,
+  animationsComplete: PropTypes.bool.isRequired,
+  canDraw: PropTypes.bool.isRequired,
+  onDraw: PropTypes.func.isRequired,
+  remainingDrawsToday: PropTypes.number.isRequired,
+  drawCount: PropTypes.number.isRequired,
+  setDrawCount: PropTypes.func.isRequired,
+  currentDrawId: PropTypes.string,
+  userId: PropTypes.string,
+  onOpenPastDraws: PropTypes.func.isRequired,
+};
 
 export default CommandTerminal;

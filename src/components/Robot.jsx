@@ -216,6 +216,10 @@ const Robot = memo((props) => {
     console.log('Robot.jsx - canDraw:', canDraw);
   }, [remainingDrawsToday, canDraw]);
 
+  useEffect(() => {
+    console.log('Robot.jsx - drawCount:', drawCount);
+  }, [drawCount]);
+
   const memoizedCommandTerminal = useMemo(() => (
     <CommandTerminal
       onMonitorOutput={handleMonitorOutput}

@@ -43,6 +43,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     console.log('CelticSpread.jsx - canDraw changed:', canDraw);
   }, [canDraw]);
 
+  useEffect(() => {
+    console.log('CelticSpread.jsx - drawCount:', drawCount);
+  }, [drawCount]);
+
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
   }, []);

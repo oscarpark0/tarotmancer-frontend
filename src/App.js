@@ -70,6 +70,7 @@ function AppContent({ isAuthenticated }) {
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [remainingDrawsToday, setRemainingDrawsToday] = useState(5);
+  const [drawCount, setDrawCount] = useState(0);
 
   const navigate = useNavigate();
 
@@ -190,6 +191,7 @@ function AppContent({ isAuthenticated }) {
       console.log('App.js - can_draw data received:', data);
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
+      setDrawCount(5 - data.remaining_draws); // Assuming 5 is the maximum number of draws per day
     }
   }, [makeAuthenticatedRequest]);
 
@@ -255,6 +257,8 @@ function AppContent({ isAuthenticated }) {
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={getToken}
                   onDraw={checkCanDraw}
+                  drawCount={drawCount}
+                  setDrawCount={setDrawCount}
                 />
               ) : (
                 <ThreeCardSpread 
@@ -266,6 +270,8 @@ function AppContent({ isAuthenticated }) {
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={getToken}
                   onDraw={checkCanDraw}
+                  drawCount={drawCount}
+                  setDrawCount={setDrawCount}
                 />
               )}
             </Suspense>

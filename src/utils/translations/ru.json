@@ -43,5 +43,7 @@
     "mostCommonCardAt": "Самая частая карта в",
     "orientation": "Ориентация",
     "failedToDrawSpread": "Не удалось выполнить расклад",
-    "checkNetworkAndTryAgain": "Пожалуйста, проверьте подключение к сети и попробуйте снова"
+    "checkNetworkAndTryAgain": "Пожалуйста, проверьте подключение к сети и попробуйте снова",
+    "remaining": "Осталось",
+    "remainingDraws": "Оставшиеся вытягивания"
 }

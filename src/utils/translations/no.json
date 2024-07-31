@@ -54,5 +54,7 @@
     "nextDrawIn": "Neste trekking om",
     "confirmRemoveDraw": "Er du sikker på at du vil fjerne denne trekningen?",
     "yes": "Ja",
-    "no": "Nei"
+    "no": "Nei",
+    "remaining": "Gjenstående",
+    "remainingDraws": "Gjenstående trekninger"
 }

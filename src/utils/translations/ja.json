@@ -54,5 +54,7 @@
   "nextDrawIn": "次のドローまで",
   "confirmRemoveDraw": "このドローを削除してもよろしいですか？",
   "yes": "はい",
-  "no": "いいえ"
+  "no": "いいえ",
+  "remaining": "残り",
+  "remainingDraws": "残りのドロー"
 }

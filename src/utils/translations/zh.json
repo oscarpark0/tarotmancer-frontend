@@ -54,5 +54,7 @@
   "nextDrawIn": "下次抽牌在",
   "confirmRemoveDraw": "您确定要删除这次抽牌吗？",
   "yes": "是",
-  "no": "否"
+  "no": "否",
+  "remaining": "剩余",
+  "remainingDraws": "剩余抽牌次数"
 }

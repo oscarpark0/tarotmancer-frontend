@@ -54,5 +54,7 @@
     "nextDrawIn": "Seuraava nosto",
     "confirmRemoveDraw": "Haluatko varmasti poistaa tämän noston?",
     "yes": "Kyllä",
-    "no": "Ei"
+    "no": "Ei",
+    "remaining": "Jäljellä",
+    "remainingDraws": "Jäljellä olevat nostot"
 }

@@ -54,5 +54,7 @@
     "nextDrawIn": "Następne losowanie za",
     "confirmRemoveDraw": "Czy na pewno chcesz usunąć to losowanie?",
     "yes": "Tak",
-    "no": "Nie"
+    "no": "Nie",
+    "remaining": "Pozostało",
+    "remainingDraws": "Pozostałe losowania"
 }

@@ -54,5 +54,7 @@
     "nextDrawIn": "Susunod na pagbunot sa",
     "confirmRemoveDraw": "Sigurado ka bang gusto mong alisin ang pagbunutong ito?",
     "yes": "Oo",
-    "no": "Hindi"
+    "no": "Hindi",
+    "remaining": "Natitirang",
+    "remainingDraws": "Natitirang mga pagbunot"
 }

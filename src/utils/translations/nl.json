@@ -54,5 +54,7 @@
     "nextDrawIn": "Volgende trekking in",
     "confirmRemoveDraw": "Weet u zeker dat u deze trekking wilt verwijderen?",
     "yes": "Ja",
-    "no": "Nee"
+    "no": "Nee",
+    "remaining": "Resterend",
+    "remainingDraws": "Resterende trekkingen"
 }

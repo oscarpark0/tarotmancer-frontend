@@ -54,5 +54,7 @@
     "nextDrawIn": "Sonraki çekim",
     "confirmRemoveDraw": "Bu çekimi kaldırmak istediğinizden emin misiniz?",
     "yes": "Evet",
-    "no": "Hayır"
+    "no": "Hayır",
+    "remaining": "Kalan",
+    "remainingDraws": "Kalan çekimler"
 }

@@ -54,5 +54,7 @@
     "nextDrawIn": "Próximo sorteio em",
     "confirmRemoveDraw": "Tem certeza de que deseja remover esta tiragem?",
     "yes": "Sim",
-    "no": "Não"
+    "no": "Não",
+    "remaining": "Restante",
+    "remainingDraws": "Sorteios restantes"
 }

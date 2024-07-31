@@ -54,5 +54,7 @@
   "nextDrawIn": "Prochain tirage dans",
   "confirmRemoveDraw": "Êtes-vous sûr de vouloir supprimer ce tirage ?",
   "yes": "Oui",
-  "no": "Non"
+  "no": "Non",
+  "remaining": "Restant",
+  "remainingDraws": "Tirages restants"
 }

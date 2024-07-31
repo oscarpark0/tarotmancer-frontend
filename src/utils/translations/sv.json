@@ -54,5 +54,7 @@
     "nextDrawIn": "Nästa drag om",
     "confirmRemoveDraw": "Är du säker på att du vill ta bort denna dragning?",
     "yes": "Ja",
-    "no": "Nej"
+    "no": "Nej",
+    "remaining": "Återstående",
+    "remainingDraws": "Återstående dragningar"
 }

@@ -12,7 +12,7 @@ import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations';
 import PropTypes from 'prop-types';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, remainingDraws }) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -203,8 +203,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       selectedLanguage={selectedLanguage}
       getTranslation={getTranslation}
       lastDrawTime={lastDrawTime}
+      remainingDraws={remainingDraws}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDraws]);
 
 
   const memoizedFloatingCards = useMemo(() => (
@@ -289,6 +290,8 @@ CelticSpread.propTypes = {
   timeUntilNextDraw: PropTypes.string,
   getToken: PropTypes.func.isRequired,
   onDraw: PropTypes.func.isRequired,
+  lastDrawTime: PropTypes.string,
+  remainingDraws: PropTypes.number.isRequired,
 };
 
 export default CelticSpread;

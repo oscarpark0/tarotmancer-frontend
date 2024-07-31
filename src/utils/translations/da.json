@@ -43,5 +43,7 @@
     "mostCommonCardAt": "Det mest almindelige kort på",
     "orientation": "Orientering",
     "failedToDrawSpread": "Kunne ikke trække udlægningen",
-    "checkNetworkAndTryAgain": "Tjek din netværksforbindelse og prøv igen"
+    "checkNetworkAndTryAgain": "Tjek din netværksforbindelse og prøv igen",
+    "remaining": "Resterende",
+    "remainingDraws": "Resterende trækninger"
 }

@@ -54,5 +54,7 @@
   "submitting": "जमा कर रहा है...",
   "submitFeedback": "प्रतिक्रिया जमा करें",
   "feedbackSubmittedSuccess": "प्रतिक्रिया सफलतापूर्वक जमा की गई",
-  "feedbackSubmitError": "प्रतिक्रिया जमा करने में त्रुटि हुई"
+  "feedbackSubmitError": "प्रतिक्रिया जमा करने में त्रुटि हुई",
+  "remaining": "शेष",
+  "remainingDraws": "शेष ड्रा"
 }

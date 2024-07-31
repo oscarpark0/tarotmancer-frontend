@@ -72,6 +72,7 @@ function AppContent({ isAuthenticated }) {
   const [lastResetTime, setLastResetTime] = useState(null);
   const [lastDrawTime, setLastDrawTime] = useState(null);
   const [timeUntilNextDraw, setTimeUntilNextDraw] = useState(null);
+  const [remainingDraws, setRemainingDraws] = useState(5);
 
   const navigate = useNavigate();
 
@@ -189,6 +190,7 @@ function AppContent({ isAuthenticated }) {
     const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');
     if (data) {
       setCanDraw(data.can_draw);
+      setRemainingDraws(data.remaining_draws);
     }
   }, [makeAuthenticatedRequest]);
 
@@ -234,6 +236,7 @@ function AppContent({ isAuthenticated }) {
     setLastDrawTime(now);
     setCanDraw(false);
     setTimeUntilNextDraw(24 * 60 * 60); // Set to 24 hours in seconds
+    setRemainingDraws(prev => Math.max(0, prev - 1));
   }, []);
 
   useEffect(() => {
@@ -268,6 +271,7 @@ function AppContent({ isAuthenticated }) {
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={getToken}
                   onDraw={handleDraw}
+                  remainingDraws={remainingDraws}
                 />
               ) : (
                 <ThreeCardSpread 
@@ -282,6 +286,7 @@ function AppContent({ isAuthenticated }) {
                   setDrawCount={setDrawCount}
                   lastResetTime={lastResetTime}
                   setLastResetTime={setLastResetTime}
+                  remainingDraws={remainingDraws}
                 />
               )}
             </Suspense>

@@ -55,5 +55,7 @@
   "confirmRemoveDraw": "Are you sure you want to remove this draw?",
   "yes": "Yes",
   "no": "No",
-  "howItWorks": "How It Works"
+  "howItWorks": "How It Works",
+  "remaining": "Remaining",
+  "remainingDraws": "Remaining Draws"
 }

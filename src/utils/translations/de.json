@@ -54,5 +54,7 @@
     "nextDrawIn": "Nächster Zug in",
     "confirmRemoveDraw": "Sind Sie sicher, dass Sie diese Ziehung entfernen möchten?",
     "yes": "Ja",
-    "no": "Nein"
+    "no": "Nein",
+    "remaining": "Verbleibend",
+    "remainingDraws": "Verbleibende Ziehungen"
 }

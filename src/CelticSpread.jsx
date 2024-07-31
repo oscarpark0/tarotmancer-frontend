@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
@@ -23,19 +22,21 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [dealCards, setDealCards] = useState(false);
-  const [revealCards, setRevealCards] = useState(false);
   const [revealedCards, setRevealedCards] = useState(0);
   const [dealingComplete, setDealingComplete] = useState(false);
   const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
   const [cards, setCards] = useState([]);
-  const [floatingCardsComplete, setFloatingCardsComplete] = useState(false);
   const [animationsComplete, setAnimationsComplete] = useState(false);
   const [animationStarted, setAnimationStarted] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
+
+  const handleRevealCards = useCallback(() => {
+    setRevealedCards(cards.length);
+  }, [cards.length]);
 
   useEffect(() => {
     console.log('CelticSpread.jsx - remainingDrawsToday:', remainingDrawsToday);
@@ -143,23 +144,20 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   }, [handleSubmitInput, mostCommonCards]);
 
   const handleExitComplete = useCallback(() => {
-    setFloatingCardsComplete(true);
     setTimeout(() => {
-      setRevealCards(true);
-      setRevealedCards(cards.length);
+      handleRevealCards();
       setTimeout(() => {
         handleDealingComplete();
         setAnimationsComplete(true);
       }, 750);
     }, 500);
-  }, [cards.length, handleDealingComplete]);
+  }, [handleDealingComplete, handleRevealCards]);
 
   const handleMonitorOutput = useCallback(() => {}, []);
 
   const drawSpread = useCallback(() => {
     if (canDraw) {
       setDealCards(false);
-      setRevealCards(false);
       setDealingComplete(false);
       setShouldDrawNewSpread(true);
       fetchSpread();
@@ -190,11 +188,11 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       revealedCards={revealedCards}
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
-      revealCards={revealCards}
+      revealCards={handleRevealCards}
       shouldDrawNewSpread={shouldDrawNewSpread}
       onMonitorOutput={handleMonitorOutput}
       drawSpread={drawSpread}
-      dealingComplete={handleDealingComplete}
+      dealingComplete={dealingComplete}
       mostCommonCards={mostCommonCards}
       formRef={formRef}
       onSubmitInput={handleSubmitInput}
@@ -227,8 +225,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       drawCount={drawCount}
       setDrawCount={setDrawCount}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
-
+  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -236,20 +233,20 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
-      revealCards={revealCards}
-      dealingComplete={handleDealingComplete}
+      revealCards={handleRevealCards}
+      dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
       numCards={10}
       isMobile={isMobile}
       cards={cards}
       onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart]);
+  ), [dealCards, positions, handleExitComplete, handleRevealCards, dealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
       cards={cards}
-      revealCards={revealCards && floatingCardsComplete}
+      revealCards={revealedCards === cards.length}
       dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
       isMobile={isMobile}
@@ -266,7 +263,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
         />
       ))}
     </CardReveal>
-  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted, floatingCardsComplete]);
+  ), [cards, revealedCards, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted]);
 
   return (
     <ErrorBoundary>

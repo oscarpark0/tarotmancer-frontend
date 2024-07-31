@@ -297,14 +297,10 @@ const Robot = memo((props) => {
                 dealCards={dealCards}
                 monitorPosition={monitorPosition}
                 finalCardPositions={props.finalCardPositions}
-                revealCards={props.revealCards}
+                revealCards={typeof props.revealCards === 'function' ? props.revealCards() : false}
                 onExitComplete={onExitComplete}
                 shouldDrawNewSpread={props.shouldDrawNewSpread}
-                dealingComplete={() => {
-                  if (typeof dealingComplete === 'function') {
-                    dealingComplete();
-                  }
-                }}
+                dealingComplete={dealingComplete}
                 numCards={props.cards.length}
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
@@ -344,11 +340,11 @@ Robot.propTypes = {
   cardPositions: PropTypes.array.isRequired,
   finalCardPositions: PropTypes.array.isRequired,
   onExitComplete: PropTypes.func.isRequired,
-  revealCards: PropTypes.bool.isRequired,
+  revealCards: PropTypes.func.isRequired,
   shouldDrawNewSpread: PropTypes.bool.isRequired,
   onMonitorOutput: PropTypes.func.isRequired,
   drawSpread: PropTypes.func.isRequired,
-  dealingComplete: PropTypes.func.isRequired,
+  dealingComplete: PropTypes.bool.isRequired,
   mostCommonCards: PropTypes.string.isRequired,
   formRef: PropTypes.object.isRequired,
   onSubmitInput: PropTypes.func.isRequired,

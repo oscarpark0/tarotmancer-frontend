@@ -1,19 +1,19 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { IKImage } from 'imagekitio-react';
 import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
-function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, numCards, isMobile }) {
+function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSpread, numCards, isMobile, onAnimationStart }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {
     if (dealCards) {
       setIsAnimating(true);
+      onAnimationStart();
     }
-  }, [dealCards]);
+  }, [dealCards, onAnimationStart]);
 
   useEffect(() => {
     if (shouldDrawNewSpread) {
@@ -23,10 +23,9 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
   }, [shouldDrawNewSpread, resetAnimation]);
 
   const cardPositions = useMemo(() => {
-    const isMobile = window.innerWidth <= 768;
-    const baseScale = isMobile ? 0.01 : 0.015; // Reduced scale for smaller cards
+    const baseScale = isMobile ? 0.01 : 0.015;
     const baseLeft = '-30%';
-    const topOffset = '6%'; // Moved up from 50% to 40%
+    const topOffset = '6%';
     
     if (numCards === 3) {
       // Three Card Spread
@@ -57,11 +56,11 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
         { top: `calc(${topOffset} + ${verticalSpacing} * 1.5)`, left: `calc(${baseLeft} + ${rightColumnSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})` },
       ];
     }
-  }, [numCards]);
+  }, [numCards, isMobile]);
 
   return (
     <div className={`floating-cards ${isAnimating ? 'dealing' : ''} ${isMobile ? 'mobile' : ''}`}>
-      {isAnimating && Array.from({ length: numCards || 0 }).map((_, i) => {
+      {isAnimating && Array.from({ length: numCards }).map((_, i) => {
         const position = cardPositions[i];
         return (
           <motion.div
@@ -92,7 +91,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               transform: position.transform,
             }}
             onAnimationComplete={() => {
-              if (i === (numCards || 0) - 1) {
+              if (i === numCards - 1) {
                 setIsAnimating(false);
                 onExitComplete();
               }

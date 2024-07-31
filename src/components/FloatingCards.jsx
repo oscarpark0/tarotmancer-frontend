@@ -98,10 +98,10 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
             }}
           >
             <IKImage
-              path={`m15.webp`} // Assuming the image is stored directly in the root of your ImageKit storage
-              transformation={[{ height: 300, width: 200 }]}
+              path="cardback.webp"
               loading="lazy"
-              lqip={{ active: true }}
+              alt="Tarot card back"
+              className="floating-card-image"
             />
           </motion.div>
         );

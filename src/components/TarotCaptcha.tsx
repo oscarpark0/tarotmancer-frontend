@@ -94,9 +94,7 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
       <div className={styles.captchaContainer}>
         <IKImage
           path={captchaData.correct_image}
-          transformation={[{height: "300", width: "200"}]}
           loading="lazy"
-          lqip={{active: true}}
           alt="Tarot Card"
           className={styles.cardImage}
         />

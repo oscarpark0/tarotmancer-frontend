@@ -35,7 +35,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
 
   const handleRevealCards = useCallback(() => {
-    setRevealedCards(cards.length);
+    setRevealedCards(prevCards => cards.length);
   }, [cards.length]);
 
   useEffect(() => {
@@ -172,6 +172,14 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     setIsPastDrawsModalOpen(true);
   }, []);
 
+  const handleNewResponse = useCallback(() => {
+    setIsStreaming(true);
+  }, []);
+
+  const handleResponseComplete = useCallback(() => {
+    setIsStreaming(false);
+  }, []);
+
   // Add this effect to force re-render when language changes
   useEffect(() => {
     // This empty dependency array ensures the effect runs when selectedLanguage changes
@@ -201,12 +209,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       selectedSpread={selectedSpread}
       onSpreadSelect={onSpreadSelect}
       fetchSpread={fetchSpread}
-      onNewResponse={(response) => {
-        setIsStreaming(true);
-      }}
-      onResponseComplete={() => {
-        setIsStreaming(false);
-      }}
+      onNewResponse={handleNewResponse}
+      onResponseComplete={handleResponseComplete}
       animationsComplete={animationsComplete}
       isDarkMode={isDarkMode}
       onAnimationStart={handleAnimationStart}
@@ -225,7 +229,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       drawCount={drawCount}
       setDrawCount={setDrawCount}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

@@ -30,14 +30,8 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
     return Math.max(...frequencies.map(freq => freq.frequency), 1);
   };
 
-  const getImagePath = (imagePath: string) => {
-    if (imagePath.startsWith('https://ik.imagekit.io/tarotmancer/')) {
-      return imagePath;
-    } else if (imagePath.startsWith('https://tarot-mancer.twic.pics/tarot/')) {
-      return imagePath.replace('https://tarot-mancer.twic.pics/tarot/', 'https://ik.imagekit.io/tarotmancer/');
-    } else {
-      return `https://ik.imagekit.io/tarotmancer/${imagePath}`;
-    }
+  const getImagePath = (fullUrl: string) => {
+    return fullUrl.replace('https://ik.imagekit.io/tarotmancer/', '');
   };
 
   return (

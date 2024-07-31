@@ -59,7 +59,6 @@ const CommandTerminal = forwardRef(({
   }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
-    console.log("handleSubmit called with:", mostCommonCards); // Add this log
     if (!currentDrawId) {
       console.warn('currentDrawId is undefined, but continuing with request');
     }
@@ -150,7 +149,6 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   };
 
   useEffect(() => {
-    console.log('CommandTerminal.jsx - drawCount:', drawCount);
   }, [drawCount]);
 
   return (

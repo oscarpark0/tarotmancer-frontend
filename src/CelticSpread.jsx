@@ -233,8 +233,13 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       isCardsDealingComplete={isCardsDealingComplete}
       onCardsDealingComplete={handleCardsDealingComplete}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount, isCardsDealingComplete, handleCardsDealingComplete]);
-
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, 
+    handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, 
+    isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, 
+    handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, 
+    currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, 
+    lastDrawTime, remainingDrawsToday, drawCount, setDrawCount, isCardsDealingComplete, 
+    handleCardsDealingComplete]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

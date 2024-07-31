@@ -48,7 +48,6 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
             <IKImage 
               path={getImagePath(position.most_common_card_img)}
               loading="lazy"
-              transformation={[]}
               className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
               alt={position.most_common_card}
             />

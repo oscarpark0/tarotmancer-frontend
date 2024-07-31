@@ -55,10 +55,7 @@ const CommandTerminal = forwardRef(({
   }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
-    if (!shouldRequestCohere) {
-      return;
-    }
-
+    console.log("handleSubmit called with:", mostCommonCards); // Add this log
     if (!currentDrawId) {
       console.warn('currentDrawId is undefined, but continuing with request');
     }
@@ -105,11 +102,11 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]);
 
   useEffect(() => {
-    if (isCardsDealingComplete && mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
+    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
+      console.log("CommandTerminal: Triggering Mistral request"); // Add this log
       handleSubmit(mostCommonCards);
-      setShouldRequestCohere(false);
     }
-  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, shouldRequestCohere, animationsComplete, handleSubmit]);
+  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);

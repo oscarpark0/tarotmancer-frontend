@@ -94,7 +94,8 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               if (i === (numCards || 0) - 1) {
                 setIsAnimating(false);
                 onExitComplete();
-                onDealingComplete(); // Add this line to signal that dealing is complete
+                onDealingComplete(); // Ensure this is being called
+                console.log("FloatingCards: All cards dealt"); // Add this log
               }
             }}
           >

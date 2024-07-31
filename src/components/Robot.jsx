@@ -180,12 +180,12 @@ const Robot = memo((props) => {
   }, [monitorOutput]);
 
   useEffect(() => {
-    if (isCardsDealingComplete && mostCommonCards) {
-      // Trigger Mistral request here
+    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
+      console.log("Triggering Mistral request"); // Add this log
       handleNewResponse('');
       onSubmitInput(mostCommonCards);
     }
-  }, [isCardsDealingComplete, mostCommonCards, handleNewResponse, onSubmitInput]);
+  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleNewResponse, onSubmitInput]);
 
   useEffect(() => {
   }, [selectedSpread]);
@@ -264,11 +264,13 @@ const Robot = memo((props) => {
       remainingDrawsToday={remainingDrawsToday} // Pass remainingDrawsToday prop
       drawCount={drawCount} // Pass drawCount prop
       setDrawCount={setDrawCount} // Pass setDrawCount prop
+      isCardsDealingComplete={isCardsDealingComplete}
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount]);
+  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount, isCardsDealingComplete]);
 
   const handleCardsDealingComplete = useCallback(() => {
     setIsCardsDealingComplete(true);
+    console.log("Cards dealing complete"); // Add this log
   }, []);
 
   return (

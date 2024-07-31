@@ -265,7 +265,7 @@ function AppContent({ isAuthenticated }) {
                   {...spreadProps} 
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
-                  remainingDrawsToday={remainingDrawsToday}
+                  remainingDrawsToday={remainingDrawsToday} // Ensure this line is present
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={getToken}

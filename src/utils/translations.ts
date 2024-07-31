@@ -1,5 +1,5 @@
 import { useLanguage } from '../contexts/LanguageContext';
-import { useMemo } from 'react';
+import { useCallback } from 'react';
 
 export type Language = 'ar' | 'da' | 'de' | 'el' | 'en' | 'es' | 'fi' | 'fr' | 'hi' | 'it' | 'ja' | 'ko' | 'nl' | 'no' | 'pl' | 'pt' | 'ru' | 'sv' | 'tl' | 'tr' | 'zh';
 
@@ -56,6 +56,7 @@ export const buttonTranslations: Partial<Record<Language, Partial<Record<Transla
 export const loadTranslations = async (language: Language) => {
   try {
     const module = await import(`./translations/${language}.json`);
+    console.log(`Loaded translations for ${language}:`, module.default);
     buttonTranslations[language] = module.default as Record<TranslationKey, string>;
   } catch (error) {
     console.error(`Failed to load translations for ${language}:`, error);
@@ -71,7 +72,7 @@ export const loadTranslations = async (language: Language) => {
 export const useTranslation = () => {
   const { selectedLanguage } = useLanguage();
 
-  const getTranslation = useMemo(() => (key: TranslationKey) => {
+  const getTranslation = useCallback((key: TranslationKey) => {
     if (!(selectedLanguage in buttonTranslations)) {
       console.warn(`Language "${selectedLanguage}" not found, falling back to English.`);
       return (buttonTranslations['en'] as Record<TranslationKey, string>)[key] || key;

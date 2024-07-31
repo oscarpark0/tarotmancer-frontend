@@ -10,7 +10,6 @@ import { formatResponse } from '../utils/textFormatting';
 import { useTranslation } from '../utils/translations';
 import { useLanguage } from '../contexts/LanguageContext';
 import { IKImage } from 'imagekitio-react';
-import { getImagePath } from '../utils/imageUtils';
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -304,7 +303,7 @@ const Robot = memo((props) => {
                 {props.cards.map((position, index) => (
                   <IKImage 
                     key={index}
-                    path={getImagePath(position.most_common_card_img)}
+                    path={position.most_common_card_img} // Remove getImagePath function
                     transformation={[{height: 200, width: 150}]}
                     loading="lazy"
                     lqip={{active: true}}

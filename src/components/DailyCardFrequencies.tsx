@@ -45,7 +45,7 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
             >
               <div className={styles.cardImageWrapper}>
                 <IKImage 
-                  path={`/${freq.card_img}`}
+                  path={freq.card_img}
                   transformation={[{ height: "100", width: "60" }]}
                   loading="lazy"
                   lqip={{ active: true }}

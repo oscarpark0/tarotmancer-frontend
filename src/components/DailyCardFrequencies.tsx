@@ -30,6 +30,10 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
     return Math.max(...frequencies.map(freq => freq.frequency), 1);
   };
 
+  const getImagePath = (fullUrl: string) => {
+    return fullUrl.replace('https://ik.imagekit.io/tarotmancer/', '');
+  };
+
   return (
     <div className={styles.dailyCardFrequencies}>
       <div className={styles.barChartContainer}>
@@ -45,7 +49,7 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
             >
               <div className={styles.cardImageWrapper}>
                 <IKImage 
-                  path={freq.card_img}
+                  path={getImagePath(freq.card_img)}
                   loading="lazy"
                   className={styles.cardImage}
                   alt={freq.card_name}

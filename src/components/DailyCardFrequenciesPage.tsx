@@ -30,6 +30,10 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
   const isThreeCardSpread = spread.length === 3;
   const { getTranslation } = useTranslation();
 
+  const getImagePath = (fullUrl: string) => {
+    return fullUrl.replace('https://ik.imagekit.io/tarotmancer/', '');
+  };
+
   return (
     <div className={styles.spreadContainer}>
       <h4>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h4>
@@ -40,8 +44,9 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
             className={`${styles.spreadCard} ${styles[`position${index}`]}`}
           >
             <IKImage 
-              path={position.most_common_card_img}
+              path={getImagePath(position.most_common_card_img)}
               loading="lazy"
+              transformation={[]}
               className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
               alt={position.most_common_card}
             />

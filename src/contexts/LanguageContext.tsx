@@ -3,7 +3,7 @@ import { loadTranslations, Language } from '../utils/translations';
 
 interface LanguageContextType {
   selectedLanguage: Language;
-  setSelectedLanguage: React.Dispatch<React.SetStateAction<Language>>;
+  setSelectedLanguage: (language: Language) => void;
   translationsLoaded: boolean;
 }
 
@@ -34,8 +34,16 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   }, [selectedLanguage, loadTranslationsForLanguage]);
 
   useEffect(() => {
-    console.log('Language context updated:', selectedLanguage);
-  }, [selectedLanguage]);
+    const handleLanguageChange = () => {
+      // Force a re-render of the entire app
+      setTranslationsLoaded(prev => !prev);
+    };
+
+    window.addEventListener('languageChange', handleLanguageChange);
+    return () => {
+      window.removeEventListener('languageChange', handleLanguageChange);
+    };
+  }, []);
 
   if (!translationsLoaded) {
     return <div>Loading translations...</div>;

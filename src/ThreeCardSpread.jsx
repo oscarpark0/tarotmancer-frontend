@@ -108,16 +108,16 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       ).join('\n');
 
       // Handle rate limit headers
-      const remainingDraws = response.headers.get('X-RateLimit-Remaining');
+      const remainingDrawsToday = response.headers.get('X-RateLimit-Remaining');
       const resetTime = response.headers.get('X-RateLimit-Reset');
       
 
       // Ensure we're working with numbers
-      const remainingDrawsNum = parseInt(remainingDraws, 100);
-      if (!isNaN(remainingDrawsNum)) {
-        setDrawCount(10 - remainingDrawsNum);
+      const remainingDrawsTodayNum = parseInt(remainingDrawsToday, 100);
+      if (!isNaN(remainingDrawsTodayNum)) {
+        setDrawCount(10 - remainingDrawsTodayNum);
       } else {
-        console.warn('Invalid remaining draws value:', remainingDraws);
+        console.warn('Invalid remaining draws value:', remainingDrawsToday);
       }
 
       const resetTimeNum = parseInt(resetTime, 100);

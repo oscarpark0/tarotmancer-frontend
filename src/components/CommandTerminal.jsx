@@ -11,7 +11,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
 
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw, remainingDraws }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw, remainingDrawsToday }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -151,8 +151,8 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
       const timeString = formatCountdown(countdown);
       return getTranslation('timeRemainingUntilNextDraw').replace('{time}', timeString);
     }
-    return `${getTranslation('draw')} (${remainingDraws} ${getTranslation('remaining')})`;
-  }, [isLoading, isDrawing, canDraw, countdown, getTranslation, remainingDraws]);
+    return `${getTranslation('draw')} (${remainingDrawsToday} ${getTranslation('remainingDrawsToday')})`;
+  }, [isLoading, isDrawing, canDraw, countdown, getTranslation, remainingDrawsToday]);
 
   useEffect(() => {
   }, [currentDrawId]);
@@ -178,7 +178,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           <div className="terminal-output" ref={terminalOutputRef}>
             {isLoading ? getTranslation('processing') : 
              !canDraw && timeUntilNextDraw ? `${getTranslation('nextDrawAvailable')} ${timeUntilNextDraw}` : 
-             `${getTranslation('remainingDraws')}: ${remainingDraws}`}
+             `${getTranslation('remainingDrawsToday')}: ${remainingDrawsToday}`}
           </div>
         </div>
         <div className="screen-overlay"></div>

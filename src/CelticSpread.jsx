@@ -34,6 +34,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
+  const [remainingDrawsToday, setRemainingDrawsToday] = useState(0);
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -203,9 +204,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       selectedLanguage={selectedLanguage}
       getTranslation={getTranslation}
       lastDrawTime={lastDrawTime}
-      remainingDraws={remainingDraws}
+      remainingDrawsToday={remainingDrawsToday}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDraws]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday]);
 
 
   const memoizedFloatingCards = useMemo(() => (
@@ -291,7 +292,7 @@ CelticSpread.propTypes = {
   getToken: PropTypes.func.isRequired,
   onDraw: PropTypes.func.isRequired,
   lastDrawTime: PropTypes.string,
-  remainingDraws: PropTypes.number.isRequired,
+  remainingDrawsToday: PropTypes.number.isRequired,
 };
 
 export default CelticSpread;

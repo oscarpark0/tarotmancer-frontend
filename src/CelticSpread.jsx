@@ -50,7 +50,8 @@ const CelticSpread = React.memo(({
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [isCardsDealingComplete, setIsCardsDealingComplete] = useState(false);
 
-  const getImagePath = (imagePath) => {
+  const loadedImages = useRef(new Set());
+  const getImagePath = useCallback((imagePath) => {
     if (imagePath.startsWith('https://ik.imagekit.io/tarotmancer/')) {
       return imagePath;
     } else if (imagePath.startsWith('https://tarot-mancer.twic.pics/tarot/')) {
@@ -58,7 +59,28 @@ const CelticSpread = React.memo(({
     } else {
       return `https://ik.imagekit.io/tarotmancer/${imagePath}`;
     }
-  };
+  }, []);
+
+  // Preload essential images
+  useEffect(() => {
+    const essentialImages = ['cardback.webp'];
+    essentialImages.forEach(img => {
+      const image = new Image();
+      image.src = getImagePath(img);
+      loadedImages.current.add(img);
+    });
+  }, [getImagePath]);
+
+
+  const lazyLoadImage = useCallback((imagePath) => {
+    const path = getImagePath(imagePath);
+    if (!loadedImages.current.has(path)) {
+      const image = new Image();
+      image.src = path;
+      loadedImages.current.add(path);
+    }
+  }, [getImagePath]);
+
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
   }, []);
@@ -202,7 +224,7 @@ const CelticSpread = React.memo(({
       onExitComplete={handleExitComplete}
       revealCards={revealCards} // Updated to pass revealCards prop
       dealingComplete={dealingComplete}
-      shouldDrawNewSpread={shouldDrawNewSpread}
+      shouldDrawNewSpread={shouldDrawNewSpread} 
       setShouldDrawNewSpread={setShouldDrawNewSpread}
       onMonitorOutput={handleMonitorOutput}
       drawSpread={drawSpread}
@@ -282,10 +304,11 @@ const CelticSpread = React.memo(({
           loading="lazy"
           className={`cardImage ${card.orientation === 'reversed' ? 'reversed' : ''}`}
           alt={card.name}
+          onLoad={() => lazyLoadImage(card.img)}
         />
       ))}
     </CardReveal>
-  ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted, floatingCardsComplete]);
+  ), [cards, revealCards, floatingCardsComplete, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted, getImagePath, lazyLoadImage]);
 
   return (
     <ErrorBoundary>

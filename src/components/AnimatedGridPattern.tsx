@@ -78,13 +78,33 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   isPaused,
   ...props
 }) => {
-  // Generate a unique ID for the pattern
   const id = useId();
   const containerRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
   const [isStreaming, setIsStreaming] = useState(false);
   const [isTabActive, setIsTabActive] = useState(true);
   const [cards, setCards] = useState<Card[]>([]);
+
+  const loadedImages = useRef<Set<string>>(new Set());
+
+  // Preload essential images
+  useEffect(() => {
+    const essentialImages = ['cardback.webp'];
+    essentialImages.forEach(img => {
+      const image = new Image();
+      image.src = `${TAROT_IMAGE_BASE_URL}/${img}`;
+      loadedImages.current.add(img);
+    });
+  }, []);
+
+  // Lazy load images
+  const lazyLoadImage = useCallback((card: string) => {
+    if (!loadedImages.current.has(card)) {
+      const image = new Image();
+      image.src = `${TAROT_IMAGE_BASE_URL}/${card}`;
+      loadedImages.current.add(card);
+    }
+  }, []);
 
   // Callback to generate a random position within the grid
   const getPos = useCallback((): [number, number] => [
@@ -160,7 +180,9 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   // Calculate the effective number of cards based on streaming and tab activity
   const effectiveNumCards = isTabActive ? (isStreaming ? Math.floor(numCards / 2) : numCards) : Math.floor(numCards / 4);
 
-  // If on mobile, return null to disable the component
+  // Reduce the number of cards rendered
+  const visibleCards = useMemo(() => cards.slice(0, Math.min(effectiveNumCards, 20)), [cards, effectiveNumCards]);
+
   if (isMobile) {
     return null;
   }
@@ -185,7 +207,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
       </defs>
       <rect width="100%" height="100%" fill={`url(#${id})`} />
       <svg x={x} y={y} className="overflow-visible">
-        {cards.slice(0, effectiveNumCards).map((card) => (
+        {visibleCards.map((card) => (
           <MemoizedMotionG
             key={`${card.id}-${card.pos[0]}-${card.pos[1]}`}
             custom={card}
@@ -198,6 +220,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
               }
             }}
             style={{ transformStyle: 'preserve-3d', transformOrigin: 'center', perspective: '1000px' }}
+            onLayoutEffect={() => lazyLoadImage(card.tarotCard)}
           >
             <MemoizedMotionImage
               href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}

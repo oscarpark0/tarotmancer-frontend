@@ -11,6 +11,7 @@ import PastDrawsModal from './components/PastDrawsModal';
 import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations';
 import PropTypes from 'prop-types';
+import { IKImage } from 'imagekitio-react';
 
 const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount }) => {
   const { user } = useKindeAuth();
@@ -249,7 +250,24 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       isMobile={isMobile}
       className=""
       animationStarted={animationStarted}
-    />
+    >
+      {cards.map((card, index) => (
+        <IKImage
+          key={index}
+          path={card.img}
+          transformation={[{
+            height: 300,
+            width: 200,
+            quality: 20,
+            blur: 6
+          }]}
+          loading="lazy"
+          lqip={{active: true}}
+          className={`cardImage ${card.orientation === 'reversed' ? 'reversed' : ''}`}
+          alt={card.name}
+        />
+      ))}
+    </CardReveal>
   ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, animationStarted, floatingCardsComplete]);
 
   return (

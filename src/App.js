@@ -23,7 +23,7 @@ import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
 import { IKContext } from 'imagekitio-react';
-import { IMAGEKIT_PUBLIC_KEY, IMAGEKIT_URL_ENDPOINT } from './utils/config';
+import { IMAGEKIT_PUBLIC_KEY } from './utils/config';
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
@@ -306,7 +306,7 @@ function App() {
   return (
     <IKContext 
       publicKey={IMAGEKIT_PUBLIC_KEY}
-      urlEndpoint={IMAGEKIT_URL_ENDPOINT}
+      urlEndpoint="https://ik.imagekit.io/tarotmancer"
       transformationPosition="path"
     >
       <LanguageProvider>

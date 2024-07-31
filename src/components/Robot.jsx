@@ -211,7 +211,7 @@ const Robot = memo((props) => {
 
   // Add this effect to force re-render when language changes
   useEffect(() => {
-    // This empty dependency array ensures the effect runs when selectedLanguage changes
+    console.log('Component language updated:', selectedLanguage);
   }, [selectedLanguage]);
 
   useEffect(() => {

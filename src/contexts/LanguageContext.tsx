@@ -33,6 +33,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     loadLanguage();
   }, [selectedLanguage, loadTranslationsForLanguage]);
 
+  useEffect(() => {
+    console.log('Language context updated:', selectedLanguage);
+  }, [selectedLanguage]);
+
   if (!translationsLoaded) {
     return <div>Loading translations...</div>;
   }

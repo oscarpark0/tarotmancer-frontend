@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Footer.module.css';
 import FeedbackButton from './FeedbackButton';
@@ -11,7 +11,11 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
   const { getTranslation } = useTranslation();
-  useLanguage();
+  const { selectedLanguage } = useLanguage();
+
+  useEffect(() => {
+    console.log('Component language updated:', selectedLanguage);
+  }, [selectedLanguage]);
 
   return (
     <footer className={`${styles.footer} ${isDarkMode ? styles.darkMode : ''} footer`}>

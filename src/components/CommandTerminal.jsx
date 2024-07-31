@@ -45,6 +45,10 @@ const CommandTerminal = forwardRef(({
   const [isDrawing, setIsDrawing] = useState(false);
 
   useEffect(() => {
+    console.log('Component language updated:', selectedLanguage);
+  }, [selectedLanguage]);
+
+  useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
       setShowCards(true);
     }

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
-function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, numCards, isMobile }) {
+function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, numCards, isMobile, onDealingComplete }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
@@ -94,6 +94,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               if (i === (numCards || 0) - 1) {
                 setIsAnimating(false);
                 onExitComplete();
+                onDealingComplete(); // Add this line to signal that dealing is complete
               }
             }}
           >

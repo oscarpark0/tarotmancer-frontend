@@ -10,12 +10,12 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations';
 import PastDrawsModal from './components/PastDrawsModal';
-import { IKImage } from 'imagekitio-react'; // Add this import
+import { IKImage } from 'imagekitio-react';
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw, lastDrawTime }) => {
   const { getToken, user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
-  const { getTranslation } = useTranslation(); // Use the hook
+  const { getTranslation } = useTranslation();
 
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,6 +33,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
+  const [isCardsDealingComplete, setIsCardsDealingComplete] = useState(false);
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -183,6 +184,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     handleDrawSpread();
   }, [handleDrawSpread]);
 
+  const handleCardsDealingComplete = useCallback(() => {
+    setIsCardsDealingComplete(true);
+  }, []);
+
   // Add this effect to force re-render when language changes
   useEffect(() => {
     // This empty dependency array ensures the effect runs when selectedLanguage changes
@@ -229,8 +234,10 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       onDraw={handleDraw}
       selectedLanguage={selectedLanguage}
       getTranslation={getTranslation}
+      isCardsDealingComplete={isCardsDealingComplete}
+      onCardsDealingComplete={handleCardsDealingComplete}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user?.id, currentDrawId, handleOpenPastDraws, handleAnimationStart, handleDraw, selectedLanguage, getTranslation]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, handleDrawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, cards, selectedSpread, onSpreadSelect, isMobile, drawCount, fetchSpread, animationsComplete, isDarkMode, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user?.id, currentDrawId, handleOpenPastDraws, handleAnimationStart, handleDraw, selectedLanguage, getTranslation, isCardsDealingComplete, handleCardsDealingComplete]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -243,8 +250,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       shouldDrawNewSpread={shouldDrawNewSpread}
       numCards={3}
       isMobile={isMobile}
+      onDealingComplete={handleCardsDealingComplete}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile]);
+  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, handleCardsDealingComplete]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal

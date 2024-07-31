@@ -35,6 +35,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
+  const [isCardsDealingComplete, setIsCardsDealingComplete] = useState(false);
 
   useEffect(() => {
     console.log('CelticSpread.jsx - remainingDrawsToday:', remainingDrawsToday);
@@ -173,6 +174,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     setIsPastDrawsModalOpen(true);
   }, []);
 
+  const handleCardsDealingComplete = useCallback(() => {
+    setIsCardsDealingComplete(true);
+  }, []);
+
   // Add this effect to force re-render when language changes
   useEffect(() => {
     // This empty dependency array ensures the effect runs when selectedLanguage changes
@@ -225,8 +230,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       remainingDrawsToday={remainingDrawsToday}
       drawCount={drawCount}
       setDrawCount={setDrawCount}
+      isCardsDealingComplete={isCardsDealingComplete}
+      onCardsDealingComplete={handleCardsDealingComplete}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount, isCardsDealingComplete, handleCardsDealingComplete]);
 
 
   const memoizedFloatingCards = useMemo(() => (
@@ -242,8 +249,9 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       isMobile={isMobile}
       cards={cards}
       onAnimationStart={handleAnimationStart}
+      onDealingComplete={handleCardsDealingComplete}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart]);
+  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart, handleCardsDealingComplete]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal

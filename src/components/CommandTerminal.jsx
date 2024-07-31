@@ -33,6 +33,7 @@ const CommandTerminal = forwardRef(({
   currentDrawId,
   userId,
   onOpenPastDraws,
+  isCardsDealingComplete,
 }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -104,11 +105,11 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]);
 
   useEffect(() => {
-    if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
+    if (isCardsDealingComplete && mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
       handleSubmit(mostCommonCards);
       setShouldRequestCohere(false);
     }
-  }, [mostCommonCards, dealingComplete, shouldRequestCohere, animationsComplete, handleSubmit]);
+  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, shouldRequestCohere, animationsComplete, handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);
@@ -234,6 +235,7 @@ CommandTerminal.propTypes = {
   currentDrawId: PropTypes.string,
   userId: PropTypes.string,
   onOpenPastDraws: PropTypes.func.isRequired,
+  isCardsDealingComplete: PropTypes.bool.isRequired,
 };
 
 export default CommandTerminal;

@@ -65,6 +65,7 @@ const Robot = memo((props) => {
   const robotRef = useRef(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [localCanDraw, setLocalCanDraw] = useState(canDraw);
+  const [isCardsDealingComplete, setIsCardsDealingComplete] = useState(false);
 
   useEffect(() => {
     setLocalCanDraw(canDraw);
@@ -179,10 +180,12 @@ const Robot = memo((props) => {
   }, [monitorOutput]);
 
   useEffect(() => {
-    if (dealingComplete && mostCommonCards) {
+    if (isCardsDealingComplete && mostCommonCards) {
+      // Trigger Mistral request here
+      handleNewResponse('');
       onSubmitInput(mostCommonCards);
     }
-  }, [dealingComplete, mostCommonCards, onSubmitInput]);
+  }, [isCardsDealingComplete, mostCommonCards, handleNewResponse, onSubmitInput]);
 
   useEffect(() => {
   }, [selectedSpread]);
@@ -264,6 +267,10 @@ const Robot = memo((props) => {
     />
   ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount]);
 
+  const handleCardsDealingComplete = useCallback(() => {
+    setIsCardsDealingComplete(true);
+  }, []);
+
   return (
     <motion.div
       className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
@@ -299,6 +306,7 @@ const Robot = memo((props) => {
                 numCards={props.cards.length}
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
+                onDealingComplete={handleCardsDealingComplete}
               >
                 {props.cards.map((position, index) => (
                   <IKImage 

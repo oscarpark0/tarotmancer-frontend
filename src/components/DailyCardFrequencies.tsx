@@ -49,7 +49,7 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
             >
               <div className={styles.cardImageWrapper}>
                 <IKImage 
-                  path={getImagePath(freq.card_img)}
+                  path={freq.card_img}
                   loading="lazy"
                   className={styles.cardImage}
                   alt={freq.card_name}

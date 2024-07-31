@@ -34,6 +34,8 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
     return fullUrl.replace('https://ik.imagekit.io/tarotmancer/', '');
   };
 
+  console.log("Spread props:", { spread, title });
+
   return (
     <div className={styles.spreadContainer}>
       <h4>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h4>
@@ -102,6 +104,7 @@ const DailyFrequenciesPage: React.FC = () => {
       setFrequencies(frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency));
       setCelticSpread(spreadsResponse.data.celtic_spread);
       setThreeCardSpread(spreadsResponse.data.three_card_spread);
+      console.log("Three Card Spread:", spreadsResponse.data.three_card_spread);
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setError('Failed to fetch data. Please try again later.');
@@ -145,7 +148,11 @@ const DailyFrequenciesPage: React.FC = () => {
           <div className={styles.spreadsContainer}>
             <Spread spread={celticSpread} title="celticCrossSpread" />
             <div className={styles.spreadSeparator}></div>
-            <Spread spread={threeCardSpread} title="threeCardSpread" />
+            {threeCardSpread.length === 3 ? (
+              <Spread spread={threeCardSpread} title="threeCardSpread" />
+            ) : (
+              <div className={styles.error}>Error: Invalid Three Card spread data</div>
+            )}
           </div>
         </section>
         <section className={styles.frequenciesSection}>

@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { IKImage } from 'imagekitio-react';
 import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
-function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, numCards, isMobile, onDealingComplete }) {
+function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, numCards, isMobile }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
@@ -94,8 +95,6 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
               if (i === (numCards || 0) - 1) {
                 setIsAnimating(false);
                 onExitComplete();
-                onDealingComplete(); // Ensure this is being called
-                console.log("FloatingCards: All cards dealt"); // Add this log
               }
             }}
           >

@@ -43,8 +43,10 @@ const CommandTerminal = forwardRef(({
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
   const [isDrawing, setIsDrawing] = useState(false);
-  const [hasMistralRequestBeenSent, setHasMistralRequestBeenSent] = useState(false);
 
+  useEffect(() => {
+    console.log('Component language updated:', selectedLanguage);
+  }, [selectedLanguage]);
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -57,6 +59,7 @@ const CommandTerminal = forwardRef(({
   }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
+    console.log("handleSubmit called with:", mostCommonCards); // Add this log
     if (!currentDrawId) {
       console.warn('currentDrawId is undefined, but continuing with request');
     }
@@ -103,18 +106,11 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]);
 
   useEffect(() => {
-    if (isCardsDealingComplete && mostCommonCards && dealingComplete && !hasMistralRequestBeenSent) {
-      console.log("CommandTerminal: Triggering Mistral request");
+    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
+      console.log("CommandTerminal: Triggering Mistral request"); // Add this log
       handleSubmit(mostCommonCards);
-      setHasMistralRequestBeenSent(true);
     }
-  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleSubmit, hasMistralRequestBeenSent]);
-
-  useEffect(() => {
-    if (shouldDrawNewSpread) {
-      setHasMistralRequestBeenSent(false);
-    }
-  }, [shouldDrawNewSpread]);
+  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);
@@ -154,6 +150,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   };
 
   useEffect(() => {
+    console.log('CommandTerminal.jsx - drawCount:', drawCount);
   }, [drawCount]);
 
   return (

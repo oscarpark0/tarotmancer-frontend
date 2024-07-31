@@ -11,27 +11,30 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
   const cardPositions = useMemo(() => {
     const containerWidth = window.innerWidth;
     const isMobile = containerWidth <= 768;
-
-    const baseScale = isMobile ? 0.01 : 20;
-    const baseLeft = isMobile ? '50%' : '40%';
-    const topOffset = isMobile ? '30%' : '169%';
-
+    
+    const baseScale = isMobile ? 0.01 : 20; 
+    const baseLeft = isMobile ? '50%' : '40%'; 
+    const topOffset = isMobile ? '30%' : '169%'; 
+    
+    // New horizontal spacing variables
     const threeCardHorizontalSpacing = isMobile ? '25vw' : '8vw';
     const celticCrossHorizontalSpacing = isMobile ? '9vw' : '5vw';
     const celticStackHorizontalSpacing = isMobile ? '22vw' : '12vw';
-
+    
     if (cards.length === 3) {
+      // Three Card Spread
       return [
         { top: topOffset, left: `calc(${baseLeft} - ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
         { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
         { top: topOffset, left: `calc(${baseLeft} + ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
       ];
     } else {
+      // Celtic Cross Spread
       const crossCardScale = baseScale * 0.9;
       const celticBaseScale = isMobile ? baseScale * 0.8 : baseScale;
       const celticBaseLeft = isMobile ? '30%' : baseLeft;
       const verticalSpacing = isMobile ? '5.9vh' : '9.5vh';
-
+      
       return [
         { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
         { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) rotate(90deg) scale(${crossCardScale * 0.7})`, zIndex: 12 },
@@ -51,8 +54,10 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     if (totalCards === 3) {
       return index === 1 ? 'bottom' : 'top';
     } else {
+      // Celtic Cross positioning
       if (index === 0 || index === 1) return 'bottom';
-      if (index === 2 || index === 3) return 'left';
+      if (index === 2) return 'left';
+      if (index === 3) return 'left';
       if (index === 4) return 'bottom';
       if (index === 5) return 'top';
       return index % 2 === 0 ? 'left' : 'left';
@@ -149,7 +154,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <motion.h3
+                <motion.h3 
                   className="tooltip-title"
                   initial={{ y: -5, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -157,7 +162,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                 >
                   {card.name}
                 </motion.h3>
-                <motion.p
+                <motion.p 
                   className="tooltip-position"
                   initial={{ y: -5, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -165,7 +170,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                 >
                   {card.position}
                 </motion.p>
-                <motion.p
+                <motion.p 
                   className="tooltip-content"
                   initial={{ y: -5, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}

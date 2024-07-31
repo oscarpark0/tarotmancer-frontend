@@ -130,7 +130,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
           <div className="card-inner">
             <div className="card-front">
               <IKImage
-                path={card.img}
+                path={`/tarot/${card.img}`}
                 transformation={[{ height: 300, width: 200, quality: 20, blur: 6 }]}
                 loading="lazy"
                 lqip={{ active: true }}
@@ -138,7 +138,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
             </div>
             <div className="card-back">
               <IKImage
-                path="cardback.webp"
+                path="/tarot/cardback.webp"
                 transformation={[{ height: 300, width: 200 }]}
                 loading="lazy"
                 lqip={{ active: true }}

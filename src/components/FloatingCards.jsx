@@ -98,7 +98,7 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
             }}
           >
             <IKImage
-              path="cardback.webp"
+              path="/tarot/cardback.webp"
               transformation={[{ height: 300, width: 200 }]}
               loading="lazy"
               lqip={{ active: true }}

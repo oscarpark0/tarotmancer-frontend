@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TAROT_IMAGE_BASE_URL } from "../utils/config";
+import { IKImage } from 'imagekitio-react';
 import styles from './TarotCaptcha.module.css';
 
 const API_BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -92,8 +92,11 @@ const TarotCaptcha: React.FC<TarotCaptchaProps> = ({ onVerify }) => {
     <>
       <div className={styles.overlay}></div>
       <div className={styles.captchaContainer}>
-        <img
-          src={`${TAROT_IMAGE_BASE_URL}/${captchaData.correct_image}`}
+        <IKImage
+          path={`/tarot/${captchaData.correct_image}`}
+          transformation={[{height: "300", width: "200"}]}
+          loading="lazy"
+          lqip={{active: true}}
           alt="Tarot Card"
           className={styles.cardImage}
         />

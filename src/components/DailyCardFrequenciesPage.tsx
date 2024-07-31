@@ -40,7 +40,7 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
             className={`${styles.spreadCard} ${styles[`position${index}`]}`}
           >
             <IKImage 
-              path={`/${position.most_common_card_img}`}
+              path={`/tarot/${position.most_common_card_img}`}
               transformation={[{height: "200", width: "150"}]}
               loading="lazy"
               lqip={{active: true}}

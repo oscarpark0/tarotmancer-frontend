@@ -17,7 +17,6 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const { getToken, user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
-
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -109,12 +108,9 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
       ).join('\n');
 
-      // Handle rate limit headers
       const remainingDrawsToday = response.headers.get('X-RateLimit-Remaining');
       const resetTime = response.headers.get('X-RateLimit-Reset');
       
-
-      // Ensure we're working with numbers
       const remainingDrawsTodayNum = parseInt(remainingDrawsToday, 100);
       if (!isNaN(remainingDrawsTodayNum)) {
         setDrawCount(10 - remainingDrawsTodayNum);

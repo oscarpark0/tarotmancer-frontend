@@ -25,12 +25,13 @@ const CelticSpread = React.memo(({
   lastDrawTime, 
   remainingDrawsToday, 
   drawCount, 
-  setDrawCount 
+  setDrawCount,
+  shouldDrawNewSpread,
+  setShouldDrawNewSpread, 
 }) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
-
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -38,7 +39,6 @@ const CelticSpread = React.memo(({
   const [revealCards, setRevealCards] = useState(false);
   const [revealedCards, setRevealedCards] = useState(0);
   const [dealingComplete, setDealingComplete] = useState(false);
-  const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
   const [mostCommonCards, setMostCommonCards] = useState('');
   const formRef = useRef(null);
   const [cards, setCards] = useState([]);
@@ -59,16 +59,6 @@ const CelticSpread = React.memo(({
       return `https://ik.imagekit.io/tarotmancer/${imagePath}`;
     }
   };
-
-  useEffect(() => {
-  }, [remainingDrawsToday]);
-
-  useEffect(() => {
-  }, [canDraw]);
-
-  useEffect(() => {
-  }, [drawCount]);
-
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
   }, []);
@@ -155,7 +145,7 @@ const CelticSpread = React.memo(({
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, user, canDraw, timeUntilNextDraw, setDrawCount, onDraw]);
+  }, [getToken, selectedSpread, user, canDraw, timeUntilNextDraw, setDrawCount, onDraw, setShouldDrawNewSpread]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -179,12 +169,12 @@ const CelticSpread = React.memo(({
   const drawSpread = useCallback(() => {
     if (canDraw) {
       setDealCards(false);
-      setRevealCards(false);
+      setRevealCards(false); // Updated to reset revealCards to false
       setDealingComplete(false);
       setShouldDrawNewSpread(true);
       fetchSpread();
     }
-  }, [canDraw, fetchSpread]);
+  }, [canDraw, fetchSpread, setShouldDrawNewSpread]);
 
   const handleAnimationStart = useCallback(() => {
     setAnimationStarted(true);
@@ -203,10 +193,6 @@ const CelticSpread = React.memo(({
     // This empty dependency array ensures the effect runs when selectedLanguage changes
   }, [selectedLanguage]);
 
-  // Add this effect to log the timeUntilNextDraw value
-  useEffect(() => {
-  }, [timeUntilNextDraw]);
-
   const memoizedRobot = useMemo(() => (
     <Robot
       dealCards={dealCards}
@@ -214,11 +200,12 @@ const CelticSpread = React.memo(({
       revealedCards={revealedCards}
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
-      revealCards={revealCards}
+      revealCards={revealCards} // Updated to pass revealCards prop
+      dealingComplete={dealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
+      setShouldDrawNewSpread={setShouldDrawNewSpread}
       onMonitorOutput={handleMonitorOutput}
       drawSpread={drawSpread}
-      dealingComplete={handleDealingComplete}
       mostCommonCards={mostCommonCards}
       formRef={formRef}
       onSubmitInput={handleSubmitInput}
@@ -253,13 +240,13 @@ const CelticSpread = React.memo(({
       isCardsDealingComplete={isCardsDealingComplete}
       onCardsDealingComplete={handleCardsDealingComplete}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, 
-    handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, 
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, dealingComplete, 
+    handleMonitorOutput, drawSpread, mostCommonCards, handleSubmitInput, 
     isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, 
     handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, 
     currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, 
-    lastDrawTime, remainingDrawsToday, drawCount, setDrawCount, isCardsDealingComplete, 
-    handleCardsDealingComplete]);
+    lastDrawTime, remainingDrawsToday, drawCount, setDrawCount, 
+    isCardsDealingComplete, handleCardsDealingComplete, shouldDrawNewSpread, setShouldDrawNewSpread]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -267,23 +254,23 @@ const CelticSpread = React.memo(({
       monitorPosition={{ width: window.innerWidth, height: window.innerHeight }}
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
-      revealCards={revealCards}
-      dealingComplete={handleDealingComplete}
-      shouldDrawNewSpread={shouldDrawNewSpread}
+      revealCards={revealCards} // Updated to use revealCards prop
+      dealingComplete={dealingComplete}
+      shouldDrawNewSpread={shouldDrawNewSpread} 
       numCards={10}
       isMobile={isMobile}
       cards={cards}
       onAnimationStart={handleAnimationStart}
       onDealingComplete={handleCardsDealingComplete}
     />
-  ), [dealCards, positions, handleExitComplete, revealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart, handleCardsDealingComplete]);
+  ), [dealCards, positions, handleExitComplete, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart, handleCardsDealingComplete]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal
       cards={cards}
       revealCards={revealCards && floatingCardsComplete}
       dealingComplete={dealingComplete}
-      shouldDrawNewSpread={shouldDrawNewSpread}
+      shouldDrawNewSpread={shouldDrawNewSpread} 
       isMobile={isMobile}
       className=""
       animationStarted={animationStarted}
@@ -358,6 +345,8 @@ CelticSpread.propTypes = {
   remainingDrawsToday: PropTypes.number.isRequired,
   drawCount: PropTypes.number.isRequired,
   setDrawCount: PropTypes.func.isRequired,
+  shouldDrawNewSpread: PropTypes.bool.isRequired,
+  setShouldDrawNewSpread: PropTypes.func.isRequired,
 };
 
 export default CelticSpread;

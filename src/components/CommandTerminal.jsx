@@ -45,9 +45,6 @@ const CommandTerminal = forwardRef(({
   const [isDrawing, setIsDrawing] = useState(false);
   const [hasMistralRequestBeenSent, setHasMistralRequestBeenSent] = useState(false);
 
-  useEffect(() => {
-    console.log('Component language updated:', selectedLanguage);
-  }, [selectedLanguage]);
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {

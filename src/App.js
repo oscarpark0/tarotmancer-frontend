@@ -55,7 +55,6 @@ function KindeCallbackHandler() {
 
 function AppContent({ isAuthenticated }) {
   const { user, getToken } = useKindeAuth();
-  console.log('AppContent - isAuthenticated:', isAuthenticated);
   const { getTranslation } = useTranslation(); 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
@@ -71,6 +70,7 @@ function AppContent({ isAuthenticated }) {
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [remainingDrawsToday, setRemainingDrawsToday] = useState(5);
   const [drawCount, setDrawCount] = useState(0);
+  const [shouldDrawNewSpread, setShouldDrawNewSpread] = useState(false);
 
   const navigate = useNavigate();
 
@@ -159,7 +159,9 @@ function AppContent({ isAuthenticated }) {
     canAccessCohere,
     setCanAccessCohere,
     kindeAuth: { user, getToken },
-  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken]);
+    shouldDrawNewSpread,
+    setShouldDrawNewSpread,
+  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken, shouldDrawNewSpread]);
 
   const makeAuthenticatedRequest = useCallback(async (endpoint, errorMessage) => {
     try {
@@ -185,10 +187,8 @@ function AppContent({ isAuthenticated }) {
   }, [getToken, user]);
 
   const checkCanDraw = useCallback(async () => {
-    console.log('App.js - checkCanDraw called');
     const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');
     if (data) {
-      console.log('App.js - can_draw data received:', data);
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
       setDrawCount(5 - data.remaining_draws); // Assuming 5 is the maximum number of draws per day
@@ -203,17 +203,11 @@ function AppContent({ isAuthenticated }) {
   }, [makeAuthenticatedRequest]);
 
   useEffect(() => {
-    console.log('App.js - Checking can draw. isAuthenticated:', isAuthenticated);
     if (isAuthenticated) {
       checkCanDraw();
     }
   }, [isAuthenticated, checkCanDraw]);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      checkCanDraw();
-    }
-  }, [isAuthenticated, checkCanDraw]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -222,21 +216,11 @@ function AppContent({ isAuthenticated }) {
   }, [isAuthenticated, fetchUserDraws]);
 
   useEffect(() => {
-    console.log('AppContent - Authentication status changed:', isAuthenticated, 'user:', user);
     if (!isAuthenticated) {
-      console.log('AppContent - User was logged out');
     }
   }, [isAuthenticated, user]);
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      checkCanDraw();
-    }
-  }, [isAuthenticated, checkCanDraw]);
 
-  useEffect(() => {
-    console.log('App.js - remainingDrawsToday:', remainingDrawsToday);
-  }, [remainingDrawsToday]);
 
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -265,7 +249,7 @@ function AppContent({ isAuthenticated }) {
                   {...spreadProps} 
                   isDarkMode={isDarkMode}
                   canDraw={canDraw}
-                  remainingDrawsToday={remainingDrawsToday} // Ensure this line is present
+                  remainingDrawsToday={remainingDrawsToday}
                   currentDrawId={currentDrawId}
                   setCurrentDrawId={setCurrentDrawId}
                   getToken={getToken}

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
@@ -11,12 +10,12 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations';
 import PastDrawsModal from './components/PastDrawsModal';
-import { IKImage } from 'imagekitio-react'; // Add this import
+import { IKImage } from 'imagekitio-react';
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw, lastDrawTime }) => {
   const { getToken, user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
-  const { getTranslation } = useTranslation(); // Use the hook
+  const { getTranslation } = useTranslation();
 
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +33,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
+  const [shouldUpdateDrawCount, setShouldUpdateDrawCount] = useState(false);
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -56,7 +56,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       return;
     }
 
-    if (drawCount >= 100) {
+    if (drawCount >= 10) {
       setError('You have reached the maximum number of draws for today. Please try again tomorrow.');
       return;
     }
@@ -111,17 +111,16 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       // Handle rate limit headers
       const remainingDrawsToday = response.headers.get('X-RateLimit-Remaining');
       const resetTime = response.headers.get('X-RateLimit-Reset');
-      
 
       // Ensure we're working with numbers
-      const remainingDrawsTodayNum = parseInt(remainingDrawsToday, 100);
+      const remainingDrawsTodayNum = parseInt(remainingDrawsToday, 10);
       if (!isNaN(remainingDrawsTodayNum)) {
-        setDrawCount(10 - remainingDrawsTodayNum);
+        setShouldUpdateDrawCount(true);
       } else {
         console.warn('Invalid remaining draws value:', remainingDrawsToday);
       }
 
-      const resetTimeNum = parseInt(resetTime, 100);
+      const resetTimeNum = parseInt(resetTime, 10);
       if (!isNaN(resetTimeNum)) {
         setLastResetTime(resetTimeNum * 1000);
       }
@@ -130,7 +129,7 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setCards(newCards);
       setDealCards(true);
       setMostCommonCards(formattedMostCommonCards);
-      setCurrentDrawId(data.id); // Ensure this is set
+      setCurrentDrawId(data.id);
 
     } catch (error) {
       console.error('Error drawing spread:', error);
@@ -140,7 +139,14 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, drawCount, setDrawCount, setLastResetTime, canDraw, timeUntilNextDraw, user]);
+  }, [getToken, selectedSpread, drawCount, setLastResetTime, canDraw, timeUntilNextDraw, user]);
+
+  useEffect(() => {
+    if (shouldUpdateDrawCount) {
+      setDrawCount(prevCount => Math.min(prevCount + 1, 10));
+      setShouldUpdateDrawCount(false);
+    }
+  }, [shouldUpdateDrawCount, setDrawCount]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -184,7 +190,6 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     handleDrawSpread();
   }, [handleDrawSpread]);
 
-  // Add this effect to force re-render when language changes
   useEffect(() => {
     // This empty dependency array ensures the effect runs when selectedLanguage changes
   }, [selectedLanguage]);

@@ -13,7 +13,91 @@ import { useTranslation } from './utils/translations';
 import PropTypes from 'prop-types';
 import { IKImage } from 'imagekitio-react';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount }) => {
+// Move the fetchSpread function outside of the component
+const fetchSpread = async (user, canDraw, timeUntilNextDraw, getToken, selectedSpread, setPositions, setCards, setDealCards, setMostCommonCards, setCurrentDrawId, setDrawCount, setIsLoading, setShouldDrawNewSpread, setError) => {
+  if (!user || !user.id) {
+    setError('User not authenticated. Please log in.');
+    return;
+  }
+  if (!canDraw) {
+    setError(`You can draw again in ${timeUntilNextDraw}`);
+    return;
+  }
+  setIsLoading(true);
+  try {
+    const token = await getToken();
+    const origin = window.location.origin;
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Origin': origin,
+      'Authorization': `Bearer ${token}`,
+      'User-ID': user.id,
+    };
+
+    const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
+    const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+      method: 'GET',
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const drawId = data.id || data.drawId || data.draw_id;
+    if (typeof drawId === 'undefined') {
+      console.warn('Draw ID not found in the response data');
+      // Handle the error case appropriately
+    }
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
+    
+    const newPositions = positions.map((pos, index) => ({
+      ...data.positions[index],
+      left: pos.left,
+      top: pos.top,
+      tooltip: data.positions[index].position_name
+    }));
+    
+    const newCards = newPositions.map(pos => ({
+      name: pos.most_common_card,
+      img: pos.most_common_card_img,
+      orientation: pos.orientation,
+      position_name: pos.position_name,
+      tooltip: pos.position_name
+    }));
+    const formattedMostCommonCards = data.positions.map(
+      (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
+    ).join('\n');
+
+    // Update state in a single batch
+    setPositions(newPositions);
+    setCards(newCards);
+    setDealCards(true);
+    setMostCommonCards(formattedMostCommonCards);
+    setCurrentDrawId(drawId);
+    setDrawCount(prevCount => {
+      const newCount = Math.min(prevCount + 1, 5);
+      console.log('CelticSpread.jsx - drawCount:', newCount);
+      return newCount;
+    });
+
+  } catch (error) {
+    console.error('Error drawing spread:', error);
+    setError('Failed to draw spread. Please check your authentication and try again.');
+    setCards([]);
+  } finally {
+    setIsLoading(false);
+    setShouldDrawNewSpread(false);
+  }
+};
+
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, drawCount, setDrawCount, remainingDrawsToday }) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -39,16 +123,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   }, [cards.length]);
 
   useEffect(() => {
-    console.log('CelticSpread.jsx - remainingDrawsToday:', remainingDrawsToday);
-  }, [remainingDrawsToday]);
-
-  useEffect(() => {
-    console.log('CelticSpread.jsx - canDraw changed:', canDraw);
-  }, [canDraw]);
-
-  useEffect(() => {
-    console.log('CelticSpread.jsx - drawCount:', drawCount);
-  }, [drawCount]);
+    if (shouldDrawNewSpread && canDraw) {
+      fetchSpread(user, canDraw, timeUntilNextDraw, getToken, selectedSpread, setPositions, setCards, setDealCards, setMostCommonCards, setCurrentDrawId, setDrawCount, setIsLoading, setShouldDrawNewSpread, setError);
+    }
+  }, [shouldDrawNewSpread, canDraw, user, timeUntilNextDraw, getToken, selectedSpread, setDrawCount]);
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -60,83 +138,13 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     }
   }, []);
 
-  const fetchSpread = useCallback(async () => {
-    if (!user || !user.id) {
-      setError('User not authenticated. Please log in.');
-      return;
+  const drawSpread = useCallback(() => {
+    if (canDraw) {
+      setDealCards(false);
+      setDealingComplete(false);
+      setShouldDrawNewSpread(true);
     }
-    if (!canDraw) {
-      setError(`You can draw again in ${timeUntilNextDraw}`);
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const token = await getToken();
-      const origin = window.location.origin;
-
-      const headers = {
-        'Content-Type': 'application/json',
-        'Origin': origin,
-        'Authorization': `Bearer ${token}`,
-        'User-ID': user.id,
-      };
-
-      const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
-      const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-        method: 'GET',
-        headers: headers,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const drawId = data.id || data.drawId || data.draw_id;
-      if (typeof drawId === 'undefined') {
-        console.warn('Draw ID not found in the response data');
-        // Handle the error case appropriately
-      }
-      setCurrentDrawId(drawId);
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const positions = generateCelticCrossPositions(data.positions.length, windowWidth, windowHeight);
-      
-      const newPositions = positions.map((pos, index) => ({
-        ...data.positions[index],
-        left: pos.left,
-        top: pos.top,
-        tooltip: data.positions[index].position_name
-      }));
-      
-      setPositions(newPositions);
-      const newCards = newPositions.map(pos => ({
-        name: pos.most_common_card,
-        img: pos.most_common_card_img,
-        orientation: pos.orientation,
-        position_name: pos.position_name,
-        tooltip: pos.position_name
-      }));
-      setCards(newCards);
-
-      const formattedMostCommonCards = data.positions.map(
-        (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
-      ).join('\n');
-      setDealCards(true); 
-      setMostCommonCards(formattedMostCommonCards);
-      setDrawCount(prevCount => Math.min(prevCount + 1, 5)); // Update draw count
-      onDraw(); // Call onDraw to update the parent component
-    } catch (error) {
-      console.error('Error drawing spread:', error);
-      setError('Failed to draw spread. Please check your authentication and try again.');
-      setCards([]);
-    } finally {
-      setIsLoading(false);
-      setShouldDrawNewSpread(false);
-    }
-  }, [getToken, selectedSpread, user, canDraw, timeUntilNextDraw, setDrawCount, onDraw]);
+  }, [canDraw]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -155,19 +163,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
 
   const handleMonitorOutput = useCallback(() => {}, []);
 
-  const drawSpread = useCallback(() => {
-    if (canDraw) {
-      setDealCards(false);
-      setDealingComplete(false);
-      setShouldDrawNewSpread(true);
-      fetchSpread();
-    }
-  }, [canDraw, fetchSpread]);
-
-  const handleAnimationStart = useCallback(() => {
-    setAnimationStarted(true);
-  }, []);
-
   const handleOpenPastDraws = useCallback(() => {
     setIsPastDrawsModalOpen(true);
   }, []);
@@ -180,6 +175,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     setIsStreaming(false);
   }, []);
 
+  const handleAnimationStart = useCallback(() => {
+    setAnimationStarted(true);
+  }, []);
+
   // Add this effect to force re-render when language changes
   useEffect(() => {
     // This empty dependency array ensures the effect runs when selectedLanguage changes
@@ -189,47 +188,49 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   useEffect(() => {
   }, [timeUntilNextDraw]);
 
-  const memoizedRobot = useMemo(() => (
-    <Robot
-      dealCards={dealCards}
-      cardPositions={positions}
-      revealedCards={revealedCards}
-      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-      onExitComplete={handleExitComplete}
-      revealCards={handleRevealCards}
-      shouldDrawNewSpread={shouldDrawNewSpread}
-      onMonitorOutput={handleMonitorOutput}
-      drawSpread={drawSpread}
-      dealingComplete={dealingComplete}
-      mostCommonCards={mostCommonCards}
-      formRef={formRef}
-      onSubmitInput={handleSubmitInput}
-      isMobile={isMobile}
-      cards={cards}
-      selectedSpread={selectedSpread}
-      onSpreadSelect={onSpreadSelect}
-      fetchSpread={fetchSpread}
-      onNewResponse={handleNewResponse}
-      onResponseComplete={handleResponseComplete}
-      animationsComplete={animationsComplete}
-      isDarkMode={isDarkMode}
-      onAnimationStart={handleAnimationStart}
-      onStreamingStateChange={handleStreamingStateChange}
-      isStreaming={isStreaming}
-      canDraw={canDraw}
-      timeUntilNextDraw={timeUntilNextDraw}
-      currentDrawId={currentDrawId}
-      setCurrentDrawId={setCurrentDrawId}
-      onOpenPastDraws={handleOpenPastDraws}
-      onDraw={onDraw}
-      selectedLanguage={selectedLanguage}
-      getTranslation={getTranslation}
-      lastDrawTime={lastDrawTime}
-      remainingDrawsToday={remainingDrawsToday}
-      drawCount={drawCount}
-      setDrawCount={setDrawCount}
-    />
-  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
+  const memoizedRobot = useMemo(() => {
+    return (
+      <Robot
+        dealCards={dealCards}
+        cardPositions={positions}
+        revealedCards={revealedCards}
+        finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+        onExitComplete={handleExitComplete}
+        revealCards={handleRevealCards}
+        shouldDrawNewSpread={shouldDrawNewSpread}
+        onMonitorOutput={handleMonitorOutput}
+        drawSpread={drawSpread}
+        dealingComplete={dealingComplete}
+        mostCommonCards={mostCommonCards}
+        formRef={formRef}
+        onSubmitInput={handleSubmitInput}
+        isMobile={isMobile}
+        cards={cards}
+        selectedSpread={selectedSpread}
+        onSpreadSelect={onSpreadSelect}
+        fetchSpread={fetchSpread}
+        onNewResponse={handleNewResponse}
+        onResponseComplete={handleResponseComplete}
+        animationsComplete={animationsComplete}
+        isDarkMode={isDarkMode}
+        onAnimationStart={handleAnimationStart}
+        onStreamingStateChange={handleStreamingStateChange}
+        isStreaming={isStreaming}
+        canDraw={canDraw}
+        timeUntilNextDraw={timeUntilNextDraw}
+        currentDrawId={currentDrawId}
+        setCurrentDrawId={setCurrentDrawId}
+        onOpenPastDraws={handleOpenPastDraws}
+        onDraw={onDraw}
+        selectedLanguage={selectedLanguage}
+        getTranslation={getTranslation}
+        lastDrawTime={lastDrawTime}
+        remainingDrawsToday={remainingDrawsToday}
+        drawCount={drawCount}
+        setDrawCount={setDrawCount}
+      />
+    );
+  }, [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -324,7 +325,6 @@ CelticSpread.propTypes = {
   getToken: PropTypes.func.isRequired,
   onDraw: PropTypes.func.isRequired,
   lastDrawTime: PropTypes.string,
-  remainingDrawsToday: PropTypes.number.isRequired,
   drawCount: PropTypes.number.isRequired,
   setDrawCount: PropTypes.func.isRequired,
 };

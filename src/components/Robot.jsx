@@ -54,7 +54,7 @@ const Robot = memo((props) => {
     dealCards, lastDrawTime, remainingDrawsToday,
     drawCount,
     setDrawCount,
-  } = props; // Destructure props
+  } = props;
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -71,9 +71,11 @@ const Robot = memo((props) => {
     setLocalCanDraw(canDraw);
   }, [canDraw]);
 
-  useEffect(() => {
-  }, [canDraw]);
-
+  const handleSubmit = useCallback((cards) => {
+    if (onSubmitInput) {
+      onSubmitInput(cards);
+    }
+  }, [onSubmitInput]);
 
   const handleDrawSpread = useCallback(() => {
     if (localCanDraw) {
@@ -88,7 +90,7 @@ const Robot = memo((props) => {
     if (onStreamingStateChange) {
       onStreamingStateChange(false);
     }
-  }, [onResponseComplete, onStreamingStateChange]); // Include onStreamingStateChange
+  }, [onResponseComplete, onStreamingStateChange]);
 
   const handleNewResponse = useCallback((content) => {
     if (content === '') {
@@ -107,10 +109,11 @@ const Robot = memo((props) => {
         setActiveTab(newResponse.id);
         return [...prevResponses, newResponse];
       } else {
-        const updatedResponses = [...prevResponses];
-        const lastResponse = updatedResponses[updatedResponses.length - 1];
-        lastResponse.content += formatResponse(content);
-        return updatedResponses;
+        return prevResponses.map((response, index) => 
+          index === prevResponses.length - 1 
+            ? { ...response, content: response.content + formatResponse(content) }
+            : response
+        );
       }
     });
     setMonitorOutput(prevOutput => prevOutput + formatResponse(content));
@@ -119,7 +122,7 @@ const Robot = memo((props) => {
     if (onStreamingStateChange) {
       onStreamingStateChange(true);
     }
-  }, [onNewResponse, onStreamingStateChange]);
+  }, [onNewResponse, onStreamingStateChange, setActiveTab]);
 
   const completeCurrentResponse = useCallback(() => {
     setResponses(prevResponses => {
@@ -136,7 +139,7 @@ const Robot = memo((props) => {
     if (dealingComplete) {
       completeCurrentResponse();
     }
-  }, [dealingComplete, completeCurrentResponse]); // Remove dealCards if not needed
+  }, [dealingComplete, completeCurrentResponse]);
 
   useEffect(() => {
     if (dealCards) {
@@ -172,7 +175,7 @@ const Robot = memo((props) => {
 
   const handleMonitorOutput = useCallback((output) => {
     setMonitorOutput(output);
-    props.onMonitorOutput(output); // Destructure props to avoid using props directly
+    props.onMonitorOutput(output);
   }, [props]);
 
   useLayoutEffect(() => {
@@ -180,12 +183,11 @@ const Robot = memo((props) => {
   }, [monitorOutput]);
 
   useEffect(() => {
-    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
-      console.log("Triggering Mistral request"); // Add this log
+    if (dealingComplete && mostCommonCards) {
       handleNewResponse('');
-      onSubmitInput(mostCommonCards);
+      handleSubmit(mostCommonCards);
     }
-  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleNewResponse, onSubmitInput]);
+  }, [dealingComplete, mostCommonCards, handleNewResponse, handleSubmit]);
 
   useEffect(() => {
   }, [selectedSpread]);
@@ -209,7 +211,6 @@ const Robot = memo((props) => {
   useEffect(() => {
   }, [currentDrawId]);
 
-  // Add this effect to force re-render when language changes
   useEffect(() => {
     console.log('Component language updated:', selectedLanguage);
   }, [selectedLanguage]);
@@ -223,11 +224,26 @@ const Robot = memo((props) => {
     console.log('Robot.jsx - drawCount:', drawCount);
   }, [drawCount]);
 
+  useEffect(() => {
+    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
+      console.log("CommandTerminal: Triggering Mistral request");
+      const timer = setTimeout(() => {
+        handleSubmit(mostCommonCards);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleSubmit]);
+
+  const handleCardsDealingComplete = useCallback(() => {
+    setIsCardsDealingComplete(true);
+    console.log("Cards dealing complete");
+  }, []);
+
   const memoizedCommandTerminal = useMemo(() => (
     <CommandTerminal
       onMonitorOutput={handleMonitorOutput}
       drawSpread={handleDrawSpread}
-      onSubmitInput={onSubmitInput}
+      onSubmitInput={handleSubmit}
       mostCommonCards={mostCommonCards}
       dealingComplete={dealingComplete}
       formRef={props.formRef}
@@ -253,25 +269,20 @@ const Robot = memo((props) => {
       animationsComplete={animationsComplete}
       onAnimationStart={handleAnimationStart}
       isStreaming={isStreaming}
-      canDraw={canDraw} // Not localCanDraw
-      lastDrawTime={lastDrawTime} // Pass lastDrawTime to CommandTerminal
+      canDraw={canDraw}
+      lastDrawTime={lastDrawTime}
       userId={user?.id}
-      currentDrawId={currentDrawId}
+      currentDrawId={currentDrawId ? currentDrawId.toString() : null}
       setCurrentDrawId={setCurrentDrawId}
       onOpenPastDraws={onOpenPastDraws}
       onDraw={onDraw}
       getTranslation={getTranslation}
-      remainingDrawsToday={remainingDrawsToday} // Pass remainingDrawsToday prop
-      drawCount={drawCount} // Pass drawCount prop
-      setDrawCount={setDrawCount} // Pass setDrawCount prop
+      remainingDrawsToday={remainingDrawsToday}
+      drawCount={drawCount}
+      setDrawCount={setDrawCount}
       isCardsDealingComplete={isCardsDealingComplete}
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount, isCardsDealingComplete]);
-
-  const handleCardsDealingComplete = useCallback(() => {
-    setIsCardsDealingComplete(true);
-    console.log("Cards dealing complete"); // Add this log
-  }, []);
+  ), [handleMonitorOutput, handleDrawSpread, handleSubmit, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount, isCardsDealingComplete]);
 
   return (
     <motion.div
@@ -309,10 +320,8 @@ const Robot = memo((props) => {
                 {props.cards.map((position, index) => (
                   <IKImage 
                     key={index}
-                    path={position.most_common_card_img} // Remove getImagePath function
-                    transformation={[{height: 200, width: 150}]}
+                    path={position.most_common_card_img}
                     loading="lazy"
-                    lqip={{active: true}}
                     className={`cardImage ${position.orientation === 'reversed' ? 'reversed' : ''}`}
                     alt={position.most_common_card}
                   />
@@ -360,16 +369,16 @@ Robot.propTypes = {
   onStreamingStateChange: PropTypes.func.isRequired,
   canDraw: PropTypes.bool.isRequired,
   user: PropTypes.object,
-  currentDrawId: PropTypes.number,
+  currentDrawId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   setCurrentDrawId: PropTypes.func.isRequired,
   onOpenPastDraws: PropTypes.func.isRequired,
   onDraw: PropTypes.func.isRequired,
   selectedLanguage: PropTypes.string.isRequired,
   getTranslation: PropTypes.func.isRequired,
-  lastDrawTime: PropTypes.object, // Add lastDrawTime prop type
-  remainingDrawsToday: PropTypes.number.isRequired, // Add remainingDrawsToday prop type
-  drawCount: PropTypes.number.isRequired, // Add drawCount prop type
-  setDrawCount: PropTypes.func.isRequired, // Add setDrawCount prop type
+  lastDrawTime: PropTypes.object,
+  remainingDrawsToday: PropTypes.number.isRequired,
+  drawCount: PropTypes.number.isRequired,
+  setDrawCount: PropTypes.func.isRequired,
 };
 
 export default Robot;

@@ -107,10 +107,19 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
 
   useEffect(() => {
     if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
-      console.log("CommandTerminal: Triggering Mistral request"); // Add this log
+      console.log("CommandTerminal: Triggering Mistral request");
+      const timer = setTimeout(() => {
+        handleSubmit(mostCommonCards);
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [isCardsDealingComplete, mostCommonCards, dealingComplete]);
+
+  useEffect(() => {
+    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
       handleSubmit(mostCommonCards);
     }
-  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleSubmit]);
+  }, [handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);
@@ -131,7 +140,8 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     setShouldRequestCohere(true);
     onNewResponse('');
     onDraw();
-  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, onDraw]);
+    setDrawCount(prevCount => Math.min(prevCount + 1, 5));
+  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, onDraw, setDrawCount]);
 
   useEffect(() => {
     if (dealingComplete) {

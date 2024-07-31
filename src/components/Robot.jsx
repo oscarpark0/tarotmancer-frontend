@@ -40,17 +40,19 @@ const debouncedAdjustFontSize = debounce(adjustFontSize, 100);
 
 
 const Robot = memo((props) => {
-  const { selectedLanguage } = useLanguage(); // Use useLanguage hook
-  const { getTranslation } = useTranslation(); // Use getTranslation hook
+  const { selectedLanguage } = useLanguage(); 
+  const { getTranslation } = useTranslation(); 
 
   const { 
     canDraw, drawSpread, onResponseComplete, onStreamingStateChange, 
     onNewResponse, dealingComplete, onExitComplete, mostCommonCards, 
     onSubmitInput, selectedSpread, onSpreadSelect, isMobile, 
     fetchSpread, animationsComplete, onAnimationStart, 
-    timeUntilNextDraw, user, currentDrawId, setCurrentDrawId, // Add setCurrentDrawId here
+    timeUntilNextDraw, user, currentDrawId, setCurrentDrawId, 
     onOpenPastDraws, onDraw, 
-    dealCards, lastDrawTime
+    dealCards, lastDrawTime, remainingDrawsToday, 
+    drawCount,
+    setDrawCount,
   } = props; // Destructure props
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -210,6 +212,10 @@ const Robot = memo((props) => {
     // This empty dependency array ensures the effect runs when selectedLanguage changes
   }, [selectedLanguage]);
 
+  useEffect(() => {
+    console.log('Robot.jsx - remainingDrawsToday:', props.remainingDrawsToday);
+  }, [props.remainingDrawsToday]);
+
   const memoizedCommandTerminal = useMemo(() => (
     <CommandTerminal
       onMonitorOutput={handleMonitorOutput}
@@ -249,8 +255,11 @@ const Robot = memo((props) => {
       onOpenPastDraws={onOpenPastDraws}
       onDraw={onDraw}
       getTranslation={getTranslation}
+      remainingDrawsToday={remainingDrawsToday} // Pass remainingDrawsToday prop
+      drawCount={drawCount} // Pass drawCount prop
+      setDrawCount={setDrawCount} // Pass setDrawCount prop
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation]);
+  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, timeUntilNextDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount]);
 
   return (
     <motion.div
@@ -338,6 +347,9 @@ Robot.propTypes = {
   selectedLanguage: PropTypes.string.isRequired,
   getTranslation: PropTypes.func.isRequired,
   lastDrawTime: PropTypes.object, // Add lastDrawTime prop type
+  remainingDrawsToday: PropTypes.number.isRequired, // Add remainingDrawsToday prop type
+  drawCount: PropTypes.number.isRequired, // Add drawCount prop type
+  setDrawCount: PropTypes.func.isRequired, // Add setDrawCount prop type
 };
 
 export default Robot;

@@ -187,10 +187,13 @@ function AppContent({ isAuthenticated }) {
   }, [getToken, user]);
 
   const checkCanDraw = useCallback(async () => {
+    console.log('App.js - checkCanDraw called');
     const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');
     if (data) {
+      console.log('App.js - can_draw data received:', data);
       setCanDraw(data.can_draw);
-      setRemainingDrawsToday(data.remaining_draws_today);
+      setRemainingDrawsToday(data.remaining_draws);
+      setDrawCount(data.draw_count); // Add this line
     }
   }, [makeAuthenticatedRequest]);
 
@@ -202,8 +205,17 @@ function AppContent({ isAuthenticated }) {
   }, [makeAuthenticatedRequest]);
 
   useEffect(() => {
-    checkCanDraw();
-  }, [checkCanDraw]);
+    console.log('App.js - Checking can draw. isAuthenticated:', isAuthenticated);
+    if (isAuthenticated) {
+      checkCanDraw();
+    }
+  }, [isAuthenticated, checkCanDraw]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      checkCanDraw();
+    }
+  }, [isAuthenticated, checkCanDraw]);
 
   useEffect(() => {
     let timer;
@@ -252,6 +264,16 @@ function AppContent({ isAuthenticated }) {
     }
   }, [isAuthenticated, user]);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      checkCanDraw();
+    }
+  }, [isAuthenticated, checkCanDraw]);
+
+  useEffect(() => {
+    console.log('App.js - remainingDrawsToday:', remainingDrawsToday);
+  }, [remainingDrawsToday]);
+
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'relative', zIndex: 10 }}>
@@ -272,6 +294,8 @@ function AppContent({ isAuthenticated }) {
                   getToken={getToken}
                   onDraw={handleDraw}
                   remainingDrawsToday={remainingDrawsToday}
+                  drawCount={drawCount}
+                  setDrawCount={setDrawCount}
                 />
               ) : (
                 <ThreeCardSpread 

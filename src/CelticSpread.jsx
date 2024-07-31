@@ -12,7 +12,7 @@ import { useLanguage } from './contexts/LanguageContext';
 import { useTranslation } from './utils/translations';
 import PropTypes from 'prop-types';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, remainingDraws }) => {
+const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount }) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -34,7 +34,14 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
-  const [remainingDrawsToday, setRemainingDrawsToday] = useState(0);
+
+  useEffect(() => {
+    console.log('CelticSpread.jsx - remainingDrawsToday:', remainingDrawsToday);
+  }, [remainingDrawsToday]);
+
+  useEffect(() => {
+    console.log('CelticSpread.jsx - canDraw changed:', canDraw);
+  }, [canDraw]);
 
   const handleStreamingStateChange = useCallback((streaming) => {
     setIsStreaming(streaming);
@@ -108,6 +115,8 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       ).join('\n');
       setDealCards(true); 
       setMostCommonCards(formattedMostCommonCards);
+      setDrawCount(prevCount => Math.min(prevCount + 1, 5)); // Update draw count
+      onDraw(); // Call onDraw to update the parent component
     } catch (error) {
       console.error('Error drawing spread:', error);
       setError('Failed to draw spread. Please check your authentication and try again.');
@@ -116,7 +125,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       setIsLoading(false);
       setShouldDrawNewSpread(false);
     }
-  }, [getToken, selectedSpread, user, canDraw, timeUntilNextDraw]);
+  }, [getToken, selectedSpread, user, canDraw, timeUntilNextDraw, setDrawCount, onDraw]);
 
   const handleDealingComplete = useCallback(() => {
     setDealingComplete(true);
@@ -205,8 +214,10 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       getTranslation={getTranslation}
       lastDrawTime={lastDrawTime}
       remainingDrawsToday={remainingDrawsToday}
+      drawCount={drawCount}
+      setDrawCount={setDrawCount}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, revealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, setCurrentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
 
 
   const memoizedFloatingCards = useMemo(() => (
@@ -293,6 +304,8 @@ CelticSpread.propTypes = {
   onDraw: PropTypes.func.isRequired,
   lastDrawTime: PropTypes.string,
   remainingDrawsToday: PropTypes.number.isRequired,
+  drawCount: PropTypes.number.isRequired,
+  setDrawCount: PropTypes.func.isRequired,
 };
 
 export default CelticSpread;

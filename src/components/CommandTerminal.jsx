@@ -11,7 +11,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import LanguageSelector from './LanguageSelector';
 
 
-const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw, remainingDrawsToday }, ref) => {
+const CommandTerminal = forwardRef(({ onMonitorOutput, drawSpread, mostCommonCards, dealingComplete, onSpreadSelect, selectedSpread, isMobile, cards = [], revealCards, shouldDrawNewSpread, fetchSpread, onNewResponse, onResponseComplete, animationsComplete, canDraw, timeUntilNextDraw, currentDrawId, onOpenPastDraws, onDraw, remainingDrawsToday = 0, drawCount, setDrawCount }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
@@ -109,7 +109,9 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     drawSpread();
     setShouldRequestCohere(true);
     onNewResponse('');
-  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse]);
+    setDrawCount(prevCount => Math.min(prevCount + 1, 5));
+    onDraw();
+  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, setDrawCount, onDraw]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -151,8 +153,8 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
       const timeString = formatCountdown(countdown);
       return getTranslation('timeRemainingUntilNextDraw').replace('{time}', timeString);
     }
-    return `${getTranslation('draw')} (${remainingDrawsToday} ${getTranslation('remainingDrawsToday')})`;
-  }, [isLoading, isDrawing, canDraw, countdown, getTranslation, remainingDrawsToday]);
+    return `${getTranslation('draw')} (${5 - drawCount} ${getTranslation('remainingDrawsToday')})`;
+  }, [isLoading, isDrawing, canDraw, countdown, getTranslation, drawCount]);
 
   useEffect(() => {
   }, [currentDrawId]);
@@ -160,6 +162,10 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   const handlePastDrawsClick = () => {
     onOpenPastDraws();
   };
+
+  useEffect(() => {
+    console.log('CommandTerminal.jsx - remainingDrawsToday:', remainingDrawsToday);
+  }, [remainingDrawsToday]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>

@@ -37,6 +37,16 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [isCardsDealingComplete, setIsCardsDealingComplete] = useState(false);
 
+  const getImagePath = (imagePath) => {
+    if (imagePath.startsWith('https://ik.imagekit.io/tarotmancer/')) {
+      return imagePath;
+    } else if (imagePath.startsWith('https://tarot-mancer.twic.pics/tarot/')) {
+      return imagePath.replace('https://tarot-mancer.twic.pics/tarot/', 'https://ik.imagekit.io/tarotmancer/');
+    } else {
+      return `https://ik.imagekit.io/tarotmancer/${imagePath}`;
+    }
+  };
+
   useEffect(() => {
     console.log('CelticSpread.jsx - remainingDrawsToday:', remainingDrawsToday);
   }, [remainingDrawsToday]);
@@ -271,7 +281,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       {cards.map((card, index) => (
         <IKImage
           key={index}
-          path={card.img}
+          path={getImagePath(card.img)}
           loading="lazy"
           className={`cardImage ${card.orientation === 'reversed' ? 'reversed' : ''}`}
           alt={card.name}

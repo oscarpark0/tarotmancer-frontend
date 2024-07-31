@@ -30,8 +30,14 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
   const isThreeCardSpread = spread.length === 3;
   const { getTranslation } = useTranslation();
 
-  const getImagePath = (fullUrl: string) => {
-    return fullUrl.replace('https://ik.imagekit.io/tarotmancer/', '');
+  const getImagePath = (imagePath: string) => {
+    if (imagePath.startsWith('https://ik.imagekit.io/tarotmancer/')) {
+      return imagePath;
+    } else if (imagePath.startsWith('https://tarot-mancer.twic.pics/tarot/')) {
+      return imagePath.replace('https://tarot-mancer.twic.pics/tarot/', 'https://ik.imagekit.io/tarotmancer/');
+    } else {
+      return `https://ik.imagekit.io/tarotmancer/${imagePath}`;
+    }
   };
 
   console.log("Spread props:", { spread, title });

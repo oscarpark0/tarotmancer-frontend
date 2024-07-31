@@ -8,9 +8,9 @@ import { generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useLanguage } from './contexts/LanguageContext';
-import { useTranslation } from './utils/translations'; // Import useTranslation
+import { useTranslation } from './utils/translations';
 import PastDrawsModal from './components/PastDrawsModal';
-
+import { IKImage } from 'imagekitio-react'; // Add this import
 
 const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw, lastDrawTime }) => {
   const { getToken, user } = useKindeAuth();
@@ -254,7 +254,17 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       shouldDrawNewSpread={shouldDrawNewSpread}
       isMobile={isMobile}
       className="md:hidden"
-    />
+    >
+      {cards.map((card, index) => (
+        <IKImage
+          key={index}
+          path={card.img}
+          loading="lazy"
+          className={`cardImage ${card.orientation === 'reversed' ? 'reversed' : ''}`}
+          alt={card.name}
+        />
+      ))}
+    </CardReveal>
   ), [cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, floatingCardsComplete]);
 
   return (

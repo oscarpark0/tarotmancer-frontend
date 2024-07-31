@@ -92,7 +92,11 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       }
 
       const data = await response.json();
-      const drawId = data.id || data.drawId || data.draw_id; // Try different possible names
+      const drawId = data.id || data.drawId || data.draw_id;
+      if (typeof drawId === 'undefined') {
+        console.warn('Draw ID not found in the response data');
+        // Handle the error case appropriately
+      }
       setCurrentDrawId(drawId);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
@@ -255,14 +259,7 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
         <IKImage
           key={index}
           path={card.img}
-          transformation={[{
-            height: 300,
-            width: 200,
-            quality: 20,
-            blur: 6
-          }]}
           loading="lazy"
-          lqip={{active: true}}
           className={`cardImage ${card.orientation === 'reversed' ? 'reversed' : ''}`}
           alt={card.name}
         />

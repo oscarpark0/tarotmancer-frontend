@@ -27,7 +27,8 @@ const CommandTerminal = forwardRef(({
   animationsComplete, 
   canDraw, 
   onDraw, 
-  remainingDrawsToday, 
+  remainingDrawsToday,
+  drawCount,
   setDrawCount,
   currentDrawId,
   userId,
@@ -128,8 +129,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     setShouldRequestCohere(true);
     onNewResponse('');
     onDraw();
-    setDrawCount(prevCount => Math.min(prevCount + 1, 5));
-  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, onDraw, setDrawCount]);
+  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, onDraw]);
 
   useEffect(() => {
     if (dealingComplete) {

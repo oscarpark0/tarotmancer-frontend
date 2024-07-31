@@ -4,6 +4,7 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import DailyCardFrequencies from './DailyCardFrequencies';
 import styles from './DailyCardFrequenciesPage.module.css';
 import { useTranslation } from '../utils/translations';
+import { IKImage } from 'imagekitio-react';
 
 
 interface PositionInfo {
@@ -30,19 +31,21 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
   const { getTranslation } = useTranslation();
 
   return (
-
     <div className={styles.spreadContainer}>
-     <h4>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h4>
+      <h4>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h4>
       <div className={`${styles.spreadCards} ${isThreeCardSpread ? styles.threeCardSpread : styles.celticCrossSpread}`}>
         {spread.map((position, index) => (
           <div 
             key={index} 
             className={`${styles.spreadCard} ${styles[`position${index}`]}`}
           >
-            <img 
-              src={position.most_common_card_img} 
-              alt={position.most_common_card} 
+            <IKImage 
+              path={`/${position.most_common_card_img}`}
+              transformation={[{height: "200", width: "150"}]}
+              loading="lazy"
+              lqip={{active: true}}
               className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
+              alt={position.most_common_card}
             />
             <div className={styles.cardInfo}>
               <p className={styles.positionName}>{position.position_name}</p>

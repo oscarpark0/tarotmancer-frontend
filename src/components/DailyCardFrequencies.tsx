@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { IKImage } from 'imagekitio-react';
 import styles from './DailyCardFrequenciesPage.module.css';
 import { useTranslation } from '../utils/translations';
 
@@ -43,10 +44,13 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
               transition={{ duration: 0.3, delay: index * 0.05 }}
             >
               <div className={styles.cardImageWrapper}>
-                <img 
-                  src={freq.card_img}
-                  alt={freq.card_name}
+                <IKImage 
+                  path={`/${freq.card_img}`}
+                  transformation={[{ height: "100", width: "60" }]}
+                  loading="lazy"
+                  lqip={{ active: true }}
                   className={styles.cardImage}
+                  alt={freq.card_name}
                 />
               </div>
               <div className={styles.barWrapper}>

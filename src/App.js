@@ -22,7 +22,8 @@ import Contact from './components/Contact';
 import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
-
+import { IKContext } from 'imagekitio-react';
+import { IMAGEKIT_PUBLIC_KEY, IMAGEKIT_URL_ENDPOINT } from './utils/config';
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
@@ -297,11 +298,17 @@ function App() {
   }
 
   return (
-    <LanguageProvider>
-      <Suspense fallback={<div>Loading...</div>}>
-        <AppContent isAuthenticated={isAuthenticated} />
-      </Suspense>
-    </LanguageProvider>
+    <IKContext 
+      publicKey={IMAGEKIT_PUBLIC_KEY}
+      urlEndpoint={IMAGEKIT_URL_ENDPOINT}
+      transformationPosition="path"
+    >
+      <LanguageProvider>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AppContent isAuthenticated={isAuthenticated} />
+        </Suspense>
+      </LanguageProvider>
+    </IKContext>
   );
 }
 

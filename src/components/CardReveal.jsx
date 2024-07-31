@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TAROT_IMAGE_BASE_URL } from '../utils/config';
+import { IKImage } from 'imagekitio-react';
 import './CardReveal.css';
 
 const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, className }) => {
@@ -128,20 +128,22 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
           }}
         >
           <div className="card-inner">
-            <div
-              className="card-front"
-              style={{
-                backgroundImage: `url(${card.img})`,
-                backgroundSize: 'cover'
-              }}
-            ></div>
-            <div
-              className="card-back"
-              style={{
-                backgroundImage: `url(${TAROT_IMAGE_BASE_URL}/cardback.webp)`,
-                backgroundSize: 'cover'
-              }}
-            ></div>
+            <div className="card-front">
+              <IKImage
+                path={`/${card.img}`}
+                transformation={[{ height: 300, width: 200 }]}
+                loading="lazy"
+                lqip={{ active: true }}
+              />
+            </div>
+            <div className="card-back">
+              <IKImage
+                path="/cardback.webp"
+                transformation={[{ height: 300, width: 200 }]}
+                loading="lazy"
+                lqip={{ active: true }}
+              />
+            </div>
           </div>
           <AnimatePresence>
             {hoveredCard === index && (

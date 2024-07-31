@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { TAROT_IMAGE_BASE_URL } from '../utils/config';
+import { IKImage } from 'imagekitio-react';
 import { motion } from 'framer-motion';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
@@ -63,10 +63,8 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
       {isAnimating && Array.from({ length: numCards || 0 }).map((_, i) => {
         const position = cardPositions[i];
         return (
-          <motion.img
+          <motion.div
             key={i}
-            src={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
-            alt="Tarot Card"
             className={`floating-card card-${i + 1}`}
             initial={{
               opacity: 0,
@@ -98,7 +96,14 @@ function FloatingCards({ dealCards, monitorPosition, finalCardPositions, onExitC
                 onExitComplete();
               }
             }}
-          />
+          >
+            <IKImage
+              path="/cardback.webp"
+              transformation={[{ height: 300, width: 200 }]}
+              loading="lazy"
+              lqip={{ active: true }}
+            />
+          </motion.div>
         );
       })}
     </div>

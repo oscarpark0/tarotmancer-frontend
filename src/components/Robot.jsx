@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { formatResponse } from '../utils/textFormatting';
 import { useTranslation } from '../utils/translations';
 import { useLanguage } from '../contexts/LanguageContext';
+import { IKImage } from 'imagekitio-react';
 
 const adjustFontSize = () => {
   const monitorOutputElement = document.querySelector('.monitor-output');
@@ -211,8 +212,9 @@ const Robot = memo((props) => {
   }, [selectedLanguage]);
 
   useEffect(() => {
-    console.log('Robot.jsx - remainingDrawsToday:', props.remainingDrawsToday);
-  }, [props.remainingDrawsToday]);
+    console.log('Robot.jsx - remainingDrawsToday:', remainingDrawsToday);
+    console.log('Robot.jsx - canDraw:', canDraw);
+  }, [remainingDrawsToday, canDraw]);
 
   const memoizedCommandTerminal = useMemo(() => (
     <CommandTerminal
@@ -293,7 +295,19 @@ const Robot = memo((props) => {
                 numCards={props.cards.length}
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
-              />
+              >
+                {props.cards.map((position, index) => (
+                  <IKImage 
+                    key={index}
+                    path={`/${position.most_common_card_img}`}
+                    transformation={[{height: 200, width: 150}]}
+                    loading="lazy"
+                    lqip={{active: true}}
+                    className={`cardImage ${position.orientation === 'reversed' ? 'reversed' : ''}`}
+                    alt={position.most_common_card}
+                  />
+                ))}
+              </FloatingCards>
               <div className="monitor-output">
                 {monitorOutput}
               </div>

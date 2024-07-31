@@ -13,7 +13,20 @@ import { useTranslation } from './utils/translations';
 import PropTypes from 'prop-types';
 import { IKImage } from 'imagekitio-react';
 
-const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount }) => {
+const CelticSpread = React.memo(({ 
+  isMobile, 
+  onSpreadSelect, 
+  selectedSpread, 
+  isDarkMode, 
+  canDraw, 
+  timeUntilNextDraw, 
+  getToken, 
+  onDraw, 
+  lastDrawTime, 
+  remainingDrawsToday, 
+  drawCount, 
+  setDrawCount 
+}) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -48,15 +61,12 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   };
 
   useEffect(() => {
-    console.log('CelticSpread.jsx - remainingDrawsToday:', remainingDrawsToday);
   }, [remainingDrawsToday]);
 
   useEffect(() => {
-    console.log('CelticSpread.jsx - canDraw changed:', canDraw);
   }, [canDraw]);
 
   useEffect(() => {
-    console.log('CelticSpread.jsx - drawCount:', drawCount);
   }, [drawCount]);
 
   const handleStreamingStateChange = useCallback((streaming) => {
@@ -344,7 +354,7 @@ CelticSpread.propTypes = {
   timeUntilNextDraw: PropTypes.string,
   getToken: PropTypes.func.isRequired,
   onDraw: PropTypes.func.isRequired,
-  lastDrawTime: PropTypes.string,
+  lastDrawTime: PropTypes.number,
   remainingDrawsToday: PropTypes.number.isRequired,
   drawCount: PropTypes.number.isRequired,
   setDrawCount: PropTypes.func.isRequired,

@@ -43,6 +43,7 @@ const CommandTerminal = forwardRef(({
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
   const [isDrawing, setIsDrawing] = useState(false);
+  const [hasMistralRequestBeenSent, setHasMistralRequestBeenSent] = useState(false);
 
   useEffect(() => {
     console.log('Component language updated:', selectedLanguage);
@@ -105,11 +106,18 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]);
 
   useEffect(() => {
-    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
-      console.log("CommandTerminal: Triggering Mistral request"); // Add this log
+    if (isCardsDealingComplete && mostCommonCards && dealingComplete && !hasMistralRequestBeenSent) {
+      console.log("CommandTerminal: Triggering Mistral request");
       handleSubmit(mostCommonCards);
+      setHasMistralRequestBeenSent(true);
     }
-  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleSubmit]);
+  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleSubmit, hasMistralRequestBeenSent]);
+
+  useEffect(() => {
+    if (shouldDrawNewSpread) {
+      setHasMistralRequestBeenSent(false);
+    }
+  }, [shouldDrawNewSpread]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);

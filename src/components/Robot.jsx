@@ -66,6 +66,7 @@ const Robot = memo((props) => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [localCanDraw, setLocalCanDraw] = useState(canDraw);
   const [isCardsDealingComplete, setIsCardsDealingComplete] = useState(false);
+  const [hasMistralRequestBeenSent, setHasMistralRequestBeenSent] = useState(false);
 
   useEffect(() => {
     setLocalCanDraw(canDraw);
@@ -180,12 +181,19 @@ const Robot = memo((props) => {
   }, [monitorOutput]);
 
   useEffect(() => {
-    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
-      console.log("Triggering Mistral request"); // Add this log
+    if (isCardsDealingComplete && mostCommonCards && dealingComplete && !hasMistralRequestBeenSent) {
+      console.log("Triggering Mistral request");
       handleNewResponse('');
       onSubmitInput(mostCommonCards);
+      setHasMistralRequestBeenSent(true);
     }
-  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleNewResponse, onSubmitInput]);
+  }, [isCardsDealingComplete, mostCommonCards, dealingComplete, handleNewResponse, onSubmitInput, hasMistralRequestBeenSent]);
+
+  useEffect(() => {
+    if (shouldDrawNewSpread) {
+      setHasMistralRequestBeenSent(false);
+    }
+  }, [shouldDrawNewSpread]);
 
   useEffect(() => {
   }, [selectedSpread]);

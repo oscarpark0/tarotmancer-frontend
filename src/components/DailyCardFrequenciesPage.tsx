@@ -19,6 +19,7 @@ interface CardFrequency {
   card_img: string;
   frequency: number;
   date: string;
+  orientation: string;
 }
 
 interface SpreadProps {

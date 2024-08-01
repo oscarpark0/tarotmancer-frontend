@@ -9,6 +9,7 @@ interface CardFrequency {
   card_img: string;
   frequency: number;
   date: string;
+  orientation: string;
 }
 
 interface DailyCardFrequenciesProps {
@@ -56,7 +57,12 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
                 />
               </div>
               <div className={styles.barWrapper}>
-                <div className={styles.barLabel}>{freq.card_name}</div>
+                <div className={styles.barLabel}>
+                  {freq.card_name}
+                  <span className={styles.orientationIcon}>
+                    {freq.orientation === 'upright' ? '↑' : freq.orientation === 'reversed' ? '↓' : '↕'}
+                  </span>
+                </div>
                 <motion.div 
                   className={styles.bar} 
                   style={{ width: `${(freq.frequency / getMaxFrequency()) * 100}%` }}

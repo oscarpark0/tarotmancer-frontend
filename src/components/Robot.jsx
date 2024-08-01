@@ -322,7 +322,6 @@ const Robot = memo((props) => {
       </div>
 
       {memoizedCommandTerminal}
-      {user && <div className="user-info">Welcome, {user.name}</div>}
     </motion.div>
   );
 });

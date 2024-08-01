@@ -261,7 +261,7 @@ const Robot = memo((props) => {
       isStreaming={isStreaming}
       canDraw={canDraw} 
       lastDrawTime={lastDrawTime}
-      userId={userId} 
+      userId={userId} // Add userId prop
       currentDrawId={currentDrawId}
       setCurrentDrawId={setCurrentDrawId}
       onOpenPastDraws={onOpenPastDraws}
@@ -363,7 +363,7 @@ Robot.propTypes = {
   drawCount: PropTypes.number.isRequired, // Add drawCount prop type
   setDrawCount: PropTypes.func.isRequired, // Add setDrawCount prop type
   setRemainingDrawsToday: PropTypes.func.isRequired, // Add setRemainingDrawsToday prop type
-  userId: PropTypes.string.isRequired, // Add userId prop type
+  userId: PropTypes.string, // Add userId prop type
 };
 
 export default Robot;

@@ -64,6 +64,11 @@ const CommandTerminal = forwardRef(({
       console.warn('User ID not available, but continuing with request');
     }
 
+    if (!currentDrawId) {
+      console.error('Current Draw ID is not available');
+      return;
+    }
+
     setIsLoading(true);
     onNewResponse('');
 
@@ -245,7 +250,7 @@ CommandTerminal.propTypes = {
   userId: PropTypes.string.isRequired,
   onOpenPastDraws: PropTypes.func.isRequired,
   setRemainingDrawsToday: PropTypes.func.isRequired,
-  currentDrawId: PropTypes.number.isRequired,
+  currentDrawId: PropTypes.number,
   setCurrentDrawId: PropTypes.func.isRequired,
 };
 

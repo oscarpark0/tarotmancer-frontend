@@ -53,6 +53,8 @@ const Robot = memo((props) => {
     dealCards, lastDrawTime, remainingDrawsToday,
     drawCount,
     setDrawCount,
+    setRemainingDrawsToday,
+    userId, // Add userId prop
   } = props; // Destructure props
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -220,6 +222,13 @@ const Robot = memo((props) => {
     console.log('Robot.jsx - remainingDrawsToday:', props.remainingDrawsToday);
   }, [props.remainingDrawsToday]);
 
+  useEffect(() => {
+    if (user) {
+      console.log(`User logged in: ${user.name}`);
+      // You could also use this to set some user-specific state or trigger some user-specific logic
+    }
+  }, [user]);
+
   const memoizedCommandTerminal = useMemo(() => (
     <CommandTerminal
       onMonitorOutput={handleMonitorOutput}
@@ -250,23 +259,27 @@ const Robot = memo((props) => {
       animationsComplete={animationsComplete}
       onAnimationStart={handleAnimationStart}
       isStreaming={isStreaming}
-      canDraw={canDraw} // Not localCanDraw
-      lastDrawTime={lastDrawTime} // Pass lastDrawTime to CommandTerminal
-      userId={user?.id} 
-      currentDrawId={currentDrawId ? currentDrawId.toString() : null}
+      canDraw={canDraw} 
+      lastDrawTime={lastDrawTime}
+      userId={userId} 
+      currentDrawId={currentDrawId}
       setCurrentDrawId={setCurrentDrawId}
       onOpenPastDraws={onOpenPastDraws}
       onDraw={onDraw}
       getTranslation={getTranslation}
-      remainingDrawsToday={remainingDrawsToday} // Pass remainingDrawsToday prop
-      drawCount={drawCount} // Pass drawCount prop
-      setDrawCount={setDrawCount} // Pass setDrawCount prop
+      remainingDrawsToday={remainingDrawsToday} 
+      drawCount={drawCount} 
+      setDrawCount={setDrawCount} 
+      setRemainingDrawsToday={setRemainingDrawsToday} 
+      user={user} 
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, user?.id, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount]);
+  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, userId, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount, setRemainingDrawsToday, user]);
+
+  console.log('Robot: Passing currentDrawId to CommandTerminal:', currentDrawId);
 
   return (
     <motion.div
-      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''}`}
+      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''} ${user ? 'user-logged-in' : ''}`}
       style={{
         position: 'absolute',
         top: 0,
@@ -309,6 +322,7 @@ const Robot = memo((props) => {
       </div>
 
       {memoizedCommandTerminal}
+      {user && <div className="user-info">Welcome, {user.name}</div>}
     </motion.div>
   );
 });
@@ -337,7 +351,7 @@ Robot.propTypes = {
   onAnimationStart: PropTypes.func.isRequired,
   onStreamingStateChange: PropTypes.func.isRequired,
   canDraw: PropTypes.bool.isRequired,
-  user: PropTypes.object, // Change this line
+  user: PropTypes.object.isRequired,
   currentDrawId: PropTypes.number,
   setCurrentDrawId: PropTypes.func.isRequired,
   onOpenPastDraws: PropTypes.func.isRequired,
@@ -348,6 +362,8 @@ Robot.propTypes = {
   remainingDrawsToday: PropTypes.number.isRequired, // Add remainingDrawsToday prop type
   drawCount: PropTypes.number.isRequired, // Add drawCount prop type
   setDrawCount: PropTypes.func.isRequired, // Add setDrawCount prop type
+  setRemainingDrawsToday: PropTypes.func.isRequired, // Add setRemainingDrawsToday prop type
+  userId: PropTypes.string.isRequired, // Add userId prop type
 };
 
 export default Robot;

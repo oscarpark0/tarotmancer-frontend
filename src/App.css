@@ -12,7 +12,7 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 10px; /* Reduced padding */
 }
 
 .app-title-link {
@@ -27,24 +27,24 @@
 }
 
 .app-title {
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-size: clamp(1rem, 3vw, 2.5rem); /* Adjusted font size */
   margin: 0;
   letter-spacing: 0.02em;
   text-align: left;
   color: #f0e68c;
   position: relative;
-  transform: translateX(-50%);
-  overflow: show;
+  overflow: visible; /* Changed from 'show' to 'visible' */
   transition: color 0.3s ease;
   text-shadow: 
-    -2px -2px 0 #000,
-    2px -2px 0 #000,
-    -2px 2px 0 #000,
-    2px 2px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000,
     0 1px 0 #000,
     1px 0 0 #000,
     -1px 0 0 #000,
     0 -1px 0 #000;
+  white-space: nowrap; /* Prevent line breaks */
 }
 
 .app-title::before {
@@ -73,17 +73,18 @@
   .header-content {
     flex-wrap: nowrap;
     justify-content: space-between;
+    padding: 0 5px; /* Further reduced padding for mobile */
   }
 
   .app-title-link {
     flex-basis: auto;
     text-align: left;
     margin-bottom: 0;
-    margin-right: 102px;
+    margin-right: 10px; /* Reduced margin */
   }
 
   .app-title {
-    font-size: 1.2rem;
+    font-size: 1rem; /* Smaller font size for mobile */
   }
 
   .auth-container {

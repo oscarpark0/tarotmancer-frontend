@@ -71,6 +71,7 @@ function AppContent({ isAuthenticated }) {
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [remainingDrawsToday, setRemainingDrawsToday] = useState(10); // Initialize with a default value
   const [drawCount, setDrawCount] = useState(0);
+  const userId = user?.id;
 
   const navigate = useNavigate();
 
@@ -152,26 +153,17 @@ function AppContent({ isAuthenticated }) {
     )
   }, [isDarkMode, toggleDarkMode, getTranslation]);
 
-  const spreadProps = useMemo(() => ({
-    isMobile,
-    onSpreadSelect: handleSpreadSelect,
-    selectedSpread,
-    canAccessCohere,
-    setCanAccessCohere,
-    kindeAuth: { user, getToken },
-  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken]);
-
   const makeAuthenticatedRequest = useCallback(async (endpoint, errorMessage) => {
     try {
       const token = await getToken();
-      const userId = user?.id; // Get the user ID from the Kinde user object
+      const userId = user?.id;
       if (!userId) {
         throw new Error("User ID not available");
       }
       const response = await fetch(`${process.env.REACT_APP_BASE_URL}${endpoint}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'User-ID': userId, // Add the User-ID header
+          'User-ID': userId,
         },
       });
       if (!response.ok) {
@@ -191,9 +183,29 @@ function AppContent({ isAuthenticated }) {
       console.log('App.js - can_draw data received:', data);
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
-      setDrawCount(5 - data.remaining_draws); // Assuming 5 is the maximum number of draws per day
+      setDrawCount(10 - data.remaining_draws);
     }
   }, [makeAuthenticatedRequest]);
+
+  const spreadProps = useMemo(() => ({
+    isMobile,
+    onSpreadSelect: handleSpreadSelect,
+    selectedSpread,
+    canAccessCohere,
+    setCanAccessCohere,
+    kindeAuth: { user, getToken },
+    remainingDrawsToday,
+    setRemainingDrawsToday,
+    drawCount,
+    setDrawCount,
+    isDarkMode,
+    canDraw,
+    currentDrawId,
+    setCurrentDrawId,
+    getToken,
+    onDraw: checkCanDraw,
+    userId,
+  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken, remainingDrawsToday, drawCount, isDarkMode, canDraw, currentDrawId, checkCanDraw, userId]);
 
   const fetchUserDraws = useCallback(async () => {
     const draws = await makeAuthenticatedRequest('/api/user-draws', 'Error fetching user draws');
@@ -234,6 +246,9 @@ function AppContent({ isAuthenticated }) {
     }
   }, [isAuthenticated, checkCanDraw]);
 
+  const handleDrawComplete = useCallback(() => {
+    setDrawCount(prevCount => Math.min(prevCount + 1, 10));
+  }, []);
 
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -245,31 +260,9 @@ function AppContent({ isAuthenticated }) {
           <Route path="/" element={isAuthenticated ? (
             <Suspense fallback={<div>Loading...</div>}>
               {selectedSpread === 'celtic' ? (
-                <CelticSpread 
-                  {...spreadProps} 
-                  isDarkMode={isDarkMode}
-                  canDraw={canDraw}
-                  remainingDrawsToday={remainingDrawsToday}
-                  currentDrawId={currentDrawId}
-                  setCurrentDrawId={setCurrentDrawId}
-                  getToken={getToken}
-                  onDraw={checkCanDraw}
-                  drawCount={drawCount}
-                  setDrawCount={setDrawCount}
-                />
+                <CelticSpread {...spreadProps} drawCount={drawCount} setDrawCount={setDrawCount} onDrawComplete={handleDrawComplete} />
               ) : (
-                <ThreeCardSpread 
-                  {...spreadProps} 
-                  isDarkMode={isDarkMode}
-                  canDraw={canDraw}
-                  remainingDrawsToday={remainingDrawsToday}
-                  currentDrawId={currentDrawId}
-                  setCurrentDrawId={setCurrentDrawId}
-                  getToken={getToken}
-                  onDraw={checkCanDraw}
-                  drawCount={drawCount}
-                  setDrawCount={setDrawCount}
-                />
+                <ThreeCardSpread {...spreadProps} drawCount={drawCount} setDrawCount={setDrawCount} userId={userId} onDrawComplete={handleDrawComplete} />
               )}
             </Suspense>
           ) : memoizedWelcomeMessage} />

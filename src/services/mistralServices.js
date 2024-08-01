@@ -1,6 +1,9 @@
 import { getToken, getUserId } from '../utils/auth';
 
 export const getMistralResponse = async (message, onNewResponse, onResponseComplete, drawId, userId) => {
+  if (!drawId) {
+    throw new Error('Draw ID is required');
+  }
   try {
     const token = getToken();
     if (!userId) {
@@ -8,9 +11,6 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
     }
     if (!userId) {
       console.warn('User ID not available, but continuing with request');
-    }
-    if (!drawId) {
-      console.warn('Draw ID not provided, but continuing with request');
     }
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
       method: 'POST',
@@ -23,6 +23,7 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
         model: "open-mistral-nemo-2407",
         messages: [{ role: "user", content: message }],
         stream: true,
+        drawId: drawId
       }),
       credentials: 'include',
     });
@@ -82,12 +83,10 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
 
 async function storeMistralResponse(drawId, response, userId) {
   if (!userId) {
-    console.error('User ID not provided');
-    return;
+    throw new Error('User ID not provided');
   }
   if (!drawId) {
-    console.error('Draw ID not provided');
-    return;
+    throw new Error('Draw ID not provided');
   }
 
   try {
@@ -105,6 +104,8 @@ async function storeMistralResponse(drawId, response, userId) {
       const errorText = await res.text();
       throw new Error(`Failed to store Mistral response: ${errorText}`);
     }
+
+    return await res.json(); // Assuming the backend returns some confirmation
   } catch (error) {
     console.error('Error storing Mistral response:', error);
     throw error;

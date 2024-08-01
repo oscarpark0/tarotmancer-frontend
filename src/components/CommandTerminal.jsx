@@ -30,9 +30,11 @@ const CommandTerminal = forwardRef(({
   remainingDrawsToday,
   drawCount,
   setDrawCount,
-  currentDrawId,
-  userId, // Added userId prop
+  userId,
   onOpenPastDraws,
+  setRemainingDrawsToday,
+  currentDrawId,
+  setCurrentDrawId,
 }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -58,10 +60,6 @@ const CommandTerminal = forwardRef(({
       return;
     }
 
-    if (!currentDrawId) {
-      console.warn('currentDrawId is undefined, but continuing with request');
-    }
-
     if (!userId) {
       console.warn('User ID not available, but continuing with request');
     }
@@ -85,6 +83,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
+      console.log('CommandTerminal: Calling getMistralResponse with currentDrawId:', currentDrawId);
       await getMistralResponse(message, onNewResponse, (fullResponse, error) => {
         if (error) {
           console.error('Error storing Mistral response:', error);
@@ -93,7 +92,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           console.log('Mistral response stored successfully');
         }
         onResponseComplete(fullResponse);
-      }, currentDrawId, userId); // Pass userId here
+      }, currentDrawId, userId); // Pass currentDrawId here
       
     } catch (error) {
       console.error('Error in Mistral request:', error);
@@ -105,7 +104,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     }
 
     setInput('');
-  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]); // Add userId to dependencies
+  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, userId, currentDrawId]); // Add currentDrawId to dependencies
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
@@ -127,13 +126,14 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   }, []);
 
   const handleDrawClick = useCallback(() => {
-    if (isDrawing || !canDraw) return;
+    if (isDrawing || !canDraw || remainingDrawsToday <= 0) return;
     setIsDrawing(true);
     drawSpread();
     setShouldRequestCohere(true);
     onNewResponse('');
     onDraw();
-  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, onDraw]);
+    setDrawCount(prevCount => prevCount + 1);
+  }, [isDrawing, canDraw, remainingDrawsToday, drawSpread, setShouldRequestCohere, onNewResponse, onDraw, setDrawCount]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -144,6 +144,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   const getButtonText = useCallback(() => {
     if (isLoading) return getTranslation('processing');
     if (isDrawing) return getTranslation('drawing');
+    if (remainingDrawsToday <= 0) return getTranslation('noDrawsLeft');
     return `${getTranslation('draw')} (${remainingDrawsToday} ${getTranslation('remainingDrawsToday')})`;
   }, [isLoading, isDrawing, getTranslation, remainingDrawsToday]);
 
@@ -154,6 +155,12 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   useEffect(() => {
     console.log('CommandTerminal.jsx - drawCount:', drawCount);
   }, [drawCount]);
+
+  useEffect(() => {
+    if (typeof setRemainingDrawsToday === 'function') {
+      setRemainingDrawsToday(remainingDrawsToday);
+    }
+  }, [remainingDrawsToday, setRemainingDrawsToday]);
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
@@ -204,7 +211,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           onClick={handleDrawClick}
           aria-label={getTranslation('drawCardsAriaLabel')}
           label={getTranslation('draw')}
-          disabled={isLoading || isDrawing || !canDraw}
+          disabled={isLoading || isDrawing || !canDraw || remainingDrawsToday <= 0}
           className={`${isDrawing ? 'drawing' : ''} text-sm`}
         >
           {getButtonText()}
@@ -235,9 +242,11 @@ CommandTerminal.propTypes = {
   remainingDrawsToday: PropTypes.number.isRequired,
   drawCount: PropTypes.number.isRequired,
   setDrawCount: PropTypes.func.isRequired,
-  currentDrawId: PropTypes.string,
-  userId: PropTypes.string.isRequired, // Added userId prop type
+  userId: PropTypes.string.isRequired,
   onOpenPastDraws: PropTypes.func.isRequired,
+  setRemainingDrawsToday: PropTypes.func.isRequired,
+  currentDrawId: PropTypes.number.isRequired,
+  setCurrentDrawId: PropTypes.func.isRequired,
 };
 
 export default CommandTerminal;

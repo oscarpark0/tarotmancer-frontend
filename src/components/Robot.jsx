@@ -252,8 +252,8 @@ const Robot = memo((props) => {
       isStreaming={isStreaming}
       canDraw={canDraw} // Not localCanDraw
       lastDrawTime={lastDrawTime} // Pass lastDrawTime to CommandTerminal
-      userId={user?.id}
-      currentDrawId={currentDrawId}
+      userId={user?.id} 
+      currentDrawId={currentDrawId ? currentDrawId.toString() : null}
       setCurrentDrawId={setCurrentDrawId}
       onOpenPastDraws={onOpenPastDraws}
       onDraw={onDraw}
@@ -337,7 +337,7 @@ Robot.propTypes = {
   onAnimationStart: PropTypes.func.isRequired,
   onStreamingStateChange: PropTypes.func.isRequired,
   canDraw: PropTypes.bool.isRequired,
-  user: PropTypes.object,
+  user: PropTypes.object, // Change this line
   currentDrawId: PropTypes.number,
   setCurrentDrawId: PropTypes.func.isRequired,
   onOpenPastDraws: PropTypes.func.isRequired,

@@ -31,7 +31,7 @@ const CommandTerminal = forwardRef(({
   drawCount,
   setDrawCount,
   currentDrawId,
-  userId,
+  userId, // Added userId prop
   onOpenPastDraws,
 }, ref) => {
   const [input, setInput] = useState('');
@@ -62,6 +62,10 @@ const CommandTerminal = forwardRef(({
       console.warn('currentDrawId is undefined, but continuing with request');
     }
 
+    if (!userId) {
+      console.warn('User ID not available, but continuing with request');
+    }
+
     setIsLoading(true);
     onNewResponse('');
 
@@ -89,7 +93,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           console.log('Mistral response stored successfully');
         }
         onResponseComplete(fullResponse);
-      }, currentDrawId, userId);
+      }, currentDrawId, userId); // Pass userId here
       
     } catch (error) {
       console.error('Error in Mistral request:', error);
@@ -101,7 +105,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     }
 
     setInput('');
-  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]);
+  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]); // Add userId to dependencies
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
@@ -232,7 +236,7 @@ CommandTerminal.propTypes = {
   drawCount: PropTypes.number.isRequired,
   setDrawCount: PropTypes.func.isRequired,
   currentDrawId: PropTypes.string,
-  userId: PropTypes.string,
+  userId: PropTypes.string.isRequired, // Added userId prop type
   onOpenPastDraws: PropTypes.func.isRequired,
 };
 

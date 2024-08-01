@@ -122,6 +122,18 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     setRevealedCards(prevCards => cards.length);
   }, [cards.length]);
 
+
+  const handleSubmitInput = useCallback((value) => {
+    if (formRef.current) {
+      formRef.current.submitInput(value);
+    }
+  }, []);
+
+  const handleDealingComplete = useCallback(() => {
+    setDealingComplete(true);
+    handleSubmitInput(mostCommonCards);
+  }, [handleSubmitInput, mostCommonCards]);
+
   useEffect(() => {
     if (shouldDrawNewSpread && canDraw) {
       fetchSpread(user, canDraw, timeUntilNextDraw, getToken, selectedSpread, setPositions, setCards, setDealCards, setMostCommonCards, setCurrentDrawId, setDrawCount, setIsLoading, setShouldDrawNewSpread, setError);
@@ -132,11 +144,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
     setIsStreaming(streaming);
   }, []);
 
-  const handleSubmitInput = useCallback((value) => {
-    if (formRef.current) {
-      formRef.current.submitInput(value);
-    }
-  }, []);
 
   const drawSpread = useCallback(() => {
     if (canDraw) {
@@ -145,11 +152,6 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       setShouldDrawNewSpread(true);
     }
   }, [canDraw]);
-
-  const handleDealingComplete = useCallback(() => {
-    setDealingComplete(true);
-    handleSubmitInput(mostCommonCards);
-  }, [handleSubmitInput, mostCommonCards]);
 
   const handleExitComplete = useCallback(() => {
     setTimeout(() => {
@@ -188,49 +190,47 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
   useEffect(() => {
   }, [timeUntilNextDraw]);
 
-  const memoizedRobot = useMemo(() => {
-    return (
-      <Robot
-        dealCards={dealCards}
-        cardPositions={positions}
-        revealedCards={revealedCards}
-        finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
-        onExitComplete={handleExitComplete}
-        revealCards={handleRevealCards}
-        shouldDrawNewSpread={shouldDrawNewSpread}
-        onMonitorOutput={handleMonitorOutput}
-        drawSpread={drawSpread}
-        dealingComplete={dealingComplete}
-        mostCommonCards={mostCommonCards}
-        formRef={formRef}
-        onSubmitInput={handleSubmitInput}
-        isMobile={isMobile}
-        cards={cards}
-        selectedSpread={selectedSpread}
-        onSpreadSelect={onSpreadSelect}
-        fetchSpread={fetchSpread}
-        onNewResponse={handleNewResponse}
-        onResponseComplete={handleResponseComplete}
-        animationsComplete={animationsComplete}
-        isDarkMode={isDarkMode}
-        onAnimationStart={handleAnimationStart}
-        onStreamingStateChange={handleStreamingStateChange}
-        isStreaming={isStreaming}
-        canDraw={canDraw}
-        timeUntilNextDraw={timeUntilNextDraw}
-        currentDrawId={currentDrawId}
-        setCurrentDrawId={setCurrentDrawId}
-        onOpenPastDraws={handleOpenPastDraws}
-        onDraw={onDraw}
-        selectedLanguage={selectedLanguage}
-        getTranslation={getTranslation}
-        lastDrawTime={lastDrawTime}
-        remainingDrawsToday={remainingDrawsToday}
-        drawCount={drawCount}
-        setDrawCount={setDrawCount}
-      />
-    );
-  }, [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, dealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
+  const memoizedRobot = useMemo(() => (
+    <Robot
+      dealCards={dealCards}
+      cardPositions={positions}
+      revealedCards={revealedCards}
+      finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
+      onExitComplete={handleExitComplete}
+      revealCards={handleRevealCards}
+      shouldDrawNewSpread={shouldDrawNewSpread}
+      onMonitorOutput={handleMonitorOutput}
+      drawSpread={drawSpread}
+      dealingComplete={handleDealingComplete}
+      mostCommonCards={mostCommonCards}
+      formRef={formRef}
+      onSubmitInput={handleSubmitInput}
+      isMobile={isMobile}
+      cards={cards}
+      selectedSpread={selectedSpread}
+      onSpreadSelect={onSpreadSelect}
+      fetchSpread={fetchSpread}
+      onNewResponse={handleNewResponse}
+      onResponseComplete={handleResponseComplete}
+      animationsComplete={animationsComplete}
+      isDarkMode={isDarkMode}
+      onAnimationStart={handleAnimationStart}
+      onStreamingStateChange={handleStreamingStateChange}
+      isStreaming={isStreaming}
+      canDraw={canDraw}
+      timeUntilNextDraw={timeUntilNextDraw}
+      currentDrawId={currentDrawId}
+      setCurrentDrawId={setCurrentDrawId}
+      onOpenPastDraws={handleOpenPastDraws}
+      onDraw={onDraw}
+      selectedLanguage={selectedLanguage}
+      getTranslation={getTranslation}
+      lastDrawTime={lastDrawTime}
+      remainingDrawsToday={remainingDrawsToday}
+      drawCount={drawCount}
+      setDrawCount={setDrawCount}
+    />
+  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, remainingDrawsToday, drawCount, setDrawCount]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -239,14 +239,14 @@ const CelticSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isD
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
       revealCards={handleRevealCards}
-      dealingComplete={dealingComplete}
+      dealingComplete={handleDealingComplete}
       shouldDrawNewSpread={shouldDrawNewSpread}
       numCards={10}
       isMobile={isMobile}
       cards={cards}
       onAnimationStart={handleAnimationStart}
     />
-  ), [dealCards, positions, handleExitComplete, handleRevealCards, dealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart]);
+  ), [dealCards, positions, handleExitComplete, handleRevealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart]);
 
   const memoizedCardReveal = useMemo(() => (
     <CardReveal

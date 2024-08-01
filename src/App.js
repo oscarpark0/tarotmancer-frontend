@@ -24,7 +24,6 @@ import { useTranslation } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
 import { IKContext } from 'imagekitio-react';
 import { IMAGEKIT_PUBLIC_KEY } from './utils/config';
-import ErrorBoundary from './components/ErrorBoundary'; // Make sure you have this component
 
 const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
 const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
@@ -70,8 +69,8 @@ function AppContent({ isAuthenticated }) {
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
+  const [remainingDrawsToday, setRemainingDrawsToday] = useState(10); // Initialize with a default value
   const [drawCount, setDrawCount] = useState(0);
-  const [remainingDrawsToday, setRemainingDrawsToday] = useState(5);
 
   const navigate = useNavigate();
 
@@ -192,7 +191,7 @@ function AppContent({ isAuthenticated }) {
       console.log('App.js - can_draw data received:', data);
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
-      setDrawCount(5 - data.remaining_draws);
+      setDrawCount(5 - data.remaining_draws); // Assuming 5 is the maximum number of draws per day
     }
   }, [makeAuthenticatedRequest]);
 
@@ -202,6 +201,13 @@ function AppContent({ isAuthenticated }) {
       setUserDraws(draws);
     }
   }, [makeAuthenticatedRequest]);
+
+  useEffect(() => {
+    console.log('App.js - Checking can draw. isAuthenticated:', isAuthenticated);
+    if (isAuthenticated) {
+      checkCanDraw();
+    }
+  }, [isAuthenticated, checkCanDraw]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -223,8 +229,11 @@ function AppContent({ isAuthenticated }) {
   }, [isAuthenticated, user]);
 
   useEffect(() => {
-    console.log('App.js - remainingDrawsToday:', remainingDrawsToday);
-  }, [remainingDrawsToday]);
+    if (isAuthenticated) {
+      checkCanDraw();
+    }
+  }, [isAuthenticated, checkCanDraw]);
+
 
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -234,37 +243,35 @@ function AppContent({ isAuthenticated }) {
       <div style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1, padding: isMobileScreen ? 0 : undefined }}>
         <Routes>
           <Route path="/" element={isAuthenticated ? (
-            <ErrorBoundary>
-              <Suspense fallback={<div>Loading...</div>}>
-                {selectedSpread === 'celtic' ? (
-                  <CelticSpread 
-                    {...spreadProps} 
-                    isDarkMode={isDarkMode}
-                    canDraw={canDraw}
-                    remainingDrawsToday={remainingDrawsToday}
-                    currentDrawId={currentDrawId}
-                    setCurrentDrawId={setCurrentDrawId}
-                    getToken={getToken}
-                    onDraw={checkCanDraw}
-                    drawCount={drawCount}
-                    setDrawCount={setDrawCount}
-                  />
-                ) : (
-                  <ThreeCardSpread 
-                    {...spreadProps} 
-                    isDarkMode={isDarkMode}
-                    canDraw={canDraw}
-                    remainingDrawsToday={remainingDrawsToday}
-                    currentDrawId={currentDrawId}
-                    setCurrentDrawId={setCurrentDrawId}
-                    getToken={getToken}
-                    onDraw={checkCanDraw}
-                    drawCount={drawCount}
-                    setDrawCount={setDrawCount}
-                  />
-                )}
-              </Suspense>
-            </ErrorBoundary>
+            <Suspense fallback={<div>Loading...</div>}>
+              {selectedSpread === 'celtic' ? (
+                <CelticSpread 
+                  {...spreadProps} 
+                  isDarkMode={isDarkMode}
+                  canDraw={canDraw}
+                  remainingDrawsToday={remainingDrawsToday}
+                  currentDrawId={currentDrawId}
+                  setCurrentDrawId={setCurrentDrawId}
+                  getToken={getToken}
+                  onDraw={checkCanDraw}
+                  drawCount={drawCount}
+                  setDrawCount={setDrawCount}
+                />
+              ) : (
+                <ThreeCardSpread 
+                  {...spreadProps} 
+                  isDarkMode={isDarkMode}
+                  canDraw={canDraw}
+                  remainingDrawsToday={remainingDrawsToday}
+                  currentDrawId={currentDrawId}
+                  setCurrentDrawId={setCurrentDrawId}
+                  getToken={getToken}
+                  onDraw={checkCanDraw}
+                  drawCount={drawCount}
+                  setDrawCount={setDrawCount}
+                />
+              )}
+            </Suspense>
           ) : memoizedWelcomeMessage} />
           <Route path="/dailyFrequencies" element={<DailyCardFrequenciesPage />} />
           <Route path="/how-it-works" element={<HowItWorks />} />

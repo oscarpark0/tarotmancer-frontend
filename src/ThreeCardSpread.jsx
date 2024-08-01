@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import PropTypes from 'prop-types'; // Add this import
 import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
@@ -12,7 +13,7 @@ import { useTranslation } from './utils/translations';
 import PastDrawsModal from './components/PastDrawsModal';
 import { IKImage } from 'imagekitio-react';
 
-const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw, lastDrawTime }) => {
+const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, drawCount, setDrawCount, setLastResetTime, isDarkMode, canDraw, timeUntilNextDraw, lastDrawTime, remainingDrawsToday }) => {
   const { getToken, user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -309,5 +310,19 @@ const ThreeCardSpread = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     </ErrorBoundary>
   );
 });
+
+ThreeCardSpread.propTypes = {
+  isMobile: PropTypes.bool,
+  onSpreadSelect: PropTypes.func,
+  selectedSpread: PropTypes.string,
+  drawCount: PropTypes.number,
+  setDrawCount: PropTypes.func,
+  setLastResetTime: PropTypes.func,
+  isDarkMode: PropTypes.bool,
+  canDraw: PropTypes.bool,
+  timeUntilNextDraw: PropTypes.number,
+  lastDrawTime: PropTypes.string,
+  remainingDrawsToday: PropTypes.number
+};
 
 export default ThreeCardSpread;

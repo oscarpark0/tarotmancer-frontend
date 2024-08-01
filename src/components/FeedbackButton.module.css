@@ -4,12 +4,20 @@
   margin: 0 0.5rem;
   transition: all 0.3s ease;
   font-size: 1rem;
-  border: 2px solid #ffd700;
-  background-color: transparent;
+  border: 2px solid #000000;
+  background-color: #1a1a2e;
   padding: 8px 16px;
   border-radius: 25px;
   cursor: pointer;
-  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+  text-shadow: 
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000,
+    0 1px 0 #000,
+    1px 0 0 #000,
+    -1px 0 0 #000,
+    0 -1px 0 #000;
 }
 
 .feedbackButton:hover {

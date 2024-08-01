@@ -33,7 +33,6 @@ const CommandTerminal = forwardRef(({
   currentDrawId,
   userId,
   onOpenPastDraws,
-  isCardsDealingComplete,
 }, ref) => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -43,10 +42,6 @@ const CommandTerminal = forwardRef(({
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
   const [isDrawing, setIsDrawing] = useState(false);
-
-  useEffect(() => {
-    console.log('Component language updated:', selectedLanguage);
-  }, [selectedLanguage]);
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -59,7 +54,10 @@ const CommandTerminal = forwardRef(({
   }, []);
 
   const handleSubmit = useCallback(async (mostCommonCards) => {
-    console.log("handleSubmit called with:", mostCommonCards); // Add this log
+    if (!shouldRequestCohere) {
+      return;
+    }
+
     if (!currentDrawId) {
       console.warn('currentDrawId is undefined, but continuing with request');
     }
@@ -106,20 +104,11 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, currentDrawId, userId]);
 
   useEffect(() => {
-    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
-      console.log("CommandTerminal: Triggering Mistral request");
-      const timer = setTimeout(() => {
-        handleSubmit(mostCommonCards);
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [isCardsDealingComplete, mostCommonCards, dealingComplete]);
-
-  useEffect(() => {
-    if (isCardsDealingComplete && mostCommonCards && dealingComplete) {
+    if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
       handleSubmit(mostCommonCards);
+      setShouldRequestCohere(false);
     }
-  }, [handleSubmit]);
+  }, [mostCommonCards, dealingComplete, shouldRequestCohere, animationsComplete, handleSubmit]);
 
   const handleSpreadSelect = (newSpread) => {
     onSpreadSelect(newSpread);
@@ -140,8 +129,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     setShouldRequestCohere(true);
     onNewResponse('');
     onDraw();
-    setDrawCount(prevCount => Math.min(prevCount + 1, 5));
-  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, onDraw, setDrawCount]);
+  }, [isDrawing, canDraw, drawSpread, setShouldRequestCohere, onNewResponse, onDraw]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -227,7 +215,7 @@ CommandTerminal.propTypes = {
   onMonitorOutput: PropTypes.func.isRequired,
   drawSpread: PropTypes.func.isRequired,
   mostCommonCards: PropTypes.string.isRequired,
-  dealingComplete: PropTypes.bool.isRequired,
+  dealingComplete: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]).isRequired,
   onSpreadSelect: PropTypes.func.isRequired,
   selectedSpread: PropTypes.string.isRequired,
   isMobile: PropTypes.bool.isRequired,
@@ -246,7 +234,6 @@ CommandTerminal.propTypes = {
   currentDrawId: PropTypes.string,
   userId: PropTypes.string,
   onOpenPastDraws: PropTypes.func.isRequired,
-  isCardsDealingComplete: PropTypes.bool.isRequired,
 };
 
 export default CommandTerminal;

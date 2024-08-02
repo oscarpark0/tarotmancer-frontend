@@ -22,6 +22,11 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
   const [drawToRemove, setDrawToRemove] = useState<number | null>(null);
   const { getToken, user } = useKindeAuth();
   const { getTranslation } = useTranslation();
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   const removeDraw = async (drawId: number) => {
     if (!user) return;
@@ -138,7 +143,10 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
             </div>
             <h3 className={styles.drawInfo}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
             <div className={styles.robotMonitor}>
-              <div className={styles.screenContent}>
+              <div className={styles.expandButtonContainer}>
+                <button className={styles.expandButton} onClick={toggleExpand}>↕</button>
+              </div>
+              <div className={`${styles.screenContent} ${isExpanded ? styles.expanded : ''}`}>
                 {selectedDraw.response ? (
                   <p className={styles.responseText}>{selectedDraw.response}</p>
                 ) : (

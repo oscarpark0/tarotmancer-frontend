@@ -102,8 +102,8 @@ const DailyFrequenciesPage: React.FC = () => {
       ]);
 
       setFrequencies(frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency));
-      setCelticSpread(spreadsResponse.data.celtic_spread);
-      setThreeCardSpread(spreadsResponse.data.three_card_spread);
+      setCelticSpread([...spreadsResponse.data.celtic_spread]); // Ensure state update
+      setThreeCardSpread([...spreadsResponse.data.three_card_spread]); // Ensure state update
       console.log("Three Card Spread:", spreadsResponse.data.three_card_spread);
     } catch (err) {
       console.error('Failed to fetch data:', err);
@@ -146,10 +146,10 @@ const DailyFrequenciesPage: React.FC = () => {
         <section className={styles.spreadsSection}>
           <h2>{getTranslation('mostCommonCardOccurrencesByPosition')}</h2>
           <div className={styles.spreadsContainer}>
-            <Spread spread={celticSpread} title="celticCrossSpread" />
+            <Spread key={`${selectedDate}-0`} spread={celticSpread} title="celticCrossSpread" />
             <div className={styles.spreadSeparator}></div>
             {threeCardSpread.length === 3 ? (
-              <Spread spread={threeCardSpread} title="threeCardSpread" />
+              <Spread key={`${selectedDate}-1`} spread={threeCardSpread} title="threeCardSpread" />
             ) : (
               <div className={styles.error}>Error: Invalid Three Card spread data</div>
             )}

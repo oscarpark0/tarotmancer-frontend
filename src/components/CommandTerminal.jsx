@@ -41,7 +41,7 @@ const CommandTerminal = forwardRef(({
   const terminalOutputRef = useRef(null);
   const [showCards, setShowCards] = useState(false);
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
-  const { selectedLanguage } = useLanguage();
+  const { selectedLanguageName } = useLanguage();
   const { getTranslation } = useTranslation();
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -84,7 +84,8 @@ For each card in the spread, provide a detailed analysis:
 2. How the card's energy influences the querent's situation
 As you interpret each card, weave a cohesive narrative that connects the individual card meanings into a holistic reading.
 Draw connections between cards that have symbolic, elemental, or numerical relationships, explaining how these connections add depth to the reading.`;
-      const languagePrefix = selectedLanguage !== 'English' ? `Please respond in ${selectedLanguage}. ` : '';
+
+      const languagePrefix = selectedLanguageName !== 'English' ? `Please respond in ${selectedLanguageName}. ` : '';
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
@@ -109,7 +110,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     }
 
     setInput('');
-  }, [shouldRequestCohere, onNewResponse, selectedLanguage, getTranslation, onResponseComplete, input, userId, currentDrawId]); // Add currentDrawId to dependencies
+  }, [shouldRequestCohere, onNewResponse, selectedLanguageName, getTranslation, onResponseComplete, input, userId, currentDrawId]); // Add currentDrawId to dependencies
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
@@ -192,7 +193,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
         <div className="input-container2">
           <SpreadSelector onSpreadSelect={handleSpreadSelect} selectedSpread={selectedSpread} />
           <div className="terminal-language-selector">
-            <LanguageSelector onLanguageSelect={() => {}} selectedLanguage={selectedLanguage} />
+            <LanguageSelector onLanguageSelect={() => {}} selectedLanguage={selectedLanguageName} />
             <button
               className="past-draws-button"
               onClick={handlePastDrawsClick}

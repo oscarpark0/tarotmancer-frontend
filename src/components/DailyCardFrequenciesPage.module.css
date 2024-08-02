@@ -227,14 +227,14 @@
   .celticCrossSpread .position1:hover {
     transform: rotate(90deg) scale(1.75);
   }
-  .celticCrossSpread .position2 { left: 40%; top: 22%; }
-  .celticCrossSpread .position3 { left: 40%; bottom: 22%; }
-  .celticCrossSpread .position4 { left: 20%; }
-  .celticCrossSpread .position5 { right: 20%; }
-  .celticCrossSpread .position6 { right: 5%; top: 15%; }
-  .celticCrossSpread .position7 { right: 5%; top: 35%; }
-  .celticCrossSpread .position8 { right: 5%; top: 55%; }
-  .celticCrossSpread .position9 { right: 5%; top: 75%; }
+  .celticCrossSpread .position2 { left: 40%; top: -10%; }
+  .celticCrossSpread .position3 { left: 40%; bottom: -5%; }
+  .celticCrossSpread .position4 { left: 20%; top: 30%; }
+  .celticCrossSpread .position5 { right: 30%; top: 30%; }
+  .celticCrossSpread .position6 { right: 10%; top: -25%; }
+  .celticCrossSpread .position7 { right: 10%; top: 15%; }
+  .celticCrossSpread .position8 { right: 10%; top: 55%; }
+  .celticCrossSpread .position9 { right: 10%; top: 95%; }
 
   .threeCardSpread .spreadCard {
     width: 25%;

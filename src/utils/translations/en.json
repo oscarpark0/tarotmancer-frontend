@@ -36,7 +36,7 @@
   "privacy": "Privacy Policy",
   "contact": "Contact",
   "resources": "Resources",
-  "dailyFrequencies": "Daily Frequencies",
+  "frequencies": "Frequencies",
   "checkNetworkAndTryAgain": "Please check your network connection and try again",
   "failedToDrawSpread": "Failed to draw spread",
   "logoutUnavailable": "Logout is currently unavailable",

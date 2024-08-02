@@ -1,7 +1,7 @@
 {
     "tarotmancer": "tarotmancer",
     "howItWorks": "Hur det fungerar",
-    "dailyFrequencies": "Dagliga Frekvenser",
+    "frequencies": "Dagliga Frekvenser",
     "pastDraws": "Tidigare Dragningar",
     "processing": "Bearbetar...",
     "errorMessage": "Ett fel uppstod när din begäran bearbetades.",

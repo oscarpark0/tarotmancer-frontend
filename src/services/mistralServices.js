@@ -104,7 +104,16 @@ async function storeMistralResponse(drawId, response, userId) {
       throw new Error(`Failed to store Mistral response: ${errorText}`);
     }
 
-    return await res.json(); // Assuming the backend returns some confirmation
+    const responseText = await res.text();
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (error) {
+      console.warn('Response is not JSON, using text response');
+      responseData = { message: responseText };
+    }
+
+    return responseData;
   } catch (error) {
     console.error('Error storing Mistral response:', error);
     throw error;

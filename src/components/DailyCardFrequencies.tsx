@@ -41,7 +41,7 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
         <AnimatePresence>
           {frequencies.map((freq, index) => (
             <motion.div
-              key={freq.card_name}
+              key={`${freq.card_name}-${index}`}
               className={styles.barChartItem}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

@@ -1,7 +1,7 @@
 {
     "tarotmancer": "tarotmancer",
     "howItWorks": "Come funziona",
-    "dailyFrequencies": "Frequenze Giornaliere",
+    "frequencies": "Frequenze",
     "pastDraws": "Pesche Passate",
     "processing": "Elaborazione in corso...",
     "errorMessage": "Si è verificato un errore durante l'elaborazione della sua richiesta.",

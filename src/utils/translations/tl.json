@@ -1,7 +1,7 @@
 {
     "tarotmancer": "tarotmancer",
     "howItWorks": "Paano ito gumagana",
-    "dailyFrequencies": "Pang-araw-araw na Dalas",
+    "frequencies": "Pang-araw-araw na Dalas",
     "pastDraws": "Mga Nakaraang Pagbunot",
     "processing": "Pinoproseso...",
     "errorMessage": "May naganap na error habang pinoproseso ang iyong kahilingan.",

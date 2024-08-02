@@ -1,7 +1,7 @@
 {
     "tarotmancer": "tarotmancer",
     "howItWorks": "Πώς λειτουργεί",
-    "dailyFrequencies": "Ημερήσιες Συχνότητες",
+    "frequencies": "Συχνότητες",
     "pastDraws": "Προηγούμενα Τραβήγματα",
     "processing": "Επεξεργασία...",
     "errorMessage": "Προέκυψε σφάλμα κατά την επεξεργασία της αίτησής σας.",

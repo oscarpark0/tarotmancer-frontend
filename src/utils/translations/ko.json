@@ -1,7 +1,7 @@
 {
     "tarotmancer": "타로맨서",
     "howItWorks": "작동 방식",
-    "dailyFrequencies": "일일 빈도",
+    "frequencies": "빈도",
     "pastDraws": "과거 뽑기",
     "processing": "처리 중...",
     "errorMessage": "요청 처리 중 오류가 발생했습니다.",

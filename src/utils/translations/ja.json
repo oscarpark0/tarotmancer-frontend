@@ -1,7 +1,7 @@
 {
   "tarotmancer": "タロットマンサー",
   "howItWorks": "使い方",
-  "dailyFrequencies": "日次頻度",
+  "frequencies": "頻度",
   "pastDraws": "過去のドロー",
   "processing": "処理中...",
   "errorMessage": "要求の処理中にエラーが発生しました。",

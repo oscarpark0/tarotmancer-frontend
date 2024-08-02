@@ -1,7 +1,7 @@
 {
     "tarotmancer": "tarotmancer",
     "howItWorks": "Nasıl Çalışır",
-    "dailyFrequencies": "Günlük Frekanslar",
+    "frequencies": "Günlük Frekanslar",
     "pastDraws": "Geçmiş Çekimler",
     "processing": "İşleniyor...",
     "errorMessage": "İsteğiniz işlenirken bir hata oluştu.",

@@ -114,7 +114,7 @@ function AppContent({ isAuthenticated }) {
                   <LanguageSelector />
                 </div>
                 <button onClick={() => navigate('/how-it-works')} className={styles.subscribeButton}>{getTranslation('howItWorks')}</button>
-                <button onClick={() => navigate('/dailyFrequencies')} className={styles.subscribeButton}>{getTranslation('dailyFrequencies')}</button>
+                <button onClick={() => navigate('/dailyFrequencies')} className={styles.subscribeButton}>{getTranslation('frequencies')}</button>
                 <button onClick={() => setIsPastDrawsModalOpen(true)} className={styles.subscribeButton}>{getTranslation('pastDraws')}</button>
                 <SubscribeButton />
                 <FeedbackButton />

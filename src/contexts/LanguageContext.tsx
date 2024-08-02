@@ -1,8 +1,9 @@
 import React, { createContext, useState, useContext, useEffect, useCallback, ReactNode } from 'react';
-import { loadTranslations, Language } from '../utils/translations';
+import { loadTranslations, Language, getFullLanguageName } from '../utils/translations';
 
 interface LanguageContextType {
   selectedLanguage: Language;
+  selectedLanguageName: string;
   setSelectedLanguage: (language: Language) => void;
   translationsLoaded: boolean;
 }
@@ -18,6 +19,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     return (localStorage.getItem('selectedLanguage') as Language) || 'en';
   });
 
+  const [selectedLanguageName, setSelectedLanguageName] = useState<string>(() => {
+    return getFullLanguageName(selectedLanguage);
+  });
+
   const [translationsLoaded, setTranslationsLoaded] = useState(false);
 
   const loadTranslationsForLanguage = useCallback(async (language: Language) => {
@@ -28,6 +33,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   useEffect(() => {
     const loadLanguage = async () => {
       await loadTranslationsForLanguage(selectedLanguage);
+      setSelectedLanguageName(getFullLanguageName(selectedLanguage));
       setTranslationsLoaded(true);
     };
     loadLanguage();
@@ -50,7 +56,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   }
 
   return (
-    <LanguageContext.Provider value={{ selectedLanguage, setSelectedLanguage, translationsLoaded }}>
+    <LanguageContext.Provider value={{ selectedLanguage, selectedLanguageName, setSelectedLanguage, translationsLoaded }}>
       {children}
     </LanguageContext.Provider>
   );

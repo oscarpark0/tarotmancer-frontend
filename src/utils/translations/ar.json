@@ -1,7 +1,7 @@
 {
   "tarotmancer": "tarotmancer",
   "howItWorks": "كيف يعمل",
-  "dailyFrequencies": "الترددات اليومية",
+  "frequencies": "الترددات",
   "pastDraws": "السحوبات السابقة",
   "processing": "معالجة...",
   "errorMessage": "حدثت مشكلة أثاء معالجة طلبك.",

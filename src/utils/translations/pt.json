@@ -1,7 +1,7 @@
 {
     "tarotmancer": "tarotmancer",
     "howItWorks": "Como funciona",
-    "dailyFrequencies": "Frequências Diárias",
+    "frequencies": "Frequências Diárias",
     "pastDraws": "Sorteios Passados",
     "processing": "Processando...",
     "errorMessage": "Ocorreu um erro ao processar sua solicitação.",

@@ -1,5 +1,5 @@
 .subscribeButton {
-  padding: 10px 20px;
+  padding: 1px 5px;
   background-color: #1a1a2e;
   color: #ffd700;
   border: 2px solid #000000;
@@ -21,6 +21,7 @@
 .subscribeButton:hover {
   background-color: rgba(255, 215, 0, 0.1);
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  transform: scale(1.1) rotate(0deg) skew(0.01deg, -0.01deg);
 }
 
 .modalOverlay {

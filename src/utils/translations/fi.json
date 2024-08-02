@@ -1,7 +1,7 @@
 {
     "tarotmancer": "tarotmancer",
     "howItWorks": "Miten se toimii",
-    "dailyFrequencies": "Päivittäiset Taajuudet",
+    "frequencies": "Taajuudet",
     "pastDraws": "Aiemmat Nostot",
     "processing": "Käsitellään...",
     "errorMessage": "Virhe tapahtui, kun pyyntösi käsiteltiin.",

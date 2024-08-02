@@ -1,7 +1,7 @@
 {
   "tarotmancer": "塔罗占卜师",
   "howItWorks": "如何使用",
-  "dailyFrequencies": "每日频率",
+  "frequencies": "每日频率",
   "pastDraws": "过去的抽牌",
   "processing": "处理中...",
   "errorMessage": "处理请求时发生错误。",

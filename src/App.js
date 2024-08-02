@@ -58,7 +58,7 @@ function AppContent({ isAuthenticated }) {
   const { getTranslation } = useTranslation(); 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
-  const [selectedSpread, setSelectedSpread] = useState('celtic');
+  const [selectedSpread, setSelectedSpread] = useState('threeCard');
   const [canAccessCohere, setCanAccessCohere] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const savedMode = localStorage.getItem('darkMode');

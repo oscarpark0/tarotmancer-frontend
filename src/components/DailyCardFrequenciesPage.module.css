@@ -209,32 +209,31 @@
 
 /* Adjust mobile positioning for Celtic Cross */
 @media (max-width: 768px) {
-  .celticCrossSpread .position0,
-  .celticCrossSpread .position1 { 
-    left: 40%; 
-    top: 30%; 
+  .celticCrossSpread {
+    aspect-ratio: 1 / 1;
+    max-width: 90vw;
+    max-height: 90vw;
+    margin: 0 auto;
   }
-  .celticCrossSpread .position0 {
-    transform: none;
+
+  .celticCrossSpread .spreadCard {
+    width: 18%;
+    max-width: 70px;
   }
-  .celticCrossSpread .position0:hover {
-    transform: scale(1.75);
-    z-index: 12;
-  }
-  .celticCrossSpread .position1 {
-    transform: rotate(90deg);
-  }
-  .celticCrossSpread .position1:hover {
-    transform: rotate(90deg) scale(1.75);
-  }
-  .celticCrossSpread .position2 { left: 40%; top: -10%; }
-  .celticCrossSpread .position3 { left: 40%; bottom: -5%; }
-  .celticCrossSpread .position4 { left: 20%; top: 30%; }
-  .celticCrossSpread .position5 { right: 30%; top: 30%; }
-  .celticCrossSpread .position6 { right: 10%; top: -25%; }
-  .celticCrossSpread .position7 { right: 10%; top: 15%; }
-  .celticCrossSpread .position8 { right: 10%; top: 55%; }
-  .celticCrossSpread .position9 { right: 10%; top: 95%; }
+
+  /* Central cross */
+  .celticCrossSpread .position0 { left: 30%; top: 40%; }
+  .celticCrossSpread .position1 { left: 30%; top: 40%; }
+  .celticCrossSpread .position2 { left: 30%; top: 15%; }
+  .celticCrossSpread .position3 { left: 30%; bottom: 15%; }
+  .celticCrossSpread .position4 { left: 5%; top: 40%; }
+  .celticCrossSpread .position5 { left: 55%; top: 40%; }
+
+  /* Staff */
+  .celticCrossSpread .position6 { right: 5%; top: 5%; }
+  .celticCrossSpread .position7 { right: 5%; top: 30%; }
+  .celticCrossSpread .position8 { right: 5%; top: 55%; }
+  .celticCrossSpread .position9 { right: 5%; top: 80%; }
 
   .threeCardSpread .spreadCard {
     width: 25%;
@@ -391,11 +390,15 @@
   }
 
   .threeCardSpread .spreadCard {
-    width: 25%;
-    max-width: 100px;
+    width: 22%;
+    max-width: 90px;
   }
 
   .threeCardSpread .spreadCard:hover {
-    transform: translateY(-50%) scale(1.75);
+    transform: translateY(-50%) scale(1.5);
   }
+
+  .threeCardSpread .position0 { left: 10%; }
+  .threeCardSpread .position1 { left: 50%; transform: translate(-50%, -50%); }
+  .threeCardSpread .position2 { right: 10%; }
 }

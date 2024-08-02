@@ -56,5 +56,6 @@
     "yes": "예",
     "no": "아니오",
     "remaining": "남은",
-    "remainingDrawsToday": "남은 뽑기"
+    "remainingDrawsToday": "남은 뽑기",
+    "noDrawsLeft": "남은 뽑기 없음"
 }

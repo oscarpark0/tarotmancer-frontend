@@ -56,5 +56,6 @@
   "yes": "はい",
   "no": "いいえ",
   "remaining": "残り",
-  "remainingDrawsToday": "残りのドロー"
+  "remainingDrawsToday": "残りのドロー",
+  "noDrawsLeft": "残りのドローはありません"
 }

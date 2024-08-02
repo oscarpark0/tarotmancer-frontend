@@ -57,5 +57,6 @@
   "no": "No",
   "howItWorks": "How It Works",
   "remaining": "Remaining",
-  "remainingDrawsToday": "Remaining Draws Today"
+  "remainingDrawsToday": "Remaining Draws Today",
+  "noDrawsLeft": "No draws left"
 }

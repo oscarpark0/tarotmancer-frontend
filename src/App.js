@@ -25,8 +25,7 @@ import HowItWorks from './components/HowItWorks';
 import { IKContext } from 'imagekitio-react';
 import { IMAGEKIT_PUBLIC_KEY } from './utils/config';
 
-const CelticSpread = lazy(() => import('./CelticSpread').then(module => ({ default: module.default })));
-const ThreeCardSpread = lazy(() => import('./ThreeCardSpread').then(module => ({ default: module.default })));
+const SpreadComponent = lazy(() => import('./SpreadComponent').then(module => ({ default: module.default })));
 
 function KindeCallbackHandler() {
   const { isLoading, isAuthenticated, error } = useKindeAuth();
@@ -71,7 +70,6 @@ function AppContent({ isAuthenticated }) {
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [remainingDrawsToday, setRemainingDrawsToday] = useState(10); // Initialize with a default value
   const [drawCount, setDrawCount] = useState(0);
-  const userId = user?.id;
 
   const navigate = useNavigate();
 
@@ -204,8 +202,8 @@ function AppContent({ isAuthenticated }) {
     setCurrentDrawId,
     getToken,
     onDraw: checkCanDraw,
-    userId,
-  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken, remainingDrawsToday, drawCount, isDarkMode, canDraw, currentDrawId, checkCanDraw, userId]);
+    userId: user?.id,
+  }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken, remainingDrawsToday, drawCount, isDarkMode, canDraw, currentDrawId, checkCanDraw]);
 
   const fetchUserDraws = useCallback(async () => {
     const draws = await makeAuthenticatedRequest('/api/user-draws', 'Error fetching user draws');
@@ -259,11 +257,7 @@ function AppContent({ isAuthenticated }) {
         <Routes>
           <Route path="/" element={isAuthenticated ? (
             <Suspense fallback={<div>Loading...</div>}>
-              {selectedSpread === 'celtic' ? (
-                <CelticSpread {...spreadProps} drawCount={drawCount} setDrawCount={setDrawCount} onDrawComplete={handleDrawComplete} />
-              ) : (
-                <ThreeCardSpread {...spreadProps} drawCount={drawCount} setDrawCount={setDrawCount} userId={userId} onDrawComplete={handleDrawComplete} />
-              )}
+              <SpreadComponent {...spreadProps} drawCount={drawCount} setDrawCount={setDrawCount} onDrawComplete={handleDrawComplete} />
             </Suspense>
           ) : memoizedWelcomeMessage} />
           <Route path="/dailyFrequencies" element={<DailyCardFrequenciesPage />} />

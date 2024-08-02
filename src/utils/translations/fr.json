@@ -56,5 +56,6 @@
   "yes": "Oui",
   "no": "Non",
   "remaining": "Restant",
-  "remainingDrawsToday": "Tirages restants aujourd'hui"
+  "remainingDrawsToday": "Tirages restants aujourd'hui",
+  "noDrawsLeft": "Plus de tirages disponibles"
 }

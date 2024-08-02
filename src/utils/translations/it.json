@@ -56,5 +56,6 @@
     "yes": "Sì",
     "no": "No",
     "remaining": "Rimanente",
-    "remainingDrawsToday": "Pesche rimanenti oggi"
+    "remainingDrawsToday": "Pesche rimanenti oggi",
+    "noDrawsLeft": "Nessuna pesca rimanente"
 }

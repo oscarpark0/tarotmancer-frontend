@@ -56,5 +56,6 @@
     "yes": "Ja",
     "no": "Nei",
     "remaining": "Gjenstående",
-    "remainingDrawsToday": "Gjenstående trekninger i dag"
+    "remainingDrawsToday": "Gjenstående trekninger i dag",
+    "noDrawsLeft": "Ingen trekninger igjen"
 }

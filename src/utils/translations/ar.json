@@ -45,5 +45,6 @@
   "failedToDrawSpread": "فشل في سحب الانتشار",
   "checkNetworkAndTryAgain": "تحقق من اتصالك بالشبكة وحاول مرة أخرى",
   "remaining": "متبقي",
-  "remainingDrawsToday": "السحوبات المتبقية اليوم"
+  "remainingDrawsToday": "السحوبات المتبقية اليوم",
+  "noDrawsLeft": "لا توجد سحوبات متبقية"
 }

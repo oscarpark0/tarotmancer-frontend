@@ -56,5 +56,6 @@
     "yes": "Tak",
     "no": "Nie",
     "remaining": "Pozostało",
-    "remainingDrawsToday": "Pozostałe losowania dzisiaj"
+    "remainingDrawsToday": "Pozostałe losowania dzisiaj",
+    "noDrawsLeft": "Brak pozostałych losowań"
 }

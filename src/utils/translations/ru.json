@@ -45,5 +45,6 @@
     "failedToDrawSpread": "Не удалось выполнить расклад",
     "checkNetworkAndTryAgain": "Пожалуйста, проверьте подключение к сети и попробуйте снова",
     "remaining": "Осталось",
-    "remainingDrawsToday": "Оставшиеся вытягивания на сегодня"
+    "remainingDrawsToday": "Оставшиеся вытягивания на сегодня",
+    "noDrawsLeft": "Вытягиваний не осталось"
 }

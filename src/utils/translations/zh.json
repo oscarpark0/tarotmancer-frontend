@@ -56,5 +56,6 @@
   "yes": "是",
   "no": "否",
   "remaining": "剩余",
-  "remainingDrawsToday": "今日剩余抽牌次数"
+  "remainingDrawsToday": "今日剩余抽牌次数",
+  "noDrawsLeft": "今日抽牌次数已用完"
 }

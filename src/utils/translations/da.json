@@ -45,5 +45,6 @@
     "failedToDrawSpread": "Kunne ikke trække udlægningen",
     "checkNetworkAndTryAgain": "Tjek din netværksforbindelse og prøv igen",
     "remaining": "Resterende",
-    "remainingDrawsToday": "Resterende trækninger i dag"
+    "remainingDrawsToday": "Resterende trækninger i dag",
+    "noDrawsLeft": "Ingen trækninger tilbage"
 }

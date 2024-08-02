@@ -56,5 +56,6 @@
     "yes": "Kyllä",
     "no": "Ei",
     "remaining": "Jäljellä",
-    "remainingDrawsToday": "Jäljellä olevat nostot tänään"
+    "remainingDrawsToday": "Jäljellä olevat nostot tänään",
+    "noDrawsLeft": "Ei nostoja jäljellä"
 }

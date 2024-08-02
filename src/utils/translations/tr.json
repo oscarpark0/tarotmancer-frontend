@@ -56,5 +56,6 @@
     "yes": "Evet",
     "no": "Hayır",
     "remaining": "Kalan",
-    "remainingDrawsToday": "Kalan çekimler"
+    "remainingDrawsToday": "Kalan çekimler",
+    "noDrawsLeft": "Kalan çekim hakkı yok"
 }

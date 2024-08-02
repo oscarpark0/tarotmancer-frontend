@@ -56,5 +56,6 @@
     "yes": "Ja",
     "no": "Nee",
     "remaining": "Resterend",
-    "remainingDrawsToday": "Resterende trekkingen vandaag"
+    "remainingDrawsToday": "Resterende trekkingen vandaag",
+    "noDrawsLeft": "Geen trekkingen meer over"
 }

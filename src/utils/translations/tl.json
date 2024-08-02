@@ -56,5 +56,6 @@
     "yes": "Oo",
     "no": "Hindi",
     "remaining": "Natitirang",
-    "remainingDrawsToday": "Natitirang mga pagbunot ngayong araw"
+    "remainingDrawsToday": "Natitirang mga pagbunot ngayong araw",
+    "noDrawsLeft": "Wala nang natitirang pagbunot"
 }

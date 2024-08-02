@@ -56,5 +56,6 @@
     "yes": "Ja",
     "no": "Nein",
     "remaining": "Verbleibend",
-    "remainingDrawsToday": "Verbleibende Ziehungen"
+    "remainingDrawsToday": "Verbleibende Ziehungen",
+    "noDrawsLeft": "Keine Ziehungen mehr übrig"
 }

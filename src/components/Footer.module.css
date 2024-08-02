@@ -8,12 +8,12 @@
     right: 0;
     overflow: hidden;
     margin-top: auto;
-    padding: 2px 0;
     background-color: #f8f8f8;
     z-index: 10;
-  }
-  
-  .footerContent {
+    font-size: 0.8rem; /* Adjusted font size */
+}
+
+.footerContent {
     max-width: 1200px;
     margin: 0 auto;
     display: flex;
@@ -21,13 +21,15 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 1rem;
-  }
-  
-  .footerLinks {
+}
+
+.footerLinks {
     margin-bottom: 0;
-  }
-  
-  .footerLink {
+    display: flex; /* Ensure links are in a row */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.footerLink {
     color: #ffffff;
     text-decoration: none;
     margin: 0 0.5rem;
@@ -42,26 +44,29 @@
     1px 0 0 #000,
     -1px 0 0 #000,
     0 -1px 0 #000;
-  }
-  
-  .footerLink:hover {
+}
+
+.footerLink:hover {
     color: #BA55D3;
-  }
-  
-  .footerDivider {
+}
+
+.footerDivider {
     display: none;
-  }
-  
-  .footerInfo {
+}
+
+.footerInfo {
     text-align: center;
-  }
-  
-  .footerText {
+    margin: 0; /* Remove margin */
+    padding: 0; /* Remove padding */
+}
+
+.footerText {
     margin: 0;
     font-size: 0.8rem;
-  }
-  
-  .footer::before {
+    white-space: nowrap; /* Ensure text is in a single line */
+}
+
+.footer::before {
     content: '';
     position: absolute;
     top: 0;
@@ -71,39 +76,46 @@
     background: url('/public/images/tarot-pattern.svg') repeat;
     opacity: 0.05;
     z-index: 0;
-  }
-  
-  .footerContent {
+}
+
+.footerContent {
     position: relative;
     z-index: 1;
-  }
-  
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
     .footer {
-      padding: 0.25rem 0;
+        padding: 0.1rem 0; /* Reduced padding for mobile */
+        font-size: 0.6rem; /* Adjusted font size for mobile */
     }
 
     .footerContent {
-      flex-direction: column;
-      padding: 0;
+        flex-direction: column;
+        padding: 0 0.5rem; /* Reduced padding for mobile */
     }
 
     .footerLinks {
-      flex-direction: row;
-      margin-bottom: 0.1rem;
+        flex-direction: row;
+        margin-bottom: 0.1rem;
+        justify-content: center; /* Center links on mobile */
     }
 
     .footerLink {
-      margin: 0 0.25rem;
-      font-size: 0.6rem;
+        margin: 0 0.25rem;
+        font-size: 0.6rem; /* Adjusted font size for mobile */
+    }
+
+    .footerInfo {
+        margin: 0.1rem 0; /* Reduced margin for mobile */
     }
 
     .footerText {
-      font-size: 0.6rem;
+        font-size: 0.6rem; /* Adjusted font size for mobile */
+        white-space: nowrap; /* Ensure text is in a single line */
     }
-  }
-  
-  .dark-mode .footer {
+}
+
+.dark-mode .footer {
     background-color: #333;
     color: #fff;
-  }
+}

@@ -18,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
   }, [selectedLanguage]);
 
   return (
-    <footer className={`${styles.footer} ${isDarkMode ? styles.darkMode : ''} footer`}>
+    <footer className={`${styles.footer} ${isDarkMode ? styles.darkMode : ''}`}>
       <div className={styles.footerContent}>
         <div className={styles.footerLinks}>
           <Link to="/how-it-works" className={styles.footerLink}>{getTranslation('howItWorks')}</Link>
@@ -30,7 +30,7 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
           <FeedbackButton isFooterLink={true} />
         </div>
         <div className={styles.footerInfo}>
-          <p className={styles.footerText}>
+          <p className={`${styles.footerText} ${styles.hideOnMobile}`}>
             &copy; {new Date().getFullYear()} {getTranslation('tarotmancer')}
           </p>
         </div>

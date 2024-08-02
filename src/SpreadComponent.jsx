@@ -62,18 +62,21 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     try {
       const token = await getToken();
       const origin = window.location.origin;
+      const newDrawId = Date.now(); // Generate a new draw ID
 
       const headers = {
         'Content-Type': 'application/json',
         'Origin': origin,
         'Authorization': `Bearer ${token}`,
         'User-ID': user.id,
+        'Draw-ID': newDrawId.toString(),
       };
 
       const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
       const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
         method: 'GET',
         headers: headers,
+        credentials: 'include',
       });
 
       if (!response.ok) {
@@ -83,12 +86,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       }
 
       const data = await response.json();
-      const drawId = data.id || data.drawId || data.draw_id;
-      if (typeof drawId === 'undefined') {
-        console.warn('Draw ID not found in the response data');
-      }
-      console.log('SpreadComponent: Setting currentDrawId:', drawId);
-      setCurrentDrawId(drawId);
+      setCurrentDrawId(newDrawId);
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
       const positions = selectedSpread === 'celtic'
@@ -130,13 +128,14 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       setCards(newCards);
       setDealCards(true);
       setMostCommonCards(formattedMostCommonCards);
-      setCurrentDrawId(drawId);
+      setCurrentDrawId(newDrawId);
       onDrawComplete();
 
     } catch (error) {
       console.error('Error drawing spread:', error);
-      setError('Failed to draw spread. Please check your authentication and try again.');
+      setError('Failed to draw spread. Please try again later.');
       setCards([]);
+      setCurrentDrawId(null);
     } finally {
       setIsLoading(false);
       setShouldDrawNewSpread(false);
@@ -240,7 +239,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       onDrawComplete={onDrawComplete}
       drawCount={drawCount}
       setDrawCount={setDrawCount}
-      userId={user ? user.id : null} // Add this line
+      userId={user ? user.id : null}
     />
   ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, user, remainingDrawsToday, setRemainingDrawsToday, onDrawComplete, drawCount, setDrawCount]);
 

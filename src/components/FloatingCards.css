@@ -13,8 +13,8 @@
 
 .floating-card {
   position: absolute;
-  width: clamp(33.33px, 6.67vw, 53.33px);
-  height: clamp(50px, 10vw, 80px);
+  width: clamp(40px, 8vw, 64px);
+  height: clamp(60px, 12vw, 96px);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   will-change: transform, opacity;
@@ -22,6 +22,7 @@
   transform-style: preserve-3d;
   object-fit: contain;
   animation: float 4s ease-in-out infinite;
+  margin: 0 clamp(10px, 2vw, 20px);
 }
 
 @keyframes float {
@@ -35,7 +36,8 @@
 
 @media (max-width: 768px) {
   .floating-card {
-    width: clamp(40px, 12vw, 80px);
-    height: clamp(60px, 18vw, 120px);
+    width: clamp(48px, 14vw, 96px);
+    height: clamp(72px, 21vw, 144px);
+    margin: 0 clamp(8px, 1.5vw, 15px);
   }
 }

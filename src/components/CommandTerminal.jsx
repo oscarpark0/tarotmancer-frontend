@@ -44,6 +44,7 @@ const CommandTerminal = forwardRef(({
   const { selectedLanguageName } = useLanguage();
   const { getTranslation } = useTranslation();
   const [isDrawing, setIsDrawing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -66,6 +67,7 @@ const CommandTerminal = forwardRef(({
 
     if (!currentDrawId) {
       console.error('Current Draw ID is not available');
+      onNewResponse('Error: Unable to process request. Please try drawing again.');
       return;
     }
 
@@ -93,12 +95,12 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
       await getMistralResponse(message, onNewResponse, (fullResponse, error) => {
         if (error) {
           console.error('Error storing Mistral response:', error);
-          // Handle error (e.g., show error message to user)
+          onNewResponse('Error: Failed to store response. Please try again.');
         } else {
           console.log('Mistral response stored successfully');
         }
         onResponseComplete(fullResponse);
-      }, currentDrawId, userId); // Pass currentDrawId here
+      }, currentDrawId, userId);
       
     } catch (error) {
       console.error('Error in Mistral request:', error);
@@ -110,7 +112,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     }
 
     setInput('');
-  }, [shouldRequestCohere, onNewResponse, selectedLanguageName, getTranslation, onResponseComplete, input, userId, currentDrawId]); // Add currentDrawId to dependencies
+  }, [shouldRequestCohere, onNewResponse, selectedLanguageName, getTranslation, onResponseComplete, input, userId, currentDrawId]);
 
   useEffect(() => {
     if (mostCommonCards && dealingComplete && shouldRequestCohere && animationsComplete) {
@@ -132,14 +134,20 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   }, []);
 
   const handleDrawClick = useCallback(() => {
-    if (isDrawing || !canDraw || remainingDrawsToday <= 0) return;
+    if (isDrawing || !canDraw || remainingDrawsToday <= 0) {
+      if (remainingDrawsToday <= 0) {
+        setErrorMessage(getTranslation('noDrawsLeft'));
+      }
+      return;
+    }
+    setErrorMessage('');
     setIsDrawing(true);
     drawSpread();
     setShouldRequestCohere(true);
     onNewResponse('');
     onDraw();
     setDrawCount(prevCount => prevCount + 1);
-  }, [isDrawing, canDraw, remainingDrawsToday, drawSpread, setShouldRequestCohere, onNewResponse, onDraw, setDrawCount]);
+  }, [isDrawing, canDraw, remainingDrawsToday, drawSpread, setShouldRequestCohere, onNewResponse, onDraw, setDrawCount, getTranslation]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -179,11 +187,17 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
               dealingComplete={dealingComplete}
               shouldDrawNewSpread={shouldDrawNewSpread}
               isMobile={isMobile}
-              className="terminal-card-reveal"
+              className={`terminal-card-reveal ${isMobile ? 'mobile' : ''}`}
             />
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
-            {isLoading ? getTranslation('processing') : `${getTranslation('remainingDrawsToday')}: ${remainingDrawsToday}`}
+            {errorMessage ? (
+              <div className="error-message">{errorMessage}</div>
+            ) : isLoading ? (
+              getTranslation('processing')
+            ) : (
+              `${getTranslation('remainingDrawsToday')}: ${remainingDrawsToday}`
+            )}
           </div>
         </div>
         <div className="screen-overlay"></div>

@@ -12,9 +12,9 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     const containerWidth = window.innerWidth;
     const isMobile = containerWidth <= 768;
     
-    const baseScale = isMobile ? 0.01 : 20; 
+    const baseScale = isMobile ? 1 : 1; // Adjust this value for better scaling
     const baseLeft = isMobile ? '50%' : '40%'; 
-    const topOffset = isMobile ? '30%' : '169%'; 
+    const topOffset = isMobile ? '30%' : '50%'; 
     
     // New horizontal spacing variables
     const threeCardHorizontalSpacing = isMobile ? '25vw' : '8vw';
@@ -24,28 +24,27 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     if (cards.length === 3) {
       // Three Card Spread
       return [
-        { top: topOffset, left: `calc(${baseLeft} - ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
-        { top: topOffset, left: baseLeft, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
-        { top: topOffset, left: `calc(${baseLeft} + ${threeCardHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${baseScale})`, zIndex: 2000 },
+        { top: topOffset, left: `calc(${baseLeft} - ${threeCardHorizontalSpacing})`, zIndex: 2000 },
+        { top: topOffset, left: baseLeft, zIndex: 2000 },
+        { top: topOffset, left: `calc(${baseLeft} + ${threeCardHorizontalSpacing})`, zIndex: 2000 },
       ];
     } else {
       // Celtic Cross Spread
       const crossCardScale = baseScale * 0.9;
-      const celticBaseScale = isMobile ? baseScale * 0.8 : baseScale;
       const celticBaseLeft = isMobile ? '30%' : baseLeft;
       const verticalSpacing = isMobile ? '5.9vh' : '9.5vh';
       
       return [
-        { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: topOffset, left: celticBaseLeft, transform: `translate(-50%, -50%) rotate(90deg) scale(${crossCardScale * 0.7})`, zIndex: 12 },
-        { top: `calc(${topOffset} - ${verticalSpacing})`, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + ${verticalSpacing})`, left: celticBaseLeft, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: topOffset, left: `calc(${celticBaseLeft} - ${celticCrossHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: topOffset, left: `calc(${celticBaseLeft} + ${celticCrossHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} - ${verticalSpacing} * 1.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} - ${verticalSpacing} * 0.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + ${verticalSpacing} * 0.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
-        { top: `calc(${topOffset} + ${verticalSpacing} * 1.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, transform: `translate(-50%, -50%) scale(${celticBaseScale})`, zIndex: 10 },
+        { top: topOffset, left: celticBaseLeft, zIndex: 10 },
+        { top: topOffset, left: celticBaseLeft, transform: `rotate(90deg) scale(${crossCardScale * 0.7})`, zIndex: 12 },
+        { top: `calc(${topOffset} - ${verticalSpacing})`, left: celticBaseLeft, zIndex: 10 },
+        { top: `calc(${topOffset} + ${verticalSpacing})`, left: celticBaseLeft, zIndex: 10 },
+        { top: topOffset, left: `calc(${celticBaseLeft} - ${celticCrossHorizontalSpacing})`, zIndex: 10 },
+        { top: topOffset, left: `calc(${celticBaseLeft} + ${celticCrossHorizontalSpacing})`, zIndex: 10 },
+        { top: `calc(${topOffset} - ${verticalSpacing} * 1.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, zIndex: 10 },
+        { top: `calc(${topOffset} - ${verticalSpacing} * 0.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, zIndex: 10 },
+        { top: `calc(${topOffset} + ${verticalSpacing} * 0.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, zIndex: 10 },
+        { top: `calc(${topOffset} + ${verticalSpacing} * 1.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, zIndex: 10 },
       ];
     }
   }, [cards.length]);
@@ -96,12 +95,12 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
   }, [shouldDrawNewSpread]);
 
   return (
-    <div className={`card-reveal ${className}`}>
+    <div className={`card-reveal ${className} ${cards.length === 3 ? 'three-card' : 'celtic-cross'}`}>
       {dealingComplete && cards.map((card, index) => (
         <motion.div
           key={index}
           className={`card pointer-events-auto ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${cards.length > 3 && index === 1 ? 'cross-card' : ''} ${hoveredCard === index ? 'hovered' : ''}`}
-          initial={{ opacity: 0, x: '-100vw', y: cardPositions[index].top, scale: 1 }}
+          initial={{ opacity: 0, x: '-100vw', y: cardPositions[index].top, scale: 0.5 }}
           animate={{
             opacity: 1,
             x: cardPositions[index].left,
@@ -114,18 +113,19 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
             opacity: 0,
             x: cardPositions[index].left,
             y: cardPositions[index].top,
-            scale: 0.1,
+            scale: 0.5,
             zIndex: 1,
             transition: { duration: 0.5, delay: index * 0.1, ease: 'easeOut' }
           }}
-          style={cardPositions[index]}
+          style={{
+            position: 'absolute',
+            left: cardPositions[index].left,
+            top: cardPositions[index].top,
+            transform: `${cardPositions[index].transform || 'translate(-50%, -50%)'} ${hoveredCard === index ? 'scale(1.75)' : 'scale(1)'}`,
+            transition: 'transform 0.3s ease',
+          }}
           onMouseEnter={() => handleMouseEnter(index)}
           onMouseLeave={handleMouseLeave}
-          whileHover={{
-            scale: 1.1,
-            zIndex: 9999,
-            transition: { duration: 0.2 }
-          }}
         >
           <div className="card-inner">
             <div className="card-front">

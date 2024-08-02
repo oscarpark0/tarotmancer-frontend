@@ -113,6 +113,10 @@
         font-size: 0.6rem; /* Adjusted font size for mobile */
         white-space: nowrap; /* Ensure text is in a single line */
     }
+
+    .hideOnMobile {
+        display: none;
+    }
 }
 
 .dark-mode .footer {

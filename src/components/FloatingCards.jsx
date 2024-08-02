@@ -36,7 +36,6 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
         { top: topOffset, left: `calc(${baseLeft} + ${threeCardSpacing} + 2vw)`, transform: `translate(-50%, -50%) scale(${baseScale})` },
       ];
     } else {
-      // Celtic Cross Spread
       const crossCardScale = baseScale * 0.9;
       const celticBaseScale = isMobile ? baseScale * 0.9 : baseScale;
       const verticalSpacing = isMobile ? '12vh' : '8vh';

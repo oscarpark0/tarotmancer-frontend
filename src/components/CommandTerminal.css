@@ -39,6 +39,16 @@
     max-height: calc(100vh - var(--robot-height) - 60px);
     overflow-y: auto;
   }
+
+  .terminal-card-reveal {
+    display: block; /* Show cards on mobile */
+  }
+}
+
+@media (min-width: 769px) {
+  .terminal-card-reveal {
+    display: none; /* Hide cards on desktop */
+  }
 }
 
 .terminal-screen {
@@ -48,6 +58,8 @@
   border-radius: 10px 10px 0 0;
   overflow: hidden;
   position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: #444 #0a0a0a;
 }
 
 .terminal-content {
@@ -387,4 +399,14 @@
   100% {
     opacity: 1;
   }
+}
+
+.error-message {
+  color: #ff3333; /* Red color for error messages */
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid #ff3333;
+  background-color: rgba(255, 51, 51, 0.1);
+  border-radius: 3px;
 }

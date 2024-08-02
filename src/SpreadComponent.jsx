@@ -62,7 +62,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     try {
       const token = await getToken();
       const origin = window.location.origin;
-      const newDrawId = Date.now(); // Generate a new draw ID
+      const newDrawId = Date.now(); //new draw ID
 
       const headers = {
         'Content-Type': 'application/json',

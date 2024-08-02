@@ -10,35 +10,6 @@ import { formatResponse } from '../utils/textFormatting';
 import { useTranslation } from '../utils/translations';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const adjustFontSize = () => {
-  const monitorOutputElement = document.querySelector('.monitor-output');
-  const screenContentElement = document.querySelector('.screen-content');
-
-  if (monitorOutputElement && screenContentElement) {
-    const screenHeight = screenContentElement.offsetHeight;
-    const outputHeight = monitorOutputElement.scrollHeight;
-
-    if (outputHeight > screenHeight) {
-      let fontSize = 240;
-      let step = 5;
-      
-      while (outputHeight > screenHeight && fontSize > 20) {
-        fontSize -= step;
-        monitorOutputElement.style.fontSize = `${fontSize}px`;
-        if (monitorOutputElement.scrollHeight < screenHeight) {
-          fontSize += step;
-          step = Math.max(1, step / 2);
-        }
-      }
-      
-      monitorOutputElement.style.fontSize = `${fontSize}px`;
-    }
-  }
-};
-
-const debouncedAdjustFontSize = debounce(adjustFontSize, 100);
-
-
 const Robot = memo((props) => {
   const { selectedLanguage } = useLanguage(); 
   const { getTranslation } = useTranslation(); 
@@ -60,6 +31,7 @@ const Robot = memo((props) => {
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
   const screenContentRef = useRef(null);
+  const monitorOutputRef = useRef(null);
   const commandTerminalRef = useRef(null);
   const [responses, setResponses] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
@@ -81,6 +53,17 @@ const Robot = memo((props) => {
       setLocalCanDraw(false);
     }
   }, [drawSpread, localCanDraw]);
+
+  const completeCurrentResponse = useCallback(() => {
+    setResponses(prevResponses => {
+      if (prevResponses.length > 0) {
+        const updatedResponses = [...prevResponses];
+        updatedResponses[updatedResponses.length - 1].complete = true;
+        return updatedResponses;
+      }
+      return prevResponses;
+    });
+  }, []);
 
   const handleResponseComplete = useCallback(() => {
     onResponseComplete();
@@ -121,16 +104,7 @@ const Robot = memo((props) => {
     }
   }, [onNewResponse, onStreamingStateChange]);
 
-  const completeCurrentResponse = useCallback(() => {
-    setResponses(prevResponses => {
-      if (prevResponses.length > 0) {
-        const updatedResponses = [...prevResponses];
-        updatedResponses[updatedResponses.length - 1].complete = true;
-        return updatedResponses;
-      }
-      return prevResponses;
-    });
-  }, []);
+
 
   const handleDealingComplete = useCallback(() => {
     if (typeof dealingComplete === 'function') {
@@ -142,7 +116,7 @@ const Robot = memo((props) => {
     if (dealingComplete) {
       completeCurrentResponse();
     }
-  }, [dealingComplete, completeCurrentResponse]); // Remove dealCards if not needed
+  }, [dealingComplete, completeCurrentResponse]); 
 
   useEffect(() => {
     if (dealCards) {
@@ -163,9 +137,40 @@ const Robot = memo((props) => {
     }
   }, []);
 
+  const adjustFontSize = useCallback(() => {
+    const monitorOutputElement = monitorOutputRef.current;
+    const screenContentElement = screenContentRef.current;
+
+    if (monitorOutputElement && screenContentElement) {
+      const screenHeight = screenContentElement.offsetHeight;
+      const outputHeight = monitorOutputElement.scrollHeight;
+
+      if (outputHeight > screenHeight) {
+        let fontSize = 240;
+        let step = 5;
+        
+        while (outputHeight > screenHeight && fontSize > 20) {
+          fontSize -= step;
+          monitorOutputElement.style.fontSize = `${fontSize}px`;
+          if (monitorOutputElement.scrollHeight < screenHeight) {
+            fontSize += step;
+            step = Math.max(1, step / 2);
+          }
+        }
+        
+        monitorOutputElement.style.fontSize = `${fontSize}px`;
+      }
+    }
+  }, []);
+
+  const debouncedAdjustFontSize = useMemo(
+    () => debounce(adjustFontSize, 100),
+    [adjustFontSize]
+  );
+
   useEffect(() => {
     const handleResize = () => {
-      if (commandTerminalRef.current) {
+      if (monitorOutputRef.current) {
         debouncedAdjustFontSize();
       }
     };
@@ -173,17 +178,18 @@ const Robot = memo((props) => {
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
+      debouncedAdjustFontSize.cancel();
     };
-  }, []);
+  }, [debouncedAdjustFontSize]);
+
+  useLayoutEffect(() => {
+    adjustFontSize();
+  }, [monitorOutput, adjustFontSize]);
 
   const handleMonitorOutput = useCallback((output) => {
     setMonitorOutput(output);
     props.onMonitorOutput(output); // Destructure props to avoid using props directly
   }, [props]);
-
-  useLayoutEffect(() => {
-    adjustFontSize();
-  }, [monitorOutput]);
 
   useEffect(() => {
     if (dealingComplete && mostCommonCards) {
@@ -309,7 +315,7 @@ const Robot = memo((props) => {
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
               />
-              <div className="monitor-output">
+              <div className="monitor-output" ref={monitorOutputRef}>
                 {monitorOutput}
               </div>
               <div className="screen-overlay"></div>

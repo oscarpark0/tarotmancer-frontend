@@ -304,7 +304,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             {memoizedRobot}
           </div>
-          {positions.length > 0 && !isMobile && (
+          {positions.length > 0 && (
             <div className="relative z-10 w-full flex flex-col items-center">
             <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
               <section className="relative z-10 mb-16 w-full">

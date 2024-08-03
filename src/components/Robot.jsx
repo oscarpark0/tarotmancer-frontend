@@ -43,16 +43,19 @@ const Robot = memo((props) => {
     setLocalCanDraw(canDraw);
   }, [canDraw]);
 
-  useEffect(() => {
-  }, [canDraw]);
-
+  const debouncedDrawSpread = useMemo(
+    () => debounce(() => {
+      if (localCanDraw) {
+        drawSpread();
+        setLocalCanDraw(false);
+      }
+    }, 300),
+    [drawSpread, localCanDraw]
+  );
 
   const handleDrawSpread = useCallback(() => {
-    if (localCanDraw) {
-      drawSpread();
-      setLocalCanDraw(false);
-    }
-  }, [drawSpread, localCanDraw]);
+    debouncedDrawSpread();
+  }, [debouncedDrawSpread]);
 
   const completeCurrentResponse = useCallback(() => {
     setResponses(prevResponses => {
@@ -217,6 +220,7 @@ const Robot = memo((props) => {
   }, [isStreaming]);
 
   useEffect(() => {
+    console.log('Robot: currentDrawId changed:', currentDrawId);
   }, [currentDrawId]);
 
   // Add this effect to force re-render when language changes
@@ -280,8 +284,6 @@ const Robot = memo((props) => {
       user={user} 
     />
   ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, userId, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount, setRemainingDrawsToday, user]);
-
-  console.log('Robot: Passing currentDrawId to CommandTerminal:', currentDrawId);
 
   return (
     <motion.div

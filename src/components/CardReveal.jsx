@@ -11,16 +11,16 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
   const cardPositions = useMemo(() => {
     const containerWidth = window.innerWidth;
     const isMobile = containerWidth <= 768;
-    
-    const baseScale = isMobile ? 1 : 1; // Adjust this value for better scaling
-    const baseLeft = isMobile ? '50%' : '40%'; 
-    const topOffset = isMobile ? '30%' : '50%'; 
-    
-    // New horizontal spacing variables
-    const threeCardHorizontalSpacing = isMobile ? '25vw' : '8vw';
-    const celticCrossHorizontalSpacing = isMobile ? '9vw' : '5vw';
-    const celticStackHorizontalSpacing = isMobile ? '22vw' : '12vw';
-    
+
+    const baseScale = isMobile ? 0.8 : 1; // Adjust scale for mobile
+    const baseLeft = isMobile ? '50%' : '40%';
+    const topOffset = isMobile ? '15%' : '50%'; // Adjust top offset for mobile
+
+    // Adjust spacing for mobile
+    const threeCardHorizontalSpacing = isMobile ? '20vw' : '8vw';
+    const celticCrossHorizontalSpacing = isMobile ? '7vw' : '5vw';
+    const celticStackHorizontalSpacing = isMobile ? '18vw' : '12vw';
+
     if (cards.length === 3) {
       // Three Card Spread
       return [
@@ -33,7 +33,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
       const crossCardScale = baseScale * 0.9;
       const celticBaseLeft = isMobile ? '30%' : baseLeft;
       const verticalSpacing = isMobile ? '5.9vh' : '9.5vh';
-      
+
       return [
         { top: topOffset, left: celticBaseLeft, zIndex: 10 },
         { top: topOffset, left: celticBaseLeft, transform: `rotate(90deg) scale(${crossCardScale * 0.7})`, zIndex: 12 },
@@ -121,7 +121,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
             position: 'absolute',
             left: cardPositions[index].left,
             top: cardPositions[index].top,
-            transform: `${cardPositions[index].transform || 'translate(-50%, -50%)'} ${hoveredCard === index ? 'scale(1.75)' : 'scale(1)'}`,
+            transform: `${cardPositions[index].transform || 'translate(-50%, -50%)'}`,
             transition: 'transform 0.3s ease',
           }}
           onMouseEnter={() => handleMouseEnter(index)}
@@ -154,7 +154,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.2, ease: "easeOut" }}
               >
-                <motion.h3 
+                <motion.h3
                   className="tooltip-title"
                   initial={{ y: -5, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -162,7 +162,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                 >
                   {card.name}
                 </motion.h3>
-                <motion.p 
+                <motion.p
                   className="tooltip-position"
                   initial={{ y: -5, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -170,7 +170,7 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
                 >
                   {card.position}
                 </motion.p>
-                <motion.p 
+                <motion.p
                   className="tooltip-content"
                   initial={{ y: -5, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}

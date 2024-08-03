@@ -15,7 +15,6 @@ initializeTranslations().then(() => {
       redirectUri={process.env.REACT_APP_KINDE_REDIRECT_URI}
       logoutUri={process.env.REACT_APP_KINDE_LOGOUT_URI}
       onRedirectCallback={(user) => {
-        console.log('Kinde redirect callback - user:', user);
       }}
       // Add any additional options for session persistence if available
     >

@@ -36,15 +36,23 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
     return fullUrl.replace('https://ik.imagekit.io/tarotmancer/', '');
   };
 
-  console.log("Spread props:", { spread, title });
+  // Sort the spread based on a predefined order
+  const sortedSpread = [...spread].sort((a, b) => {
+    const order = [
+      "The Situation", "The Challenge", "The Foundation", "The Past",
+      "The Present", "The Future", "Yourself", "External Influences",
+      "Hopes and Fears", "The Outcome"
+    ];
+    return order.indexOf(a.position_name) - order.indexOf(b.position_name);
+  });
 
   return (
     <div className={styles.spreadContainer}>
       <h4>{getTranslation(title as 'celticCrossSpread' | 'threeCardSpread')}</h4>
       <div className={`${styles.spreadCards} ${isThreeCardSpread ? styles.threeCardSpread : styles.celticCrossSpread}`}>
-        {spread.map((position, index) => (
+        {sortedSpread.map((position, index) => (
           <div 
-            key={index} 
+            key={`${position.position_name}-${index}`}
             className={`${styles.spreadCard} ${styles[`position${index}`]}`}
           >
             <IKImage 
@@ -106,7 +114,6 @@ const DailyFrequenciesPage: React.FC = () => {
       setFrequencies(frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency));
       setCelticSpread([...spreadsResponse.data.celtic_spread]); // Ensure state update
       setThreeCardSpread([...spreadsResponse.data.three_card_spread]); // Ensure state update
-      console.log("Three Card Spread:", spreadsResponse.data.three_card_spread);
     } catch (err) {
       console.error('Failed to fetch data:', err);
       setError('Failed to fetch data. Please try again later.');

@@ -14,7 +14,6 @@ const Footer: React.FC<FooterProps> = ({ isDarkMode }) => {
   const { selectedLanguage } = useLanguage();
 
   useEffect(() => {
-    console.log('Component language updated:', selectedLanguage);
   }, [selectedLanguage]);
 
   return (

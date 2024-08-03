@@ -164,7 +164,7 @@
   position: absolute;
   background-color: rgba(78, 79, 117, 0.61);
   color: #1e559c;
-  padding: 40px -50px;
+  padding: 10px -80px;
   border-radius: 12px;
   border: 10px ridge #000000;
   font-size: 2.95rem;
@@ -185,7 +185,7 @@
 }
 
 .card-tooltip.bottom {
-  top: calc(100% + 15px);
+  top: calc(100% -2px 15px);
   left: 50%;
   transform: translateX(-50%);
 }
@@ -236,7 +236,7 @@
 .tooltip-title {
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 11px;
   color: #fbbf24;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   letter-spacing: 0.5px;
@@ -252,7 +252,7 @@
 
 .tooltip-content {
   font-size: 0.95rem;
-  line-height: 1.6;
+  line-height: 1;
   color: #e2e8f0;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }

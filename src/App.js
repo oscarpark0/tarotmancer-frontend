@@ -54,7 +54,6 @@ function KindeCallbackHandler() {
 
 function AppContent({ isAuthenticated }) {
   const { user, getToken } = useKindeAuth();
-  console.log('AppContent - isAuthenticated:', isAuthenticated);
   const { getTranslation } = useTranslation(); 
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const isMobileScreen = useMediaQuery({ maxWidth: 767 });
@@ -175,10 +174,8 @@ function AppContent({ isAuthenticated }) {
   }, [getToken, user]);
 
   const checkCanDraw = useCallback(async () => {
-    console.log('App.js - checkCanDraw called');
     const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');
     if (data) {
-      console.log('App.js - can_draw data received:', data);
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
       setDrawCount(10 - data.remaining_draws);
@@ -213,7 +210,6 @@ function AppContent({ isAuthenticated }) {
   }, [makeAuthenticatedRequest]);
 
   useEffect(() => {
-    console.log('App.js - Checking can draw. isAuthenticated:', isAuthenticated);
     if (isAuthenticated) {
       checkCanDraw();
     }
@@ -231,12 +227,6 @@ function AppContent({ isAuthenticated }) {
     }
   }, [isAuthenticated, fetchUserDraws]);
 
-  useEffect(() => {
-    console.log('AppContent - Authentication status changed:', isAuthenticated, 'user:', user);
-    if (!isAuthenticated) {
-      console.log('AppContent - User was logged out');
-    }
-  }, [isAuthenticated, user]);
 
   useEffect(() => {
     if (isAuthenticated) {

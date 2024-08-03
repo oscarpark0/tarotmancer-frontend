@@ -22,10 +22,13 @@
   .command-terminal {
     position: fixed; /* Change to fixed positioning on mobile */
     left: 0;
+    width: 100vw; /* Change to 100vw */
+    max-width: 100%; /* Add this line */
+    padding-right: 15px; /* Add some padding to account for scrollbar */
+    box-sizing: border-box; /* Add this line */
     right: 0; /* Ensure it spans the full width */
     bottom: 60px; /* Adjust this value to match the height of your footer */
     transform: none;
-    width: 100%;
     height: calc(20vh - 60px);
     max-height: calc(100vh - 60px - var(--robot-height));
     margin-top: 0;
@@ -60,6 +63,50 @@
   position: relative;
   scrollbar-width: thin;
   scrollbar-color: #444 #0a0a0a;
+  transition: height 0.3s ease;
+  height: 150px; /* Default height */
+}
+
+.terminal-screen.expanded {
+  height: 550px; /* Expanded height */
+}
+
+@media (max-width: 768px) {
+  .terminal-screen {
+    height: 200px; /* Smaller default height for mobile */
+  }
+
+  .terminal-screen.expanded {
+    height: 400px; /* Smaller expanded height for mobile */
+  }
+}
+
+.ct-expand-button-container {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  z-index: 20;
+}
+
+.ct.expand-button {
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid #33ff33;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #33ff33;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+  transition: all 0.3s ease;
+}
+
+.ct.expand-button:hover {
+  background-color: rgba(51, 255, 51, 0.3);
+  transform: scale(1.1);
 }
 
 .terminal-content {
@@ -72,6 +119,7 @@
   overflow-y: auto;
   padding: 10px;
   min-height: 100px; /* Add this line to ensure minimum height */
+  transition: height 1.25s ease;
 }
 
 .terminal-card-reveal-container {
@@ -120,6 +168,11 @@
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - var(--robot-height) - 60px);
+    height: 200px; /* Smaller default height for mobile */
+  }
+
+  .terminal-screen.expanded {
+    height: 400px; /* Smaller expanded height for mobile */
   }
 
   .terminal-content {

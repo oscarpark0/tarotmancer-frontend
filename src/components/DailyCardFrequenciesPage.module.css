@@ -81,12 +81,13 @@
   padding: 1rem;
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
   background-color: rgba(26, 26, 46, 0.8);
+  margin-bottom: 2rem;
 }
 
 .spreadContainer h3 {
   color: #ffd700;
   font-size: 1.4rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   text-align: center;
 }
 
@@ -94,7 +95,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  margin: 2rem auto;
+  margin: 1rem auto;
 }
 
 .spreadCard {
@@ -161,9 +162,17 @@
 }
 
 /* Three Card Spread Positioning */
+.threeCardSpread {
+  aspect-ratio: auto;
+  height: 300px;
+  margin: 1rem auto;
+}
+
 .threeCardSpread .spreadCard {
   top: 50%;
   transform: translateY(-50%);
+  width: 22%;
+  max-width: 100px;
   transition: transform 0.3s ease, z-index 0.3s ease;
 }
 
@@ -172,9 +181,24 @@
   z-index: 10;
 }
 
-.threeCardSpread .position0 { left: 20%; }
+.threeCardSpread .position0 { left: 15%; }
 .threeCardSpread .position1 { left: 50%; transform: translate(-50%, -50%); }
-.threeCardSpread .position2 { right: 20%; }
+.threeCardSpread .position2 { right: 15%; }
+
+/* Adjust mobile positioning for Three Card Spread */
+@media (max-width: 768px) {
+  .threeCardSpread {
+    height: 150px;
+  }
+
+  .threeCardSpread .spreadCard {
+    width: 25%;
+    max-width: 80px;
+  }
+
+  .threeCardSpread .position0 { left: 10%; }
+  .threeCardSpread .position2 { right: 10%; }
+}
 
 /* Celtic Cross Spread Positioning */
 .celticCrossSpread .position0 { 

@@ -60,7 +60,6 @@ export const buttonTranslations: Partial<Record<Language, Partial<Record<Transla
 export const loadTranslations = async (language: Language) => {
   try {
     const module = await import(`./translations/${language}.json`);
-    console.log(`Loaded translations for ${language}:`, module.default);
     buttonTranslations[language] = module.default as Record<TranslationKey, string>;
   } catch (error) {
     console.error(`Failed to load translations for ${language}:`, error);

@@ -219,7 +219,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
                 setTimeout(() => updateCardPosition(card.id), 10000 + getRandomValue(0, 100));
               }
             }}
-            style={{ transformStyle: 'preserve-3d', transformOrigin: 'center', perspective: '1000px' }}
+            style={{ transformStyle: 'preserve-3d', transformOrigin: 'center', perspective: '10px' }}
             onLayoutEffect={() => lazyLoadImage(card.tarotCard)}
           >
             <MemoizedMotionImage

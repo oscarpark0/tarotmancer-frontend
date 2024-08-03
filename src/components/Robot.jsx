@@ -26,8 +26,6 @@ const Robot = memo((props) => {
     setDrawCount,
     setRemainingDrawsToday,
     userId,
-    isRobotExpanded, // Added isRobotExpanded prop
-    onToggleRobotExpand, // Added onToggleRobotExpand prop
   } = props; // Destructure props
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -40,6 +38,8 @@ const Robot = memo((props) => {
   const robotRef = useRef(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [localCanDraw, setLocalCanDraw] = useState(canDraw);
+  const [isExpanded, setIsExpanded] = useState(false); // Added isExpanded state
+  const robotBodyRef = useRef(null); // Added robotBodyRef
 
   useEffect(() => {
     setLocalCanDraw(canDraw);
@@ -222,7 +222,6 @@ const Robot = memo((props) => {
   }, [isStreaming]);
 
   useEffect(() => {
-    console.log('Robot: currentDrawId changed:', currentDrawId);
   }, [currentDrawId]);
 
   // Add this effect to force re-render when language changes
@@ -231,15 +230,18 @@ const Robot = memo((props) => {
   }, [selectedLanguage]);
 
   useEffect(() => {
-    console.log('Robot.jsx - remainingDrawsToday:', props.remainingDrawsToday);
   }, [props.remainingDrawsToday]);
 
   useEffect(() => {
     if (user) {
-      console.log(`User logged in: ${user.name}`);
       // You could also use this to set some user-specific state or trigger some user-specific logic
     }
   }, [user]);
+
+  const toggleExpand = useCallback(() => {
+    setIsExpanded((prevState) => !prevState);
+    console.log('Robot: toggleExpand called, new state:', !isExpanded);
+  }, [isExpanded]);
 
   const memoizedCommandTerminal = useMemo(() => (
     <CommandTerminal
@@ -289,7 +291,8 @@ const Robot = memo((props) => {
 
   return (
     <motion.div
-      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''} ${user ? 'user-logged-in' : ''} ${isRobotExpanded ? 'expanded' : ''}`}
+      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''} ${user ? 'user-logged-in' : ''} ${isExpanded ? 'expanded' : ''}`}
+      ref={robotRef}
       style={{
         position: 'absolute',
         top: 0,
@@ -302,7 +305,7 @@ const Robot = memo((props) => {
         zIndex: 1001,
       }}
     >
-      <div ref={robotRef} className="robot-body">
+      <div ref={robotBodyRef} className={`robot-body ${isExpanded ? 'expanded' : ''}`}>
         <div className="tarotmancer-text">{getTranslation('tarotmancer')}</div>
         <div className="robot-head">
           <div className="crt-screen">
@@ -319,7 +322,7 @@ const Robot = memo((props) => {
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
               />
-              <div className="monitor-output" ref={monitorOutputRef}>
+              <div ref={monitorOutputRef} className="monitor-output">
                 {monitorOutput}
               </div>
               <div className="screen-overlay"></div>
@@ -329,13 +332,15 @@ const Robot = memo((props) => {
             </div>
           </div>
         </div>
-      </div>
-
-      {isMobile && (
-        <button className="expand-button" onClick={onToggleRobotExpand}>
-          {isRobotExpanded ? getTranslation('collapse') : getTranslation('expand')}
+        
+        {/* Expand button */}
+        <button 
+          className="expand-button" 
+          onClick={toggleExpand}
+        >
+          {isExpanded ? '▲' : '▼'}
         </button>
-      )}
+      </div>
 
       {memoizedCommandTerminal}
     </motion.div>

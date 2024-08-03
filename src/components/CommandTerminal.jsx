@@ -45,6 +45,11 @@ const CommandTerminal = forwardRef(({
   const { getTranslation } = useTranslation();
   const [isDrawing, setIsDrawing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = useCallback(() => {
+    setIsExpanded((prevState) => !prevState);
+  }, [isExpanded]);
 
   useEffect(() => {
     if (cards.length > 0 && dealingComplete) {
@@ -91,7 +96,6 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-      console.log('CommandTerminal: Calling getMistralResponse with currentDrawId:', currentDrawId);
       await getMistralResponse(message, onNewResponse, (fullResponse, error) => {
         if (error) {
           console.error('Error storing Mistral response:', error);
@@ -167,7 +171,6 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
   };
 
   useEffect(() => {
-    console.log('CommandTerminal.jsx - drawCount:', drawCount);
   }, [drawCount]);
 
   useEffect(() => {
@@ -178,17 +181,27 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
 
   return (
     <div className={`command-terminal ${isMobile ? 'mobile' : ''}`} ref={ref}>
-      <div className="terminal-screen">
+      <div className={`terminal-screen ${isExpanded ? 'expanded' : ''}`}>
+        <div className="ct-expand-button-container">
+          <button 
+            className="ct-expand-button" 
+            onClick={toggleExpand}
+          >
+            {isExpanded ? '▲' : '▼'}
+          </button>
+        </div>
         <div className="terminal-content">
           {isMobile && showCards && (
-            <CardReveal
-              cards={cards}
-              revealCards={revealCards}
-              dealingComplete={dealingComplete}
-              shouldDrawNewSpread={shouldDrawNewSpread}
-              isMobile={isMobile}
-              className={`terminal-card-reveal ${isMobile ? 'mobile' : ''}`}
-            />
+            <div className="terminal-card-reveal-container">
+              <CardReveal
+                cards={cards}
+                revealCards={revealCards}
+                dealingComplete={dealingComplete}
+                shouldDrawNewSpread={shouldDrawNewSpread}
+                isMobile={isMobile}
+                className={`terminal-card-reveal ${isMobile ? 'mobile' : ''}`}
+              />
+            </div>
           )}
           <div className="terminal-output" ref={terminalOutputRef}>
             {errorMessage ? (

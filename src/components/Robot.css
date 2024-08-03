@@ -11,6 +11,9 @@
 @media (max-width: 768px) {
   .robot-container {
     left: 0;
+    width: 105vw; 
+    max-width: 100%;
+    box-sizing: border-box;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -26,23 +29,11 @@
     height: 80vh;
   }
 
-  .expand-button {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #33ff33;
-    border: 1px solid #33ff33;
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    z-index: 1002;
-  }
+
 
   .robot-body {
     width: 100%;
-    height: 100%;
+    box-sizing: border-box; /* Add this line */
   }
 }
 
@@ -74,6 +65,8 @@ background-blend-mode: multiply;
   z-index: 1100;
   margin-top: 0;
   margin-bottom: 0; /* Remove bottom margin */
+  transition: height 0.3s ease;
+  position: relative; /* Add this line */
 }
 
 
@@ -84,7 +77,13 @@ background-blend-mode: multiply;
     transform: none;
     position: relative; /* Add this line */
     z-index: 1100; /* Add this line */
+    padding: 15px; /* Increase from 10px */
+    padding-bottom: 50px; /* Add space for the button */
   }
+}
+
+.robot-body.expanded {
+  height: 70vh;
 }
 
 .robot-head {
@@ -159,6 +158,12 @@ background-blend-mode: multiply;
   text-shadow: 
   0 0 5px rgba(4, 22, 5, 0.877),
   0 0 10px rgba(0, 255, 13, 0.5);
+  height: 440px;
+  transition: height 0.3s ease;
+}
+
+.monitor-output.expanded {
+  height: 640px;
 }
 
 .monitor-output h1, .monitor-output h2, .monitor-output h3, .monitor-output h4, .monitor-output h5, .monitor-output h6 {
@@ -269,5 +274,37 @@ background-blend-mode: multiply;
 
   .floating-cards {
     transform: scale(0.8);
+  }
+}
+
+.expand-button {
+  position: absolute;
+  right: 20px;
+  bottom: 15px;
+  width: 20px;
+  height: 20px; 
+  cursor: pointer;
+  font-size: 1.2rem; 
+  color: #33ff33;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.3s ease, background-color 0.3s ease; 
+  z-index: 1002;
+}
+
+.expand-button:hover {
+  background-color: rgba(206, 32, 32, 0.3); /* Darker background on hover for emphasis */
+  transform: scale(1.1); /* Slightly scale up on hover for a dynamic effect */
+}
+
+
+@media (max-width: 768px) {
+  .expand-button {
+    width: 50px;
+    height: 50px;
+    font-size: 2rem;
+    right: 15px;
+    bottom: 15px;
   }
 }

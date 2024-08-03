@@ -1,6 +1,5 @@
 .app-header {
   background-color: #282c34;
-  padding: 10px;
   color: rgb(0, 0, 0);
   z-index: 10200; 
   width: 100%;
@@ -73,7 +72,6 @@
   .header-content {
     flex-wrap: nowrap;
     justify-content: space-between;
-    padding: 0 5px; /* Further reduced padding for mobile */
   }
 
   .app-title-link {
@@ -180,7 +178,6 @@
 }
 
 .app-main {
-  padding: 2rem;
   background-color: transparent;
 }
 

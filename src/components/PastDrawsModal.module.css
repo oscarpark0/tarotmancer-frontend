@@ -212,7 +212,7 @@
     0 0 0 6px #222,
     0 0 15px 8px rgba(0, 0, 0, 0.5),
     inset 0 0 100px rgba(0, 0, 0, 0.5);
-  transition: height 0.3s ease;
+  transition: height 1.25s ease;
 }
 
 .robotMonitor.expanded {
@@ -227,11 +227,11 @@
 }
 
 .expandButton {
-  background-color: rgba(255, 215, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0);
   border: 1px solid #ffd700;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   font-size: 1.2rem;
   color: #ffd700;
@@ -239,7 +239,7 @@
   justify-content: center;
   align-items: center;
   box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-  transition: all 0.3s ease;
+  transition: all 4s ease;
 }
 
 .expandButton:hover {

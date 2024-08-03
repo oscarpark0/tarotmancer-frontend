@@ -122,7 +122,7 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
     <div className={styles.modalOverlay}>
       <div className={styles.modalContent}>
         <button className={styles.closeButton} onClick={onClose}>
-          <span className={styles.closeButtonIcon}>✶</span>
+          <span className={styles.closeButtonIcon}>✕</span>
         </button>
         <h2 className={styles.modalTitle}>{getTranslation('pastDraws')}</h2>
         {selectedDraw ? (
@@ -132,29 +132,31 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
                 onClick={() => setSelectedDraw(null)} 
                 className={styles.backButton}
               >
-                <span className={styles.buttonIcon}>☽</span> {getTranslation('backToList')}
+                <span className={styles.buttonIcon}>←</span> {getTranslation('backToList')}
               </button>
               <button 
                 onClick={() => handleRemoveClick(selectedDraw.id)} 
                 className={styles.removeButton}
               >
-                <span className={styles.buttonIcon}>✧</span> {getTranslation('removeDraw')}
+                <span className={styles.buttonIcon}>✖</span> {getTranslation('removeDraw')}
               </button>
             </div>
             <h3 className={styles.drawInfo}>{selectedDraw.spread_type} - {new Date(selectedDraw.created_at).toLocaleString()}</h3>
-            <div className={styles.robotMonitor}>
+            <div className={`${styles.robotMonitor} ${isExpanded ? styles.expanded : ''}`}>
               <div className={styles.expandButtonContainer}>
-                <button className={styles.expandButton} onClick={toggleExpand}>↕</button>
+                <button className={styles.expandButton} onClick={toggleExpand}>
+                  {isExpanded ? '▲' : '▼'}
+                </button>
               </div>
-              <div className={`${styles.screenContent} ${isExpanded ? styles.expanded : ''}`}>
+              <div className={styles.screenContent}>
                 {selectedDraw.response ? (
                   <p className={styles.responseText}>{selectedDraw.response}</p>
                 ) : (
                   <p className={styles.noResponse}>{getTranslation('noResponseAvailable')}</p>
                 )}
-                <div className={styles.screenOverlay}></div>
-                <div className={styles.screenScanlines}></div>
               </div>
+              <div className={styles.screenOverlay}></div>
+              <div className={styles.screenScanlines}></div>
             </div>
           </div>
         ) : (
@@ -162,13 +164,13 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
             {draws.map((draw) => (
               <li key={draw.id} className={styles.drawItem}>
                 <span onClick={() => setSelectedDraw(draw)} className={styles.drawInfo}>
-                  <span className={styles.drawIcon}>✧</span> {draw.spread_type} - {new Date(draw.created_at).toLocaleString()}
+                  <span className={styles.drawIcon}>☆</span> {draw.spread_type} - {new Date(draw.created_at).toLocaleString()}
                 </span>
                 <button 
                   onClick={() => handleRemoveClick(draw.id)} 
                   className={styles.removeButton}
                 >
-                  <span className={styles.buttonIcon}>✧</span> {getTranslation('removeDraw')}
+                  <span className={styles.buttonIcon}>✖</span>
                 </button>
               </li>
             ))}

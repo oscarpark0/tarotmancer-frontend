@@ -33,6 +33,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const [isStreaming, setIsStreaming] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
+  const [isRobotExpanded, setIsRobotExpanded] = useState(false);
 
   const handleRevealCards = useCallback(() => {
     setRevealedCards(prevCards => cards.length);
@@ -188,6 +189,10 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     setAnimationStarted(true);
   }, []);
 
+  const handleToggleRobotExpand = useCallback(() => {
+    setIsRobotExpanded(prev => !prev);
+  }, []);
+
   // Add this effect to force re-render when language changes
   useEffect(() => {
     // This empty dependency array ensures the effect runs when selectedLanguage changes
@@ -240,8 +245,10 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       drawCount={drawCount}
       setDrawCount={setDrawCount}
       userId={user ? user.id : null}
+      isRobotExpanded={isRobotExpanded}
+      onToggleRobotExpand={handleToggleRobotExpand}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, user, remainingDrawsToday, setRemainingDrawsToday, onDrawComplete, drawCount, setDrawCount]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, fetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, user, remainingDrawsToday, setRemainingDrawsToday, onDrawComplete, drawCount, setDrawCount, isRobotExpanded, handleToggleRobotExpand]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards

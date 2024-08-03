@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './HowItWorks.css';
 
 const ProcessStep: React.FC<{ number: number; title: string; children: React.ReactNode }> = ({ number, title, children }) => (
@@ -9,8 +10,16 @@ const ProcessStep: React.FC<{ number: number; title: string; children: React.Rea
 );
 
 const HowItWorks: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
   return (
     <div className="howItWorksContainer">
+      <button className="backButton" onClick={handleBack}>Back to Home</button>
+      
       <h1 className="title">tarotmancer: How It Works</h1>
       
       <p className="intro">tarotmancer doesn't just draw cards at random for your reading. Instead, it simulates thousands of tarot readings to provide you with a statistically significant and meaningful spread.</p>

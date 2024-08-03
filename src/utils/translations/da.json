@@ -46,5 +46,6 @@
     "checkNetworkAndTryAgain": "Tjek din netværksforbindelse og prøv igen",
     "remaining": "Resterende",
     "remainingDrawsToday": "Resterende trækninger i dag",
-    "noDrawsLeft": "Ingen trækninger tilbage"
+    "noDrawsLeft": "Ingen trækninger tilbage",
+    "backToHome": "Tilbage til Forsiden"
 }

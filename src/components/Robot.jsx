@@ -25,7 +25,9 @@ const Robot = memo((props) => {
     drawCount,
     setDrawCount,
     setRemainingDrawsToday,
-    userId, // Add userId prop
+    userId,
+    isRobotExpanded, // Added isRobotExpanded prop
+    onToggleRobotExpand, // Added onToggleRobotExpand prop
   } = props; // Destructure props
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -287,7 +289,7 @@ const Robot = memo((props) => {
 
   return (
     <motion.div
-      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''} ${user ? 'user-logged-in' : ''}`}
+      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''} ${user ? 'user-logged-in' : ''} ${isRobotExpanded ? 'expanded' : ''}`}
       style={{
         position: 'absolute',
         top: 0,
@@ -328,6 +330,12 @@ const Robot = memo((props) => {
           </div>
         </div>
       </div>
+
+      {isMobile && (
+        <button className="expand-button" onClick={onToggleRobotExpand}>
+          {isRobotExpanded ? getTranslation('collapse') : getTranslation('expand')}
+        </button>
+      )}
 
       {memoizedCommandTerminal}
     </motion.div>
@@ -371,6 +379,8 @@ Robot.propTypes = {
   setDrawCount: PropTypes.func.isRequired, // Add setDrawCount prop type
   setRemainingDrawsToday: PropTypes.func.isRequired, // Add setRemainingDrawsToday prop type
   userId: PropTypes.string, // Add userId prop type
+  isRobotExpanded: PropTypes.bool.isRequired, // Added isRobotExpanded prop type
+  onToggleRobotExpand: PropTypes.func.isRequired, // Added onToggleRobotExpand prop type
 };
 
 export default Robot;

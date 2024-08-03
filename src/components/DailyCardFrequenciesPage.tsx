@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import DailyCardFrequencies from './DailyCardFrequencies';
@@ -69,6 +70,7 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
 };
 
 const DailyFrequenciesPage: React.FC = () => {
+  const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [celticSpread, setCelticSpread] = useState<PositionInfo[]>([]);
   const [threeCardSpread, setThreeCardSpread] = useState<PositionInfo[]>([]);
@@ -121,8 +123,15 @@ const DailyFrequenciesPage: React.FC = () => {
     setSelectedDate(e.target.value);
   };
 
+  const handleBack = () => {
+    navigate('/');
+  };
+
   return (
     <div className={styles.dailyFrequenciesPage}>
+      <button className={styles.backButton} onClick={handleBack}>
+        <span className={styles.backButtonIcon}>☽</span> {getTranslation('backToHome')}
+      </button>
       <header className={styles.pageHeader}>
         <h1>{getTranslation('dailyTarotCardFrequencies')}</h1>
         <p>

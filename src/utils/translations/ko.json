@@ -34,6 +34,7 @@
     "logoutUnavailable": "로그아웃을 사용할 수 없습니다",
     "logout": "로그아웃",
     "backToList": "목록으로 돌아가기",
+    "backToHome": "홈으로 돌아가기", 
     "removeDraw": "뽑기 제거",
     "noResponseAvailable": "사용 가능한 응답 없음",
     "threeCardSpread": "세 장 카드 스프레드",

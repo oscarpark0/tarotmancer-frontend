@@ -34,6 +34,7 @@
   "logoutUnavailable": "ログアウトは現在利用できません",
   "logout": "ログアウト",
   "backToList": "リストに戻る",
+  "backToHome": "ホームに戻る",
   "removeDraw": "ドローを削除",
   "noResponseAvailable": "応答なし",
   "threeCardSpread": "3枚のカード展開",

@@ -26,8 +26,8 @@
     bottom: 60px; /* Adjust this value to match the height of your footer */
     transform: none;
     width: 100%;
-    height: auto; /* Let the height be determined by its content */
-    max-height: calc(100vh - 60px - var(--robot-height)); /* Limit the maximum height */
+    height: calc(20vh - 60px);
+    max-height: calc(100vh - 60px - var(--robot-height));
     margin-top: 0;
     padding: 10px;
     border-top: 2px solid #444;
@@ -296,11 +296,12 @@
 }
 
 .spread-selector select {
-  width: 65%;
+  width: 100%;
   padding: 1px;
   background-color: #0a0a0a;
   color: #33ff33;
   border: 1px solid #33ff33;
+  border-radius: 5px;
   font-family: 'VT323', monospace;
   font-size: 18px;
   appearance: none; 
@@ -338,6 +339,7 @@
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  border-radius: 5px;
 }
 
 .past-draws-button {
@@ -348,11 +350,11 @@
   font-size: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap; /* Prevent text wrapping */
+  border-radius: 5px;
 }
 
 /* Add this new style to ensure proper alignment */

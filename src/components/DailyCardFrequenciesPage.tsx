@@ -159,18 +159,6 @@ const DailyFrequenciesPage: React.FC = () => {
             max={new Date().toISOString().split('T')[0]}
           />
         </div>
-        <section className={styles.spreadsSection}>
-          <h2>{getTranslation('mostCommonCardOccurrencesByPosition')}</h2>
-          <div className={styles.spreadsContainer}>
-            <Spread key={`${selectedDate}-0`} spread={celticSpread} title="celticCrossSpread" />
-            <div className={styles.spreadSeparator}></div>
-            {threeCardSpread.length === 3 ? (
-              <Spread key={`${selectedDate}-1`} spread={threeCardSpread} title="threeCardSpread" />
-            ) : (
-              <div className={styles.error}>Error: Invalid Three Card spread data</div>
-            )}
-          </div>
-        </section>
         <section className={styles.frequenciesSection}>
           <h2>{getTranslation('individualCardFrequencies')}</h2>
           <div className={styles.frequenciesWrapper}>
@@ -180,6 +168,18 @@ const DailyFrequenciesPage: React.FC = () => {
               error={error}
               selectedDate={selectedDate}
             />
+          </div>
+        </section>
+        <section className={styles.spreadsSection}>
+          <h2>{getTranslation('mostCommonCardOccurrencesByPosition')}</h2>
+          <div className={styles.spreadsContainer}>
+            {threeCardSpread.length === 3 ? (
+              <Spread key={`${selectedDate}-1`} spread={threeCardSpread} title="threeCardSpread" />
+            ) : (
+              <div className={styles.error}>Error: Invalid Three Card spread data</div>
+            )}
+            <div className={styles.spreadSeparator}></div>
+            <Spread key={`${selectedDate}-0`} spread={celticSpread} title="celticCrossSpread" />
           </div>
         </section>
       </main>

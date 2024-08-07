@@ -18,7 +18,7 @@ const Robot = memo((props) => {
     canDraw, drawSpread, onResponseComplete, onStreamingStateChange, 
     onNewResponse, dealingComplete, onExitComplete, mostCommonCards, 
     onSubmitInput, selectedSpread, onSpreadSelect, isMobile, 
-    fetchSpread, animationsComplete, onAnimationStart, onAnimationComplete, // Added onAnimationComplete prop
+    fetchSpread, animationsComplete, onAnimationStart, 
     user, currentDrawId, setCurrentDrawId, 
     onOpenPastDraws, onDraw,
     dealCards, lastDrawTime, remainingDrawsToday,
@@ -26,8 +26,6 @@ const Robot = memo((props) => {
     setDrawCount,
     setRemainingDrawsToday,
     userId,
-    isDrawing,
-    setIsDrawing,
   } = props; // Destructure props
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -58,11 +56,8 @@ const Robot = memo((props) => {
   );
 
   const handleDrawSpread = useCallback(() => {
-    if (canDraw && !isDrawing) {
-      setIsDrawing(true);
-      debouncedDrawSpread();
-    }
-  }, [canDraw, isDrawing, setIsDrawing, debouncedDrawSpread]);
+    debouncedDrawSpread();
+  }, [debouncedDrawSpread]);
 
   const completeCurrentResponse = useCallback(() => {
     setResponses(prevResponses => {
@@ -291,11 +286,8 @@ const Robot = memo((props) => {
       setDrawCount={setDrawCount} 
       setRemainingDrawsToday={setRemainingDrawsToday} 
       user={user} 
-      isDrawing={isDrawing}
-      setIsDrawing={setIsDrawing}
-      handleDrawSpread={handleDrawSpread}
     />
-  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, userId, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount, setRemainingDrawsToday, user, isDrawing, setIsDrawing]);
+  ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, userId, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount, setRemainingDrawsToday, user]);
 
   return (
     <motion.div
@@ -317,7 +309,7 @@ const Robot = memo((props) => {
         <div className="tarotmancer-text">{getTranslation('tarotmancer')}</div>
         <div className="robot-head">
           <div className="crt-screen">
-            <div className={`screen-content ${isExpanded ? 'expanded' : ''}`} ref={screenContentRef}>
+            <div className="screen-content" ref={screenContentRef}>
               <FloatingCards
                 dealCards={dealCards}
                 monitorPosition={monitorPosition}
@@ -329,7 +321,6 @@ const Robot = memo((props) => {
                 numCards={props.cards.length}
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
-                onAnimationComplete={onAnimationComplete} // Added onAnimationComplete prop
               />
               <div ref={monitorOutputRef} className={`monitor-output ${isExpanded ? 'expanded' : ''}`}>
                 {monitorOutput}
@@ -395,9 +386,6 @@ Robot.propTypes = {
   userId: PropTypes.string, // Add userId prop type
   isRobotExpanded: PropTypes.bool.isRequired, // Added isRobotExpanded prop type
   onToggleRobotExpand: PropTypes.func.isRequired, // Added onToggleRobotExpand prop type
-  isDrawing: PropTypes.bool.isRequired,
-  setIsDrawing: PropTypes.func.isRequired,
-  onAnimationComplete: PropTypes.func.isRequired, // Added onAnimationComplete prop type
 };
 
 export default Robot;

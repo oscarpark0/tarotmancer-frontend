@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useId, useRef, useState, useMemo } from 'react';
 import { cn } from '../utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { TAROT_IMAGE_BASE_URL } from '../utils/config';
 import debounce from 'lodash.debounce';
 import './AnimatedGridPattern.css';
@@ -58,6 +58,8 @@ interface Card {
   tarotCard: string;
   randomScale: number;
   randomOpacity: number;
+  rotation: number; // New property for card rotation
+  order: number; // New property for stack order
 }
 
 // AnimatedGridPattern component
@@ -68,7 +70,7 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   y = -1,
   strokeDasharray = 19,
   strokeOpacity = 1,
-  numCards = 10,
+  numCards = 0,
   className,
   maxOpacity = 0.9,
   duration = 6,
@@ -81,9 +83,23 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
   const id = useId();
   const containerRef = useRef<SVGSVGElement>(null);
   const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [isTabActive, setIsTabActive] = useState(true);
+  const [animationState, setAnimationState] = useState<'grid' | 'stack' | 'shuffle' | 'fan'>('grid');
+  const [isStreaming] = useState(false);
+  const [isTabActive] = useState(true);
+
+  // Move effectiveNumCards calculation
+  const effectiveNumCards = useMemo(() => 
+    isTabActive ? (isStreaming ? Math.floor(numCards / 2) : numCards) : Math.floor(numCards / 4),
+    [isTabActive, isStreaming, numCards]
+  );
+
   const [cards, setCards] = useState<Card[]>([]);
+
+  // Move this after the cards state declaration
+  const visibleCards = useMemo(() => 
+    cards.slice(0, Math.min(effectiveNumCards, 20)),
+    [cards, effectiveNumCards]
+  );
 
   const loadedImages = useRef<Set<string>>(new Set());
 
@@ -120,6 +136,8 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
       tarotCard: tarotCards[Math.floor(Math.random() * tarotCards.length)],
       randomScale: getRandomValue(0.5, 2.0),
       randomOpacity: Math.random() * maxOpacity,
+      rotation: 0,
+      order: i,
     })), [getPos, maxOpacity]);
 
   // Effect to set up a resize observer for the container
@@ -134,17 +152,17 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
     if (dimensions.width && dimensions.height) setCards(generateCards(numCards));
   }, [dimensions, numCards, generateCards]);
 
-  // Callback to update the position of a specific card
-  const updateCardPosition = useCallback((id: number) => {
-    setCards(currentCards => currentCards.map(card =>
-      card.id === id ? { ...card, pos: getPos() } : card
-    ));
-  }, [getPos]);
+  // Memoize getDeckPosition
+  const getDeckPosition = useCallback((): [number, number] => [
+    Math.floor(dimensions.width / (2 * width)),
+    Math.floor(dimensions.height / (2 * height)),
+  ], [dimensions.width, dimensions.height, width, height]);
 
-  // Memoized animation variants for the cards
+  // Update cardVariants to use visibleCards
   const cardVariants = useMemo(() => ({
-    initial: { opacity: 0, rotateY: 0, scale: 1, z: 0 },
-    animate: (custom: Card) => ({
+    grid: (custom: Card) => ({
+      x: custom.pos[0] * width,
+      y: custom.pos[1] * height,
       opacity: custom.randomOpacity,
       rotateY: isPaused ? 0 : [0, 180],
       scale: isPaused ? 1 : custom.randomScale,
@@ -157,31 +175,63 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
         ease: [0.645, 0.045, 0.355, 1],
       },
     }),
-  }), [duration, isPaused]);
+    stack: (custom: Card) => {
+      const [deckX, deckY] = getDeckPosition();
+      return {
+        x: deckX * width,
+        y: deckY * height,
+        z: custom.order,
+        rotateY: 0,
+        scale: 1,
+        opacity: 1,
+        transition: { duration: 1, delay: custom.order * 0.05 },
+      };
+    },
+    shuffle: (custom: Card) => ({
+      x: getRandomValue(0, dimensions.width - width),
+      y: getRandomValue(0, dimensions.height - height),
+      z: custom.order,
+      rotateZ: getRandomValue(-180, 180),
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 0.5, delay: custom.order * 0.02 },
+    }),
+    fan: (custom: Card) => {
+      const [centerX, centerY] = getDeckPosition();
+      const angle = (custom.order / visibleCards.length) * 180 - 90;
+      const radius = Math.min(dimensions.width, dimensions.height) * 0.4;
+      return {
+        x: centerX * width + radius * Math.cos(angle * Math.PI / 180),
+        y: centerY * height + radius * Math.sin(angle * Math.PI / 180),
+        rotateZ: angle,
+        scale: 1,
+        opacity: 1,
+        transition: { duration: 1, delay: custom.order * 0.05 },
+      };
+    },
+  }), [getDeckPosition, dimensions, width, height, visibleCards.length, duration, isPaused]);
 
-  // Effect to handle streaming state changes
-  useEffect(() => {
-    const handleStreamingStateChange = (e: CustomEvent<boolean>) => setIsStreaming(e.detail);
-    window.addEventListener('streamingStateChange', handleStreamingStateChange as EventListener);
-    return () => window.removeEventListener('streamingStateChange', handleStreamingStateChange as EventListener);
+  // Function to trigger the animation sequence
+  const triggerAnimationSequence = useCallback(() => {
+    const sequence = async () => {
+      setAnimationState('stack');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setAnimationState('shuffle');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setAnimationState('fan');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      setAnimationState('grid');
+    };
+    sequence();
   }, []);
 
-  // Effect to handle tab visibility changes
+  // Effect to start the animation sequence periodically
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      setIsTabActive(!document.hidden);
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
-  // Calculate the effective number of cards based on streaming and tab activity
-  const effectiveNumCards = isTabActive ? (isStreaming ? Math.floor(numCards / 2) : numCards) : Math.floor(numCards / 4);
-
-  // Reduce the number of cards rendered
-  const visibleCards = useMemo(() => cards.slice(0, Math.min(effectiveNumCards, 20)), [cards, effectiveNumCards]);
+    if (!isPaused && isTabActive && !isStreaming) {
+      const intervalId = setInterval(triggerAnimationSequence, 30000); // Trigger every 30 seconds
+      return () => clearInterval(intervalId);
+    }
+  }, [isPaused, isTabActive, isStreaming, triggerAnimationSequence]);
 
   if (isMobile) {
     return null;
@@ -207,39 +257,32 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
       </defs>
       <rect width="100%" height="100%" fill={`url(#${id})`} />
       <svg x={x} y={y} className="overflow-visible">
-        {visibleCards.map((card) => (
-          <MemoizedMotionG
-            key={`${card.id}-${card.pos[0]}-${card.pos[1]}`}
-            custom={card}
-            variants={cardVariants}
-            initial="initial"
-            animate={isStreaming ? "initial" : "animate"}
-            onAnimationComplete={() => {
-              if (!isStreaming) {
-                setTimeout(() => updateCardPosition(card.id), 10000 + getRandomValue(0, 100));
-              }
-            }}
-            style={{ transformStyle: 'preserve-3d', transformOrigin: 'center', perspective: '10px' }}
-            onLayoutEffect={() => lazyLoadImage(card.tarotCard)}
-          >
-            <MemoizedMotionImage
-              href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
-              width={width - 1}
-              height={height - 1}
-              x={card.pos[0] * width + 1}
-              y={card.pos[1] * height + 1}
-              className="tarot-card"
-            />
-            <MemoizedMotionImage
-              href={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
-              width={width - 1}
-              height={height - 1}
-              x={card.pos[0] * width + 1}
-              y={card.pos[1] * height + 1}
-              className="tarot-card-back"
-            />
-          </MemoizedMotionG>
-        ))}
+        <AnimatePresence>
+          {visibleCards.map((card) => (
+            <MemoizedMotionG
+              key={`${card.id}-${card.pos[0]}-${card.pos[1]}`}
+              custom={card}
+              variants={cardVariants}
+              initial="grid"
+              animate={animationState}
+              style={{ transformStyle: 'preserve-3d', transformOrigin: 'center', perspective: '1000px' }}
+              onLayoutEffect={() => lazyLoadImage(card.tarotCard)}
+            >
+              <MemoizedMotionImage
+                href={`${TAROT_IMAGE_BASE_URL}/${card.tarotCard}`}
+                width={width - 1}
+                height={height - 1}
+                className="tarot-card"
+              />
+              <MemoizedMotionImage
+                href={`${TAROT_IMAGE_BASE_URL}/cardback.webp`}
+                width={width - 1}
+                height={height - 1}
+                className="tarot-card-back"
+              />
+            </MemoizedMotionG>
+          ))}
+        </AnimatePresence>
       </svg>
     </svg>
   );

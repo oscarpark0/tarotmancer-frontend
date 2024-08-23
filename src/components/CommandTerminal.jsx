@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useRef, useEffect, useCallback, forwardRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback, forwardRef, useMemo } from 'react';
 import './CommandTerminal.css';
 import ShimmerButton from './ShimmerButton.jsx';
 import SpreadSelector from './SpreadSelector.jsx';
@@ -9,6 +9,7 @@ import { useTranslation } from '../utils/translations';
 import { getMistralResponse } from '../services/mistralServices';
 import LanguageSelector from './LanguageSelector';
 import PropTypes from 'prop-types';
+import debounce from 'lodash/debounce';
 
 const CommandTerminal = forwardRef(({ 
   onMonitorOutput, 
@@ -137,7 +138,19 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     }
   }, []);
 
+  const debouncedDrawSpread = useMemo(
+    () => debounce(() => {
+      console.log('Debounced drawSpread called');
+      drawSpread();
+      setShouldRequestCohere(true);
+      onNewResponse('');
+      onDraw();
+    }, 300),
+    [drawSpread, setShouldRequestCohere, onNewResponse, onDraw]
+  );
+
   const handleDrawClick = useCallback(() => {
+    console.log('handleDrawClick called');
     if (isDrawing || !canDraw || remainingDrawsToday <= 0) {
       if (remainingDrawsToday <= 0) {
         setErrorMessage(getTranslation('noDrawsLeft'));
@@ -146,12 +159,8 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
     }
     setErrorMessage('');
     setIsDrawing(true);
-    drawSpread();
-    setShouldRequestCohere(true);
-    onNewResponse('');
-    onDraw();
-    setDrawCount(prevCount => prevCount + 1);
-  }, [isDrawing, canDraw, remainingDrawsToday, drawSpread, setShouldRequestCohere, onNewResponse, onDraw, setDrawCount, getTranslation]);
+    debouncedDrawSpread();
+  }, [isDrawing, canDraw, remainingDrawsToday, debouncedDrawSpread, getTranslation, setErrorMessage, setIsDrawing]);
 
   useEffect(() => {
     if (dealingComplete) {
@@ -240,15 +249,17 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
             />
           </form>
         </div>
-        <ShimmerButton 
-          onClick={handleDrawClick}
-          aria-label={getTranslation('drawCardsAriaLabel')}
-          label={getTranslation('draw')}
-          disabled={isLoading || isDrawing || !canDraw || remainingDrawsToday <= 0}
-          className={`${isDrawing ? 'drawing' : ''} text-sm`}
-        >
-          {getButtonText()}
-        </ShimmerButton>
+        <div className="draw-button-wrapper">
+          <ShimmerButton 
+            onClick={handleDrawClick}
+            aria-label={getTranslation('drawCardsAriaLabel')}
+            label={getTranslation('draw')}
+            disabled={isLoading || isDrawing || !canDraw || remainingDrawsToday <= 0}
+            className={`${isDrawing ? 'drawing' : ''} text-sm draw-button`}
+          >
+            {getButtonText()}
+          </ShimmerButton>
+        </div>
       </div>
     </div>
   );

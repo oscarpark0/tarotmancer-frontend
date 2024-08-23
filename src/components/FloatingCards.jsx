@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { IKImage } from 'imagekitio-react';
 import { motion } from 'framer-motion';
+import PropTypes from 'prop-types';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
-function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSpread, numCards, isMobile, onAnimationStart }) {
+function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSpread, numCards, isMobile, onAnimationStart, onAnimationComplete }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
@@ -12,6 +13,8 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
     if (dealCards) {
       setIsAnimating(true);
       onAnimationStart();
+    } else {
+      setIsAnimating(false);
     }
   }, [dealCards, onAnimationStart]);
 
@@ -93,6 +96,7 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
               if (i === numCards - 1) {
                 setIsAnimating(false);
                 onExitComplete();
+                onAnimationComplete(i === numCards - 1); // Added this line
               }
             }}
           >
@@ -108,5 +112,9 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
     </div>
   );
 }
+
+FloatingCards.propTypes = {
+  onAnimationComplete: PropTypes.func.isRequired,
+};
 
 export default FloatingCards;

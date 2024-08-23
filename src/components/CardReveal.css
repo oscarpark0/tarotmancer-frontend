@@ -1,319 +1,203 @@
-.card-reveal-container {
+.card-reveal {
   position: relative;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
 }
 
-.card-reveal {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 16 / 9;
-  margin: 2rem auto;
-}
-
-.card-reveal.mobile {
-  aspect-ratio: auto;
-  height: 30vh;
-  margin: 1rem auto;
-}
-
-.card {
-  position: absolute;
-  width: 15%;
-  max-width: 120px;
-  transition: transform 0.3s ease, z-index 0.3s ease;
-  transform-origin: center center;
-}
-
-.card-reveal.mobile .card {
-  width: 20%;
-  max-width: 80px;
-}
-
-.card:hover {
-  z-index: 9999;
-  transform: scale(1.1);
-}
-
-/* Three Card Spread Positioning */
-.card-reveal.three-card .card:nth-child(1) { left: 20%; }
-.card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translateX(-50%); }
-.card-reveal.three-card .card:nth-child(3) { right: 20%; }
-
-/* Celtic Cross Spread Positioning */
-.card-reveal.celtic-cross .card:nth-child(1) { left: 40%; top: 30%; z-index: 9; }
-.card-reveal.celtic-cross .card:nth-child(2) { left: 39%; top: 30%; z-index: 10; transform: rotate(90deg); }
-.card-reveal.celtic-cross .card:nth-child(3) { left: 40%; top: -10%; }
-.card-reveal.celtic-cross .card:nth-child(4) { left: 40%; bottom: -5%; }
-.card-reveal.celtic-cross .card:nth-child(5) { left: 20%; top: 30%; }
-.card-reveal.celtic-cross .card:nth-child(6) { right: 30%; top: 30%; }
-.card-reveal.celtic-cross .card:nth-child(7) { right: 10%; top: -25%; }
-.card-reveal.celtic-cross .card:nth-child(8) { right: 10%; top: 15%; }
-.card-reveal.celtic-cross .card:nth-child(9) { right: 10%; top: 55%; }
-.card-reveal.celtic-cross .card:nth-child(10) { right: 10%; top: 95%; }
-
-@media (max-width: 768px) {
-  .card-reveal {
-    aspect-ratio: auto;
-    max-width: 100%;
-    max-height: 30vh;
-    margin: 0 auto;
-  }
-
-  .card {
-    width: 18%;
-    max-width: 60px;
-  }
-
-  /* Celtic Cross mobile positioning */
-  .card-reveal.celtic-cross.mobile .card:nth-child(1) { left: 25%; top: 30%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(2) { left: 25%; top: 30%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(3) { left: 25%; top: 10%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(4) { left: 25%; bottom: 10%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(5) { left: 5%; top: 30%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(6) { left: 45%; top: 30%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(7) { right: 5%; top: 5%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(8) { right: 5%; top: 25%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(9) { right: 5%; top: 45%; }
-  .card-reveal.celtic-cross.mobile .card:nth-child(10) { right: 5%; top: 65%; }
-
-  .card-reveal.three-card.mobile .card {
-    width: 25%;
-    max-width: 80px;
-  }
-
-  .card-reveal.three-card.mobile .card:nth-child(1) { left: 15%; }
-  .card-reveal.three-card.mobile .card:nth-child(2) { left: 50%; transform: translateX(-50%); }
-  .card-reveal.three-card.mobile .card:nth-child(3) { right: 15%; }
-}
-
-.card-reveal-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform: translateX(240px);
-  z-index: 1000;
+.card-reveal.show {
+  opacity: 1;
 }
 
 .card {
   position: absolute;
   width: 125px;
   height: 220px;
-  perspective: 1000px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.6s, opacity 0.4s ease-in-out, z-index 0s;
-  z-index: 2000;
+  transition: transform 0.3s ease-in-out;
+  transform-style: preserve-3d;
+  cursor: pointer;
 }
 
 .card:hover {
-  z-index: 9999;
   transform: scale(1.1);
+  z-index: 10;
 }
 
-.card-inner {
+.card.reversed {
+  transform: rotateX(180deg);
+}
+
+.card.reversed .card-tooltip {
+  transform: rotateX(-180deg);
+}
+
+.card-image {
   width: 100%;
   height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.6s;
-  border-radius: 2px;
-  transform: rotateY(0deg);
-  z-index: 1;
-}
-
-.card.flipped .card-inner {
-  transform: rotateY(180deg);
-}
-
-.card.reversed .card-inner {
-  transform: rotateY(0deg) rotate(180deg);
-}
-
-.card.reversed.flipped .card-inner {
-  transform: rotateY(180deg) rotate(180deg);
-}
-
-.card.cross-card.flipped .card-inner {
-  transform: rotateY(180deg) rotate(90deg);
-}
-
-.card-front,
-.card-back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
+  object-fit: cover;
   border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  background-size: cover;
-  z-index: 9999;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.card-back {
-  transform: rotateY(0deg);
-}
+/* Three Card Spread */
+.card-reveal.three-card .card:nth-child(1) { left: calc(50% - 150px); }
+.card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translateX(-50%); }
+.card-reveal.three-card .card:nth-child(3) { left: calc(50% + 150px); }
 
-.card-front {
-  transform: rotateY(180deg);
+/* Celtic Cross Spread */
+.card-reveal.celtic-cross .card:nth-child(1) { left: calc(50% - 62.5px); top: calc(50% - 260px); } /* Center card */
+.card-reveal.celtic-cross .card:nth-child(2) { 
+  left: calc(50% - 62.5px); 
+  top: calc(50% - 260px); 
+  transform: rotate(90deg) !important; 
+} /* Crossing card */
+.card-reveal.celtic-cross .card:nth-child(2) .card-tooltip {
+  transform: rotate(-90deg);
 }
-
-.card-tooltip {
-  position: absolute;
-  background-color: rgba(78, 79, 117, 0.61);
-  color: #1e559c;
-  padding: 10px -80px;
-  border-radius: 12px;
-  border: 10px ridge #000000;
-  font-size: 2.95rem;
-  width: 150px;
-  pointer-events: none;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-  backdrop-filter: blur(8px);
-  text-align: center;
-  transition: all 0.3s ease-in-out;
-  opacity: 0;
-}
-
-.card-tooltip.top {
-  bottom: calc(100% + 15px);
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.card-tooltip.bottom {
-  top: calc(100% -2px 15px);
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.card-tooltip.left {
-  right: calc(100% + 15px);
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.card-tooltip.right {
-  left: calc(100% + 15px);
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.revealed-card {
-  position: absolute;
-  width: 100px;
-  height: 170px;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  transition: transform 0.1s ease-in-out, opacity 0.1s ease-in-out;
-  z-index: 9999;
-}
-
-.revealed-card.flipped {
-  transform: rotateY(0deg);
-  opacity: 1;
-}
-
-.card-reveal-container.exit-animation {
-  animation: exitAnimation 1s ease-out forwards;
-  z-index: 9999;
-}
-
-@keyframes exitAnimation {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-}
-
-.tooltip-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 11px;
-  color: #fbbf24;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  letter-spacing: 0.5px;
-}
-
-.tooltip-position {
-  font-size: 1rem;
-  font-style: italic;
-  margin-bottom: 12px;
-  color: #94a3b8;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.tooltip-content {
-  font-size: 0.95rem;
-  line-height: 1;
-  color: #e2e8f0;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
+.card-reveal.celtic-cross .card:nth-child(3) { left: calc(50% - 62.5px); top: calc(50% - 20px); } /* Below */
+.card-reveal.celtic-cross .card:nth-child(4) { left: calc(50% - 62.5px); top: calc(50% - 500px); } /* Above */
+.card-reveal.celtic-cross .card:nth-child(5) { left: calc(50% - 245.5px); top: calc(50% - 260px); } /* Left */
+.card-reveal.celtic-cross .card:nth-child(6) { left: calc(50% + 115.5px); top: calc(50% - 260px); } /* Right */
+.card-reveal.celtic-cross .card:nth-child(7) { left: calc(50% + 280px); top: calc(50% - 600px); } /* Staff 1 (bottom) */
+.card-reveal.celtic-cross .card:nth-child(8) { left: calc(50% + 280px); top: calc(50% - 370px); } /* Staff 2 */
+.card-reveal.celtic-cross .card:nth-child(9) { left: calc(50% + 280px); top: calc(50% - 145px); } /* Staff 3 */
+.card-reveal.celtic-cross .card:nth-child(10) { left: calc(50% + 280px); top: calc(50% - -80px); } /* Staff 4 (top) */
 
 @media (max-width: 768px) {
-  .card-reveal-container {
-    transform: none;
-    margin-top: 0;
-    z-index: 1000;
-    height: 60vh;
-    width: 100vw;
-    position: fixed;
-    top: 40vh;
-    left: 0;
-  }
-
-  .card,
-  .revealed-card {
+  .card {
     width: 60px;
     height: 104px;
   }
 
+  /* Three Card Spread - Mobile */
+  .card-reveal.three-card .card:nth-child(1) { left: calc(50% - 70px); }
+  .card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translateX(-50%); }
+  .card-reveal.three-card .card:nth-child(3) { left: calc(50% + 70px); }
+
+  /* Celtic Cross Spread - Mobile */
+  .card-reveal.celtic-cross .card:nth-child(1) { left: calc(50% - 30px); top: calc(50% - 52px); z-index: 1; }
+  .card-reveal.celtic-cross .card:nth-child(2) { 
+    left: calc(50% - 30px); 
+    top: calc(50% - 52px); 
+    transform: rotate(90deg) !important; 
+    z-index: 2; 
+  }
+  .card-reveal.celtic-cross .card:nth-child(2) .card-tooltip {
+    transform: rotate(-90deg);
+  }
+  .card-reveal.celtic-cross .card:nth-child(3) { left: calc(50% - 30px); top: calc(50% - 104px); z-index: 3; }
+  .card-reveal.celtic-cross .card:nth-child(4) { left: calc(50% - 30px); top: calc(50% + 52px); z-index: 4; }
+  .card-reveal.celtic-cross .card:nth-child(5) { left: calc(50% - 90px); top: 50%; }
+  .card-reveal.celtic-cross .card:nth-child(6) { left: calc(50% + 30px); top: 50%; }
+  .card-reveal.celtic-cross .card:nth-child(7) { right: 10px; bottom: calc(50% + 78px); }
+  .card-reveal.celtic-cross .card:nth-child(8) { right: 10px; bottom: calc(50% + 26px); }
+  .card-reveal.celtic-cross .card:nth-child(9) { right: 10px; top: calc(50% + 26px); }
+  .card-reveal.celtic-cross .card:nth-child(10) { right: 10px; top: calc(50% + 78px); }
+}
+
+.card-tooltip {
+  position: absolute;
+  background-color: rgba(30, 30, 30, 0.9);
+  color: #f0e6d2;
+  border: 1px solid #c4b998;
+  border-radius: 8px;
+  padding: 12px;
+  width: 200px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2);
+  z-index: 100;
+  font-family: 'Cormorant Garamond', serif;
+  text-align: center;
+}
+
+.card-tooltip::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.card-tooltip.top {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.card-tooltip.top::before {
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 10px 10px 0 10px;
+  border-color: #c4b998 transparent transparent transparent;
+}
+
+.card-tooltip.bottom {
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.card-tooltip.bottom::before {
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 10px 10px 10px;
+  border-color: transparent transparent #c4b998 transparent;
+}
+
+.card-tooltip.left {
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.card-tooltip.left::before {
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-width: 10px 0 10px 10px;
+  border-color: transparent transparent transparent #c4b998;
+}
+
+.tooltip-title {
+  font-size: 1.2em;
+  margin-bottom: 6px;
+  color: #ffd700;
+  text-shadow: 0 0 3px rgba(255, 215, 0, 0.5);
+}
+
+.tooltip-position {
+  font-size: 0.9em;
+  font-style: italic;
+  margin-bottom: 8px;
+  color: #d4af37;
+}
+
+.tooltip-content {
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
   .card-tooltip {
-    font-size: 0.75rem;
-    width: 180px;
-    padding: 10px 12px;
+    width: 150px;
+    font-size: 0.9em;
   }
-
+  
   .tooltip-title {
-    font-size: 0.9rem;
+    font-size: 1.1em;
   }
-
+  
   .tooltip-position {
-    font-size: 0.8rem;
+    font-size: 0.8em;
   }
-
+  
   .tooltip-content {
-    font-size: 0.75rem;
-  }
-
-  .card-tooltip.top,
-  .card-tooltip.bottom,
-  .card-tooltip.left,
-  .card-tooltip.right {
-    transform: translate(-50%, -50%);
-  }
-
-  .card-tooltip.scaling {
-    transform: scale(1);
-  }
-
-  .card:hover {
-    transform: scale(1.5);
+    font-size: 0.85em;
   }
 }
-
-/* Commented out this rule */
-/*
-@media (min-width: 769px) {
-  .card-reveal-container {
-    display: none;
-  }
-}
-*/

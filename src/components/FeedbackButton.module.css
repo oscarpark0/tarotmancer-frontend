@@ -1,14 +1,12 @@
 .feedbackButton {
-  color: #ffd700;
-  text-decoration: none;
-  margin: 0 0.5rem;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  border: 2px solid #000000;
+  padding: 1px 5px;
   background-color: #1a1a2e;
-  padding: 8px 16px;
+  color: #ffd700;
+  border: 2px solid #000000;
   border-radius: 25px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.3s ease;
   text-shadow: 
     -1px -1px 0 #000,
     1px -1px 0 #000,

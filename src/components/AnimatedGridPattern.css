@@ -1,14 +1,17 @@
 .preserve-3d {
-    transform-style: preserve-3d;
-    transform-origin: center;
-    perspective: 1000px;
-  }
-  
-  .tarot-card, .tarot-card-back {
-    backface-visibility: hidden;
-    border-radius: 5px;
-  }
-  
-  .tarot-card-back {
-    transform: rotateY(180deg);
-  }
+  transform-style: preserve-3d;
+  transform-origin: center;
+  perspective: 1000px;
+}
+
+.tarot-card, .tarot-card-back {
+  backface-visibility: hidden;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.tarot-card-back {
+  transform: rotateY(180deg);
+}

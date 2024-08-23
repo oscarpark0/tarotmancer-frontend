@@ -16,7 +16,7 @@ const Contact: React.FC = () => {
       </button>
       <h2 className={styles.title}>Contact</h2>
       <a href="mailto:tb@tarotmancer.com" className={styles.email}>
-        <span className={styles.emailIcon}>✧</span> tb@tarotmancer.com
+        tb@tarotmancer.com
       </a>
     </div>
   );

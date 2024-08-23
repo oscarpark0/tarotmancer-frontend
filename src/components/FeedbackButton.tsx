@@ -120,11 +120,11 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
     <>
       {isFooterLink ? (
         <span onClick={handleOpenModal} className={footerStyles.footerLink}>
-          <span className={styles.feedbackIcon}>✧</span> {getTranslation('feedback')}
+          {getTranslation('feedback')}
         </span>
       ) : (
         <button onClick={handleOpenModal} className={headerStyles.feedbackButton}>
-          <span className={styles.feedbackIcon}>✧</span> {getTranslation('feedback')}
+          {getTranslation('feedback')}
         </button>
       )}
       {isModalOpen && ReactDOM.createPortal(

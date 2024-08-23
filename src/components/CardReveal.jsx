@@ -1,68 +1,32 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IKImage } from 'imagekitio-react';
-import { MagicContainer } from './magic-card';
 import './CardReveal.css';
 
-const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, isMobile, className }) => {
-  const [revealedCards, setRevealedCards] = useState(0);
-  const [flippedCards, setFlippedCards] = useState(0);
+const CardReveal = ({ cards, showCards, isMobile }) => {
+  const [localShowCards, setLocalShowCards] = useState(showCards);
   const [hoveredCard, setHoveredCard] = useState(null);
 
-  const cardPositions = useMemo(() => {
-    const containerWidth = window.innerWidth;
-    const isMobile = containerWidth <= 768;
-
-    const baseScale = isMobile ? 0.5 : 1; // Reduce scale for mobile
-    const baseLeft = isMobile ? '50%' : '40%';
-    const topOffset = isMobile ? '30%' : '50%'; // Adjust top offset for mobile
-
-    // Adjust spacing for mobile
-    const threeCardHorizontalSpacing = isMobile ? '25vw' : '8vw';
-    const celticCrossHorizontalSpacing = isMobile ? '15vw' : '5vw';
-    const celticStackHorizontalSpacing = isMobile ? '30vw' : '12vw';
-
-    if (cards.length === 3) {
-      // Three Card Spread
-      return [
-        { top: topOffset, left: `calc(${baseLeft} - ${threeCardHorizontalSpacing})`, zIndex: 2000, scale: baseScale },
-        { top: topOffset, left: baseLeft, zIndex: 2000, scale: baseScale },
-        { top: topOffset, left: `calc(${baseLeft} + ${threeCardHorizontalSpacing})`, zIndex: 2000, scale: baseScale },
-      ];
+  useEffect(() => {
+    if (!showCards) {
+      setLocalShowCards(false);
     } else {
-      // Celtic Cross Spread
-      const crossCardScale = baseScale * 0.9;
-      const celticBaseLeft = isMobile ? '25%' : baseLeft;
-      const verticalSpacing = isMobile ? '10vh' : '9.5vh';
-
-      return [
-        { top: topOffset, left: celticBaseLeft, zIndex: 10, scale: baseScale },
-        { top: topOffset, left: celticBaseLeft, transform: `rotate(90deg) scale(${crossCardScale * 0.7})`, zIndex: 12, scale: baseScale },
-        { top: `calc(${topOffset} - ${verticalSpacing})`, left: celticBaseLeft, zIndex: 10, scale: baseScale },
-        { top: `calc(${topOffset} + ${verticalSpacing})`, left: celticBaseLeft, zIndex: 10, scale: baseScale },
-        { top: topOffset, left: `calc(${celticBaseLeft} - ${celticCrossHorizontalSpacing})`, zIndex: 10, scale: baseScale },
-        { top: topOffset, left: `calc(${celticBaseLeft} + ${celticCrossHorizontalSpacing})`, zIndex: 10, scale: baseScale },
-        { top: `calc(${topOffset} - ${verticalSpacing} * 1.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, zIndex: 10, scale: baseScale },
-        { top: `calc(${topOffset} - ${verticalSpacing} * 0.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, zIndex: 10, scale: baseScale },
-        { top: `calc(${topOffset} + ${verticalSpacing} * 0.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, zIndex: 10, scale: baseScale },
-        { top: `calc(${topOffset} + ${verticalSpacing} * 1.5)`, left: `calc(${celticBaseLeft} + ${celticStackHorizontalSpacing})`, zIndex: 10, scale: baseScale },
-      ];
+      const timer = setTimeout(() => {
+        setLocalShowCards(true);
+      }, 2000); // Delay showing cards to allow for animation
+      return () => clearTimeout(timer);
     }
-  }, [cards.length]);
+  }, [showCards]);
 
-  const getTooltipPosition = (index, totalCards) => {
-    if (totalCards === 3) {
-      return index === 1 ? 'bottom' : 'top';
-    } else {
-      // Celtic Cross positioning
-      if (index === 0 || index === 1) return 'bottom';
-      if (index === 2) return 'left';
-      if (index === 3) return 'left';
-      if (index === 4) return 'bottom';
-      if (index === 5) return 'top';
-      return index % 2 === 0 ? 'left' : 'left';
+  useEffect(() => {
+    if (!showCards) {
+      setLocalShowCards(false);
     }
-  };
+  }, [showCards]);
+
+  useEffect(() => {
+    console.log('CardReveal: cards or showCards changed', { cards, showCards });
+  }, [cards, showCards]);
 
   const handleMouseEnter = (index) => {
     setHoveredCard(index);
@@ -72,85 +36,44 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
     setHoveredCard(null);
   };
 
-  useEffect(() => {
-    let timer;
-    if (revealCards && (flippedCards < cards.length || revealedCards < cards.length)) {
-      if (flippedCards < cards.length) {
-        timer = setTimeout(() => {
-          setFlippedCards(flippedCards + 1);
-        }, 135);
-      } else if (revealedCards < cards.length) {
-        timer = setTimeout(() => {
-          setRevealedCards(revealedCards + 1);
-        }, 300);
-      }
+  const getTooltipPosition = (index, totalCards, orientation) => {
+    if (totalCards === 3) {
+      return index === 1 ? 'bottom' : 'top';
+    } else {
+      // Celtic Cross positioning
+      if (index === 0 || index === 1) return orientation === 'reversed' ? 'top' : 'bottom';
+      if (index === 2) return 'left';
+      if (index === 3) return 'left';
+      if (index === 4) return orientation === 'reversed' ? 'top' : 'bottom';
+      if (index === 5) return orientation === 'reversed' ? 'bottom' : 'top';
+      return index % 2 === 0 ? 'left' : 'left';
     }
-    return () => clearTimeout(timer);
-  }, [revealedCards, flippedCards, cards.length, revealCards]);
-
-  useEffect(() => {
-    if (shouldDrawNewSpread) {
-      setRevealedCards(0);
-      setFlippedCards(0);
-    }
-  }, [shouldDrawNewSpread]);
+  };
 
   return (
-    <MagicContainer className={`card-reveal-container ${className}`}>
-      <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''}`}>
-        {dealingComplete && cards.map((card, index) => (
+    <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''} ${localShowCards ? 'show' : ''}`}>
+      <AnimatePresence>
+        {localShowCards && cards.map((card, index) => (
           <motion.div
-            key={index}
-            className={`card pointer-events-auto ${card.orientation === 'reversed' ? 'reversed' : ''} ${flippedCards > index ? 'flipped' : ''} ${cards.length > 3 && index === 1 ? 'cross-card' : ''} ${hoveredCard === index ? 'hovered' : ''}`}
-            initial={{ opacity: 0, x: '-100vw', y: cardPositions[index].top, scale: 0.5 }}
-            animate={{
-              opacity: 1,
-              x: cardPositions[index].left,
-              y: cardPositions[index].top,
-              scale: cardPositions[index].scale,
-              zIndex: cardPositions[index].zIndex,
-              transition: { duration: 0.8, delay: index * 0.1, ease: 'easeOut', opacity: { duration: 0.5, ease: 'linear' } }
-            }}
-            exit={{
-              opacity: 0,
-              x: cardPositions[index].left,
-              y: cardPositions[index].top,
-              scale: 0.5,
-              zIndex: 1,
-              transition: { duration: 0.5, delay: index * 0.1, ease: 'easeOut' }
-            }}
-            style={{
-              position: 'absolute',
-              left: cardPositions[index].left,
-              top: cardPositions[index].top,
-              transform: `${cardPositions[index].transform || `translate(-50%, -50%) scale(${cardPositions[index].scale})`}`,
-              transition: 'transform 0.3s ease',
-            }}
+            key={`${card.name}-${index}-${showCards}`}
+            className={`card ${card.orientation === 'reversed' ? 'reversed' : ''}`}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.5, delay: index * 0.2 }}
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={handleMouseLeave}
           >
-            <div className="card-inner">
-              <div className="card-front">
-                <IKImage
-                  path={card.img}
-                  loading="lazy"
-                  alt={card.name || "Tarot card front"}
-                  className="card-image"
-                />
-              </div>
-              <div className="card-back">
-                <IKImage
-                  path="cardback.webp"
-                  loading="lazy"
-                  alt="Tarot card back"
-                  className="card-image"
-                />
-              </div>
-            </div>
+            <IKImage
+              path={card.img}
+              loading="lazy"
+              alt={card.name || "Tarot card"}
+              className="card-image"
+            />
             <AnimatePresence>
               {hoveredCard === index && (
                 <motion.div
-                  className={`card-tooltip ${getTooltipPosition(index, cards.length)} ${isMobile ? 'mobile' : ''}`}
+                  className={`card-tooltip ${getTooltipPosition(index, cards.length, card.orientation)} ${isMobile ? 'mobile' : ''}`}
                   initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -185,8 +108,8 @@ const CardReveal = ({ cards, revealCards, dealingComplete, shouldDrawNewSpread, 
             </AnimatePresence>
           </motion.div>
         ))}
-      </div>
-    </MagicContainer>
+      </AnimatePresence>
+    </div>
   );
 };
 

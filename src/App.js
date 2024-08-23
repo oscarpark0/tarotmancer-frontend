@@ -67,7 +67,7 @@ function AppContent({ isAuthenticated }) {
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
-  const [remainingDrawsToday, setRemainingDrawsToday] = useState(10); // Initialize with a default value
+  const [remainingDrawsToday, setRemainingDrawsToday] = useState(5);
   const [drawCount, setDrawCount] = useState(0);
 
   const navigate = useNavigate();
@@ -178,7 +178,7 @@ function AppContent({ isAuthenticated }) {
     if (data) {
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
-      setDrawCount(10 - data.remaining_draws);
+      setDrawCount(5 - data.remaining_draws);
     }
   }, [makeAuthenticatedRequest]);
 
@@ -212,30 +212,19 @@ function AppContent({ isAuthenticated }) {
   useEffect(() => {
     if (isAuthenticated) {
       checkCanDraw();
-    }
-  }, [isAuthenticated, checkCanDraw]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      checkCanDraw();
-    }
-  }, [isAuthenticated, checkCanDraw]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
       fetchUserDraws();
     }
-  }, [isAuthenticated, fetchUserDraws]);
-
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      checkCanDraw();
-    }
-  }, [isAuthenticated, checkCanDraw]);
+  }, [isAuthenticated, checkCanDraw, fetchUserDraws]);
 
   const handleDrawComplete = useCallback(() => {
-    setDrawCount(prevCount => Math.min(prevCount + 1, 10));
+    setDrawCount(prevCount => {
+      const newCount = Math.min(prevCount + 1, 5);
+      return newCount;
+    });
+    setRemainingDrawsToday(prevRemaining => {
+      const newRemaining = Math.max(prevRemaining - 1, 0);
+      return newRemaining;
+    });
   }, []);
 
   return (

@@ -50,7 +50,7 @@ const ResourcesPage: React.FC = () => {
           {resources.map((resource, index) => (
             <li key={index} className={styles.resourceItem}>
               <a href={resource.url} target="_blank" rel="noopener noreferrer" className={styles.resourceLink}>
-                <span className={styles.resourceIcon}>✧</span>
+
                 {resource.name}
               </a>
               <p className={styles.resourceDescription}>{resource.description}</p>

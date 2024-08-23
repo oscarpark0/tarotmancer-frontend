@@ -11,7 +11,7 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 10px; /* Reduced padding */
+  padding: 0 10px; 
 }
 
 .app-title-link {
@@ -26,13 +26,13 @@
 }
 
 .app-title {
-  font-size: clamp(1rem, 3vw, 2.5rem); /* Adjusted font size */
+  font-size: clamp(1rem, 3vw, 2.5rem); 
   margin: 0;
   letter-spacing: 0.02em;
   text-align: left;
   color: #f0e68c;
   position: relative;
-  overflow: visible; /* Changed from 'show' to 'visible' */
+  overflow: visible; 
   transition: color 0.3s ease;
   text-shadow: 
     -1px -1px 0 #000,
@@ -43,7 +43,7 @@
     1px 0 0 #000,
     -1px 0 0 #000,
     0 -1px 0 #000;
-  white-space: nowrap; /* Prevent line breaks */
+  white-space: nowrap; 
 }
 
 .app-title::before {
@@ -78,11 +78,11 @@
     flex-basis: auto;
     text-align: left;
     margin-bottom: 0;
-    margin-right: 10px; /* Reduced margin */
+    margin-right: 10px; 
   }
 
   .app-title {
-    font-size: 1rem; /* Smaller font size for mobile */
+    font-size: 1rem; 
   }
 
   .auth-container {
@@ -241,7 +241,6 @@
   color: #aaa;
 }
 
-/* Add this at the end of the file */
 body.feedback-modal-open {
   position: fixed;
   width: 100%;
@@ -254,7 +253,7 @@ body.feedback-modal-open .feedback-modal-overlay {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000000; /* Extremely high z-index */
+  z-index: 1000000; 
 }
 
 -tooltip.right {

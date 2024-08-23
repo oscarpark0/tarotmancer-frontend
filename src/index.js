@@ -16,7 +16,6 @@ initializeTranslations().then(() => {
       logoutUri={process.env.REACT_APP_KINDE_LOGOUT_URI}
       onRedirectCallback={(user) => {
       }}
-      // Add any additional options for session persistence if available
     >
       <BrowserRouter>
         <App />

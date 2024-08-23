@@ -31,7 +31,7 @@ const SubscribeButton: React.FC = () => {
   return (
     <>
       <button onClick={() => setIsModalOpen(true)} className={styles.subscribeButton}>
-        <span className={styles.buttonIcon}>✧</span> {getTranslation('subscribe')}
+        {getTranslation('subscribe')}
       </button>
       {isModalOpen && (
         <div className={styles.modalOverlay} onClick={() => setIsModalOpen(false)}>

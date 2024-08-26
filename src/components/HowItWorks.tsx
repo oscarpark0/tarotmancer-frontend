@@ -31,7 +31,7 @@ const HowItWorks: React.FC = () => {
       </ProcessStep>
 
       <ProcessStep number={2} title="Multiple Draws">
-        <p>For each shuffle, the app draws the required number of cards (Celtic Cross - 10 |  Three Card Spread - 3) and records which card appears in each position.</p>
+        <p>For each shuffle, the app draws the required number of cards (Celtic Cross - 10 cards |  Three Card Spread - 3 cards) and records which card appears in each position.</p>
       </ProcessStep>
 
       <ProcessStep number={3} title="Counting Appearances">
@@ -55,7 +55,7 @@ const HowItWorks: React.FC = () => {
       </ProcessStep>
 
       <ProcessStep number={7} title="Balancing Randomness and Meaning">
-        <p>This method balances the randomness inherent in tarot readings with the need for meaningful, insightful spreads. It's like having a highly experienced tarot reader perform thousands of readings for you and then presenting the most consistent results.</p>
+        <p>This method balances the randomness inherent in tarot readings with the need for meaningful, insightful spreads. It's like tarot reader draw thousands of spreads for you and then presenting the most consistent results.</p>
       </ProcessStep>
 
       <ProcessStep number={8} title="Unique Spreads">

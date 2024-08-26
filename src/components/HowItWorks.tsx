@@ -22,7 +22,7 @@ const HowItWorks: React.FC = () => {
       
       <h1 className="title">tarotmancer: How It Works</h1>
       
-      <p className="intro">tarotmancer doesn't just draw cards at random for your reading. Instead, it simulates thousands of tarot readings to provide you with a statistically significant and meaningful spread.</p>
+      <p className="intro">tarotmancer doesn't just draw cards at random for your reading. Instead, it performs 10,000 virtual draws to provide you with a statistically significant and meaningful spread.</p>
       
       <h2>Here's how it works:</h2>
 

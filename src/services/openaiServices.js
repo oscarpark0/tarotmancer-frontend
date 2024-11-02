@@ -5,6 +5,14 @@ export const getOpenAIResponse = async (message, onNewResponse, onResponseComple
     throw new Error('Draw ID is required');
   }
 
+  if (!process.env.REACT_APP_OPENAI_API_KEY) {
+    const error = new Error('OpenAI API key is not configured');
+    console.error('OpenAI API key missing:', error);
+    onNewResponse('Error: Service configuration issue. Please contact support.');
+    onResponseComplete(null, error);
+    throw error;
+  }
+
   try {
     if (!userId) {
       console.warn('User ID not available, but continuing with request');

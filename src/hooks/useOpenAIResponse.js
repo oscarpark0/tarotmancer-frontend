@@ -22,13 +22,24 @@ export const useOpenAIResponse = (onNewResponse, onResponseComplete) => {
 
     const fetchOpenAIResponse = useCallback(async (message, drawId, userId) => {
         if (!drawId) {
-            console.error('Draw ID is not available');
+            const error = new Error('Draw ID is not available');
+            setError(error.message);
+            console.error(error);
             return;
         }
         if (!userId) {
-            console.error('User ID is not available');
+            const error = new Error('User ID is not available');
+            setError(error.message);
+            console.error(error);
             return;
         }
+        if (!process.env.REACT_APP_OPENAI_API_KEY) {
+            const error = new Error('OpenAI API key is not configured');
+            setError('Service configuration issue. Please contact support.');
+            console.error(error);
+            return;
+        }
+
         setIsLoading(true);
         setError(null);
         setFullResponse('');

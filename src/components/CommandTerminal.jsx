@@ -6,7 +6,7 @@ import SpreadSelector from './SpreadSelector.jsx';
 import CardReveal from './CardReveal';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../utils/translations';
-import { getMistralResponse } from '../services/mistralServices';
+import { getOpenAIResponse } from '../services/openaiServices';
 import LanguageSelector from './LanguageSelector';
 import PropTypes from 'prop-types';
 import debounce from 'lodash/debounce';
@@ -97,18 +97,18 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
       const userQuestion = input.trim() ? `The seeker has asked the following of the tarot: ${input.trim()}` : '';
       const message = `${languagePrefix}${staticText} ${mostCommonCards.trim()} ${userQuestion}`;
 
-      await getMistralResponse(message, onNewResponse, (fullResponse, error) => {
+      await getOpenAIResponse(message, onNewResponse, (fullResponse, error) => {
         if (error) {
-          console.error('Error storing Mistral response:', error);
+          console.error('Error storing OpenAI response:', error);
           onNewResponse('Error: Failed to store response. Please try again.');
         } else {
-          console.log('Mistral response stored successfully');
+          console.log('OpenAI response stored successfully');
         }
         onResponseComplete(fullResponse);
       }, currentDrawId, userId);
       
     } catch (error) {
-      console.error('Error in Mistral request:', error);
+      console.error('Error in OpenAI request:', error);
       const errorMessage = getTranslation('errorMessage');
       onNewResponse(errorMessage);
       onResponseComplete(null, error);

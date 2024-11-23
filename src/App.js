@@ -49,9 +49,6 @@ function KindeCallbackHandler() {
   return null;
 }
 
-
-
-
 function AppContent({ isAuthenticated }) {
   const { user, getToken } = useKindeAuth();
   const { getTranslation } = useTranslation(); 
@@ -67,8 +64,18 @@ function AppContent({ isAuthenticated }) {
   const [, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
-  const [remainingDrawsToday, setRemainingDrawsToday] = useState(5);
+  const [remainingDrawsToday, setRemainingDrawsToday] = useState(isAuthenticated ? 5 : 1);
   const [drawCount, setDrawCount] = useState(0);
+  const [anonymousUserId, setAnonymousUserId] = useState(() => {
+    const savedId = localStorage.getItem('anonymousUserId');
+    return savedId || `anon_${window.crypto.randomUUID()}`;
+  });
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      localStorage.setItem('anonymousUserId', anonymousUserId);
+    }
+  }, [isAuthenticated, anonymousUserId]);
 
   const navigate = useNavigate();
 
@@ -174,13 +181,20 @@ function AppContent({ isAuthenticated }) {
   }, [getToken, user]);
 
   const checkCanDraw = useCallback(async () => {
-    const data = await makeAuthenticatedRequest('/api/can-draw', 'Error checking draw status');
-    if (data) {
+    try {
+      const userId = isAuthenticated ? user?.id : anonymousUserId;
+      const response = await fetch('/api/check-can-draw', {
+        headers: {
+          'User-ID': userId,
+        },
+      });
+      const data = await response.json();
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
-      setDrawCount(5 - data.remaining_draws);
+    } catch (error) {
+      console.error('Error checking draw status:', error);
     }
-  }, [makeAuthenticatedRequest]);
+  }, [isAuthenticated, user, anonymousUserId]);
 
   const spreadProps = useMemo(() => ({
     isMobile,

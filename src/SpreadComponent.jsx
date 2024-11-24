@@ -73,13 +73,14 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
 
         const headers = {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Origin': origin,
           'Authorization': `Bearer ${token}`,
           'User-ID': user.id,
           'Draw-ID': newDrawId.toString(),
         };
 
-        const endpoint = selectedSpread === 'celtic' ? 'draw_celtic_spreads' : 'draw_three_card_spread';
+        const endpoint = selectedSpread === 'celtic' ? 'api/draw_celtic_spreads' : 'api/draw_three_card_spread';
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
           method: 'GET',
           headers: headers,
@@ -88,11 +89,18 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Error response:', errorText);
-          throw new Error(`HTTP error! status: ${response.status}`);
+          console.error(`Error response from server: ${errorText}`);
+          throw new Error(`${getTranslation('failedToDrawSpread')}: ${response.status}`);
         }
 
-        const data = await response.json();
+        let data;
+        try {
+          data = await response.json();
+        } catch (e) {
+          console.error('Failed to parse server response:', e);
+          throw new Error(getTranslation('checkNetworkAndTryAgain'));
+        }
+
         console.log(`Draw completed. New draw ID: ${newDrawId}`);
         setCurrentDrawId(newDrawId);
         const windowWidth = window.innerWidth;
@@ -153,7 +161,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         setIsLoading(false);
         setShouldDrawNewSpread(false);
       }
-    }, 300),  // 300ms debounce time
+    }, 300), // 300ms debounce time
     [user, canDraw, timeUntilNextDraw, getToken, selectedSpread, setError, setCards, setPositions, setDealCards, setMostCommonCards, setCurrentDrawId, onDrawComplete, setRemainingDrawsToday, setLastResetTime, drawCount, setDrawCount]
   );
 
@@ -161,7 +169,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     setShowCards(false); // Hide the current cards
     setCards([]); // Clear the current cards array
     setPositions([]); // Clear the current positions array
-  
+
     // Wait for a short time to allow the cards to disappear
     await new Promise(resolve => setTimeout(resolve, 300));
 

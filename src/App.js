@@ -61,15 +61,15 @@ function AppContent({ isAuthenticated }) {
     return savedMode ? JSON.parse(savedMode) : false;
   });
   const [canDraw, setCanDraw] = useState(true);
-  const [, setUserDraws] = useState([]);
+  const [userDraws, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [remainingDrawsToday, setRemainingDrawsToday] = useState(isAuthenticated ? 5 : 1);
   const [drawCount, setDrawCount] = useState(0);
-  const [anonymousUserId, setAnonymousUserId] = useState(() => {
+  const anonymousUserId = useMemo(() => {
     const savedId = localStorage.getItem('anonymousUserId');
     return savedId || `anon_${window.crypto.randomUUID()}`;
-  });
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -164,37 +164,60 @@ function AppContent({ isAuthenticated }) {
       if (!userId) {
         throw new Error("User ID not available");
       }
-      const response = await fetch(`${process.env.REACT_APP_BASE_URL}${endpoint}`, {
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api${endpoint}`, {
+        method: 'GET',
+        credentials: 'include',
         headers: {
           'Authorization': `Bearer ${token}`,
           'User-ID': userId,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Origin': window.location.origin
         },
       });
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Error response from server: ${errorText}`);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
       console.error(`${errorMessage}:`, error);
-      return null;
+      throw error;
     }
   }, [getToken, user]);
 
   const checkCanDraw = useCallback(async () => {
     try {
       const userId = isAuthenticated ? user?.id : anonymousUserId;
-      const response = await fetch('/api/check-can-draw', {
+      const token = await getToken();
+      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/can-draw`, {
+        method: 'GET',
+        credentials: 'include',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'User-ID': userId,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Origin': window.location.origin
         },
       });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`Error response from server: ${errorText}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);
     } catch (error) {
       console.error('Error checking draw status:', error);
+      setCanDraw(false);
+      setRemainingDrawsToday(0);
     }
-  }, [isAuthenticated, user, anonymousUserId]);
+  }, [isAuthenticated, user, anonymousUserId, getToken]);
 
   const spreadProps = useMemo(() => ({
     isMobile,
@@ -217,9 +240,12 @@ function AppContent({ isAuthenticated }) {
   }), [isMobile, handleSpreadSelect, selectedSpread, canAccessCohere, user, getToken, remainingDrawsToday, drawCount, isDarkMode, canDraw, currentDrawId, checkCanDraw]);
 
   const fetchUserDraws = useCallback(async () => {
-    const draws = await makeAuthenticatedRequest('/api/user-draws', 'Error fetching user draws');
-    if (draws) {
-      setUserDraws(draws);
+    try {
+      const draws = await makeAuthenticatedRequest('/user-draws', 'Error fetching user draws');
+      setUserDraws(draws || []);
+    } catch (error) {
+      console.error('Error fetching user draws:', error);
+      setUserDraws([]);
     }
   }, [makeAuthenticatedRequest]);
 

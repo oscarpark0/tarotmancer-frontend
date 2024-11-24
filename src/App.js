@@ -24,6 +24,7 @@ import { useTranslation } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
 import { IKContext } from 'imagekitio-react';
 import { IMAGEKIT_PUBLIC_KEY } from './utils/config';
+import MaintenanceBanner from './components/MaintenanceBanner.tsx';
 
 const SpreadComponent = lazy(() => import('./SpreadComponent').then(module => ({ default: module.default })));
 
@@ -269,6 +270,7 @@ function AppContent({ isAuthenticated }) {
 
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <MaintenanceBanner />
       <div style={{ position: 'relative', zIndex: 10 }}>
         {memoizedHeader}
       </div>

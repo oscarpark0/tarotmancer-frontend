@@ -170,8 +170,7 @@ function AppContent({ isAuthenticated }) {
         'Authorization': `Bearer ${token}`,
         'User-ID': userId,
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Origin': window.location.origin
+        'Accept': 'application/json'
       };
       
       const url = `${process.env.REACT_APP_BASE_URL}/api${endpoint}`;
@@ -182,6 +181,7 @@ function AppContent({ isAuthenticated }) {
         method: 'GET',
         credentials: 'include',
         headers: headers,
+        mode: 'cors'
       });
       
       console.log(`Response status: ${response.status}`);
@@ -208,8 +208,7 @@ function AppContent({ isAuthenticated }) {
         'Authorization': `Bearer ${token}`,
         'User-ID': userId,
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Origin': window.location.origin
+        'Accept': 'application/json'
       };
       
       const url = `${process.env.REACT_APP_BASE_URL}/api/can-draw`;
@@ -220,6 +219,7 @@ function AppContent({ isAuthenticated }) {
         method: 'GET',
         credentials: 'include',
         headers: headers,
+        mode: 'cors'
       });
 
       console.log(`Can-draw response status: ${response.status}`);

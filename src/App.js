@@ -165,17 +165,28 @@ function AppContent({ isAuthenticated }) {
       if (!userId) {
         throw new Error("User ID not available");
       }
-      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api${endpoint}`, {
+      
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'User-ID': userId,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Origin': window.location.origin
+      };
+      
+      const url = `${process.env.REACT_APP_BASE_URL}/api${endpoint}`;
+      console.log(`Making request to: ${url}`);
+      console.log('Request headers:', headers);
+      
+      const response = await fetch(url, {
         method: 'GET',
         credentials: 'include',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'User-ID': userId,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Origin': window.location.origin
-        },
+        headers: headers,
       });
+      
+      console.log(`Response status: ${response.status}`);
+      console.log('Response headers:', Object.fromEntries([...response.headers]));
+      
       if (!response.ok) {
         const errorText = await response.text();
         console.error(`Error response from server: ${errorText}`);
@@ -192,24 +203,33 @@ function AppContent({ isAuthenticated }) {
     try {
       const userId = isAuthenticated ? user?.id : anonymousUserId;
       const token = await getToken();
-      const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/can-draw`, {
+      
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'User-ID': userId,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Origin': window.location.origin
+      };
+      
+      const url = `${process.env.REACT_APP_BASE_URL}/api/can-draw`;
+      console.log(`Making can-draw request to: ${url}`);
+      console.log('Request headers:', headers);
+      
+      const response = await fetch(url, {
         method: 'GET',
         credentials: 'include',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'User-ID': userId,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Origin': window.location.origin
-        },
+        headers: headers,
       });
+
+      console.log(`Can-draw response status: ${response.status}`);
+      console.log('Can-draw response headers:', Object.fromEntries([...response.headers]));
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error(`Error response from server: ${errorText}`);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
       const data = await response.json();
       setCanDraw(data.can_draw);
       setRemainingDrawsToday(data.remaining_draws);

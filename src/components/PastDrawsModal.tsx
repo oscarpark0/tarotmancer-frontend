@@ -69,16 +69,23 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
 
       try {
         const token = await getToken();
+        console.log('Token retrieved:', token ? 'Token present' : 'No token');
+        console.log('User ID:', user?.id);
+        
         const headers: HeadersInit = {
           'Authorization': `Bearer ${token}`,
         };
 
-        // Only add the User-ID header if user.id is not null
         if (user.id) {
           headers['User-ID'] = user.id;
+          console.log('Added User-ID header:', user.id);
         }
 
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/user-draws`, {
+        const url = `${process.env.REACT_APP_BASE_URL}/api/user-draws`;
+        console.log('Making request to:', url);
+        console.log('With headers:', JSON.stringify(headers));
+        
+        const response = await fetch(url, {
           headers: headers
         });
         
@@ -86,7 +93,9 @@ const PastDrawsModal: React.FC<PastDrawsModalProps> = ({ isOpen, onClose }) => {
           const drawsData = await response.json();
           setDraws(drawsData);
         } else {
-          console.error('Failed to fetch user draws');
+          console.error('Failed to fetch user draws:', response.status, response.statusText);
+          const text = await response.text();
+          console.error('Response body:', text);
         }
       } catch (error) {
         console.error('Error fetching user draws:', error);

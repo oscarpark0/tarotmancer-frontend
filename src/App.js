@@ -173,7 +173,9 @@ function AppContent({ isAuthenticated }) {
         'Accept': 'application/json'
       };
       
-      const url = `${process.env.REACT_APP_BASE_URL}/api${endpoint}`;
+      // Use the specific backend URL if environment variable is not defined
+      const baseUrl = process.env.REACT_APP_BASE_URL || 'https://backend-tarotmancer-53d9d741cb25.herokuapp.com';
+      const url = `${baseUrl}/api${endpoint}`;
       console.log(`Making request to: ${url}`);
       console.log('Request headers:', headers);
       
@@ -211,7 +213,9 @@ function AppContent({ isAuthenticated }) {
         'Accept': 'application/json'
       };
       
-      const url = `${process.env.REACT_APP_BASE_URL}/api/can-draw`;
+      // Use the specific backend URL if environment variable is not defined
+      const baseUrl = process.env.REACT_APP_BASE_URL || 'https://backend-tarotmancer-53d9d741cb25.herokuapp.com';
+      const url = `${baseUrl}/api/can-draw`;
       console.log(`Making can-draw request to: ${url}`);
       console.log('Request headers:', headers);
       

@@ -173,8 +173,9 @@ function AppContent({ isAuthenticated }) {
         'Accept': 'application/json'
       };
       
-      // Use the API_BASE_URL from config
-      const url = `${API_BASE_URL}/api${endpoint}`;
+      // Fix path construction to avoid double slashes
+      const path = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
+      const url = `${API_BASE_URL}/api/${path}`;
       console.log(`Making request to: ${url}`);
       console.log('Request headers:', headers);
       
@@ -212,11 +213,11 @@ function AppContent({ isAuthenticated }) {
         'Accept': 'application/json'
       };
       
-      // Try with both the API endpoint and the health endpoint
-      const url = `${API_BASE_URL}/api/can-draw`;
+      // Fixed endpoint URLs for consistency
+      const canDrawUrl = `${API_BASE_URL}/api/can-draw`;
       const healthUrl = `${API_BASE_URL}/health`;
       
-      console.log(`Making can-draw request to: ${url}`);
+      console.log(`Making can-draw request to: ${canDrawUrl}`);
       console.log(`Also checking health endpoint: ${healthUrl}`);
       console.log('Request headers:', headers);
       
@@ -236,7 +237,7 @@ function AppContent({ isAuthenticated }) {
       }
       
       // Now try the actual API endpoint
-      const response = await fetch(url, {
+      const response = await fetch(canDrawUrl, {
         method: 'GET',
         credentials: 'include',
         headers: headers,

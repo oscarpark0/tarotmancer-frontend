@@ -36,6 +36,7 @@
 .dateSelector {
   display: flex;
   justify-content: center;
+  align-items: center;
   margin-bottom: 2rem;
 }
 
@@ -46,11 +47,28 @@
   border-radius: 4px;
   color: #e0e0e0;
   background-color: #1a1a2e;
+  margin-right: 0.5rem;
 }
 
 .dateSelector input:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+.todayButton {
+  background-color: #2c2c44;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.todayButton:hover {
+  background-color: #3a3a5a;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
 }
 
 .spreadsSection, .frequenciesSection {

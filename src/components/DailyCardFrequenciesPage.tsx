@@ -81,7 +81,22 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
 
 const DailyFrequenciesPage: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  // Get today's date properly formatted in the user's local timezone
+  const getTodayFormatted = (): string => {
+    // Create date in user's timezone
+    const today = new Date();
+    
+    // Get year, month, and day components in local timezone
+    const year = today.getFullYear();
+    // getMonth() is 0-based, so add 1
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    
+    // Format as YYYY-MM-DD
+    return `${year}-${month}-${day}`;
+  };
+  
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayFormatted());
   const [celticSpread, setCelticSpread] = useState<PositionInfo[]>([]);
   const [threeCardSpread, setThreeCardSpread] = useState<PositionInfo[]>([]);
   const [frequencies, setFrequencies] = useState<CardFrequency[]>([]);
@@ -214,8 +229,14 @@ const DailyFrequenciesPage: React.FC = () => {
             type="date"
             value={selectedDate}
             onChange={handleDateChange}
-            max={new Date().toISOString().split('T')[0]}
+            max={getTodayFormatted()}
           />
+          <button 
+            onClick={() => setSelectedDate(getTodayFormatted())}
+            className={styles.todayButton}
+          >
+            Today
+          </button>
         </div>
         
         {/* Show error message prominently if there's an error */}

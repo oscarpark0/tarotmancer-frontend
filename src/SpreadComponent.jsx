@@ -169,29 +169,46 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   );
 
   const drawSpread = useCallback(async () => {
+    console.log("Starting new draw sequence");
+    
+    // Clear current state
     setShowCards(false); // Hide the current cards
+    setDealCards(false); // Stop current dealing animation
+    setRevealedCards(0); // Reset revealed cards counter
+    
+    // Reset state with a small delay
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
+    // Clear arrays
     setCards([]); // Clear the current cards array
     setPositions([]); // Clear the current positions array
-
-    // Wait for a short time to allow the cards to disappear
+    
+    // Wait for a short time to allow the cards to disappear fully
     await new Promise(resolve => setTimeout(resolve, 300));
 
     setIsLoading(true);
     setError(null);
     setShouldDrawNewSpread(true);
-    setDealCards(false);
     setAnimationsComplete(false);
 
     try {
+      console.log("Fetching new spread data");
+      // Force a new draw by calling the debounced function
       await debouncedFetchSpread();
       onDraw();
+      
+      // Signal that new cards should be dealt
+      setTimeout(() => {
+        console.log("Setting dealCards to true");
+        setDealCards(true);
+      }, 200);
     } catch (error) {
       console.error('Error in drawSpread:', error);
       setError(error.message || 'An error occurred while drawing the spread.');
     } finally {
       setIsLoading(false);
     }
-  }, [debouncedFetchSpread, onDraw]);
+  }, [debouncedFetchSpread, onDraw, setRevealedCards]);
 
   const handleExitComplete = useCallback(() => {
     setTimeout(() => {
@@ -228,8 +245,19 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
 
   const handleAnimationComplete = useCallback(() => {
     console.log('FloatingCards animation completed');
-    setShowCards(true); // Show the new cards
-    setShouldDrawNewSpread(false);
+    
+    // Ensure we don't show cards immediately, but with a short delay
+    // to allow for proper transition between animations
+    setTimeout(() => {
+      console.log('Now showing cards');
+      setShowCards(true);
+      
+      // Reset the redraw flag only after cards are fully visible
+      setTimeout(() => {
+        setShouldDrawNewSpread(false);
+        console.log('Animation sequence completed');
+      }, 500);
+    }, 300);
   }, []);
 
   // Add this effect to force re-render when language changes

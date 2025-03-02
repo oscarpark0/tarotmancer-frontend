@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect, ReactNode } from 'react';
 
-const ErrorBoundary = ({ children }) => {
-  const [error, setError] = useState(null);
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+const ErrorBoundary: React.FC<ErrorBoundaryProps> = ({ children }) => {
+  const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const errorHandler = (error) => {
-      console.error("ErrorBoundary caught an error", error);
-      setError(error);
+    const errorHandler = (event: ErrorEvent) => {
+      console.error("ErrorBoundary caught an error", event.error);
+      setError(event.error);
     };
 
     window.addEventListener('error', errorHandler);
@@ -26,11 +29,7 @@ const ErrorBoundary = ({ children }) => {
     );
   }
 
-  return children;
-};
-
-ErrorBoundary.propTypes = {
-  children: PropTypes.node.isRequired,
+  return <>{children}</>;
 };
 
 export default ErrorBoundary;

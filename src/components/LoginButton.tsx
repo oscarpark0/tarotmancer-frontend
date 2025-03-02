@@ -3,17 +3,18 @@ import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useTranslation } from '../utils/translations';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const LoginButton = () => {
+const LoginButton: React.FC = () => {
   const { login } = useKindeAuth();
   const { getTranslation } = useTranslation();
   useLanguage();
 
-  const handleLogin = () => {
-    login({
-      authorizationParams: {
-        redirect_uri: `${window.location.origin}/kinde_callback`
-      }
-    });
+  const handleLogin = (): void => {
+    try {
+      // Call login with no parameters - the redirect URI is already set in the KindeProvider
+      login();
+    } catch (error) {
+      console.error('Login error:', error);
+    }
   };
 
   return (

@@ -101,17 +101,17 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
           <textarea
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
-            placeholder={getTranslation('enterFeedbackHere')}
+            placeholder="Enter your feedback here..."
             rows={5}
             required
           />
           <TarotCaptcha onVerify={handleCaptchaVerify} />
           <button type="submit" disabled={isSubmitting || !isCaptchaVerified}>
-            {isSubmitting ? getTranslation('submitting') : getTranslation('submitFeedback')}
+            {isSubmitting ? "Submitting..." : "Submit Feedback"}
           </button>
         </form>
-        {submitStatus === 'success' && <p className={styles.successMessage} aria-live="polite">{getTranslation('feedbackSubmittedSuccess')}</p>}
-        {submitStatus === 'error' && <p className={styles.errorMessage} aria-live="polite">{getTranslation('feedbackSubmitError')}</p>}
+        {submitStatus === 'success' && <p className={styles.successMessage} aria-live="polite">Your feedback has been submitted successfully!</p>}
+        {submitStatus === 'error' && <p className={styles.errorMessage} aria-live="polite">An error occurred while submitting your feedback. Please try again.</p>}
       </div>
     </div>
   );
@@ -120,11 +120,11 @@ const FeedbackButton: React.FC<FeedbackButtonProps> = ({ isFooterLink = false })
     <>
       {isFooterLink ? (
         <span onClick={handleOpenModal} className={footerStyles.footerLink}>
-          {getTranslation('feedback')}
+          Feedback
         </span>
       ) : (
         <button onClick={handleOpenModal} className={headerStyles.feedbackButton}>
-          {getTranslation('feedback')}
+          Feedback
         </button>
       )}
       {isModalOpen && ReactDOM.createPortal(

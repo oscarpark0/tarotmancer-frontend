@@ -1,9 +1,19 @@
 import { cn } from "../utils";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef, ReactNode } from "react";
 
-const MagicContainer = ({ children, className }) => {
-  const containerRef = useRef(null);
-  const containerSize = useRef({ w: 0, h: 0 });
+interface ContainerSize {
+  w: number;
+  h: number;
+}
+
+interface MagicContainerProps {
+  children: ReactNode;
+  className?: string;
+}
+
+const MagicContainer: React.FC<MagicContainerProps> = ({ children, className }) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerSize = useRef<ContainerSize>({ w: 0, h: 0 });
 
   useEffect(() => {
     init();
@@ -15,7 +25,7 @@ const MagicContainer = ({ children, className }) => {
     return () => window.removeEventListener("resize", init);
   }, []);
 
-  const init = () => {
+  const init = (): void => {
     if (containerRef.current) {
       containerSize.current.w = containerRef.current.offsetWidth;
       containerSize.current.h = containerRef.current.offsetHeight;
@@ -29,5 +39,4 @@ const MagicContainer = ({ children, className }) => {
   );
 };
 
-
-export {MagicContainer };
+export { MagicContainer };

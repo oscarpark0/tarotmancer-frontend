@@ -1,8 +1,24 @@
 import { cn } from "../utils";
-import React from "react";
-import { useTranslation } from '../utils/translations';
+import React, { ButtonHTMLAttributes, forwardRef, CSSProperties } from "react";
+import { useTranslation, TranslationKey } from '../utils/translations';
 
-const ShimmerButton = React.forwardRef(
+interface ShimmerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  shimmerColor?: string;
+  shimmerSize?: string;
+  shimmerDuration?: string;
+  background?: string;
+  className?: string;
+  translationKey?: string;
+}
+
+interface ShimmerButtonStyle extends CSSProperties {
+  "--shimmer-color": string;
+  "--bg": string;
+  "--shimmer-size": string;
+  "--shimmer-duration": string;
+}
+
+const ShimmerButton = forwardRef<HTMLButtonElement, ShimmerButtonProps>(
   (
     {
       shimmerColor = "#9932cc",
@@ -26,7 +42,7 @@ const ShimmerButton = React.forwardRef(
           "--bg": background,
           "--shimmer-size": shimmerSize,
           "--shimmer-duration": shimmerDuration,
-        }}
+        } as ShimmerButtonStyle}
         className={cn(
           "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap border-2 border-purple-500/50 px-6 py-3 text-white [background:var(--bg)] rounded-lg shadow-lg",
           "transform-gpu transition-all duration-300 ease-in-out hover:scale-105 active:translate-y-[2px] hover:shadow-purple-500/30 hover:shadow-xl",

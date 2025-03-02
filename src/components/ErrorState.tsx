@@ -1,7 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-export const ErrorState = ({ error }) => {
+interface ErrorObject {
+  message?: string;
+  [key: string]: any;
+}
+
+interface ErrorStateProps {
+  error: string | ErrorObject;
+}
+
+export const ErrorState: React.FC<ErrorStateProps> = ({ error }) => {
   const errorMessage = typeof error === 'string' ? error : error.message || 'Unknown error';
 
   return (
@@ -10,13 +18,4 @@ export const ErrorState = ({ error }) => {
       <p>{errorMessage}</p>
     </div>
   );
-};
-
-ErrorState.propTypes = {
-  error: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.shape({
-      message: PropTypes.string
-    })
-  ]).isRequired
 };

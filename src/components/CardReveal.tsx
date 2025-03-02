@@ -3,9 +3,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { IKImage } from 'imagekitio-react';
 import './CardReveal.css';
 
-const CardReveal = ({ cards, showCards, isMobile }) => {
-  const [localShowCards, setLocalShowCards] = useState(showCards);
-  const [hoveredCard, setHoveredCard] = useState(null);
+interface Card {
+  name: string;
+  img: string;
+  orientation: 'upright' | 'reversed';
+  position: string;
+  tooltip: string;
+}
+
+interface CardRevealProps {
+  cards: Card[];
+  showCards: boolean;
+  isMobile: boolean;
+}
+
+type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
+
+const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) => {
+  const [localShowCards, setLocalShowCards] = useState<boolean>(showCards);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   useEffect(() => {
     if (!showCards) {
@@ -28,15 +44,15 @@ const CardReveal = ({ cards, showCards, isMobile }) => {
     console.log('CardReveal: cards or showCards changed', { cards, showCards });
   }, [cards, showCards]);
 
-  const handleMouseEnter = (index) => {
+  const handleMouseEnter = (index: number): void => {
     setHoveredCard(index);
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (): void => {
     setHoveredCard(null);
   };
 
-  const getTooltipPosition = (index, totalCards, orientation) => {
+  const getTooltipPosition = (index: number, totalCards: number, orientation: string): TooltipPosition => {
     if (totalCards === 3) {
       return index === 1 ? 'bottom' : 'top';
     } else {

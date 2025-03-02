@@ -1,14 +1,14 @@
 import React from 'react';
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { useTranslation } from '../utils/translations';
-import { useLanguage } from '../contexts/LanguageContext'; // Import useLanguage
+import { useLanguage } from '../contexts/LanguageContext';
 
-const LogoutButton = () => {
+const LogoutButton: React.FC = () => {
   const { logout } = useKindeAuth();
   const { getTranslation } = useTranslation();
-  useLanguage(); // Use useLanguage hook
+  useLanguage();
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     // Store the current drawCount and lastResetTime in sessionStorage
     const drawCount = localStorage.getItem('drawCount');
     const lastResetTime = localStorage.getItem('lastResetTime');
@@ -18,7 +18,13 @@ const LogoutButton = () => {
     if (localStorage.getItem('guestId')) {
       localStorage.removeItem('guestId');
     } else if (logout) {
-      logout();
+      try {
+        // Call logout with no parameters - the logout URI is already set in the KindeProvider
+        logout();
+      } catch (error) {
+        console.error('Logout error:', error);
+        alert(getTranslation('logoutUnavailable'));
+      }
     } else {
       console.error('Logout function is not available');
       alert(getTranslation('logoutUnavailable'));

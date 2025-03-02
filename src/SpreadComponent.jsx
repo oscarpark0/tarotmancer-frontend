@@ -80,7 +80,10 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           'Draw-ID': newDrawId.toString(),
         };
 
-        const endpoint = selectedSpread === 'celtic' ? 'api/draw_celtic_spreads' : 'api/draw_three_card_spread';
+        // Use the correct endpoint names according to backend registration
+        const endpoint = selectedSpread === 'celtic' ? 'api/draw-celtic-spreads' : 'api/draw-three-card-spread';
+        console.log(`Calling endpoint: ${API_BASE_URL}/${endpoint}`);
+        
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
           method: 'GET',
           headers: headers,

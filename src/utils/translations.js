@@ -1,4 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
+// Import the Language type definition but don't use it in runtime code
+// This is just for documentation
+// @ts-check
+
+/**
+ * @typedef {import('./translations').Language} Language
+ */
 
 // Language names mapping
 export const languageNames = {
@@ -623,27 +630,51 @@ export const buttonTranslations = {
 };
 
 // Translation context and hooks
+/** @type {Language} */
 let currentLanguage = 'English';
 let translations = buttonTranslations;
 
+/**
+ * @param {Language|string} shortName
+ * @returns {string}
+ */
 export const getFullLanguageName = (shortName) => {
   return languageNames[shortName] || shortName;
 };
 
+/**
+ * @param {Language} language
+ * @returns {Promise<any>}
+ */
 export const loadTranslations = async (language) => {
   currentLanguage = language;
   return buttonTranslations;
 };
 
+/**
+ * Initialize translations with saved language or default to English
+ * @returns {Promise<any>}
+ */
 export const initializeTranslations = () => {
-  const savedLanguage = localStorage.getItem('selectedLanguage') || 'English';
+  /** @type {Language} */
+  const savedLanguage = (localStorage.getItem('selectedLanguage') || 'English');
   currentLanguage = savedLanguage;
   return loadTranslations(savedLanguage);
 };
 
+/**
+ * Hook to use translations in components
+ * @returns {{language: Language, changeLanguage: Function, getTranslation: Function, getFullLanguageName: Function}}
+ */
 export const useTranslation = () => {
+  /** @type {[Language, Function]} */
   const [language, setLanguage] = useState(currentLanguage);
 
+  /**
+   * @param {string} key
+   * @param {string} defaultValue
+   * @returns {string}
+   */
   const getTranslation = useCallback((key, defaultValue = '') => {
     if (!translations[key]) {
       return defaultValue;
@@ -651,6 +682,10 @@ export const useTranslation = () => {
     return translations[key][language] || translations[key]['English'] || defaultValue;
   }, [language]);
 
+  /**
+   * @param {Language} newLanguage
+   * @returns {Promise<void>}
+   */
   const changeLanguage = useCallback(async (newLanguage) => {
     currentLanguage = newLanguage;
     localStorage.setItem('selectedLanguage', newLanguage);

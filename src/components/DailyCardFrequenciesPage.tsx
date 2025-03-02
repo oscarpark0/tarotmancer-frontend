@@ -14,6 +14,7 @@ interface PositionInfo {
   most_common_card: string;
   most_common_card_img: string;
   orientation: 'upright' | 'reversed';
+  count?: number; // Make count optional
 }
 
 interface CardFrequency {

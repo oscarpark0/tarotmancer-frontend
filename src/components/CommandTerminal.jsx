@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useRef, useEffect, useCallback, forwardRef, useMemo } from 'react';
 import './CommandTerminal.css';
-import ShimmerButton from './ShimmerButton.jsx';
-import SpreadSelector from './SpreadSelector.jsx';
+import ShimmerButton from './ShimmerButton';
+import SpreadSelector from './SpreadSelector';
 import CardReveal from './CardReveal';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../utils/translations';

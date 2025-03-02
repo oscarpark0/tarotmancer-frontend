@@ -26,9 +26,10 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
   }, [shouldDrawNewSpread, resetAnimation]);
 
   const cardPositions = useMemo(() => {
+    // Adjusted scaling to ensure cards aren't cut off
     const baseScale = isMobile ? 0.01 : 0.015;
     const baseLeft = '-30%';
-    const topOffset = '6%';
+    const topOffset = '10%'; // Increased from 6% to allow more space for cards
     
     if (numCards === 3) {
       // Three Card Spread
@@ -41,7 +42,7 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
     } else {
       const crossCardScale = baseScale * 0.9;
       const celticBaseScale = isMobile ? baseScale * 0.9 : baseScale;
-      const verticalSpacing = isMobile ? '12vh' : '8vh';
+      const verticalSpacing = isMobile ? '13vh' : '9vh'; // Increased from 12vh/8vh
       const horizontalSpacing = isMobile ? '14vw' : '4vw';
       const rightColumnSpacing = isMobile ? '25vw' : '11vw';
       

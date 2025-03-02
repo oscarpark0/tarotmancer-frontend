@@ -215,9 +215,9 @@ function AppContent({ isAuthenticated }) {
         'Accept': 'application/json'
       };
       
-      // Try both direct and API-prefixed routes
-      const canDrawUrl = USE_DIRECT_API ? `${API_BASE_URL}/can-draw` : `${API_BASE_URL}/api/can-draw`;
-      const healthUrl = `${API_BASE_URL}/health`;
+      // Always use API-prefixed routes
+      const canDrawUrl = `${API_BASE_URL}/api/can-draw`;
+      const healthUrl = `${API_BASE_URL}/api/health`;
       
       console.log(`Making can-draw request to: ${canDrawUrl}`);
       console.log(`Also checking health endpoint: ${healthUrl}`);

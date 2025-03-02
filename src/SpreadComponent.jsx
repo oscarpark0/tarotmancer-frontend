@@ -14,7 +14,7 @@ import { useTranslation } from './utils/translations';
 import PastDrawsModal from './components/PastDrawsModal';
 import { debounce } from 'lodash';
 
-const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, onDrawComplete, remainingDrawsToday, setRemainingDrawsToday, lastResetTime, setLastResetTime, drawCount, setDrawCount }) => {
+const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, onDrawComplete, remainingDrawsToday, setRemainingDrawsToday, lastResetTime, setLastResetTime = () => {}, drawCount, setDrawCount }) => {
   const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -181,7 +181,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           setDrawCount(5 - parseInt(remainingDrawsToday, 10));
         }
 
-        if (resetTime !== null) {
+        if (resetTime !== null && typeof setLastResetTime === 'function') {
           setLastResetTime(parseInt(resetTime, 10) * 1000);
         }
 
@@ -469,9 +469,22 @@ SpreadComponent.propTypes = {
   remainingDrawsToday: PropTypes.number.isRequired,
   setRemainingDrawsToday: PropTypes.func.isRequired,
   lastResetTime: PropTypes.number,
-  setLastResetTime: PropTypes.func,
+  setLastResetTime: PropTypes.func, // This is optional but we provide a default
   drawCount: PropTypes.number.isRequired,
   setDrawCount: PropTypes.func.isRequired,
+};
+
+// Default props to prevent TypeError
+SpreadComponent.defaultProps = {
+  setLastResetTime: () => {},
+  isMobile: false,
+  onSpreadSelect: () => {},
+  selectedSpread: 'three',
+  isDarkMode: false,
+  canDraw: true,
+  timeUntilNextDraw: '',
+  lastDrawTime: '',
+  lastResetTime: null,
 };
 
 export default SpreadComponent;

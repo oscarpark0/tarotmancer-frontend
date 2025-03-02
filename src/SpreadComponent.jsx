@@ -163,9 +163,21 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
         ).join('\n');
 
-        // Handle rate limit headers
-        const remainingDrawsToday = response.headers.get('X-RateLimit-Remaining');
-        const resetTime = response.headers.get('X-RateLimit-Reset');
+        // For guest users we don't have rate limit headers, so use default values
+        let remainingDrawsToday = null;
+        let resetTime = null;
+        
+        // Handle rate limit headers for authenticated users
+        if (!isAnonymousUser) {
+          // This 'response' variable is only defined in the authenticated user flow
+          remainingDrawsToday = response?.headers?.get('X-RateLimit-Remaining');
+          resetTime = response?.headers?.get('X-RateLimit-Reset');
+        } else {
+          // For guests, we're enforcing a single draw per 48 hours
+          remainingDrawsToday = 0; // They just used their one draw
+          // Set reset time to 48 hours from now
+          resetTime = Math.floor((Date.now() + (48 * 60 * 60 * 1000)) / 1000); 
+        }
 
         if (remainingDrawsToday !== null) {
           setRemainingDrawsToday(parseInt(remainingDrawsToday, 10));

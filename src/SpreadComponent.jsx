@@ -15,7 +15,7 @@ import PastDrawsModal from './components/PastDrawsModal';
 import { debounce } from 'lodash';
 
 const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, onDrawComplete, remainingDrawsToday, setRemainingDrawsToday, lastResetTime, setLastResetTime = () => {}, drawCount, setDrawCount }) => {
-  const { user } = useKindeAuth();
+  const { user, login } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
 
@@ -427,32 +427,58 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
                style={{ position: 'relative', minHeight: '100vh', paddingBottom: isMobile ? '350px' : '0' }}>
             {memoizedRobot}
             
-            {/* Show anonymous user draw limit info for first-time anonymous users */}
-            {hasNoDrawHistory && (
-              <div className="draw-limits-container" style={{ 
-                marginTop: isMobile ? '300px' : '60px', 
-                position: 'relative', 
-                zIndex: 2000,
-                width: '100%',
-                maxWidth: '600px',
-                padding: '0 15px'
+            {/* Add a simple signup button for anonymous users */}
+            {isAnonymousUser && (
+              <div style={{ 
+                position: 'fixed', 
+                bottom: '10px', 
+                right: '10px', 
+                zIndex: 3000,
+                background: 'rgba(0,0,0,0.7)',
+                borderRadius: '8px',
+                padding: '8px 12px',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.4)'
               }}>
-                <AnonymousDrawLimitInfo />
+                <button 
+                  onClick={() => { 
+                    if (login) {
+                      login();
+                    } else {
+                      console.log('Kinde login not available, redirecting to home');
+                      window.location.href = '/';
+                    }
+                  }}
+                  style={{
+                    background: 'linear-gradient(135deg, #f5d020 0%, #f53803 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '8px 16px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
+                  }}
+                >
+                  {getTranslation('signUpForMoreDraws') || 'Sign up for 6 draws per day!'}
+                </button>
               </div>
             )}
           </div>
           {positions.length > 0 && (
-            <div className="relative z-10 w-full flex flex-col items-center">
-              <div style={{ position: 'relative', zIndex: 1, marginTop: '30px' }}>
-                <section className="relative z-10 mb-16 w-full">
+            <div className="fixed top-0 left-0 w-full h-full z-10 pointer-events-none">
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <section className="relative z-10 w-full">
                   <ErrorBoundary>
                     {memoizedFloatingCards}
                   </ErrorBoundary>
-                  <CardReveal
-                    cards={cards}
-                    showCards={showCards}
-                    isMobile={isMobile}
-                  />
+                  <div className="pointer-events-auto">
+                    <CardReveal
+                      cards={cards}
+                      showCards={showCards}
+                      isMobile={isMobile}
+                    />
+                  </div>
                 </section>
               </div>
             </div>

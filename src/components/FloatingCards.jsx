@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 import useCardAnimation from '../hooks/useCardAnimation';
 import './FloatingCards.css';
 
-function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSpread, numCards, isMobile, onAnimationStart, onAnimationComplete }) {
+function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSpread, numCards, isMobile, onAnimationStart, onAnimationComplete = () => {} }) {
+  // Set a default empty function for onAnimationComplete if it's not provided
   const [isAnimating, setIsAnimating] = useState(false);
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
@@ -97,7 +98,7 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
               if (i === numCards - 1) {
                 setIsAnimating(false);
                 onExitComplete();
-                onAnimationComplete(i === numCards - 1); // Added this line
+                onAnimationComplete(true); // Pass true for last card
               }
             }}
           >
@@ -115,7 +116,15 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
 }
 
 FloatingCards.propTypes = {
-  onAnimationComplete: PropTypes.func.isRequired,
+  dealCards: PropTypes.bool,
+  onExitComplete: PropTypes.func,
+  revealCards: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
+  shouldDrawNewSpread: PropTypes.bool,
+  numCards: PropTypes.number,
+  isMobile: PropTypes.bool,
+  cards: PropTypes.array,
+  onAnimationStart: PropTypes.func,
+  onAnimationComplete: PropTypes.func,
 };
 
 export default FloatingCards;

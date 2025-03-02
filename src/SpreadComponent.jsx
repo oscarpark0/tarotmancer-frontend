@@ -284,21 +284,24 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     setIsRobotExpanded(prev => !prev);
   }, []);
 
-  const handleAnimationComplete = useCallback(() => {
-    console.log('FloatingCards animation completed');
+  const handleAnimationComplete = useCallback((isLastCard) => {
+    console.log('FloatingCards animation completed', isLastCard);
     
-    // Ensure we don't show cards immediately, but with a short delay
-    // to allow for proper transition between animations
-    setTimeout(() => {
-      console.log('Now showing cards');
-      setShowCards(true);
-      
-      // Reset the redraw flag only after cards are fully visible
+    // Only proceed if this is the last card animation completing
+    if (isLastCard) {
+      // Ensure we don't show cards immediately, but with a short delay
+      // to allow for proper transition between animations
       setTimeout(() => {
-        setShouldDrawNewSpread(false);
-        console.log('Animation sequence completed');
-      }, 500);
-    }, 300);
+        console.log('Now showing cards');
+        setShowCards(true);
+        
+        // Reset the redraw flag only after cards are fully visible
+        setTimeout(() => {
+          setShouldDrawNewSpread(false);
+          console.log('Animation sequence completed');
+        }, 500);
+      }, 300);
+    }
   }, []);
 
   // Add this effect to force re-render when language changes

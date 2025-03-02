@@ -19,7 +19,7 @@ const Robot = memo((props) => {
     canDraw, drawSpread, onResponseComplete, onStreamingStateChange, 
     onNewResponse, dealingComplete, onExitComplete, mostCommonCards, 
     onSubmitInput, selectedSpread, onSpreadSelect, isMobile, 
-    fetchSpread, animationsComplete, onAnimationStart, onAnimationComplete, // Added onAnimationComplete prop
+    fetchSpread, animationsComplete, onAnimationStart, 
     user, currentDrawId, setCurrentDrawId, 
     onOpenPastDraws, onDraw,
     dealCards, lastDrawTime, remainingDrawsToday,
@@ -29,7 +29,11 @@ const Robot = memo((props) => {
     userId,
     isDrawing,
     setIsDrawing,
-  } = props; // Destructure props
+    onAnimationComplete = () => {},
+  } = props; // Destructure props with default values
+  
+  // Ensure onAnimationComplete is a function
+  console.log('Robot: onAnimationComplete type:', typeof onAnimationComplete);
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const [monitorOutput, setMonitorOutput] = useState('');
@@ -365,7 +369,7 @@ const Robot = memo((props) => {
                 numCards={props.cards.length}
                 isMobile={isMobile}
                 onAnimationStart={handleAnimationStart}
-                onAnimationComplete={onAnimationComplete} // Added onAnimationComplete prop
+                onAnimationComplete={onAnimationComplete}
               />
               <div ref={monitorOutputRef} className={`monitor-output ${isExpanded ? 'expanded' : ''}`}>
                 {monitorOutput}

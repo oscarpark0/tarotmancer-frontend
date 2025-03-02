@@ -208,57 +208,20 @@ function AppContent({ isAuthenticated }) {
       const userId = isAuthenticated ? user?.id : anonymousUserId;
       const token = await getToken();
       
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'User-ID': userId,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
+      // Import the API helper
+      const { checkCanDraw } = await import('./utils/api');
       
-      // Always use API-prefixed routes
-      const canDrawUrl = `${API_BASE_URL}/api/can-draw`;
-      const healthUrl = `${API_BASE_URL}/api/health`;
-      
-      console.log(`Making can-draw request to: ${canDrawUrl}`);
-      console.log(`Also checking health endpoint: ${healthUrl}`);
-      console.log('Request headers:', headers);
-      
-      // First, try the health endpoint to see if the server is running
       try {
-        const healthResponse = await fetch(healthUrl, {
-          method: 'GET',
-          mode: 'cors'
-        });
-        console.log(`Health check response status: ${healthResponse.status}`);
-        if (healthResponse.ok) {
-          const healthText = await healthResponse.text();
-          console.log(`Health check response: ${healthText}`);
-        }
-      } catch (healthError) {
-        console.error('Health check failed:', healthError);
+        const data = await checkCanDraw(userId, token);
+        setCanDraw(data.can_draw);
+        setRemainingDrawsToday(data.remaining_draws);
+      } catch (error) {
+        console.error('Error checking draw status:', error);
+        setCanDraw(false);
+        setRemainingDrawsToday(0);
       }
-      
-      // Now try the actual API endpoint
-      const response = await fetch(canDrawUrl, {
-        method: 'GET',
-        credentials: 'include',
-        headers: headers,
-        mode: 'cors'
-      });
-
-      console.log(`Can-draw response status: ${response.status}`);
-      console.log('Can-draw response headers:', Object.fromEntries([...response.headers]));
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Error response from server: ${errorText}`);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setCanDraw(data.can_draw);
-      setRemainingDrawsToday(data.remaining_draws);
     } catch (error) {
-      console.error('Error checking draw status:', error);
+      console.error('Error initializing API call:', error);
       setCanDraw(false);
       setRemainingDrawsToday(0);
     }
@@ -286,13 +249,30 @@ function AppContent({ isAuthenticated }) {
 
   const fetchUserDraws = useCallback(async () => {
     try {
-      const draws = await makeAuthenticatedRequest('/user-draws', 'Error fetching user draws');
-      setUserDraws(draws || []);
+      const userId = user?.id;
+      const token = await getToken();
+      
+      if (!userId) {
+        console.error("User ID not available");
+        setUserDraws([]);
+        return;
+      }
+      
+      // Import the API helper
+      const { fetchUserDraws } = await import('./utils/api');
+      
+      try {
+        const draws = await fetchUserDraws(userId, token);
+        setUserDraws(draws || []);
+      } catch (error) {
+        console.error('Error fetching user draws:', error);
+        setUserDraws([]);
+      }
     } catch (error) {
-      console.error('Error fetching user draws:', error);
+      console.error('Error initializing API call:', error);
       setUserDraws([]);
     }
-  }, [makeAuthenticatedRequest]);
+  }, [user, getToken]);
 
   useEffect(() => {
     if (isAuthenticated) {

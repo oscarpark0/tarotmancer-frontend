@@ -6,6 +6,7 @@ import DailyCardFrequencies from './DailyCardFrequencies';
 import styles from './DailyCardFrequenciesPage.module.css';
 import { useTranslation } from '../utils/translations';
 import { IKImage } from 'imagekitio-react';
+import { API_BASE_URL } from '../utils/config';
 
 
 interface PositionInfo {
@@ -96,14 +97,14 @@ const DailyFrequenciesPage: React.FC = () => {
       
       const [frequenciesResponse, spreadsResponse] = await Promise.all([
         axios.get<CardFrequency[]>(
-          `${process.env.REACT_APP_BASE_URL}/api/daily-card-frequencies`,
+          `${API_BASE_URL}/api/daily-card-frequencies`,
           {
             headers: { 'Authorization': `Bearer ${token}` },
             params: { date }
           }
         ),
         axios.get(
-          `${process.env.REACT_APP_BASE_URL}/api/most-common-cards`,
+          `${API_BASE_URL}/api/most-common-cards`,
           {
             headers: { 'Authorization': `Bearer ${token}` },
             params: { date }

@@ -627,6 +627,28 @@ export const buttonTranslations = {
     Arabic: "اسحب بطاقات التارو",
     Hindi: "टैरो कार्ड खींचें",
   },
+  pastDraws: {
+    English: "Past Draws",
+    Spanish: "Dibujos Pasados",
+    French: "Tirages Passés",
+    German: "Vergangene Ziehungen",
+    Italian: "Pesche Passate",
+    Japanese: "過去のドロー",
+    Chinese: "过去的抽牌",
+    Russian: "Прошлые Вытягивания",
+    Portuguese: "Sorteios Passados",
+    Dutch: "Vorige Trekkingen",
+    Korean: "과거 뽑기",
+    Arabic: "السحوبات السابقة",
+    Hindi: "पिछले खींचे गए कार्ड",
+    Swedish: "Tidigare Dragningar",
+    Polish: "Poprzednie Losowania",
+    Turkish: "Geçmiş Çekimler",
+    Danish: "Tidligere Trækninger",
+    Norwegian: "Tidligere Trekninger",
+    Finnish: "Aiemmat Nostot",
+    Greek: "Προηγούμενα Τραβήγματα",
+  },
 };
 
 // Translation context and hooks

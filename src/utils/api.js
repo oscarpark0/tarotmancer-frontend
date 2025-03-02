@@ -1,32 +1,60 @@
 import axios from 'axios';
-import { API_BASE_URL } from './config';
+import { API_BASE_URL, USE_DIRECT_API } from './config';
+
+// Alternative API URL to try if the primary one fails
+const BACKUP_API_URL = "https://backend-tarotmancer.herokuapp.com";
 
 // Log all attempted URLs for debugging
-console.log('Using API base URL:', API_BASE_URL);
+console.log('Using primary API base URL:', API_BASE_URL);
+console.log('Backup API URL available:', BACKUP_API_URL);
 
-// Use a hard-coded URL for now
-const BACKEND_URL = 'https://backend-tarotmancer.herokuapp.com';
+// Construct the proper API URL based on config
+const apiPrefix = USE_DIRECT_API ? '' : '/api';
+const baseURL = `${API_BASE_URL}${apiPrefix}`;
+
+// For backup URL
+const backupBaseURL = `${BACKUP_API_URL}${apiPrefix}`;
 
 // Set the base URL directly
-console.log('Using backend URL:', BACKEND_URL);
+console.log('Using baseURL for API calls:', baseURL);
 
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: `${BACKEND_URL}/api`,
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  withCredentials: true
+  withCredentials: true,
+  // Add a timeout for requests
+  timeout: 10000
 });
+
+// Add response interceptor to handle errors consistently
+api.interceptors.response.use(
+  response => response,
+  error => {
+    // Log detailed information about the error
+    console.error('API Error:', error.message);
+    if (error.response) {
+      console.log('Error Status:', error.response.status);
+      console.log('Error Data:', error.response.data);
+    } else if (error.request) {
+      console.log('No response received from server');
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Add a request interceptor to include auth headers when needed
 api.interceptors.request.use(
   async (config) => {
     // You could add auth tokens here if needed
+    console.log(`Making request to: ${config.baseURL}${config.url}`);
     return config;
   },
   (error) => {
+    console.error('Request setup error:', error);
     return Promise.reject(error);
   }
 );
@@ -34,15 +62,20 @@ api.interceptors.request.use(
 // Export common API functions with fallback mock data
 export const fetchUserDraws = async (userId, token) => {
   try {
-    const response = await api.get('/user-draws', {
+    // Log what we're about to do
+    console.log('Fetching user draws using both endpoints if needed');
+    
+    // Try both endpoints for the request
+    const response = await tryBothEndpoints('/user-draws', {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': token ? `Bearer ${token}` : undefined,
         'User-ID': userId,
       }
     });
+    
     return response.data;
   } catch (error) {
-    console.error('Error fetching user draws:', error);
+    console.error('All endpoints failed for fetching user draws:', error.message);
     console.log('Using mock data for user draws as fallback');
     
     // Return mock data as fallback
@@ -57,25 +90,84 @@ export const fetchUserDraws = async (userId, token) => {
   }
 };
 
+// Helper function to try both primary and backup endpoints
+const tryBothEndpoints = async (endpoint, options) => {
+  try {
+    // Try the primary endpoint first
+    return await api.get(endpoint, options);
+  } catch (primaryError) {
+    console.log(`Primary endpoint ${baseURL}${endpoint} failed:`, primaryError.message);
+    
+    // If primary fails with network error, try the backup
+    if (primaryError.code === 'ERR_NETWORK') {
+      console.log(`Trying backup endpoint: ${backupBaseURL}${endpoint}`);
+      try {
+        // Create a new axios instance with the backup URL
+        const backupApi = axios.create({
+          baseURL: backupBaseURL,
+          timeout: 8000,
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        
+        return await backupApi.get(endpoint, options);
+      } catch (backupError) {
+        console.log(`Backup endpoint failed too:`, backupError.message);
+        throw backupError;
+      }
+    }
+    
+    // If it's not a network error, just pass through the original error
+    throw primaryError;
+  }
+};
+
 export const checkCanDraw = async (userId, token) => {
   try {
-    // Also check health endpoint
+    // First check health endpoint
     try {
-      const healthResponse = await api.get('/health');
+      // Log full URL for debugging
+      const healthUrl = `${API_BASE_URL}/health`;
+      console.log('Attempting health check at:', healthUrl);
+      
+      const healthResponse = await axios.get(healthUrl, {
+        timeout: 5000, // Shorter timeout for health check
+      });
       console.log('Health check response:', healthResponse.data);
     } catch (healthError) {
       console.error('Health check failed:', healthError);
+      
+      // Try backup health endpoint
+      try {
+        const backupHealthUrl = `${BACKUP_API_URL}/health`;
+        console.log('Attempting backup health check at:', backupHealthUrl);
+        
+        const backupHealthResponse = await axios.get(backupHealthUrl, {
+          timeout: 5000,
+        });
+        console.log('Backup health check response:', backupHealthResponse.data);
+      } catch (backupHealthError) {
+        console.error('Backup health check also failed');
+      }
     }
     
-    const response = await api.get('/can-draw', {
+    // Log what we're about to do
+    console.log('Checking can-draw using both endpoints if needed');
+    
+    // Try both endpoints for the main request
+    const response = await tryBothEndpoints('/can-draw', {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        'Authorization': token ? `Bearer ${token}` : undefined,
         'User-ID': userId,
       }
     });
+    
     return response.data;
   } catch (error) {
-    console.error('Error checking draw status:', error);
+    console.error('All endpoints failed for checking draw status:', error.message);
     console.log('Using mock data for draw status as fallback');
     
     // Return mock data allowing draws as fallback

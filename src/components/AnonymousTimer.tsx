@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../utils/translations';
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 
 interface AnonymousTimerProps {
   className?: string;
+  showSignupMessage?: boolean;
 }
 
-const AnonymousTimer: React.FC<AnonymousTimerProps> = ({ className = '' }) => {
+const AnonymousTimer: React.FC<AnonymousTimerProps> = ({ 
+  className = '', 
+  showSignupMessage = true 
+}) => {
   const { getTranslation } = useTranslation();
+  const { login } = useKindeAuth();
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
 
   // Function to calculate and format time remaining
@@ -35,6 +41,17 @@ const AnonymousTimer: React.FC<AnonymousTimerProps> = ({ className = '' }) => {
     }
   };
 
+  // Handle signup/login click
+  const handleSignupClick = () => {
+    if (login) {
+      login();
+    } else {
+      console.error('Login function not available');
+      // Fallback to redirect to login page
+      window.location.href = '/login';
+    }
+  };
+
   // Update the timer every minute
   useEffect(() => {
     updateTimeRemaining();
@@ -43,11 +60,26 @@ const AnonymousTimer: React.FC<AnonymousTimerProps> = ({ className = '' }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Return nothing if no time remaining to show
   if (!timeRemaining) return null;
 
   return (
-    <div className={`anonymous-timer ${className}`}>
-      {getTranslation('nextDrawIn')}: {timeRemaining}
+    <div className="anonymous-limits-container">
+      <div className={`anonymous-timer ${className}`}>
+        {getTranslation('nextDrawIn')}: {timeRemaining}
+      </div>
+      
+      {showSignupMessage && (
+        <div 
+          className="anonymous-signup-message" 
+          onClick={handleSignupClick}
+          role="button"
+          tabIndex={0}
+          aria-label={getTranslation('signupForMoreDraws')}
+        >
+          {getTranslation('signupForMoreDraws')}
+        </div>
+      )}
     </div>
   );
 };

@@ -4,6 +4,7 @@ import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
+import AnonymousDrawLimitInfo from './components/AnonymousDrawLimitInfo.tsx';
 import { API_BASE_URL } from './utils/config.tsx';
 import { generateCelticCrossPositions, generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -358,6 +359,12 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
     />
   ), [dealCards, positions, handleExitComplete, handleRevealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart, selectedSpread, handleAnimationComplete]);
 
+  // Check if user is anonymous
+  const isAnonymousUser = !user || !user.id || user.id.startsWith('anon_');
+  
+  // Check if anonymous user hasn't drawn yet (no draw data in localStorage)
+  const hasNoDrawHistory = isAnonymousUser && !localStorage.getItem('anonDrawData');
+
   return (
     <ErrorBoundary>
       <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}>
@@ -380,6 +387,13 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           ) : null}
           <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
             {memoizedRobot}
+            
+            {/* Show anonymous user draw limit info for first-time anonymous users */}
+            {hasNoDrawHistory && (
+              <div className="draw-limits-container" style={{ marginTop: '60px', position: 'relative', zIndex: 100 }}>
+                <AnonymousDrawLimitInfo />
+              </div>
+            )}
           </div>
           {positions.length > 0 && (
             <div className="relative z-10 w-full flex flex-col items-center">

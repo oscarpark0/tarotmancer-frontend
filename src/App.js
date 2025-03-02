@@ -11,6 +11,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import DarkModeToggle from './components/DarkModeToggle.tsx';
 import PastDrawsModal from './components/PastDrawsModal';
 import FeedbackButton from './components/FeedbackButton.tsx';
+import GuestLoginButton from './components/GuestLoginButton.tsx';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 import Footer from './components/Footer.tsx';
@@ -107,7 +108,13 @@ function AppContent({ isAuthenticated }) {
   }, []);
 
   const memoizedHeader = useMemo(() => {
-    return (!isMobileScreen || !isAuthenticated) && (
+    // Check if user is a guest
+    const isGuestUser = !isAuthenticated && localStorage.getItem('anonymousUserId');
+    
+    // Only show header for non-mobile OR if not authenticated and not a guest user
+    const shouldShowHeader = !isMobileScreen || (!isAuthenticated && !isGuestUser);
+    
+    return shouldShowHeader && (
       <header className="app-header">
         <div className="header-content">
           <h1 className="app-title" onClick={() => navigate('/')}>
@@ -126,6 +133,13 @@ function AppContent({ isAuthenticated }) {
                 <SubscribeButton />
                 <FeedbackButton />
                 <LogoutButton />
+              </>
+            ) : isGuestUser ? (
+              <>
+                <div className="header-language-selector">
+                  <LanguageSelector />
+                </div>
+                <LoginButton />
               </>
             ) : (
               <>
@@ -150,7 +164,10 @@ function AppContent({ isAuthenticated }) {
             <TypingAnimation duration={100}>{getTranslation('tarotmancer')}</TypingAnimation>
           </div>
           <div className="welcome-buttons">
-            <LoginButton />
+            <div className="login-buttons-row">
+              <LoginButton />
+              <GuestLoginButton />
+            </div>
             <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
           </div>
         </div>
@@ -305,6 +322,12 @@ function AppContent({ isAuthenticated }) {
     });
   }, []);
 
+  // Check if user is a guest (has anonymousUserId in localStorage)
+  const isGuestUser = !isAuthenticated && localStorage.getItem('anonymousUserId');
+  
+  // Treat authenticated users and guest users similarly
+  const shouldShowSpreadComponent = isAuthenticated || isGuestUser;
+
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* MaintenanceBanner removed */}
@@ -313,7 +336,7 @@ function AppContent({ isAuthenticated }) {
       </div>
       <div style={{ flex: 1, overflow: 'auto', position: 'relative', zIndex: 1, padding: isMobileScreen ? 0 : undefined }}>
         <Routes>
-          <Route path="/" element={isAuthenticated ? (
+          <Route path="/" element={shouldShowSpreadComponent ? (
             <Suspense fallback={<div>Loading...</div>}>
               <SpreadComponent {...spreadProps} drawCount={drawCount} setDrawCount={setDrawCount} onDrawComplete={handleDrawComplete} />
             </Suspense>

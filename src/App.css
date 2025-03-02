@@ -295,11 +295,29 @@
 
 .welcome-buttons {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
   margin-top: 1.5rem;
   width: 100%;
+}
+
+.login-buttons-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  justify-content: center;
+}
+
+.guest-button {
+  background: rgba(60, 60, 70, 0.7);
+  border: 1px solid rgba(71, 71, 71, 0.6);
+  color: #f0f0f0;
+  font-size: 0.95em;
+  padding: 0.55rem 1.25rem;
 }
 
 .dark-mode {

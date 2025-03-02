@@ -253,6 +253,14 @@
   width: 100%;
 }
 
+.anonymous-limits-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
 .anonymous-timer {
   font-size: 0.75rem;
   color: #d32f2f;
@@ -266,10 +274,95 @@
   animation: pulse 2s infinite;
 }
 
+.anonymous-signup-message {
+  font-size: 0.7rem;
+  color: #1565c0;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 3px 10px;
+  margin-top: 2px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  animation: highlight 3s infinite;
+  border: 1px solid rgba(21, 101, 192, 0.3);
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 96%;
+}
+
+.anonymous-signup-message:hover {
+  background-color: rgba(229, 246, 253, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+}
+
 @keyframes pulse {
   0% { opacity: 0.8; }
   50% { opacity: 1; }
   100% { opacity: 0.8; }
+}
+
+@keyframes highlight {
+  0% { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
+  50% { box-shadow: 0 1px 8px rgba(21, 101, 192, 0.5); }
+  100% { box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); }
+}
+
+/* Anonymous Draw Limit Info styles */
+.anonymous-limit-info {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin: 10px auto;
+  max-width: 90%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.limit-info-text {
+  font-size: 0.85rem;
+  color: #333;
+  line-height: 1.4;
+}
+
+.limit-info-button {
+  background-color: #1565c0;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.limit-info-button:hover {
+  background-color: #0d47a1;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 768px) {
+  .anonymous-limit-info {
+    width: 90%;
+    padding: 8px 12px;
+  }
+  
+  .limit-info-text {
+    font-size: 0.8rem;
+  }
+  
+  .limit-info-button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
 }
 
 @keyframes ambient-light {

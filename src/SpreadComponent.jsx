@@ -80,6 +80,9 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         const isAnonymousUser = !user || !user.id || user.id.startsWith('anon_');
         const newDrawId = Date.now();
         let data;
+        // Variables for rate limiting
+        let remainingDrawsToday = null;
+        let resetTime = null;
         
         if (isAnonymousUser) {
           console.log('Using client-side simulation for guest user');
@@ -97,6 +100,11 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           await new Promise(resolve => setTimeout(resolve, 500));
           
           console.log('Generated client-side data for guest user:', data);
+          
+          // For guests, we're enforcing a single draw per 48 hours
+          remainingDrawsToday = 0; // They just used their one draw
+          // Set reset time to 48 hours from now
+          resetTime = Math.floor((Date.now() + (48 * 60 * 60 * 1000)) / 1000);
         } 
         else {
           // For authenticated users, use the server API
@@ -131,6 +139,10 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   
           try {
             data = await response.json();
+            
+            // Get rate limit headers for authenticated users
+            remainingDrawsToday = response.headers.get('X-RateLimit-Remaining');
+            resetTime = response.headers.get('X-RateLimit-Reset');
           } catch (e) {
             console.error('Failed to parse server response:', e);
             throw new Error(getTranslation('checkNetworkAndTryAgain'));
@@ -162,22 +174,6 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
         const formattedMostCommonCards = data.positions.map(
           (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
         ).join('\n');
-
-        // For guest users we don't have rate limit headers, so use default values
-        let remainingDrawsToday = null;
-        let resetTime = null;
-        
-        // Handle rate limit headers for authenticated users
-        if (!isAnonymousUser) {
-          // This 'response' variable is only defined in the authenticated user flow
-          remainingDrawsToday = response?.headers?.get('X-RateLimit-Remaining');
-          resetTime = response?.headers?.get('X-RateLimit-Reset');
-        } else {
-          // For guests, we're enforcing a single draw per 48 hours
-          remainingDrawsToday = 0; // They just used their one draw
-          // Set reset time to 48 hours from now
-          resetTime = Math.floor((Date.now() + (48 * 60 * 60 * 1000)) / 1000); 
-        }
 
         if (remainingDrawsToday !== null) {
           setRemainingDrawsToday(parseInt(remainingDrawsToday, 10));

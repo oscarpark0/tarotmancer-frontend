@@ -23,7 +23,7 @@ import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
 import { IKContext } from 'imagekitio-react';
-import { IMAGEKIT_PUBLIC_KEY, API_BASE_URL } from './utils/config';
+import { IMAGEKIT_PUBLIC_KEY, API_BASE_URL, USE_DIRECT_API } from './utils/config';
 import MaintenanceBanner from './components/MaintenanceBanner.tsx';
 
 const SpreadComponent = lazy(() => import('./SpreadComponent').then(module => ({ default: module.default })));
@@ -173,9 +173,11 @@ function AppContent({ isAuthenticated }) {
         'Accept': 'application/json'
       };
       
-      // Fix path construction to avoid double slashes
+      // Fix path construction and try both direct and /api-prefixed routes
       const path = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
-      const url = `${API_BASE_URL}/api/${path}`;
+      const url = USE_DIRECT_API 
+          ? `${API_BASE_URL}/${path}` 
+          : `${API_BASE_URL}/api/${path}`;
       console.log(`Making request to: ${url}`);
       console.log('Request headers:', headers);
       
@@ -213,8 +215,8 @@ function AppContent({ isAuthenticated }) {
         'Accept': 'application/json'
       };
       
-      // Fixed endpoint URLs for consistency
-      const canDrawUrl = `${API_BASE_URL}/api/can-draw`;
+      // Try both direct and API-prefixed routes
+      const canDrawUrl = USE_DIRECT_API ? `${API_BASE_URL}/can-draw` : `${API_BASE_URL}/api/can-draw`;
       const healthUrl = `${API_BASE_URL}/health`;
       
       console.log(`Making can-draw request to: ${canDrawUrl}`);

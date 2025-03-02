@@ -212,11 +212,30 @@ function AppContent({ isAuthenticated }) {
         'Accept': 'application/json'
       };
       
-      // Use the API_BASE_URL from config
+      // Try with both the API endpoint and the health endpoint
       const url = `${API_BASE_URL}/api/can-draw`;
+      const healthUrl = `${API_BASE_URL}/health`;
+      
       console.log(`Making can-draw request to: ${url}`);
+      console.log(`Also checking health endpoint: ${healthUrl}`);
       console.log('Request headers:', headers);
       
+      // First, try the health endpoint to see if the server is running
+      try {
+        const healthResponse = await fetch(healthUrl, {
+          method: 'GET',
+          mode: 'cors'
+        });
+        console.log(`Health check response status: ${healthResponse.status}`);
+        if (healthResponse.ok) {
+          const healthText = await healthResponse.text();
+          console.log(`Health check response: ${healthText}`);
+        }
+      } catch (healthError) {
+        console.error('Health check failed:', healthError);
+      }
+      
+      // Now try the actual API endpoint
       const response = await fetch(url, {
         method: 'GET',
         credentials: 'include',

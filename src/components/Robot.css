@@ -310,18 +310,23 @@
 
 /* Anonymous Draw Limit Info styles */
 .anonymous-limit-info {
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 8px;
-  padding: 10px 15px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 14px 18px;
   margin: 10px auto;
-  max-width: 90%;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  max-width: 95%;
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 0 0 4px rgba(255, 255, 255, 0.4);
   text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(100, 100, 255, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  transition: all 0.2s ease;
+  gap: 12px;
+  transition: all 0.3s ease;
+  z-index: 3000;
+  position: relative;
 }
 
 .limit-info-text {
@@ -351,17 +356,35 @@
 
 @media (max-width: 768px) {
   .anonymous-limit-info {
-    width: 90%;
-    padding: 8px 12px;
+    width: 94%;
+    padding: 16px 14px;
+    margin-top: 20px;
+    box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(0, 0, 0, 0.05),
+      0 0 0 4px rgba(255, 255, 255, 0.4);
+    border-width: 2px;
+    /* Add attention-grabbing animation */
+    animation: attention-pulse 2s infinite;
   }
   
   .limit-info-text {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 5px;
   }
   
   .limit-info-button {
-    padding: 6px 12px;
-    font-size: 0.8rem;
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 5px 0;
+  }
+  
+  @keyframes attention-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
   }
 }
 

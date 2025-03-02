@@ -292,4 +292,138 @@ export const recordAnonymousDraw = () => {
   return updateAnonymousDrawData();
 };
 
+// Tarot card data for client-side fallback
+const tarotCards = [
+  { name: "The Fool", img: "tarot/major/fool.jpg" },
+  { name: "The Magician", img: "tarot/major/magician.jpg" },
+  { name: "The High Priestess", img: "tarot/major/highpriestess.jpg" },
+  { name: "The Empress", img: "tarot/major/empress.jpg" },
+  { name: "The Emperor", img: "tarot/major/emperor.jpg" },
+  { name: "The Hierophant", img: "tarot/major/hierophant.jpg" },
+  { name: "The Lovers", img: "tarot/major/lovers.jpg" },
+  { name: "The Chariot", img: "tarot/major/chariot.jpg" },
+  { name: "Strength", img: "tarot/major/strength.jpg" },
+  { name: "The Hermit", img: "tarot/major/hermit.jpg" },
+  { name: "Wheel of Fortune", img: "tarot/major/wheeloffortune.jpg" },
+  { name: "Justice", img: "tarot/major/justice.jpg" },
+  { name: "The Hanged Man", img: "tarot/major/hangedman.jpg" },
+  { name: "Death", img: "tarot/major/death.jpg" },
+  { name: "Temperance", img: "tarot/major/temperance.jpg" },
+  { name: "The Devil", img: "tarot/major/devil.jpg" },
+  { name: "The Tower", img: "tarot/major/tower.jpg" },
+  { name: "The Star", img: "tarot/major/star.jpg" },
+  { name: "The Moon", img: "tarot/major/moon.jpg" },
+  { name: "The Sun", img: "tarot/major/sun.jpg" },
+  { name: "Judgement", img: "tarot/major/judgement.jpg" },
+  { name: "The World", img: "tarot/major/world.jpg" },
+  // Minor Arcana - Cups
+  { name: "Ace of Cups", img: "tarot/cups/cups01.jpg" },
+  { name: "Two of Cups", img: "tarot/cups/cups02.jpg" },
+  { name: "Three of Cups", img: "tarot/cups/cups03.jpg" },
+  { name: "Four of Cups", img: "tarot/cups/cups04.jpg" },
+  { name: "Five of Cups", img: "tarot/cups/cups05.jpg" },
+  { name: "Six of Cups", img: "tarot/cups/cups06.jpg" },
+  { name: "Seven of Cups", img: "tarot/cups/cups07.jpg" },
+  { name: "Eight of Cups", img: "tarot/cups/cups08.jpg" },
+  { name: "Nine of Cups", img: "tarot/cups/cups09.jpg" },
+  { name: "Ten of Cups", img: "tarot/cups/cups10.jpg" },
+  { name: "Page of Cups", img: "tarot/cups/cups11.jpg" },
+  { name: "Knight of Cups", img: "tarot/cups/cups12.jpg" },
+  { name: "Queen of Cups", img: "tarot/cups/cups13.jpg" },
+  { name: "King of Cups", img: "tarot/cups/cups14.jpg" },
+  // Minor Arcana - Pentacles
+  { name: "Ace of Pentacles", img: "tarot/pentacles/pentacles01.jpg" },
+  { name: "Two of Pentacles", img: "tarot/pentacles/pentacles02.jpg" },
+  { name: "Three of Pentacles", img: "tarot/pentacles/pentacles03.jpg" },
+  { name: "Four of Pentacles", img: "tarot/pentacles/pentacles04.jpg" },
+  { name: "Five of Pentacles", img: "tarot/pentacles/pentacles05.jpg" },
+  { name: "Six of Pentacles", img: "tarot/pentacles/pentacles06.jpg" },
+  { name: "Seven of Pentacles", img: "tarot/pentacles/pentacles07.jpg" },
+  { name: "Eight of Pentacles", img: "tarot/pentacles/pentacles08.jpg" },
+  { name: "Nine of Pentacles", img: "tarot/pentacles/pentacles09.jpg" },
+  { name: "Ten of Pentacles", img: "tarot/pentacles/pentacles10.jpg" },
+  { name: "Page of Pentacles", img: "tarot/pentacles/pentacles11.jpg" },
+  { name: "Knight of Pentacles", img: "tarot/pentacles/pentacles12.jpg" },
+  { name: "Queen of Pentacles", img: "tarot/pentacles/pentacles13.jpg" },
+  { name: "King of Pentacles", img: "tarot/pentacles/pentacles14.jpg" },
+  // Minor Arcana - Wands
+  { name: "Ace of Wands", img: "tarot/wands/wands01.jpg" },
+  { name: "Two of Wands", img: "tarot/wands/wands02.jpg" },
+  { name: "Three of Wands", img: "tarot/wands/wands03.jpg" },
+  { name: "Four of Wands", img: "tarot/wands/wands04.jpg" },
+  { name: "Five of Wands", img: "tarot/wands/wands05.jpg" },
+  { name: "Six of Wands", img: "tarot/wands/wands06.jpg" },
+  { name: "Seven of Wands", img: "tarot/wands/wands07.jpg" },
+  { name: "Eight of Wands", img: "tarot/wands/wands08.jpg" },
+  { name: "Nine of Wands", img: "tarot/wands/wands09.jpg" },
+  { name: "Ten of Wands", img: "tarot/wands/wands10.jpg" },
+  { name: "Page of Wands", img: "tarot/wands/wands11.jpg" },
+  { name: "Knight of Wands", img: "tarot/wands/wands12.jpg" },
+  { name: "Queen of Wands", img: "tarot/wands/wands13.jpg" },
+  { name: "King of Wands", img: "tarot/wands/wands14.jpg" },
+  // Minor Arcana - Swords
+  { name: "Ace of Swords", img: "tarot/swords/swords01.jpg" },
+  { name: "Two of Swords", img: "tarot/swords/swords02.jpg" },
+  { name: "Three of Swords", img: "tarot/swords/swords03.jpg" },
+  { name: "Four of Swords", img: "tarot/swords/swords04.jpg" },
+  { name: "Five of Swords", img: "tarot/swords/swords05.jpg" },
+  { name: "Six of Swords", img: "tarot/swords/swords06.jpg" },
+  { name: "Seven of Swords", img: "tarot/swords/swords07.jpg" },
+  { name: "Eight of Swords", img: "tarot/swords/swords08.jpg" },
+  { name: "Nine of Swords", img: "tarot/swords/swords09.jpg" },
+  { name: "Ten of Swords", img: "tarot/swords/swords10.jpg" },
+  { name: "Page of Swords", img: "tarot/swords/swords11.jpg" },
+  { name: "Knight of Swords", img: "tarot/swords/swords12.jpg" },
+  { name: "Queen of Swords", img: "tarot/swords/swords13.jpg" },
+  { name: "King of Swords", img: "tarot/swords/swords14.jpg" },
+];
+
+// Function to generate a random tarot card
+const getRandomCard = () => {
+  const randomIndex = Math.floor(Math.random() * tarotCards.length);
+  const orientation = Math.random() > 0.5 ? 'upright' : 'reversed';
+  return { ...tarotCards[randomIndex], orientation };
+};
+
+// Simulate a tarot draw for guest users (client-side only)
+export const simulateGuestDraw = (spreadType) => {
+  // Define position names based on spread type
+  let positions = [];
+  
+  if (spreadType === 'celtic') {
+    positions = [
+      { position_name: "The Present" },
+      { position_name: "The Challenge" },
+      { position_name: "The Past" },
+      { position_name: "The Future" },
+      { position_name: "Above (Conscious)" },
+      { position_name: "Below (Unconscious)" },
+      { position_name: "Advice" },
+      { position_name: "External Influences" },
+      { position_name: "Hopes or Fears" },
+      { position_name: "Outcome" }
+    ];
+  } else {
+    // Three card spread
+    positions = [
+      { position_name: "Past" },
+      { position_name: "Present" },
+      { position_name: "Future" }
+    ];
+  }
+  
+  // Generate random cards for each position
+  positions = positions.map(pos => {
+    const card = getRandomCard();
+    return {
+      ...pos,
+      most_common_card: card.name,
+      most_common_card_img: card.img,
+      orientation: card.orientation
+    };
+  });
+  
+  return { positions };
+};
+
 export default api;

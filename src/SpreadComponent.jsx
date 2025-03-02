@@ -76,54 +76,65 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       console.log(`Initiating draw for user: ${userId}, Current draw count: ${drawCount}`);
       
       try {
-        // Get token for authenticated users
-        const token = isAnonymousUser ? null : await getToken();
-        const origin = window.location.origin;
+        // Handle authenticated and guest users differently
+        const isAnonymousUser = !user || !user.id || user.id.startsWith('anon_');
         const newDrawId = Date.now();
-
-        // Create common headers
-        const headers = {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Origin': origin,
-          'User-ID': userId,
-          'Draw-ID': newDrawId.toString(),
-        };
-        
-        // Add authorization only for authenticated users
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-
-        // Use the correct endpoint names according to backend registration
-        const endpoint = selectedSpread === 'celtic' ? 'api/draw-celtic-spreads' : 'api/draw-three-card-spread';
-        console.log(`Calling endpoint: ${API_BASE_URL}/${endpoint}`);
-        
-        // For anonymous users, record the draw in local storage with device fingerprinting
-        if (isAnonymousUser) {
-          // Import the API helper for recording anonymous draws
-          const { recordAnonymousDraw } = await import('./utils/api');
-          recordAnonymousDraw();
-        }
-        
-        const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
-          method: 'GET',
-          headers: headers,
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error(`Error response from server: ${errorText}`);
-          throw new Error(`${getTranslation('failedToDrawSpread')}: ${response.status}`);
-        }
-
         let data;
-        try {
-          data = await response.json();
-        } catch (e) {
-          console.error('Failed to parse server response:', e);
-          throw new Error(getTranslation('checkNetworkAndTryAgain'));
+        
+        if (isAnonymousUser) {
+          console.log('Using client-side simulation for guest user');
+          
+          // Import the API helpers for anonymous users
+          const { recordAnonymousDraw, simulateGuestDraw } = await import('./utils/api');
+          
+          // Record draw in local storage with time limit
+          recordAnonymousDraw();
+          
+          // Simulate a draw client-side
+          data = simulateGuestDraw(selectedSpread);
+          
+          // Add slight delay to simulate network request
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          console.log('Generated client-side data for guest user:', data);
+        } 
+        else {
+          // For authenticated users, use the server API
+          const token = await getToken();
+          const origin = window.location.origin;
+          
+          // Create headers for authenticated users
+          const headers = {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Origin': origin,
+            'User-ID': userId,
+            'Draw-ID': newDrawId.toString(),
+            'Authorization': `Bearer ${token}`
+          };
+          
+          // Use the correct endpoint names according to backend registration
+          const endpoint = selectedSpread === 'celtic' ? 'api/draw-celtic-spreads' : 'api/draw-three-card-spread';
+          console.log(`Calling endpoint: ${API_BASE_URL}/${endpoint}`);
+          
+          const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
+            method: 'GET',
+            headers: headers,
+            credentials: 'include',
+          });
+  
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`Error response from server: ${errorText}`);
+            throw new Error(`${getTranslation('failedToDrawSpread')}: ${response.status}`);
+          }
+  
+          try {
+            data = await response.json();
+          } catch (e) {
+            console.error('Failed to parse server response:', e);
+            throw new Error(getTranslation('checkNetworkAndTryAgain'));
+          }
         }
 
         console.log(`Draw completed. New draw ID: ${newDrawId}`);
@@ -367,7 +378,8 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
 
   return (
     <ErrorBoundary>
-      <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}>
+      <div className={`w-full flex flex-col justify-center fixed ${isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-amber-100 via-blue to-white'} min-h-screen`}
+           style={{ overflow: 'hidden' }}>
         <AnimatedGridPattern
           className="absolute inset-0"
           color="#00ff00"
@@ -377,20 +389,31 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           isMobile={isMobile}
           isPaused={isStreaming}
         />
-        <div className="relative w-full h-screen overflow-hidden">
+        <div className="relative w-full h-screen" 
+             style={{ overflowY: 'auto', overflowX: 'hidden', paddingBottom: isMobile ? '150px' : '0' }}>
           {isLoading ? (
-            <p className="text-2xl text-green-600 text-center animate-pulse z-99900">
+            <p className="text-2xl text-green-600 text-center animate-pulse" style={{ zIndex: 9999, position: 'relative' }}>
               {getTranslation('processing')}
             </p>
           ) : error ? (
-            <p className="text-4xl text-red-600 text-center z-100">{error}</p>
+            <p className="text-4xl text-red-600 text-center" style={{ zIndex: 9999, position: 'relative' }}>
+              {error}
+            </p>
           ) : null}
-          <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}>
+          <div className={`flex flex-col items-center ${isMobile ? 'mobile-layout' : ''}`}
+               style={{ position: 'relative', minHeight: '100vh', paddingBottom: isMobile ? '350px' : '0' }}>
             {memoizedRobot}
             
             {/* Show anonymous user draw limit info for first-time anonymous users */}
             {hasNoDrawHistory && (
-              <div className="draw-limits-container" style={{ marginTop: '60px', position: 'relative', zIndex: 100 }}>
+              <div className="draw-limits-container" style={{ 
+                marginTop: isMobile ? '300px' : '60px', 
+                position: 'relative', 
+                zIndex: 2000,
+                width: '100%',
+                maxWidth: '600px',
+                padding: '0 15px'
+              }}>
                 <AnonymousDrawLimitInfo />
               </div>
             )}

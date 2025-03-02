@@ -117,8 +117,19 @@ const DailyFrequenciesPage: React.FC = () => {
         setFrequencies(frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency));
         setCelticSpread([...spreadsResponse.data.celtic_spread]); // Ensure state update
         setThreeCardSpread([...spreadsResponse.data.three_card_spread]); // Ensure state update
-      } catch (err) {
+      } catch (err: any) { // Cast to any to access axios error properties
         console.error('Failed to fetch data from backend:', err);
+        
+        // Check if the error is a 404 for "No data found"
+        if (err.response?.status === 404 && err.response?.data === 'No data found for the specified date') {
+          setError(`No tarot card data available for ${new Date(date).toLocaleDateString()}. Please select a different date.`);
+          // Set empty data instead of mock data
+          setFrequencies([]);
+          setCelticSpread([]);
+          setThreeCardSpread([]);
+          return;
+        }
+        
         console.log('Using mock data as fallback');
         
         // Use the utility function for consistent card image mapping
@@ -158,9 +169,12 @@ const DailyFrequenciesPage: React.FC = () => {
         setCelticSpread(mockCelticSpread);
         setThreeCardSpread(mockThreeCardSpread);
       }
-    } catch (err) {
+    } catch (err: any) { // Cast to any to access axios error properties
       console.error('Failed to initialize data fetching:', err);
-      setError('Failed to fetch data. Please try again later.');
+      const errorMessage = err.response?.data && typeof err.response.data === 'string' 
+        ? err.response.data 
+        : 'Failed to fetch data. Please try again later.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -203,32 +217,56 @@ const DailyFrequenciesPage: React.FC = () => {
             max={new Date().toISOString().split('T')[0]}
           />
         </div>
-        <section className={styles.frequenciesSection}>
-          <h2>{getTranslation('individualCardFrequencies')}</h2>
-          <div className={styles.frequenciesWrapper}>
-            <DailyCardFrequencies 
-              frequencies={frequencies}
-              isLoading={isLoading}
-              error={error}
-              selectedDate={selectedDate}
-            />
+        
+        {/* Show error message prominently if there's an error */}
+        {error && (
+          <div className={styles.error} style={{ 
+            padding: '1rem', 
+            margin: '1rem 0', 
+            textAlign: 'center',
+            fontSize: '1.1rem'
+          }}>
+            {error}
           </div>
-        </section>
-        <section className={styles.spreadsSection}>
-          <h2>{getTranslation('mostCommonCardOccurrencesByPosition')}</h2>
-          <div className={styles.spreadsContainer}>
-            {threeCardSpread.length === 3 ? (
-              <Spread key={`${selectedDate}-1`} spread={threeCardSpread} title="threeCardSpread" />
-            ) : (
-              <div className={styles.error}>Error: Invalid Three Card spread data</div>
+        )}
+        
+        {/* Only show content sections if there's no error or we're loading */}
+        {(!error || isLoading) && (
+          <>
+            <section className={styles.frequenciesSection}>
+              <h2>{getTranslation('individualCardFrequencies')}</h2>
+              <div className={styles.frequenciesWrapper}>
+                <DailyCardFrequencies 
+                  frequencies={frequencies}
+                  isLoading={isLoading}
+                  error={error}
+                  selectedDate={selectedDate}
+                />
+              </div>
+            </section>
+            
+            {frequencies.length > 0 && (
+              <section className={styles.spreadsSection}>
+                <h2>{getTranslation('mostCommonCardOccurrencesByPosition')}</h2>
+                <div className={styles.spreadsContainer}>
+                  {threeCardSpread.length === 3 ? (
+                    <Spread key={`${selectedDate}-1`} spread={threeCardSpread} title="threeCardSpread" />
+                  ) : (
+                    <div className={styles.error}>No Three Card spread data available for this date</div>
+                  )}
+                  {celticSpread.length > 0 && (
+                    <>
+                      <div className={styles.spreadSeparator}></div>
+                      <Spread key={`${selectedDate}-0`} spread={celticSpread} title="celticCrossSpread" />
+                    </>
+                  )}
+                </div>
+              </section>
             )}
-            <div className={styles.spreadSeparator}></div>
-            <Spread key={`${selectedDate}-0`} spread={celticSpread} title="celticCrossSpread" />
-          </div>
-        </section>
+          </>
+        )}
       </main>
       {isLoading && <div className={styles.loading}>{getTranslation('loading')}<span>.</span><span>.</span><span>.</span></div>}
-      {error && <div className={styles.error}>{error}</div>}
     </div>
   );
 };

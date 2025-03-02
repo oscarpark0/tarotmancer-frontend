@@ -693,6 +693,28 @@ export const buttonTranslations = {
     Finnish: "Taajuudet",
     Greek: "Συχνότητες",
   },
+  nextDrawIn: {
+    English: "Next Draw In",
+    Spanish: "Próxima Tirada En",
+    French: "Prochain Tirage Dans",
+    German: "Nächste Legung In",
+    Italian: "Prossima Pescata In",
+    Japanese: "次のドローまで",
+    Chinese: "下次抽牌在",
+    Russian: "Следующий Расклад Через",
+    Portuguese: "Próxima Tiragem Em",
+    Dutch: "Volgende Trekking In",
+    Korean: "다음 드로우까지",
+    Arabic: "السحب التالي في",
+    Hindi: "अगला ड्रा इसमें",
+    Swedish: "Nästa Dragning Om",
+    Polish: "Następny Rozkład Za",
+    Turkish: "Sonraki Çekim",
+    Danish: "Næste Trækning Om",
+    Norwegian: "Neste Trekk Om",
+    Finnish: "Seuraava Nosto",
+    Greek: "Επόμενο Τράβηγμα Σε",
+  },
 };
 
 // Translation context and hooks

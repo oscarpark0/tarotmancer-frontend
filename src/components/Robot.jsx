@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import FloatingCards from './FloatingCards.jsx';
 import CommandTerminal from './CommandTerminal.jsx';
+import AnonymousTimer from './AnonymousTimer.tsx';
 import './Robot.css';
 import { debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
@@ -301,9 +302,37 @@ const Robot = memo((props) => {
     />
   ), [handleMonitorOutput, handleDrawSpread, onSubmitInput, mostCommonCards, dealingComplete, props.formRef, props.cards, props.revealCards, props.shouldDrawNewSpread, onSpreadSelect, selectedSpread, isMobile, fetchSpread, responses, activeTab, handleNewResponse, handleResponseComplete, animationsComplete, handleAnimationStart, isStreaming, canDraw, lastDrawTime, userId, currentDrawId, setCurrentDrawId, onOpenPastDraws, onDraw, getTranslation, remainingDrawsToday, drawCount, setDrawCount, setRemainingDrawsToday, user, isDrawing, setIsDrawing]);
 
+  // Determine if the user is anonymous (not logged in)
+  const isAnonymousUser = !user || !user.id || user.id.startsWith('anon_');
+  
+  // Get the remaining draw time from local storage for anonymous users
+  const getAnonTimeRemaining = () => {
+    if (!isAnonymousUser) return null;
+    
+    try {
+      const drawData = localStorage.getItem('anonDrawData');
+      if (!drawData) return null;
+      
+      const parsedData = JSON.parse(drawData);
+      const now = new Date().getTime();
+      
+      if (parsedData.nextDrawTime && now < parsedData.nextDrawTime) {
+        const hoursRemaining = Math.floor((parsedData.nextDrawTime - now) / (1000 * 60 * 60));
+        const minutesRemaining = Math.floor(((parsedData.nextDrawTime - now) % (1000 * 60 * 60)) / (1000 * 60));
+        return `${hoursRemaining}h ${minutesRemaining}m`;
+      }
+    } catch (error) {
+      console.error('Error getting anonymous time remaining:', error);
+    }
+    
+    return null;
+  };
+  
+  const anonTimeRemaining = getAnonTimeRemaining();
+
   return (
     <motion.div
-      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''} ${user ? 'user-logged-in' : ''} ${isExpanded ? 'expanded' : ''}`}
+      className={`robot-container ${isMobile ? 'mobile' : ''} ${isStreaming ? 'streaming' : ''} ${user && !user.id.startsWith('anon_') ? 'user-logged-in' : 'anonymous-user'} ${isExpanded ? 'expanded' : ''}`}
       ref={robotRef}
       style={{
         position: 'absolute',
@@ -318,7 +347,10 @@ const Robot = memo((props) => {
       }}
     >
       <div ref={robotBodyRef} className={`robot-body ${isExpanded ? 'expanded' : ''}`}>
-        <div className="tarotmancer-text">{getTranslation('tarotmancer')}</div>
+        <div className="tarotmancer-text">
+          {getTranslation('tarotmancer')}
+          {isAnonymousUser && <AnonymousTimer />}
+        </div>
         <div className="robot-head">
           <div className="crt-screen">
             <div className={`screen-content ${isExpanded ? 'expanded' : ''}`} ref={screenContentRef}>

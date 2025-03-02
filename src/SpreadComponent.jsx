@@ -56,33 +56,54 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
   const debouncedFetchSpread = useMemo(
     () => debounce(async () => {
       console.log('Debounced fetchSpread called');
-      if (!user || !user.id) {
-        setError('User not authenticated. Please log in.');
+      
+      // Check if anonymous user (no authenticated user)
+      const isAnonymousUser = !user || !user.id || user.id.startsWith('anon_');
+      const userId = isAnonymousUser ? localStorage.getItem('anonymousUserId') : user.id;
+      
+      if (!userId) {
+        setError('User ID not available. Please try again or log in.');
         return;
       }
+      
       if (!canDraw) {
         setError(`You can draw again in ${timeUntilNextDraw}`);
         return;
       }
+      
       setIsLoading(true);
-      console.log(`Initiating draw for user: ${user.id}, Current draw count: ${drawCount}`);
+      console.log(`Initiating draw for user: ${userId}, Current draw count: ${drawCount}`);
+      
       try {
-        const token = await getToken();
+        // Get token for authenticated users
+        const token = isAnonymousUser ? null : await getToken();
         const origin = window.location.origin;
         const newDrawId = Date.now();
 
+        // Create common headers
         const headers = {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
           'Origin': origin,
-          'Authorization': `Bearer ${token}`,
-          'User-ID': user.id,
+          'User-ID': userId,
           'Draw-ID': newDrawId.toString(),
         };
+        
+        // Add authorization only for authenticated users
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
 
         // Use the correct endpoint names according to backend registration
         const endpoint = selectedSpread === 'celtic' ? 'api/draw-celtic-spreads' : 'api/draw-three-card-spread';
         console.log(`Calling endpoint: ${API_BASE_URL}/${endpoint}`);
+        
+        // For anonymous users, record the draw in local storage with device fingerprinting
+        if (isAnonymousUser) {
+          // Import the API helper for recording anonymous draws
+          const { recordAnonymousDraw } = await import('./utils/api');
+          recordAnonymousDraw();
+        }
         
         const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
           method: 'GET',

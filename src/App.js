@@ -282,10 +282,15 @@ function AppContent({ isAuthenticated }) {
     }
   }, [user, getToken]);
 
+  // Effect to check drawing status on startup (for both authenticated and anonymous users)
   useEffect(() => {
     if (isAuthenticated) {
+      // For authenticated users
       checkCanDraw();
       fetchUserDraws();
+    } else {
+      // For anonymous users
+      checkCanDraw();
     }
   }, [isAuthenticated, checkCanDraw, fetchUserDraws]);
 

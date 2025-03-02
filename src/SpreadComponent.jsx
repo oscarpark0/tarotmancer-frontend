@@ -164,13 +164,25 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           tooltip: data.positions[index].position_name
         }));
 
-        const newCards = newPositions.map(pos => ({
-          name: pos.most_common_card,
-          img: pos.most_common_card_img,
-          orientation: pos.orientation,
-          position_name: pos.position_name,
-          tooltip: pos.position_name
-        }));
+        const newCards = newPositions.map(pos => {
+          // Ensure image path is correct (may be a full URL or just a path)
+          let imgPath = pos.most_common_card_img;
+          
+          // If image path doesn't have the expected format, construct it correctly
+          if (imgPath && !imgPath.includes('://') && !imgPath.startsWith('/')) {
+            // Make sure the path is properly formatted
+            imgPath = imgPath.replace(/^tarot\//, ''); // Remove 'tarot/' prefix if present
+          }
+          
+          return {
+            name: pos.most_common_card,
+            img: imgPath,
+            orientation: pos.orientation,
+            position: pos.position_name, // Changed from position_name to position to match CardReveal interface
+            position_name: pos.position_name, // Keep this for backward compatibility
+            tooltip: pos.position_name
+          };
+        });
         const formattedMostCommonCards = data.positions.map(
           (pos) => `Most common card at ${pos.position_name}: ${pos.most_common_card} - Orientation: ${pos.orientation}`
         ).join('\n');

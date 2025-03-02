@@ -6,18 +6,29 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
   }
   try {
     const token = getToken();
+    
+    // If userId is not provided, try to get it from localStorage
     if (!userId) {
-      userId = getUserId(); 
+      userId = getUserId();
     }
+    
+    // If still no userId, check for anonymous user ID
     if (!userId) {
-      console.warn('User ID not available, but continuing with request');
+      userId = localStorage.getItem('anonymousUserId');
     }
+    
+    // As a final fallback, generate a temporary ID for this session
+    if (!userId) {
+      userId = 'anonymous_' + Date.now();
+      console.warn('Using temporary user ID for this session:', userId);
+    }
+    
     const response = await fetch(`${process.env.REACT_APP_BASE_URL}/api/mistral`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-        'User-ID': userId || 'unknown'
+        'Authorization': token ? `Bearer ${token}` : undefined,
+        'User-ID': userId
       },
       body: JSON.stringify({
         model: "open-mistral-nemo-2407",
@@ -81,14 +92,50 @@ export const getMistralResponse = async (message, onNewResponse, onResponseCompl
 }
 
 async function storeMistralResponse(drawId, response, userId) {
-  if (!userId) {
-    throw new Error('User ID not provided');
-  }
   if (!drawId) {
     throw new Error('Draw ID not provided');
   }
+  
+  // If userId is not provided, try to get it from various sources
+  if (!userId) {
+    // Try to get from auth
+    userId = getUserId();
+    
+    // If still no userId, check for anonymous user ID
+    if (!userId) {
+      userId = localStorage.getItem('anonymousUserId');
+    }
+    
+    // As a final fallback, generate a temporary ID for this session
+    if (!userId) {
+      userId = 'anonymous_' + Date.now();
+      console.warn('Using temporary user ID for storing response:', userId);
+    }
+  }
 
   try {
+    // For anonymous users, store the response in localStorage only
+    if (userId.startsWith('anonymous_') || userId.startsWith('anon_')) {
+      console.log('Storing Mistral response for anonymous user in localStorage');
+      // Store in localStorage
+      const storedDraws = localStorage.getItem('anonMistralResponses') || '{}';
+      let parsedDraws;
+      try {
+        parsedDraws = JSON.parse(storedDraws);
+      } catch (e) {
+        parsedDraws = {};
+      }
+      
+      parsedDraws[drawId] = {
+        response,
+        timestamp: new Date().toISOString()
+      };
+      
+      localStorage.setItem('anonMistralResponses', JSON.stringify(parsedDraws));
+      return { success: true };
+    }
+    
+    // For logged-in users, use the API
     const res = await fetch(`${process.env.REACT_APP_BASE_URL}/api/store-mistral-response`, {
       method: 'POST',
       headers: {

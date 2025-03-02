@@ -43,13 +43,26 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) =
     }
   }, [cards]);
   
-  // Log for debugging
+  // Enhanced logging for debugging
   useEffect(() => {
     console.log('CardReveal: cards or showCards changed', { 
       cards: cards.length, 
+      cardObjects: cards,
       showCards, 
       localShowCards 
     });
+    
+    // Check if cards have all required properties
+    if (cards.length > 0) {
+      const cardCheck = cards.map(card => ({
+        hasName: !!card.name,
+        hasImg: !!card.img,
+        hasOrientation: !!card.orientation,
+        hasPosition: !!card.position,
+        hasTooltip: !!card.tooltip
+      }));
+      console.log('Card property check:', cardCheck);
+    }
   }, [cards, showCards, localShowCards]);
 
   const handleMouseEnter = (index: number): void => {
@@ -98,10 +111,11 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) =
                 onMouseLeave={handleMouseLeave}
               >
                 <IKImage
-                  path={card.img}
+                  path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}
                   loading="lazy"
                   alt={card.name || "Tarot card"}
                   className="card-image"
+                  urlEndpoint="https://ik.imagekit.io/tarotmancer"
                 />
                 <AnimatePresence>
                   {hoveredCard === index && (

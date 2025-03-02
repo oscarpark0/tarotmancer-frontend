@@ -1,14 +1,16 @@
 .card-reveal {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: auto;
+  min-height: 500px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   perspective: 1000px;
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
   z-index: 2500; /* Higher z-index to appear above the robot */
+  margin-top: -120px; /* Pull cards up to align with robot */
 }
 
 .card-reveal.show {
@@ -71,32 +73,32 @@
 }
 
 /* Three Card Spread */
-.card-reveal.three-card .card:nth-child(1) { left: calc(50% - 150px); }
-.card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translateX(-50%); }
-.card-reveal.three-card .card:nth-child(3) { left: calc(50% + 150px); }
+.card-reveal.three-card .card:nth-child(1) { left: calc(50% - 150px); top: 180px; }
+.card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translateX(-50%); top: 180px; }
+.card-reveal.three-card .card:nth-child(3) { left: calc(50% + 150px); top: 180px; }
 
 /* Celtic Cross Spread */
-.card-reveal.celtic-cross .card:nth-child(1) { left: calc(50% - 62.5px); top: calc(50% - 260px); } /* Center card */
+.card-reveal.celtic-cross .card:nth-child(1) { left: calc(50% - 62.5px); top: 180px; } /* Center card */
 .card-reveal.celtic-cross .card:nth-child(2) { 
   left: calc(50% - 62.5px); 
-  top: calc(50% - 260px); 
+  top: 180px; 
   transform: rotate(90deg) !important; 
 } /* Crossing card */
 .card-reveal.celtic-cross .card:nth-child(2) .card-tooltip {
   transform: rotate(-90deg);
 }
-.card-reveal.celtic-cross .card:nth-child(3) { left: calc(50% - 62.5px); top: calc(50% - 20px); } /* Below */
-.card-reveal.celtic-cross .card:nth-child(4) { left: calc(50% - 62.5px); top: calc(50% - 500px); } /* Above */
-.card-reveal.celtic-cross .card:nth-child(5) { left: calc(50% - 245.5px); top: calc(50% - 260px); } /* Left */
-.card-reveal.celtic-cross .card:nth-child(6) { left: calc(50% + 115.5px); top: calc(50% - 260px); } /* Right */
-.card-reveal.celtic-cross .card:nth-child(7) { left: calc(50% + 280px); top: calc(50% - 600px); } /* Staff 1 (bottom) */
-.card-reveal.celtic-cross .card:nth-child(8) { left: calc(50% + 280px); top: calc(50% - 370px); } /* Staff 2 */
-.card-reveal.celtic-cross .card:nth-child(9) { left: calc(50% + 280px); top: calc(50% - 145px); } /* Staff 3 */
-.card-reveal.celtic-cross .card:nth-child(10) { left: calc(50% + 280px); top: calc(50% - -80px); } /* Staff 4 (top) */
+.card-reveal.celtic-cross .card:nth-child(3) { left: calc(50% - 62.5px); top: 320px; } /* Below */
+.card-reveal.celtic-cross .card:nth-child(4) { left: calc(50% - 62.5px); top: 40px; } /* Above */
+.card-reveal.celtic-cross .card:nth-child(5) { left: calc(50% - 245.5px); top: 180px; } /* Left */
+.card-reveal.celtic-cross .card:nth-child(6) { left: calc(50% + 115.5px); top: 180px; } /* Right */
+.card-reveal.celtic-cross .card:nth-child(7) { left: calc(50% + 280px); top: 40px; } /* Staff 1 (top) */
+.card-reveal.celtic-cross .card:nth-child(8) { left: calc(50% + 280px); top: 140px; } /* Staff 2 */
+.card-reveal.celtic-cross .card:nth-child(9) { left: calc(50% + 280px); top: 240px; } /* Staff 3 */
+.card-reveal.celtic-cross .card:nth-child(10) { left: calc(50% + 280px); top: 340px; } /* Staff 4 (bottom) */
 
 @media (max-width: 768px) {
   .card-reveal {
-    top: 150px; /* Push down cards on mobile */
+    margin-top: -80px; /* Adjust for mobile to pull cards closer to robot */
     margin-bottom: 150px; /* Add space at bottom */
   }
   
@@ -106,29 +108,29 @@
   }
 
   /* Three Card Spread - Mobile */
-  .card-reveal.three-card .card:nth-child(1) { left: calc(50% - 70px); }
-  .card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translateX(-50%); }
-  .card-reveal.three-card .card:nth-child(3) { left: calc(50% + 70px); }
+  .card-reveal.three-card .card:nth-child(1) { left: calc(50% - 70px); top: 130px; }
+  .card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translateX(-50%); top: 130px; }
+  .card-reveal.three-card .card:nth-child(3) { left: calc(50% + 70px); top: 130px; }
 
   /* Celtic Cross Spread - Mobile */
-  .card-reveal.celtic-cross .card:nth-child(1) { left: calc(50% - 30px); top: calc(50% + 50px); z-index: 1; } /* Pushed down */
+  .card-reveal.celtic-cross .card:nth-child(1) { left: calc(50% - 30px); top: 130px; z-index: 1; } /* Center */
   .card-reveal.celtic-cross .card:nth-child(2) { 
     left: calc(50% - 30px); 
-    top: calc(50% + 50px); 
+    top: 130px; 
     transform: rotate(90deg) !important; 
     z-index: 2; 
   }
   .card-reveal.celtic-cross .card:nth-child(2) .card-tooltip {
     transform: rotate(-90deg);
   }
-  .card-reveal.celtic-cross .card:nth-child(3) { left: calc(50% - 30px); top: calc(50% - 2px); z-index: 3; } /* Adjusted */
-  .card-reveal.celtic-cross .card:nth-child(4) { left: calc(50% - 30px); top: calc(50% + 102px); z-index: 4; } /* Pushed down */
-  .card-reveal.celtic-cross .card:nth-child(5) { left: calc(50% - 90px); top: calc(50% + 50px); } /* Adjusted */
-  .card-reveal.celtic-cross .card:nth-child(6) { left: calc(50% + 30px); top: calc(50% + 50px); } /* Adjusted */
-  .card-reveal.celtic-cross .card:nth-child(7) { right: 10px; bottom: calc(50% - 28px); } /* Adjusted */
-  .card-reveal.celtic-cross .card:nth-child(8) { right: 10px; bottom: calc(50% - 80px); } /* Adjusted */
-  .card-reveal.celtic-cross .card:nth-child(9) { right: 10px; top: calc(50% + 76px); } /* Adjusted */
-  .card-reveal.celtic-cross .card:nth-child(10) { right: 10px; top: calc(50% + 128px); } /* Adjusted */
+  .card-reveal.celtic-cross .card:nth-child(3) { left: calc(50% - 30px); top: 190px; z-index: 3; } /* Below */
+  .card-reveal.celtic-cross .card:nth-child(4) { left: calc(50% - 30px); top: 70px; z-index: 4; } /* Above */
+  .card-reveal.celtic-cross .card:nth-child(5) { left: calc(50% - 90px); top: 130px; } /* Left */
+  .card-reveal.celtic-cross .card:nth-child(6) { left: calc(50% + 30px); top: 130px; } /* Right */
+  .card-reveal.celtic-cross .card:nth-child(7) { right: 10px; top: 70px; z-index: 1; } /* Staff top */
+  .card-reveal.celtic-cross .card:nth-child(8) { right: 10px; top: 120px; z-index: 2; } /* Staff 2 */
+  .card-reveal.celtic-cross .card:nth-child(9) { right: 10px; top: 170px; z-index: 3; } /* Staff 3 */
+  .card-reveal.celtic-cross .card:nth-child(10) { right: 10px; top: 220px; z-index: 4; } /* Staff bottom */
 }
 
 .card-tooltip {

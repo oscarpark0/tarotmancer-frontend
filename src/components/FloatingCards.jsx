@@ -107,6 +107,7 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
               loading="lazy"
               alt="Tarot card back"
               className="floating-card-image"
+              urlEndpoint="https://ik.imagekit.io/tarotmancer"
             />
           </motion.div>
         );

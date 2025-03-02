@@ -62,6 +62,7 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
               loading="lazy"
               className={`${styles.cardImage} ${position.orientation === 'reversed' ? styles.reversed : ''}`}
               alt={position.most_common_card}
+              urlEndpoint="https://ik.imagekit.io/tarotmancer"
             />
             <div className={styles.cardInfo}>
               <p className={styles.positionName}>{position.position_name}</p>
@@ -114,14 +115,14 @@ const DailyFrequenciesPage: React.FC = () => {
       try {
         const [frequenciesResponse, spreadsResponse] = await Promise.all([
           axios.get<CardFrequency[]>(
-            `${API_BASE_URL}/api/daily-card-frequencies`,
+            `${API_BASE_URL}/daily-card-frequencies`,
             {
               headers: { 'Authorization': `Bearer ${token}` },
               params: { date }
             }
           ),
           axios.get(
-            `${API_BASE_URL}/api/most-common-cards`,
+            `${API_BASE_URL}/most-common-cards`,
             {
               headers: { 'Authorization': `Bearer ${token}` },
               params: { date }
@@ -135,14 +136,28 @@ const DailyFrequenciesPage: React.FC = () => {
       } catch (err: any) { // Cast to any to access axios error properties
         console.error('Failed to fetch data from backend:', err);
         
-        // Check if the error is a 404 for "No data found"
-        if (err.response?.status === 404 && err.response?.data === 'No data found for the specified date') {
+        // Check for various error conditions
+        if (err.response?.status === 404) {
           setError(`No tarot card data available for ${new Date(date).toLocaleDateString()}. Please select a different date.`);
-          // Set empty data instead of mock data
+          // Set empty data
           setFrequencies([]);
           setCelticSpread([]);
           setThreeCardSpread([]);
           return;
+        } else if (err.code === 'ERR_NETWORK') {
+          setError('Network error: Unable to connect to the server. Please check your connection and try again.');
+          // Use mock data in this case to show UI functionality
+        } else if (err.response?.status === 401 || err.response?.status === 403) {
+          setError('Authentication error: Please log in to view this data.');
+          setFrequencies([]);
+          setCelticSpread([]);
+          setThreeCardSpread([]);
+          return;
+        }
+        
+        // Set a more user-friendly error message while showing mock data
+        if (!error) {
+          setError('Unable to fetch data from the server. Showing sample data instead.');
         }
         
         console.log('Using mock data as fallback');

@@ -32,7 +32,16 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
   };
 
   const getImagePath = (fullUrl: string) => {
-    return fullUrl.replace('https://ik.imagekit.io/tarotmancer/', '');
+    // If it's already a full URL, extract just the filename
+    if (fullUrl && fullUrl.startsWith('http')) {
+      return fullUrl.replace('https://ik.imagekit.io/tarotmancer/', '');
+    }
+    // If it contains a slash but no protocol, it might be a relative path
+    else if (fullUrl && fullUrl.includes('/')) {
+      return fullUrl.split('/').pop() || fullUrl;
+    }
+    // Otherwise, return as is (might be just a filename)
+    return fullUrl || '';
   };
 
   return (
@@ -54,6 +63,7 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
                   loading="lazy"
                   className={styles.cardImage}
                   alt={freq.card_name}
+                  urlEndpoint="https://ik.imagekit.io/tarotmancer"
                 />
               </div>
               <div className={styles.barWrapper}>

@@ -34,14 +34,16 @@
   cursor: pointer;
   transform-origin: center center;
   backface-visibility: hidden;
-  /* Removed transition and will-change to prevent animation */
+  transition: none !important;
+  animation: none !important;
 }
 
 .card:hover {
-  /* Very subtle hover effect with no animation */
+  /* No hover effects that could cause flashing */
   z-index: 10;
-  filter: brightness(1.05);
-  /* Removed box-shadow to prevent rendering changes */
+  /* Removed all filter effects */
+  transition: none !important;
+  animation: none !important;
 }
 
 .card-name-overlay {
@@ -62,7 +64,8 @@
   font-size: 1.1rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   z-index: 5;
-  /* No transition to prevent animation */
+  transition: none !important; /* Explicitly prevent transitions */
+  animation: none !important; /* Explicitly prevent animations */
 }
 
 .card-name-overlay.reversed {

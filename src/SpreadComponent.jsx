@@ -455,43 +455,7 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
                style={{ position: 'relative', minHeight: '100vh', paddingBottom: isMobile ? '350px' : '0' }}>
             {memoizedRobot}
             
-            {/* Add a simple signup button for anonymous users */}
-            {isAnonymousUser && (
-              <div style={{ 
-                position: 'fixed', 
-                bottom: '10px', 
-                right: '10px', 
-                zIndex: 3000,
-                background: 'rgba(0,0,0,0.7)',
-                borderRadius: '8px',
-                padding: '8px 12px',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.4)'
-              }}>
-                <button 
-                  onClick={() => { 
-                    if (login) {
-                      login();
-                    } else {
-                      console.log('Kinde login not available, redirecting to home');
-                      window.location.href = '/';
-                    }
-                  }}
-                  style={{
-                    background: 'linear-gradient(135deg, #f5d020 0%, #f53803 100%)',
-                    color: 'white',
-                    border: 'none',
-                    padding: '8px 16px',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-                  }}
-                >
-                  {getTranslation('signUpForMoreDraws') || 'Sign up for 6 draws per day!'}
-                </button>
-              </div>
-            )}
+            {/* Sign-up button for anonymous users removed */}
           </div>
           {positions.length > 0 && (
             <div className="fixed top-0 left-0 w-full h-full z-10 pointer-events-none">

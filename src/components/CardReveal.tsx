@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { IKImage } from 'imagekitio-react';
 import './CardReveal.css';
 
@@ -127,27 +126,16 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
   return (
     <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''} ${localShowCards ? 'show' : ''} ${insideMonitor ? 'inside-monitor' : ''}`}>
       {/* Use a more unique key that changes with each draw */}
-      <AnimatePresence mode="wait" initial={false}>
+      {/* Removed AnimatePresence to prevent animations */}
         {localShowCards && cards.length > 0 ? (
           <div key={`card-container-${cards.map(c => c.name).join('-')}`} className="cards-container">
             {cards.map((card, index) => (
-              <motion.div
+              <div
                 key={`${card.name}-${index}-${Math.random()}`}
                 className={`card ${card.orientation === 'reversed' ? 'reversed' : ''}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ 
-                  duration: 0.5, 
-                  delay: index * 0.1,
-                  type: "tween",
-                  ease: "easeOut"
-                }}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => handleTap(index)}
-                whileHover={{ scale: 1 }} /* Explicitly prevent hover animation */
-                whileTap={{ scale: 1 }} /* Prevent tap animation */
               >
                 <IKImage
                   path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}
@@ -156,19 +144,24 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
                   className="card-image"
                   urlEndpoint="https://ik.imagekit.io/tarotmancer"
                 />
+                {/* Use visibility instead of opacity for the card name overlay */}
                 <div 
                   className={`card-name-overlay ${card.orientation === 'reversed' ? 'reversed' : ''}`}
-                  style={{ opacity: (hoveredCard === index || tappedCard === index) ? 1 : 0 }}
+                  style={{ 
+                    visibility: (hoveredCard === index || tappedCard === index) ? 'visible' : 'hidden',
+                    opacity: (hoveredCard === index || tappedCard === index) ? 1 : 0,
+                    transition: 'none'
+                  }}
                 >
                   {card.name}
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         ) : (
           <div key="empty-container" className="empty-cards-container" />
         )}
-      </AnimatePresence>
+      {/* End of card container */}
     </div>
   );
 };

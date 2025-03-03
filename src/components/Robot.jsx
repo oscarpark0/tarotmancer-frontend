@@ -207,7 +207,7 @@ const Robot = memo((props) => {
 
   const handleMonitorOutput = useCallback((output) => {
     setMonitorOutput(output);
-    props.onMonitorOutput(output); /
+    props.onMonitorOutput(output); 
   }, [props]);
 
   useEffect(() => {

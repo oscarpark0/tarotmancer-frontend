@@ -311,7 +311,7 @@
   left: -10px;
   right: -10px;
   bottom: -10px;
-  background: url('/images/tarot-pattern.svg');
+  background: url('./images/tarot-pattern.svg');
   background-size: 300px;
   opacity: 0.04;
   z-index: -1;

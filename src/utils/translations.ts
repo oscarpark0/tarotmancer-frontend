@@ -165,6 +165,28 @@ export const buttonTranslations = {
     Finnish: "Seuraa, mitkä kortit esiintyvät useimmin lukemisissa.",
     Greek: "Παρακολουθήστε ποιες κάρτες εμφανίζονται συχνότερα στις αναγνώσεις."
   },
+  frequenciesExplanation: {
+    English: "This page displays aggregated data from all tarot readings performed by users. The frequencies shown represent how often each card appears across all readings on a specific date. The data is collected anonymously and updated daily. The 'Most Common Card Occurrences by Position' section shows which cards appear most frequently in specific positions within standard spreads. This information can provide insights into collective patterns and energies present on that day.",
+    Spanish: "Esta página muestra datos agregados de todas las lecturas de tarot realizadas por los usuarios. Las frecuencias mostradas representan con qué frecuencia aparece cada carta en todas las lecturas en una fecha específica. Los datos se recopilan de forma anónima y se actualizan diariamente. La sección 'Ocurrencias de Cartas Más Comunes por Posición' muestra qué cartas aparecen con más frecuencia en posiciones específicas dentro de tiradas estándar. Esta información puede proporcionar información sobre patrones colectivos y energías presentes ese día.",
+    French: "Cette page affiche les données agrégées de toutes les lectures de tarot effectuées par les utilisateurs. Les fréquences indiquées représentent la fréquence d'apparition de chaque carte dans toutes les lectures à une date précise. Les données sont collectées de manière anonyme et mises à jour quotidiennement. La section 'Occurrences de Cartes les Plus Communes par Position' montre quelles cartes apparaissent le plus fréquemment dans des positions spécifiques au sein des tirages standard. Ces informations peuvent fournir un aperçu des modèles collectifs et des énergies présentes ce jour-là.",
+    German: "Diese Seite zeigt aggregierte Daten aus allen von Benutzern durchgeführten Tarot-Lesungen. Die angezeigten Häufigkeiten stellen dar, wie oft jede Karte an einem bestimmten Datum in allen Lesungen vorkommt. Die Daten werden anonym gesammelt und täglich aktualisiert. Der Abschnitt 'Häufigste Kartenvorkommnisse nach Position' zeigt, welche Karten am häufigsten in bestimmten Positionen innerhalb von Standardlegungen vorkommen. Diese Informationen können Einblicke in kollektive Muster und Energien geben, die an diesem Tag vorhanden sind.",
+    Italian: "Questa pagina mostra i dati aggregati di tutte le letture dei tarocchi eseguite dagli utenti. Le frequenze mostrate rappresentano quanto spesso ogni carta appare in tutte le letture in una data specifica. I dati vengono raccolti in modo anonimo e aggiornati quotidianamente. La sezione 'Occorrenze di Carte Più Comuni per Posizione' mostra quali carte appaiono più frequentemente in posizioni specifiche all'interno di stese standard. Queste informazioni possono fornire spunti sui modelli collettivi e sulle energie presenti in quel giorno.",
+    Japanese: "このページには、ユーザーによって実行されたすべてのタロットリーディングの集計データが表示されます。表示される頻度は、特定の日付のすべてのリーディングで各カードが表示される頻度を表します。データは匿名で収集され、毎日更新されます。「位置別の最も一般的なカードの出現」セクションでは、標準的な展開内の特定の位置に最も頻繁に現れるカードを示しています。この情報は、その日に存在する集合的なパターンとエネルギーについての洞察を提供することができます。",
+    Chinese: "此页面显示用户进行的所有塔罗牌阅读的汇总数据。显示的频率代表每张牌在特定日期的所有阅读中出现的频率。数据匿名收集并每日更新。'按位置显示最常见卡牌'部分显示在标准牌阵中特定位置最常出现的牌。这些信息可以提供对当天存在的集体模式和能量的见解。",
+    Russian: "На этой странице отображаются сводные данные всех гаданий на Таро, выполненных пользователями. Показанные частоты представляют, как часто каждая карта появляется во всех гаданиях в определенную дату. Данные собираются анонимно и обновляются ежедневно. Раздел 'Наиболее Распространенные Карты по Позициям' показывает, какие карты чаще всего появляются в определенных позициях в стандартных раскладах. Эта информация может дать представление о коллективных паттернах и энергиях, присутствующих в этот день.",
+    Portuguese: "Esta página exibe dados agregados de todas as leituras de tarot realizadas pelos usuários. As frequências mostradas representam com que frequência cada carta aparece em todas as leituras em uma data específica. Os dados são coletados anonimamente e atualizados diariamente. A seção 'Ocorrências de Cartas Mais Comuns por Posição' mostra quais cartas aparecem com mais frequência em posições específicas dentro de tiragens padrão. Essas informações podem fornecer insights sobre padrões coletivos e energias presentes naquele dia.",
+    Dutch: "Deze pagina toont geaggregeerde gegevens van alle tarotlezingen uitgevoerd door gebruikers. De getoonde frequenties vertegenwoordigen hoe vaak elke kaart voorkomt in alle lezingen op een specifieke datum. De gegevens worden anoniem verzameld en dagelijks bijgewerkt. De sectie 'Meest Voorkomende Kaarten per Positie' toont welke kaarten het vaakst voorkomen in specifieke posities binnen standaard leggingen. Deze informatie kan inzichten bieden in collectieve patronen en energieën die op die dag aanwezig zijn.",
+    Korean: "이 페이지는 사용자가 수행한 모든 타로 리딩의 집계 데이터를 표시합니다. 표시된 빈도는 특정 날짜의 모든 리딩에서 각 카드가 나타나는 빈도를 나타냅니다. 데이터는 익명으로 수집되며 매일 업데이트됩니다. '위치별 가장 흔한 카드 발생' 섹션은 표준 스프레드 내의 특정 위치에서 가장 자주 나타나는 카드를 보여줍니다. 이 정보는 해당 날짜에 존재하는 집단적 패턴과 에너지에 대한 통찰력을 제공할 수 있습니다.",
+    Arabic: "تعرض هذه الصفحة البيانات المجمعة من جميع قراءات التارو التي قام بها المستخدمون. تمثل الترددات المعروضة مدى تكرار ظهور كل بطاقة في جميع القراءات في تاريخ معين. يتم جمع البيانات بشكل مجهول وتحديثها يوميًا. يوضح قسم 'أكثر بطاقات شيوعًا حسب الموضع' البطاقات التي تظهر بشكل متكرر في مواضع محددة ضمن التوزيعات القياسية. يمكن أن توفر هذه المعلومات رؤى حول الأنماط الجماعية والطاقات الموجودة في ذلك اليوم.",
+    Hindi: "यह पृष्ठ उपयोगकर्ताओं द्वारा किए गए सभी टैरो रीडिंग से एकत्रित डेटा प्रदर्शित करता है। दिखाई गई आवृत्तियां दर्शाती हैं कि किसी विशिष्ट तिथि पर सभी रीडिंग में प्रत्येक कार्ड कितनी बार दिखाई देता है। डेटा गुमनाम रूप से एकत्र किया जाता है और दैनिक रूप से अपडेट किया जाता है। 'स्थिति के अनुसार सबसे आम कार्ड की घटनाएँ' अनुभाग दिखाता है कि मानक स्प्रेड के भीतर विशिष्ट स्थितियों में कौन से कार्ड सबसे अधिक बार दिखाई देते हैं। यह जानकारी उस दिन मौजूद सामूहिक पैटर्न और ऊर्जाओं के बारे में अंतर्दृष्टि प्रदान कर सकती है।",
+    Swedish: "Denna sida visar aggregerad data från alla tarotläsningar utförda av användare. De visade frekvenserna representerar hur ofta varje kort visas i alla läsningar på ett specifikt datum. Data samlas in anonymt och uppdateras dagligen. Avsnittet 'Vanligaste Kortförekomsterna efter Position' visar vilka kort som förekommer oftast i specifika positioner inom standardläggningar. Denna information kan ge insikter om kollektiva mönster och energier som finns närvarande den dagen.",
+    Polish: "Ta strona wyświetla zagregowane dane ze wszystkich odczytów tarota wykonanych przez użytkowników. Wyświetlane częstotliwości przedstawiają, jak często każda karta pojawia się we wszystkich odczytach w określonym dniu. Dane są zbierane anonimowo i aktualizowane codziennie. Sekcja 'Najczęstsze Wystąpienia Kart według Pozycji' pokazuje, które karty pojawiają się najczęściej w określonych pozycjach w standardowych rozkładach. Informacje te mogą dostarczyć wglądu w zbiorowe wzorce i energie obecne w danym dniu.",
+    Turkish: "Bu sayfa, kullanıcılar tarafından gerçekleştirilen tüm tarot okumalarından toplanan verileri gösterir. Gösterilen frekanslar, belirli bir tarihte tüm okumalarda her kartın ne sıklıkla göründüğünü temsil eder. Veriler anonim olarak toplanır ve günlük olarak güncellenir. 'Pozisyona Göre En Yaygın Kart Görülmeleri' bölümü, standart açılımlardaki belirli pozisyonlarda en sık görünen kartları gösterir. Bu bilgiler, o gün mevcut olan kolektif desenler ve enerjiler hakkında içgörüler sağlayabilir.",
+    Danish: "Denne side viser aggregerede data fra alle tarotlæsninger udført af brugere. De viste frekvenser repræsenterer, hvor ofte hvert kort vises på tværs af alle læsninger på en bestemt dato. Dataene indsamles anonymt og opdateres dagligt. Afsnittet 'Mest Almindelige Kortforekomster efter Position' viser, hvilke kort der forekommer hyppigst i specifikke positioner inden for standardlægninger. Disse oplysninger kan give indsigt i kollektive mønstre og energier, der er til stede på den pågældende dag.",
+    Norwegian: "Denne siden viser aggregerte data fra alle tarotlesinger utført av brukere. Frekvensene som vises representerer hvor ofte hvert kort vises på tvers av alle lesinger på en bestemt dato. Dataene samles inn anonymt og oppdateres daglig. Delen 'Vanligste Kortforekomster etter Posisjon' viser hvilke kort som forekommer oftest i spesifikke posisjoner innenfor standardlegginger. Denne informasjonen kan gi innsikt i kollektive mønstre og energier som er tilstede den dagen.",
+    Finnish: "Tämä sivu näyttää koostetusti tiedot kaikista käyttäjien suorittamista tarot-lukemisista. Näytetyt frekvenssit kuvaavat, kuinka usein kukin kortti esiintyy kaikissa lukemisissa tiettynä päivänä. Tiedot kerätään nimettömästi ja päivitetään päivittäin. 'Yleisimmät Korttiesiintymät Aseman mukaan' -osio näyttää, mitkä kortit esiintyvät useimmin tietyissä asemissa vakiolevityksissä. Nämä tiedot voivat antaa näkemyksiä kollektiivisista kuvioista ja energioista, jotka ovat läsnä sinä päivänä.",
+    Greek: "Αυτή η σελίδα εμφανίζει συγκεντρωτικά δεδομένα από όλες τις αναγνώσεις ταρώ που πραγματοποιούνται από χρήστες. Οι συχνότητες που εμφανίζονται αντιπροσωπεύουν πόσο συχνά εμφανίζεται κάθε κάρτα σε όλες τις αναγνώσεις σε μια συγκεκριμένη ημερομηνία. Τα δεδομένα συλλέγονται ανώνυμα και ενημερώνονται καθημερινά. Η ενότητα 'Πιο Συχνές Εμφανίσεις Καρτών ανά Θέση' δείχνει ποιες κάρτες εμφανίζονται συχνότερα σε συγκεκριμένες θέσεις εντός τυπικών διατάξεων. Αυτές οι πληροφορίες μπορούν να παρέχουν πληροφορίες σχετικά με συλλογικά μοτίβα και ενέργειες που υπάρχουν εκείνη την ημέρα."
+  },
   mostCommonCardOccurrencesByPosition: {
     English: "Most Common Card Occurrences by Position",
     Spanish: "Ocurrencias de Cartas Más Comunes por Posición",
@@ -341,6 +363,29 @@ export const buttonTranslations = {
     Finnish: "Tilaaminen...",
     Greek: "Εγγραφή..."
   },
+  todayButton: {
+    English: "Today",
+    Spanish: "Hoy",
+    French: "Aujourd'hui",
+    German: "Heute",
+    Italian: "Oggi",
+    Japanese: "今日",
+    Chinese: "今天",
+    Russian: "Сегодня",
+    Portuguese: "Hoje",
+    Dutch: "Vandaag",
+    Korean: "오늘",
+    Arabic: "اليوم",
+    Hindi: "आज",
+    Swedish: "Idag",
+    Polish: "Dziś",
+    Turkish: "Bugün",
+    Danish: "I dag",
+    Norwegian: "I dag",
+    Finnish: "Tänään",
+    Greek: "Σήμερα"
+  },
+
   updatesAndWeeklyReadings: {
     English: "Updates & Weekly Readings",
     Spanish: "Actualizaciones y Lecturas Semanales",

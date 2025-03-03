@@ -261,6 +261,9 @@ const DailyFrequenciesPage: React.FC = () => {
         <p>
           {getTranslation('frequenciesDescription')}
         </p>
+        <p className={styles.explanationText}>
+          {getTranslation('frequenciesExplanation')}
+        </p>
         <ol>
           <li>{getTranslation('mostCommonCardOccurrencesByPosition')}</li>
           <li>{getTranslation('individualCardFrequencies')}</li>

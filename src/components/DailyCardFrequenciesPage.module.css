@@ -26,6 +26,19 @@
   color: #ffd700;
 }
 
+.explanationText {
+  max-width: 900px;
+  margin: 1rem auto;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #e0e0e0;
+  text-align: left;
+  border-left: 3px solid #ffd700;
+}
+
 .pageContent {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 15px;

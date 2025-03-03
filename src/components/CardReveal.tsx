@@ -134,20 +134,19 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
               <motion.div
                 key={`${card.name}-${index}-${Math.random()}`}
                 className={`card ${card.orientation === 'reversed' ? 'reversed' : ''}`}
-                initial={{ opacity: 0, scale: 0.5, y: 50 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.5, y: -50 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
                 transition={{ 
-                  duration: 0.6, 
-                  delay: index * 0.2,
-                  type: "spring",
-                  stiffness: 260,
-                  damping: 20
-                }}
+                  duration: 0.5, 
+                  delay: index * 0.1,
+                  type: "tween",
+                  ease: "easeOut"
+                }} /* Simplified animation with less movement */
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => handleTap(index)}
-                whileTap={{ scale: isMobile ? 1.2 : 1 }}
+                whileTap={{ scale: 1 }} /* Removed scaling animation */
               >
                 <IKImage
                   path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}

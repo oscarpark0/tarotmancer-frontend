@@ -28,11 +28,13 @@ interface CardRevealProps {
   showCards: boolean;
   isMobile: boolean;
   insideMonitor?: boolean;
+  inTerminal?: boolean;
+  className?: string;
 }
 
 type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
-const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, insideMonitor = false }) => {
+const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, insideMonitor = false, inTerminal = false, className = '' }) => {
   const [localShowCards, setLocalShowCards] = useState<boolean>(showCards);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [tappedCard, setTappedCard] = useState<number | null>(null);
@@ -101,6 +103,15 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
         // Otherwise, show the tapped card
         setTappedCard(index);
       }
+      
+      // Add vibration feedback for mobile if available
+      if ('vibrate' in navigator) {
+        try {
+          navigator.vibrate(50); // Short vibration
+        } catch (e) {
+          console.log('Vibration not supported');
+        }
+      }
     }
   };
   
@@ -124,7 +135,7 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
   };
 
   return (
-    <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''} ${localShowCards ? 'show' : ''} ${insideMonitor ? 'inside-monitor' : ''}`}>
+    <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''} ${localShowCards ? 'show' : ''} ${insideMonitor ? 'inside-monitor' : ''} ${inTerminal ? 'in-terminal' : ''} ${className}`}>
       {/* Use a more unique key that changes with each draw */}
       {/* Removed AnimatePresence to prevent animations */}
         {localShowCards && cards.length > 0 ? (
@@ -132,11 +143,11 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
             {cards.map((card, index) => (
               <div
                 key={`${card.name}-${index}-${Math.random()}`}
-                className={`card ${card.orientation === 'reversed' ? 'reversed' : ''} ${tappedCard === index ? 'tapped' : ''}`}
+                className={`card ${card.orientation === 'reversed' ? 'reversed' : ''} ${tappedCard === index ? 'tapped' : ''} ${inTerminal ? 'in-terminal-card' : ''}`}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => handleTap(index)}
-                style={tappedCard === index && insideMonitor ? { animation: 'cardPulse 2s infinite' } : undefined}
+                style={tappedCard === index && (insideMonitor || inTerminal) ? { animation: inTerminal ? 'terminalCardPulse 2s infinite' : 'cardPulse 2s infinite' } : undefined}
               >
                 <IKImage
                   path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}

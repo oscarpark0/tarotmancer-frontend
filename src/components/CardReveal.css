@@ -199,6 +199,57 @@
     height: 100%;
     z-index: 11;
     padding: 5px;
+  }
+  
+  /* Styles for cards inside the terminal */
+  .card-reveal.in-terminal {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    z-index: 11;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Adjust card sizes when in terminal */
+  .card-reveal.in-terminal .card {
+    width: 60px;
+    height: 105px;
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.3);
+    border: 1px solid rgba(51, 255, 51, 0.2);
+  }
+  
+  /* Add pulse animation for tapped cards in terminal */
+  @keyframes terminalCardPulse {
+    0% { box-shadow: 0 0 5px rgba(51, 255, 51, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(51, 255, 51, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(51, 255, 51, 0.3); }
+  }
+  
+  .card-reveal.in-terminal .card.tapped {
+    animation: terminalCardPulse 2s infinite ease-in-out;
+    z-index: 20;
+  }
+  
+  /* Style for card name overlay in terminal */
+  .card-reveal.in-terminal .card-name-overlay {
+    background-color: rgba(0, 20, 0, 0.8);
+    color: #33ff33;
+    border: 1px solid rgba(51, 255, 51, 0.5);
+    font-family: 'VT323', monospace;
+    text-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+  }
+  
+  /* Adjust card position in terminal for better spacing */
+  .card-reveal.in-terminal.three-card .card:nth-child(1) { left: calc(50% - 80px); }
+  .card-reveal.in-terminal.three-card .card:nth-child(3) { left: calc(50% + 80px); }
+  
+  .card-reveal.inside-monitor {
     box-sizing: border-box;
   }
   

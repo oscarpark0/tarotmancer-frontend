@@ -200,14 +200,16 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           </button>
         </div>
         <div className="terminal-content">
-          {isMobile && showCards && (
+          {isMobile && cards.length > 0 && (
             <div className="terminal-card-reveal-container">
               <CardReveal
                 cards={cards}
+                showCards={true}
                 revealCards={revealCards}
                 dealingComplete={dealingComplete}
                 shouldDrawNewSpread={shouldDrawNewSpread}
                 isMobile={isMobile}
+                inTerminal={true}
                 className={`terminal-card-reveal ${isMobile ? 'mobile' : ''}`}
               />
             </div>

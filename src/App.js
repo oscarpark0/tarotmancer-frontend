@@ -12,6 +12,7 @@ import DarkModeToggle from './components/DarkModeToggle.tsx';
 import PastDrawsModal from './components/PastDrawsModal';
 import FeedbackButton from './components/FeedbackButton.tsx';
 import GuestLoginButton from './components/GuestLoginButton.tsx';
+import CardAnimation from './components/CardAnimation';
 import './App.css';
 import { useMediaQuery } from 'react-responsive';
 import Footer from './components/Footer.tsx';
@@ -164,10 +165,8 @@ function AppContent({ isAuthenticated }) {
             <TypingAnimation duration={100}>{getTranslation('tarotmancer')}</TypingAnimation>
           </div>
           
-          {/* Mystical description text */}
-          <p className="welcome-description">
-            {getTranslation('welcomeDescription') || 'Discover your path through the cosmic wisdom of tarot, guided by digital divination.'}
-          </p>
+          {/* Card Animation */}
+          <CardAnimation />
           
           <div className="welcome-buttons">
             <div className="login-buttons-row">
@@ -177,14 +176,7 @@ function AppContent({ isAuthenticated }) {
             <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
           </div>
           
-          {/* Decorative elements */}
-          <div className="mystical-symbols">
-            <span className="symbol">★</span>
-            <span className="symbol">✧</span>
-            <span className="symbol">☽</span>
-            <span className="symbol">✧</span>
-            <span className="symbol">★</span>
-          </div>
+          {/* Removed mystical symbols in favor of card animation */}
         </div>
       </div>
     )

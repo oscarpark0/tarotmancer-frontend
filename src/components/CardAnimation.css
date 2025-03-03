@@ -1,0 +1,106 @@
+.card-animation-container {
+  width: 100%;
+  height: 120px;
+  position: relative;
+  margin: 20px auto;
+  overflow: hidden;
+}
+
+.animated-card {
+  position: absolute;
+  width: 40px;
+  height: 70px;
+  background: linear-gradient(45deg, #1a1a2e, #16213e);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  opacity: 0.7;
+  transform-origin: center center;
+  animation-name: floatCard;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.animated-card::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  right: 5px;
+  bottom: 5px;
+  background: linear-gradient(135deg, transparent, rgba(255, 215, 0, 0.1));
+  border-radius: 3px;
+}
+
+.animated-card::after {
+  content: '';
+  position: absolute;
+  width: 70%;
+  height: 70%;
+  top: 15%;
+  left: 15%;
+  background-image: url('../images/tarot-pattern.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.3;
+}
+
+.card-1 {
+  left: 10%;
+  animation-duration: 8s;
+  animation-delay: 0s;
+}
+
+.card-2 {
+  left: 30%;
+  animation-duration: 10s;
+  animation-delay: 1s;
+}
+
+.card-3 {
+  left: 50%;
+  animation-duration: 7s;
+  animation-delay: 0.5s;
+}
+
+.card-4 {
+  left: 70%;
+  animation-duration: 9s;
+  animation-delay: 1.5s;
+}
+
+.card-5 {
+  left: 90%;
+  animation-duration: 11s;
+  animation-delay: 0.7s;
+}
+
+@keyframes floatCard {
+  0% {
+    transform: translateY(120px) rotate(0deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-animation-container {
+    height: 100px;
+  }
+  
+  .animated-card {
+    width: 30px;
+    height: 52px;
+  }
+}

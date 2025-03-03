@@ -36,7 +36,10 @@ const Spread: React.FC<SpreadProps> = ({ spread, title }) => {
   const { getTranslation } = useTranslation();
 
   // Use the utility function for consistent image path formatting
-  const getImagePath = formatCardImagePath;
+  const getImagePath = (path: string) => {
+    // Make sure we're using the proper image filename with extension
+    return formatCardImagePath(path);
+  };
 
   // Sort the spread based on a predefined order
   const sortedSpread = [...spread].sort((a, b) => {
@@ -97,22 +100,8 @@ const DailyFrequenciesPage: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
   
-  // Get yesterday's date as default since today's data might not be available yet
-  const getYesterdayFormatted = (): string => {
-    // Create date for yesterday
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    // Get year, month, and day components
-    const year = yesterday.getFullYear();
-    const month = String(yesterday.getMonth() + 1).padStart(2, '0');
-    const day = String(yesterday.getDate()).padStart(2, '0');
-    
-    // Format as YYYY-MM-DD
-    return `${year}-${month}-${day}`;
-  };
-  
-  const [selectedDate, setSelectedDate] = useState<string>(getYesterdayFormatted());
+  // Use current date as default
+  const [selectedDate, setSelectedDate] = useState<string>(getTodayFormatted());
   const [celticSpread, setCelticSpread] = useState<PositionInfo[]>([]);
   const [threeCardSpread, setThreeCardSpread] = useState<PositionInfo[]>([]);
   const [frequencies, setFrequencies] = useState<CardFrequency[]>([]);
@@ -287,11 +276,11 @@ const DailyFrequenciesPage: React.FC = () => {
             max={getTodayFormatted()}
           />
           <button 
-            onClick={() => setSelectedDate(getYesterdayFormatted())}
+            onClick={() => setSelectedDate(getTodayFormatted())}
             className={styles.todayButton}
-            title="Today's data may not be available yet. This button selects yesterday's date."
+            title="View today's card frequencies"
           >
-            Yesterday
+            {getTranslation('todayButton')}
           </button>
         </div>
         

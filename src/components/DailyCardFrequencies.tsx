@@ -40,6 +40,38 @@ const DailyCardFrequencies: React.FC<DailyCardFrequenciesProps> = ({
     else if (fullUrl && fullUrl.includes('/')) {
       return fullUrl.split('/').pop() || fullUrl;
     }
+    // Make sure we have the .webp extension for card images
+    else if (fullUrl && !fullUrl.includes('.')) {
+      // This is likely just a card name, so we need to convert it to a filename
+      // For example, 'the_fool' should become 'm00.webp'
+      const cardNameMapping: Record<string, string> = {
+        'the_fool': 'm00.webp',
+        'the_magician': 'm01.webp',
+        'the_high_priestess': 'm02.webp',
+        'the_empress': 'm03.webp',
+        'the_emperor': 'm04.webp',
+        'the_hierophant': 'm05.webp',
+        'the_lovers': 'm06.webp',
+        'the_chariot': 'm07.webp',
+        'strength': 'm08.webp',
+        'the_hermit': 'm09.webp',
+        'wheel_of_fortune': 'm10.webp',
+        'justice': 'm11.webp',
+        'the_hanged_man': 'm12.webp',
+        'death': 'm13.webp',
+        'temperance': 'm14.webp',
+        'the_devil': 'm15.webp',
+        'the_tower': 'm16.webp',
+        'the_star': 'm17.webp',
+        'the_moon': 'm18.webp',
+        'the_sun': 'm19.webp',
+        'judgement': 'm20.webp',
+        'the_world': 'm21.webp'
+      };
+      
+      const normalizedCardName = fullUrl.toLowerCase().replace(/ /g, '_');
+      return cardNameMapping[normalizedCardName] || fullUrl;
+    }
     // Otherwise, return as is (might be just a filename)
     return fullUrl || '';
   };

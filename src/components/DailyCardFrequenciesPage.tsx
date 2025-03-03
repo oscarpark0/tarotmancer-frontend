@@ -128,69 +128,37 @@ const DailyFrequenciesPage: React.FC = () => {
       const token = await getToken();
       
       try {
-        // Make API calls separately to handle individual failures
-        let sortedFrequencies: CardFrequency[] = [];
-        let celticSpreadData: PositionInfo[] = [];
-        let threeCardSpreadData: PositionInfo[] = [];
-        let hasData = false;
-        
-        // Try to fetch card frequencies
-        try {
-          const frequenciesResponse = await axios.get<CardFrequency[]>(
-            `${API_BASE_URL}/daily-card-frequencies`,
+        const [frequenciesResponse, spreadsResponse] = await Promise.all([
+          axios.get<CardFrequency[]>(
+            `${API_BASE_URL}/api/daily-card-frequencies`,
             {
               headers: { 'Authorization': `Bearer ${token}` },
               params: { date }
             }
-          );
-          
-          // Sort frequencies by frequency (highest first)
-          sortedFrequencies = frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency);
-          setFrequencies(sortedFrequencies);
-          if (sortedFrequencies.length > 0) hasData = true;
-        } catch (freqErr: any) {
-          console.error('Failed to fetch frequencies:', freqErr);
-          // Don't set error yet, wait to see if we get spread data
-          setFrequencies([]);
-        }
-        
-        // Try to fetch most common cards
-        try {
-          const spreadsResponse = await axios.get(
-            `${API_BASE_URL}/most-common-cards`,
+          ),
+          axios.get(
+            `${API_BASE_URL}/api/most-common-cards`,
             {
               headers: { 'Authorization': `Bearer ${token}` },
               params: { date }
             }
-          );
-          
-          // Check if we received valid data for spreads
-          celticSpreadData = spreadsResponse.data['celtic-spread'] || [];
-          threeCardSpreadData = spreadsResponse.data['three-card-spread'] || [];
-          
-          setCelticSpread(celticSpreadData);
-          setThreeCardSpread(threeCardSpreadData);
-          
-          if (celticSpreadData.length > 0 || threeCardSpreadData.length > 0) hasData = true;
-        } catch (spreadErr: any) {
-          console.error('Failed to fetch spreads:', spreadErr);
-          setCelticSpread([]);
-          setThreeCardSpread([]);
-        }
+          )
+        ]);
+
+        // Sort frequencies by frequency (highest first)
+        const sortedFrequencies = frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency);
+        setFrequencies(sortedFrequencies);
         
-        // If we have no data from either endpoint, show a user-friendly message
-        if (!hasData) {
-          // Format the date parts for display
-          const [year, month, day] = date.split('-');
-          const formattedDate = `${month}/${day}/${year}`;
-          
-          // Check if the selected date is today
-          const today = getTodayFormatted();
-          if (date === today) {
-            setError(`No tarot card data available for today (${formattedDate}) yet. Data is typically available for previous days. Please select yesterday or an earlier date.`);
-          } else {
-            setError(`No tarot card data available for ${formattedDate}. Please select a different date.`);
-          }
+        // Check if we received valid data for spreads
+        const celticSpreadData = spreadsResponse.data['celtic-spread'] || [];
+        const threeCardSpreadData = spreadsResponse.data['three-card-spread'] || [];
+        
+        setCelticSpread(celticSpreadData);
+        setThreeCardSpread(threeCardSpreadData);
+        
+        // If we have no data, show a user-friendly message
+        if (sortedFrequencies.length === 0 && celticSpreadData.length === 0 && threeCardSpreadData.length === 0) {
+          setError(`No tarot card data available for ${date}. Please select a different date.`);
         } else {
           setError(null);
         }
@@ -211,10 +179,7 @@ const DailyFrequenciesPage: React.FC = () => {
           setCelticSpread([]);
           setThreeCardSpread([]);
           return;
-        } else if (err.response?.status === 404) {
-          // Handle 404 errors gracefully - treat as empty data
-          console.log(`No data found for date: ${date}, treating as empty dataset`);
-          
+        } else {
           // Check if the selected date is today
           const today = getTodayFormatted();
           if (date === today) {
@@ -224,13 +189,6 @@ const DailyFrequenciesPage: React.FC = () => {
           }
           
           // Set empty data
-          setFrequencies([]);
-          setCelticSpread([]);
-          setThreeCardSpread([]);
-          return;
-        } else {
-          // Generic error handling for other error types
-          setError(`Error loading data for ${formattedDate}. Please try a different date.`);
           setFrequencies([]);
           setCelticSpread([]);
           setThreeCardSpread([]);

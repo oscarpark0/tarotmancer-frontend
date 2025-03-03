@@ -500,7 +500,16 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
                   <ErrorBoundary>
                     {memoizedFloatingCards}
                   </ErrorBoundary>
-                  {/* CardReveal moved to Robot component */}
+                  {/* Show CardReveal here for desktop, in Robot for mobile */}
+                  {!isMobile && (
+                    <div className="pointer-events-auto">
+                      <CardReveal
+                        cards={cards}
+                        showCards={showCards}
+                        isMobile={isMobile}
+                      />
+                    </div>
+                  )}
                 </section>
               </div>
             </div>

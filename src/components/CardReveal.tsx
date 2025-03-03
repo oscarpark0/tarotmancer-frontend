@@ -150,7 +150,7 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
                 whileTap={{ scale: isMobile ? 1.2 : 1 }}
               >
                 <IKImage
-                  path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img.startsWith('tarot/') ? card.img : `tarot/${card.img}`}
+                  path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}
                   loading="lazy"
                   alt={card.name || "Tarot card"}
                   className="card-image"

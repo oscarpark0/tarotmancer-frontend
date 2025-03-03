@@ -401,14 +401,14 @@ const Robot = memo((props) => {
                 onAnimationStart={handleAnimationStart}
                 onAnimationComplete={onAnimationComplete}
               />
-              {/* Card reveal container */}
-              {isMobile && showCards && (
+              {/* Card reveal container - only shown on mobile */}
+              {isMobile && showCards && cardRevealComponent && (
                 <div className="card-reveal-container">
                   {cardRevealComponent}
                 </div>
               )}
               <div ref={monitorOutputRef} className={`monitor-output ${isExpanded ? 'expanded' : ''}`}>
-                {!isMobile || !showCards ? monitorOutput : ''}
+                {!(isMobile && showCards && cardRevealComponent) ? monitorOutput : ''}
               </div>
               <div className="screen-overlay"></div>
               <div className="screen-glass"></div>

@@ -84,14 +84,14 @@ const DailyFrequenciesPage: React.FC = () => {
   const navigate = useNavigate();
   // Get today's date properly formatted in the user's local timezone
   const getTodayFormatted = (): string => {
-    // Create date in user's timezone
-    const today = new Date();
+    // Create date in user's timezone with current time
+    const now = new Date();
     
     // Get year, month, and day components in local timezone
-    const year = today.getFullYear();
+    const year = now.getFullYear();
     // getMonth() is 0-based, so add 1
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
     
     // Format as YYYY-MM-DD
     return `${year}-${month}-${day}`;
@@ -138,7 +138,10 @@ const DailyFrequenciesPage: React.FC = () => {
         
         // Check for various error conditions
         if (err.response?.status === 404) {
-          setError(`No tarot card data available for ${new Date(date).toLocaleDateString()}. Please select a different date.`);
+          // Format the date parts for display
+          const [year, month, day] = date.split('-');
+          const formattedDate = `${month}/${day}/${year}`;
+          setError(`No tarot card data available for ${formattedDate}. Please select a different date.`);
           // Set empty data
           setFrequencies([]);
           setCelticSpread([]);

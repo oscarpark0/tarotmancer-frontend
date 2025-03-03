@@ -97,7 +97,22 @@ const DailyFrequenciesPage: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
   
-  const [selectedDate, setSelectedDate] = useState<string>(getTodayFormatted());
+  // Get yesterday's date as default since today's data might not be available yet
+  const getYesterdayFormatted = (): string => {
+    // Create date for yesterday
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // Get year, month, and day components
+    const year = yesterday.getFullYear();
+    const month = String(yesterday.getMonth() + 1).padStart(2, '0');
+    const day = String(yesterday.getDate()).padStart(2, '0');
+    
+    // Format as YYYY-MM-DD
+    return `${year}-${month}-${day}`;
+  };
+  
+  const [selectedDate, setSelectedDate] = useState<string>(getYesterdayFormatted());
   const [celticSpread, setCelticSpread] = useState<PositionInfo[]>([]);
   const [threeCardSpread, setThreeCardSpread] = useState<PositionInfo[]>([]);
   const [frequencies, setFrequencies] = useState<CardFrequency[]>([]);
@@ -141,7 +156,15 @@ const DailyFrequenciesPage: React.FC = () => {
           // Format the date parts for display
           const [year, month, day] = date.split('-');
           const formattedDate = `${month}/${day}/${year}`;
-          setError(`No tarot card data available for ${formattedDate}. Please select a different date.`);
+          
+          // Check if the selected date is today
+          const today = getTodayFormatted();
+          if (date === today) {
+            setError(`No tarot card data available for today (${formattedDate}) yet. Data is typically available for previous days. Please select yesterday or an earlier date.`);
+          } else {
+            setError(`No tarot card data available for ${formattedDate}. Please select a different date.`);
+          }
+          
           // Set empty data
           setFrequencies([]);
           setCelticSpread([]);
@@ -250,10 +273,11 @@ const DailyFrequenciesPage: React.FC = () => {
             max={getTodayFormatted()}
           />
           <button 
-            onClick={() => setSelectedDate(getTodayFormatted())}
+            onClick={() => setSelectedDate(getYesterdayFormatted())}
             className={styles.todayButton}
+            title="Today's data may not be available yet. This button selects yesterday's date."
           >
-            Today
+            Yesterday
           </button>
         </div>
         

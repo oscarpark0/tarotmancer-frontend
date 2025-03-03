@@ -132,10 +132,11 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
             {cards.map((card, index) => (
               <div
                 key={`${card.name}-${index}-${Math.random()}`}
-                className={`card ${card.orientation === 'reversed' ? 'reversed' : ''}`}
+                className={`card ${card.orientation === 'reversed' ? 'reversed' : ''} ${tappedCard === index ? 'tapped' : ''}`}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => handleTap(index)}
+                style={tappedCard === index && insideMonitor ? { animation: 'cardPulse 2s infinite' } : undefined}
               >
                 <IKImage
                   path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}

@@ -163,12 +163,27 @@ function AppContent({ isAuthenticated }) {
           <div className="animation-container">
             <TypingAnimation duration={100}>{getTranslation('tarotmancer')}</TypingAnimation>
           </div>
+          
+          {/* Mystical description text */}
+          <p className="welcome-description">
+            {getTranslation('welcomeDescription') || 'Discover your path through the cosmic wisdom of tarot, guided by digital divination.'}
+          </p>
+          
           <div className="welcome-buttons">
             <div className="login-buttons-row">
               <LoginButton />
               <GuestLoginButton />
             </div>
             <DarkModeToggle isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+          </div>
+          
+          {/* Decorative elements */}
+          <div className="mystical-symbols">
+            <span className="symbol">★</span>
+            <span className="symbol">✧</span>
+            <span className="symbol">☽</span>
+            <span className="symbol">✧</span>
+            <span className="symbol">★</span>
           </div>
         </div>
       </div>

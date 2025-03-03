@@ -68,6 +68,24 @@
   animation: none !important; /* Explicitly prevent animations */
 }
 
+@media (max-width: 768px) {
+  .card-name-overlay {
+    font-size: 0.7rem;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #33ff33;
+    text-shadow: 0 0 5px rgba(51, 255, 51, 0.6);
+    border: 1px solid rgba(51, 255, 51, 0.3);
+  }
+  
+  .inside-monitor .card-name-overlay {
+    font-size: 0.65rem;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
 .card-name-overlay.reversed {
   transform: rotateX(180deg);
 }
@@ -180,6 +198,8 @@
     width: 100%;
     height: 100%;
     z-index: 11;
+    padding: 5px;
+    box-sizing: border-box;
   }
   
   .card-reveal.inside-monitor .cards-container {
@@ -188,37 +208,61 @@
     align-items: center;
     width: 100%;
     height: 100%;
+    position: relative;
   }
   
+  /* Three Card Spread - Inside Monitor */
   .card-reveal.inside-monitor.three-card .card:nth-child(1) { 
-    left: calc(50% - 60px); 
+    left: calc(50% - 65px); 
     top: 50%; 
-    transform: translateY(-50%) scale(0.9); 
+    transform: translateY(-50%) scale(1);
+    box-shadow: 0 0 8px rgba(51, 255, 51, 0.4);
+    transition: all 0.3s ease;
   }
   
   .card-reveal.inside-monitor.three-card .card:nth-child(2) { 
     left: 50%; 
     top: 50%; 
-    transform: translate(-50%, -50%) scale(0.9); 
+    transform: translate(-50%, -50%) scale(1);
+    box-shadow: 0 0 8px rgba(51, 255, 51, 0.4);
+    z-index: 12;
+    transition: all 0.3s ease;
   }
   
   .card-reveal.inside-monitor.three-card .card:nth-child(3) { 
-    left: calc(50% + 60px); 
+    left: calc(50% + 65px); 
     top: 50%; 
-    transform: translateY(-50%) scale(0.9); 
+    transform: translateY(-50%) scale(1);
+    box-shadow: 0 0 8px rgba(51, 255, 51, 0.4);
+    transition: all 0.3s ease;
+  }
+  
+  /* Celtic Cross - Inside Monitor */
+  .card-reveal.inside-monitor.celtic-cross .card {
+    box-shadow: 0 0 8px rgba(51, 255, 51, 0.4);
+    transition: all 0.3s ease;
   }
 
-  /* Make cards more visible on hover without movement */
-  .card:hover {
+  /* Make cards more visible on hover/tap without movement */
+  .card:hover, .card:active {
     /* Remove transform scale to prevent movement */
     z-index: 2000 !important;
     filter: brightness(1.2) !important;
+    box-shadow: 0 0 12px rgba(51, 255, 51, 0.6) !important;
   }
 
-  .card.reversed:hover {
+  .card.reversed:hover, .card.reversed:active {
     transform: rotateX(180deg) !important; /* Keep rotation but remove scale */
     z-index: 2000 !important;
     filter: brightness(1.2) !important;
+    box-shadow: 0 0 12px rgba(51, 255, 51, 0.6) !important;
+  }
+  
+  /* Add a subtle pulse animation for tapped cards */
+  @keyframes cardPulse {
+    0% { box-shadow: 0 0 8px rgba(51, 255, 51, 0.4); }
+    50% { box-shadow: 0 0 15px rgba(51, 255, 51, 0.7); }
+    100% { box-shadow: 0 0 8px rgba(51, 255, 51, 0.4); }
   }
 }
 

@@ -111,7 +111,7 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) =
                 onMouseLeave={handleMouseLeave}
               >
                 <IKImage
-                  path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}
+                  path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img.startsWith('tarot/') ? card.img : `tarot/${card.img}`}
                   loading="lazy"
                   alt={card.name || "Tarot card"}
                   className="card-image"

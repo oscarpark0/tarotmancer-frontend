@@ -170,8 +170,14 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
           
           // If image path doesn't have the expected format, construct it correctly
           if (imgPath && !imgPath.includes('://') && !imgPath.startsWith('/')) {
-            // Make sure the path is properly formatted
-            imgPath = imgPath.replace(/^tarot\//, ''); // Remove 'tarot/' prefix if present
+            // For guest users, ensure the path includes 'tarot/' prefix
+            if (!imgPath.startsWith('tarot/') && isAnonymousUser) {
+              // Keep the tarot/ prefix for guest users
+              imgPath = imgPath;
+            } else if (!isAnonymousUser) {
+              // For authenticated users, follow the existing pattern
+              imgPath = imgPath.replace(/^tarot\//, ''); // Remove 'tarot/' prefix if present
+            }
           }
           
           return {

@@ -415,10 +415,12 @@ export const simulateGuestDraw = (spreadType) => {
   // Generate random cards for each position
   positions = positions.map(pos => {
     const card = getRandomCard();
+    // Ensure the image path is properly formatted for guest users
+    // Keep the tarot/ prefix to match the format expected by CardReveal
     return {
       ...pos,
       most_common_card: card.name,
-      most_common_card_img: card.img,
+      most_common_card_img: card.img, // This already includes the 'tarot/' prefix
       orientation: card.orientation
     };
   });

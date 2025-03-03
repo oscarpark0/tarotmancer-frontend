@@ -142,11 +142,12 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
                   delay: index * 0.1,
                   type: "tween",
                   ease: "easeOut"
-                }} /* Simplified animation with less movement */
+                }}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => handleTap(index)}
-                whileTap={{ scale: 1 }} /* Removed scaling animation */
+                whileHover={{ scale: 1 }} /* Explicitly prevent hover animation */
+                whileTap={{ scale: 1 }} /* Prevent tap animation */
               >
                 <IKImage
                   path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}
@@ -155,11 +156,12 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
                   className="card-image"
                   urlEndpoint="https://ik.imagekit.io/tarotmancer"
                 />
-                {(hoveredCard === index || tappedCard === index) && (
-                  <div className={`card-name-overlay ${card.orientation === 'reversed' ? 'reversed' : ''}`}>
-                    {card.name}
-                  </div>
-                )}
+                <div 
+                  className={`card-name-overlay ${card.orientation === 'reversed' ? 'reversed' : ''}`}
+                  style={{ opacity: (hoveredCard === index || tappedCard === index) ? 1 : 0 }}
+                >
+                  {card.name}
+                </div>
               </motion.div>
             ))}
           </div>

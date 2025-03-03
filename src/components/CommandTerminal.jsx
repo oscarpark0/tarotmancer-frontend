@@ -218,7 +218,10 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
             ) : isLoading ? (
               getTranslation('processing')
             ) : (
-              `${getTranslation('remainingDrawsToday')}: ${remainingDrawsToday}`
+              <div className="remaining-draws-display">
+                <span className="remaining-draws-label">{getTranslation('remainingDrawsToday')}</span>
+                <span className="remaining-draws-count">{remainingDrawsToday}</span>
+              </div>
             )}
           </div>
         </div>

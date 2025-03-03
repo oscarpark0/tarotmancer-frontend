@@ -21,22 +21,24 @@
 
 @media (max-width: 768px) {
   .command-terminal {
-    position: fixed; /* Change to fixed positioning on mobile */
+    position: fixed; /* Fixed positioning on mobile */
     left: 0;
-    width: 100vw; /* Change to 100vw */
-    max-width: 100%; /* Add this line */
-    padding-right: 15px; /* Add some padding to account for scrollbar */
-    box-sizing: border-box; /* Add this line */
-    right: 0; /* Ensure it spans the full width */
-    bottom: 60px; /* Adjust this value to match the height of your footer */
+    width: 100vw;
+    max-width: 100%;
+    padding-right: 15px;
+    box-sizing: border-box;
+    right: 0;
+    bottom: 0; /* Position at the very bottom */
     transform: none;
-    height: calc(20vh - 60px);
-    max-height: calc(100vh - 60px - var(--robot-height));
+    height: 60px; /* Fixed height for the input area */
     margin-top: 0;
     padding: 10px;
-    border-top: 2px solid #444;
-    overflow-y: auto; /* Allow scrolling if content exceeds max-height */
-    z-index: 9;
+    border-top: 2px solid rgba(212, 175, 55, 0.5);
+    overflow-y: auto;
+    z-index: 2000; /* Ensure terminal is above cards */
+    background: rgba(20, 20, 30, 0.95); /* Slightly transparent background */
+    backdrop-filter: blur(5px); /* Add blur effect */
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
   }
 
   .terminal-screen {
@@ -158,10 +160,11 @@
     left: 0;
     transform: none;
     width: 100%;
-    height: 60vh;
+    height: 60px; /* Fixed height for mobile */
     margin-top: 0;
     padding: 10px;
-    border-top: 2px solid #444;
+    border-top: 2px solid rgba(212, 175, 55, 0.5);
+    background: rgba(20, 20, 30, 0.95);
   }
 
   .terminal-screen {
@@ -169,7 +172,9 @@
     display: flex;
     flex-direction: column;
     max-height: calc(100vh - var(--robot-height) - 60px);
-    height: 200px; /* Smaller default height for mobile */
+    height: 40px; /* Smaller height for mobile input */
+    background: rgba(30, 30, 40, 0.8);
+    border: 1px solid rgba(212, 175, 55, 0.5);
   }
 
   .terminal-screen.expanded {

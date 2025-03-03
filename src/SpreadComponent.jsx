@@ -14,7 +14,21 @@ import { useTranslation } from './utils/translations';
 import PastDrawsModal from './components/PastDrawsModal';
 import { debounce } from 'lodash';
 
-const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, onDrawComplete, remainingDrawsToday, setRemainingDrawsToday, lastResetTime, setLastResetTime = () => {}, drawCount, setDrawCount }) => {
+const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, selectedSpread, isDarkMode, canDraw, timeUntilNextDraw, getToken, onDraw, lastDrawTime, onDrawComplete, remainingDrawsToday, setRemainingDrawsToday, lastResetTime, setLastResetTime = () => {}, drawCount, setDrawCount }) => {
+  // Detect mobile devices more reliably by checking window width
+  const [isMobile, setIsMobile] = useState(propIsMobile || window.innerWidth <= 768);
+  
+  // Update isMobile state when window is resized
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   const { user, login } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -336,6 +350,7 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       dealCards={dealCards}
       cardPositions={positions}
       revealedCards={revealedCards}
+      isMobile={isMobile}
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
       revealCards={handleRevealCards}
@@ -346,7 +361,6 @@ const SpreadComponent = React.memo(({ isMobile, onSpreadSelect, selectedSpread, 
       mostCommonCards={mostCommonCards}
       formRef={formRef}
       onSubmitInput={handleSubmitInput}
-      isMobile={isMobile}
       cards={cards}
       selectedSpread={selectedSpread}
       onSpreadSelect={onSpreadSelect}

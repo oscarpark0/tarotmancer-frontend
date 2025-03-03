@@ -30,9 +30,9 @@ const Robot = memo((props) => {
     isDrawing,
     setIsDrawing,
     onAnimationComplete = () => {},
-  } = props; // Destructure props with default values
+  } = props; 
   
-  // Ensure onAnimationComplete is a function
+
   console.log('Robot: onAnimationComplete type:', typeof onAnimationComplete);
 
   const [monitorPosition, setMonitorPosition] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -45,8 +45,8 @@ const Robot = memo((props) => {
   const robotRef = useRef(null);
   const [isStreaming, setIsStreaming] = useState(false);
   const [localCanDraw, setLocalCanDraw] = useState(canDraw);
-  const [isExpanded, setIsExpanded] = useState(false); // Added isExpanded state
-  const robotBodyRef = useRef(null); // Added robotBodyRef
+  const [isExpanded, setIsExpanded] = useState(false); 
+  const robotBodyRef = useRef(null); 
 
   useEffect(() => {
     setLocalCanDraw(canDraw);
@@ -207,7 +207,7 @@ const Robot = memo((props) => {
 
   const handleMonitorOutput = useCallback((output) => {
     setMonitorOutput(output);
-    props.onMonitorOutput(output); // Destructure props to avoid using props directly
+    props.onMonitorOutput(output); /
   }, [props]);
 
   useEffect(() => {
@@ -238,9 +238,7 @@ const Robot = memo((props) => {
   useEffect(() => {
   }, [currentDrawId]);
 
-  // Add this effect to force re-render when language changes
   useEffect(() => {
-    // This empty dependency array ensures the effect runs when selectedLanguage changes
   }, [selectedLanguage]);
 
   useEffect(() => {
@@ -248,14 +246,38 @@ const Robot = memo((props) => {
 
   useEffect(() => {
     if (user) {
-      // You could also use this to set some user-specific state or trigger some user-specific logic
     }
   }, [user]);
 
   const toggleExpand = useCallback(() => {
-    setIsExpanded((prevState) => !prevState);
-    console.log('Robot: toggleExpand called, new state:', !isExpanded);
-  }, [isExpanded]);
+    setIsExpanded((prevState) => {
+      const newState = !prevState;
+      console.log('Robot: toggleExpand called, new state:', newState);
+      
+      // Update CSS variable for mobile height
+      if (isMobile) {
+        document.documentElement.style.setProperty('--robot-height', newState ? '60vh' : '40vh');
+      }
+      
+      return newState;
+    });
+  }, [isExpanded, isMobile]);
+  
+  // Effect to handle mobile-specific layout adjustments
+  useEffect(() => {
+    if (isMobile) {
+      // Set initial robot height CSS variable for mobile
+      document.documentElement.style.setProperty('--robot-height', isExpanded ? '60vh' : '40vh');
+    } else {
+      // Reset to desktop styles
+      document.documentElement.style.removeProperty('--robot-height');
+    }
+    
+    return () => {
+      // Clean up CSS variables
+      document.documentElement.style.removeProperty('--robot-height');
+    };
+  }, [isMobile, isExpanded]);
 
   const memoizedCommandTerminal = useMemo(() => (
     <CommandTerminal
@@ -429,17 +451,17 @@ Robot.propTypes = {
   onDraw: PropTypes.func.isRequired,
   selectedLanguage: PropTypes.string.isRequired,
   getTranslation: PropTypes.func.isRequired,
-  lastDrawTime: PropTypes.object, // Add lastDrawTime prop type
-  remainingDrawsToday: PropTypes.number.isRequired, // Add remainingDrawsToday prop type
-  drawCount: PropTypes.number.isRequired, // Add drawCount prop type
-  setDrawCount: PropTypes.func.isRequired, // Add setDrawCount prop type
-  setRemainingDrawsToday: PropTypes.func.isRequired, // Add setRemainingDrawsToday prop type
-  userId: PropTypes.string, // Add userId prop type
-  isRobotExpanded: PropTypes.bool.isRequired, // Added isRobotExpanded prop type
-  onToggleRobotExpand: PropTypes.func.isRequired, // Added onToggleRobotExpand prop type
+  lastDrawTime: PropTypes.object,
+  remainingDrawsToday: PropTypes.number.isRequired, 
+  drawCount: PropTypes.number.isRequired, 
+  setDrawCount: PropTypes.func.isRequired, 
+  setRemainingDrawsToday: PropTypes.func.isRequired,
+  userId: PropTypes.string, 
+  isRobotExpanded: PropTypes.bool.isRequired, 
+  onToggleRobotExpand: PropTypes.func.isRequired,
   isDrawing: PropTypes.bool.isRequired,
   setIsDrawing: PropTypes.func.isRequired,
-  onAnimationComplete: PropTypes.func.isRequired, // Added onAnimationComplete prop type
+  onAnimationComplete: PropTypes.func.isRequired, 
 };
 
 export default Robot;

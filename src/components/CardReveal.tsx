@@ -3,6 +3,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { IKImage } from 'imagekitio-react';
 import './CardReveal.css';
 
+// Add debounce function for better mobile performance
+function debounce(func: Function, wait: number) {
+  let timeout: ReturnType<typeof setTimeout>;
+  return function executedFunction(...args: any[]) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
 interface Card {
   name: string;
   img: string;
@@ -22,6 +35,7 @@ type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) => {
   const [localShowCards, setLocalShowCards] = useState<boolean>(showCards);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const [tappedCard, setTappedCard] = useState<number | null>(null);
 
   useEffect(() => {
     // When showCards changes, update localShowCards with appropriate delay
@@ -66,12 +80,34 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) =
   }, [cards, showCards, localShowCards]);
 
   const handleMouseEnter = (index: number): void => {
-    setHoveredCard(index);
+    if (!isMobile) {
+      setHoveredCard(index);
+    }
   };
 
   const handleMouseLeave = (): void => {
-    setHoveredCard(null);
+    if (!isMobile) {
+      setHoveredCard(null);
+    }
   };
+
+  // Handle tap for mobile devices
+  const handleTap = (index: number): void => {
+    if (isMobile) {
+      if (tappedCard === index) {
+        // If tapping the same card, close it
+        setTappedCard(null);
+      } else {
+        // Otherwise, show the tapped card
+        setTappedCard(index);
+      }
+    }
+  };
+  
+  // Clear tapped card when cards change
+  useEffect(() => {
+    setTappedCard(null);
+  }, [cards]);
 
   const getTooltipPosition = (index: number, totalCards: number, orientation: string): TooltipPosition => {
     if (totalCards === 3) {
@@ -109,6 +145,8 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) =
                 }}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
+                onClick={() => handleTap(index)}
+                whileTap={{ scale: isMobile ? 1.2 : 1 }}
               >
                 <IKImage
                   path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img.startsWith('tarot/') ? card.img : `tarot/${card.img}`}
@@ -117,42 +155,11 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) =
                   className="card-image"
                   urlEndpoint="https://ik.imagekit.io/tarotmancer"
                 />
-                <AnimatePresence>
-                  {hoveredCard === index && (
-                    <motion.div
-                      className={`card-tooltip ${getTooltipPosition(index, cards.length, card.orientation)} ${isMobile ? 'mobile' : ''}`}
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                    >
-                      <motion.h3
-                        className="tooltip-title"
-                        initial={{ y: -5, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.1, duration: 0.2 }}
-                      >
-                        {card.name}
-                      </motion.h3>
-                      <motion.p
-                        className="tooltip-position"
-                        initial={{ y: -5, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.2 }}
-                      >
-                        {card.position}
-                      </motion.p>
-                      <motion.p
-                        className="tooltip-content"
-                        initial={{ y: -5, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.3, duration: 0.2 }}
-                      >
-                        {card.tooltip}
-                      </motion.p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {(hoveredCard === index || tappedCard === index) && (
+                  <div className={`card-name-overlay ${card.orientation === 'reversed' ? 'reversed' : ''}`}>
+                    {card.name}
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>

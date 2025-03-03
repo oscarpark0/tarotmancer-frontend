@@ -30,6 +30,7 @@ const Robot = memo((props) => {
     isDrawing,
     setIsDrawing,
     onAnimationComplete = () => {},
+    cardRevealComponent, 
   } = props; 
   
 
@@ -46,7 +47,8 @@ const Robot = memo((props) => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [localCanDraw, setLocalCanDraw] = useState(canDraw);
   const [isExpanded, setIsExpanded] = useState(false); 
-  const robotBodyRef = useRef(null); 
+  const robotBodyRef = useRef(null);
+  const [showCards, setShowCards] = useState(false); 
 
   useEffect(() => {
     setLocalCanDraw(canDraw);
@@ -139,7 +141,13 @@ const Robot = memo((props) => {
 
   useEffect(() => {
     if (dealCards) {
-      setTimeout(onExitComplete, 2000);
+      setTimeout(() => {
+        onExitComplete();
+        // Set showCards to true after animations complete
+        setShowCards(true);
+      }, 2000);
+    } else {
+      setShowCards(false);
     }
   }, [dealCards, onExitComplete]);
 
@@ -393,8 +401,14 @@ const Robot = memo((props) => {
                 onAnimationStart={handleAnimationStart}
                 onAnimationComplete={onAnimationComplete}
               />
+              {/* Card reveal container */}
+              {isMobile && showCards && (
+                <div className="card-reveal-container">
+                  {cardRevealComponent}
+                </div>
+              )}
               <div ref={monitorOutputRef} className={`monitor-output ${isExpanded ? 'expanded' : ''}`}>
-                {monitorOutput}
+                {!isMobile || !showCards ? monitorOutput : ''}
               </div>
               <div className="screen-overlay"></div>
               <div className="screen-glass"></div>

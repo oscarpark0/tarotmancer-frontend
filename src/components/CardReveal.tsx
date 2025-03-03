@@ -28,11 +28,12 @@ interface CardRevealProps {
   cards: Card[];
   showCards: boolean;
   isMobile: boolean;
+  insideMonitor?: boolean;
 }
 
 type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
 
-const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) => {
+const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, insideMonitor = false }) => {
   const [localShowCards, setLocalShowCards] = useState<boolean>(showCards);
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const [tappedCard, setTappedCard] = useState<number | null>(null);
@@ -124,7 +125,7 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile }) =
   };
 
   return (
-    <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''} ${localShowCards ? 'show' : ''}`}>
+    <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''} ${localShowCards ? 'show' : ''} ${insideMonitor ? 'inside-monitor' : ''}`}>
       {/* Use a more unique key that changes with each draw */}
       <AnimatePresence mode="wait" initial={false}>
         {localShowCards && cards.length > 0 ? (

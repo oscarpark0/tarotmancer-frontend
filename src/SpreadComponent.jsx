@@ -354,6 +354,14 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
       finalCardPositions={positions.map(pos => ({ left: pos.left, top: pos.top }))}
       onExitComplete={handleExitComplete}
       revealCards={handleRevealCards}
+      cardRevealComponent={
+        <CardReveal
+          cards={cards}
+          showCards={showCards}
+          isMobile={isMobile}
+          insideMonitor={true}
+        />
+      }
       shouldDrawNewSpread={shouldDrawNewSpread}
       onMonitorOutput={handleMonitorOutput}
       drawSpread={drawSpread}
@@ -492,13 +500,7 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
                   <ErrorBoundary>
                     {memoizedFloatingCards}
                   </ErrorBoundary>
-                  <div className="pointer-events-auto">
-                    <CardReveal
-                      cards={cards}
-                      showCards={showCards}
-                      isMobile={isMobile}
-                    />
-                  </div>
+                  {/* CardReveal moved to Robot component */}
                 </section>
               </div>
             </div>

@@ -121,49 +121,89 @@
 
 @media (max-width: 768px) {
   .card-reveal {
-    position: fixed;
-    top: auto;
-    bottom: 70px; /* Position above the command terminal */
+    position: relative;
+    top: 0;
     left: 0;
+    transform: none;
     width: 100%;
-    height: auto;
-    z-index: 1500; /* Higher than robot but lower than terminal */
+    height: 100%;
+    z-index: 10; /* Lower z-index to appear inside the monitor */
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   
   .card {
-    width: 60px;
-    height: 104px;
+    width: 50px;
+    height: 87px;
   }
 
   /* Three Card Spread - Mobile */
-  .card-reveal.three-card .card:nth-child(1) { left: calc(50% - 70px); top: 0; }
-  .card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translateX(-50%); top: 0; }
-  .card-reveal.three-card .card:nth-child(3) { left: calc(50% + 70px); top: 0; }
+  .card-reveal.three-card .card:nth-child(1) { left: calc(50% - 70px); top: 50%; transform: translateY(-50%); }
+  .card-reveal.three-card .card:nth-child(2) { left: 50%; transform: translate(-50%, -50%); top: 50%; }
+  .card-reveal.three-card .card:nth-child(3) { left: calc(50% + 70px); top: 50%; transform: translateY(-50%); }
 
   /* Celtic Cross Spread - Mobile */
-  .card-reveal.celtic-cross .card:nth-child(1) { left: calc(50% - 30px); top: 0; z-index: 1; } /* Center */
+  .card-reveal.celtic-cross .card:nth-child(1) { left: calc(50% - 30px); top: 50%; transform: translateY(-50%); z-index: 1; } /* Center */
   .card-reveal.celtic-cross .card:nth-child(2) { 
     left: calc(50% - 30px); 
-    top: 0; 
-    transform: rotate(90deg) !important; 
+    top: 50%; 
+    transform: translateY(-50%) rotate(90deg) !important; 
     z-index: 2; 
   }
   .card-reveal.celtic-cross .card:nth-child(2) .card-tooltip {
     transform: rotate(-90deg);
   }
-  .card-reveal.celtic-cross .card:nth-child(3) { left: calc(50% - 30px); top: 60px; z-index: 3; } /* Below */
-  .card-reveal.celtic-cross .card:nth-child(4) { left: calc(50% - 30px); top: -60px; z-index: 4; } /* Above */
-  .card-reveal.celtic-cross .card:nth-child(5) { left: calc(50% - 90px); top: 0; } /* Left */
-  .card-reveal.celtic-cross .card:nth-child(6) { left: calc(50% + 30px); top: 0; } /* Right */
-  .card-reveal.celtic-cross .card:nth-child(7) { right: 10px; top: -60px; z-index: 1; } /* Staff top */
-  .card-reveal.celtic-cross .card:nth-child(8) { right: 10px; top: 0; z-index: 2; } /* Staff 2 */
-  .card-reveal.celtic-cross .card:nth-child(9) { right: 10px; top: 60px; z-index: 3; } /* Staff 3 */
-  .card-reveal.celtic-cross .card:nth-child(10) { right: 10px; top: 120px; z-index: 4; } /* Staff bottom */
+  .card-reveal.celtic-cross .card:nth-child(3) { left: calc(50% - 30px); top: calc(50% + 60px); z-index: 3; } /* Below */
+  .card-reveal.celtic-cross .card:nth-child(4) { left: calc(50% - 30px); top: calc(50% - 60px); z-index: 4; } /* Above */
+  .card-reveal.celtic-cross .card:nth-child(5) { left: calc(50% - 90px); top: 50%; transform: translateY(-50%); } /* Left */
+  .card-reveal.celtic-cross .card:nth-child(6) { left: calc(50% + 30px); top: 50%; transform: translateY(-50%); } /* Right */
+  .card-reveal.celtic-cross .card:nth-child(7) { right: 10px; top: calc(50% - 90px); z-index: 1; } /* Staff top */
+  .card-reveal.celtic-cross .card:nth-child(8) { right: 10px; top: calc(50% - 30px); z-index: 2; } /* Staff 2 */
+  .card-reveal.celtic-cross .card:nth-child(9) { right: 10px; top: calc(50% + 30px); z-index: 3; } /* Staff 3 */
+  .card-reveal.celtic-cross .card:nth-child(10) { right: 10px; top: calc(50% + 90px); z-index: 4; } /* Staff bottom */
 
   /* Ensure cards are visible in mobile view */
   .card-reveal.show {
     display: flex;
     opacity: 1;
+  }
+  
+  /* Styles for cards inside the monitor */
+  .card-reveal.inside-monitor {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    z-index: 11;
+  }
+  
+  .card-reveal.inside-monitor .cards-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .card-reveal.inside-monitor.three-card .card:nth-child(1) { 
+    left: calc(50% - 60px); 
+    top: 50%; 
+    transform: translateY(-50%) scale(0.9); 
+  }
+  
+  .card-reveal.inside-monitor.three-card .card:nth-child(2) { 
+    left: 50%; 
+    top: 50%; 
+    transform: translate(-50%, -50%) scale(0.9); 
+  }
+  
+  .card-reveal.inside-monitor.three-card .card:nth-child(3) { 
+    left: calc(50% + 60px); 
+    top: 50%; 
+    transform: translateY(-50%) scale(0.9); 
   }
 
   /* Make cards more visible on hover */

@@ -19,7 +19,7 @@ const LoginButton: React.FC = () => {
 
   return (
     <button onClick={handleLogin} className="mystic-button">
-      <span className="button-text">{getTranslation('login')}</span>
+      <span className="button-text">✧ {getTranslation('login')} ✧</span>
     </button>
   );
 };

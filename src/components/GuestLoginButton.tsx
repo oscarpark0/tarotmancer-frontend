@@ -27,7 +27,7 @@ const GuestLoginButton: React.FC = () => {
 
   return (
     <button onClick={handleGuestLogin} className="mystic-button guest-button">
-      <span className="button-text">{getTranslation('continueAsGuest')}</span>
+      <span className="button-text">☽ {getTranslation('continueAsGuest')} ☽</span>
     </button>
   );
 };

@@ -145,18 +145,41 @@ const DailyFrequenciesPage: React.FC = () => {
           )
         ]);
 
-        setFrequencies(frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency));
-        setCelticSpread([...spreadsResponse.data.celtic_spread]); // Ensure state update
-        setThreeCardSpread([...spreadsResponse.data.three_card_spread]); // Ensure state update
+        // Sort frequencies by frequency (highest first)
+        const sortedFrequencies = frequenciesResponse.data.sort((a, b) => b.frequency - a.frequency);
+        setFrequencies(sortedFrequencies);
+        
+        // Check if we received valid data for spreads
+        const celticSpreadData = spreadsResponse.data['celtic-spread'] || [];
+        const threeCardSpreadData = spreadsResponse.data['three-card-spread'] || [];
+        
+        setCelticSpread(celticSpreadData);
+        setThreeCardSpread(threeCardSpreadData);
+        
+        // If we have no data, show a user-friendly message
+        if (sortedFrequencies.length === 0 && celticSpreadData.length === 0 && threeCardSpreadData.length === 0) {
+          setError(`No tarot card data available for ${date}. Please select a different date.`);
+        } else {
+          setError(null);
+        }
       } catch (err: any) { // Cast to any to access axios error properties
         console.error('Failed to fetch data from backend:', err);
         
+        // Format the date parts for display
+        const [year, month, day] = date.split('-');
+        const formattedDate = `${month}/${day}/${year}`;
+        
         // Check for various error conditions
-        if (err.response?.status === 404) {
-          // Format the date parts for display
-          const [year, month, day] = date.split('-');
-          const formattedDate = `${month}/${day}/${year}`;
-          
+        if (err.code === 'ERR_NETWORK') {
+          setError('Network error: Unable to connect to the server. Please check your connection and try again.');
+          // Use mock data in this case to show UI functionality
+        } else if (err.response?.status === 401 || err.response?.status === 403) {
+          setError('Authentication error: Please log in to view this data.');
+          setFrequencies([]);
+          setCelticSpread([]);
+          setThreeCardSpread([]);
+          return;
+        } else {
           // Check if the selected date is today
           const today = getTodayFormatted();
           if (date === today) {
@@ -166,15 +189,6 @@ const DailyFrequenciesPage: React.FC = () => {
           }
           
           // Set empty data
-          setFrequencies([]);
-          setCelticSpread([]);
-          setThreeCardSpread([]);
-          return;
-        } else if (err.code === 'ERR_NETWORK') {
-          setError('Network error: Unable to connect to the server. Please check your connection and try again.');
-          // Use mock data in this case to show UI functionality
-        } else if (err.response?.status === 401 || err.response?.status === 403) {
-          setError('Authentication error: Please log in to view this data.');
           setFrequencies([]);
           setCelticSpread([]);
           setThreeCardSpread([]);

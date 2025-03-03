@@ -284,13 +284,19 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
   }, [debouncedFetchSpread, onDraw, setRevealedCards]);
 
   const handleExitComplete = useCallback(() => {
+    // First handle card reveal with longer delay
     setTimeout(() => {
       handleRevealCards();
+      
+      // Only complete the dealing and send text to robot after cards are fully shown
       setTimeout(() => {
-        handleDealingComplete();
-        setAnimationsComplete(true);
-      }, 750);
-    }, 500);
+        setShowCards(true); // Make sure cards are visible
+        setTimeout(() => {
+          handleDealingComplete(); // This triggers the text in the robot
+          setAnimationsComplete(true);
+        }, 1000); // Extra delay before showing text
+      }, 1000);
+    }, 800);
   }, [handleDealingComplete, handleRevealCards]);
 
   const handleMonitorOutput = useCallback(() => {}, []);

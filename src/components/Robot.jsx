@@ -141,11 +141,14 @@ const Robot = memo((props) => {
 
   useEffect(() => {
     if (dealCards) {
+      // First clear any text
+      setMonitorOutput('');
+      
+      // Then trigger card animations
       setTimeout(() => {
         onExitComplete();
-        // Set showCards to true after animations complete
-        setShowCards(true);
-      }, 2000);
+        // Cards will be shown by the callback in handleExitComplete
+      }, 1500);
     } else {
       setShowCards(false);
     }

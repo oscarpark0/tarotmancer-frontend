@@ -8,6 +8,7 @@ import './FloatingCards.css';
 function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSpread, numCards, isMobile, onAnimationStart, onAnimationComplete = () => {} }) {
   // Set a default empty function for onAnimationComplete if it's not provided
   const [isAnimating, setIsAnimating] = useState(false);
+  const [cardsAnimated, setCardsAnimated] = useState(0);
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {
@@ -23,6 +24,7 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
     if (shouldDrawNewSpread) {
       resetAnimation();
       setIsAnimating(false);
+      setCardsAnimated(0); // Reset card animation counter
     }
   }, [shouldDrawNewSpread, resetAnimation]);
 
@@ -72,8 +74,8 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
             className={`floating-card card-${i + 1}`}
             initial={{
               opacity: 0,
-              x: '50%',
-              y: '50%',
+              x: '0%', // Start from the center of the robot
+              y: '0%', // Start from the center of the robot
               scale: 0.2,
               rotate: 0,
             }}
@@ -85,21 +87,33 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
               rotate: position.transform.includes('rotate') ? 90 : 0,
             }}
             transition={{
-              duration: 2,
-              times: [0, 0.5, 1],
-              delay: i * 0.1,
-              ease: "easeInOut",
+              duration: 2.5,
+              times: [0, 0.3, 1],
+              delay: i * 0.15, // Slightly longer delay between cards
+              ease: "easeOut",
             }}
             style={{
               position: 'absolute',
               transform: position.transform,
             }}
             onAnimationComplete={() => {
-              if (i === numCards - 1) {
-                setIsAnimating(false);
-                onExitComplete();
-                onAnimationComplete(true); // Pass true for last card
-              }
+              // Track each card animation completion
+              setCardsAnimated(prev => {
+                const newCount = prev + 1;
+                
+                // When all cards have been animated, trigger the next step
+                if (newCount >= numCards) {
+                  setTimeout(() => {
+                    setIsAnimating(false);
+                    onExitComplete();
+                    onAnimationComplete(true); // Pass true for last card
+                    // Reset counter for next animation cycle
+                    setCardsAnimated(0);
+                  }, 300);
+                }
+                
+                return newCount;
+              });
             }}
           >
             <IKImage

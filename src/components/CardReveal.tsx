@@ -38,14 +38,14 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
   const [tappedCard, setTappedCard] = useState<number | null>(null);
 
   useEffect(() => {
-    // When showCards changes, update localShowCards with appropriate delay
+    // When showCards changes, update localShowCards with shorter delay
     if (!showCards) {
       setLocalShowCards(false);
     } else {
       // Clear any existing timers to prevent race conditions
       const timer = setTimeout(() => {
         setLocalShowCards(true);
-      }, 2000); // Delay showing cards to allow for animation
+      }, 500); // Shorter delay for showing cards
       return () => clearTimeout(timer);
     }
   }, [showCards]);

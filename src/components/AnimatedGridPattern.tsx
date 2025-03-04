@@ -227,11 +227,15 @@ const AnimatedGridPattern: React.FC<AnimatedGridPatternProps> = React.memo(({
 
   // Effect to start the animation sequence periodically
   useEffect(() => {
-    if (!isPaused && isTabActive && !isStreaming) {
+    if (!isPaused && isTabActive) {
+      // Initial animation sequence
+      triggerAnimationSequence();
+      
+      // Set up interval for periodic animations
       const intervalId = setInterval(triggerAnimationSequence, 30000); // Trigger every 30 seconds
       return () => clearInterval(intervalId);
     }
-  }, [isPaused, isTabActive, isStreaming, triggerAnimationSequence]);
+  }, [isPaused, isTabActive, triggerAnimationSequence]);
 
   if (isMobile) {
     return null;

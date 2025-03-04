@@ -10,40 +10,22 @@
   position: absolute;
   width: 40px;
   height: 70px;
-  background: linear-gradient(45deg, #1a1a2e, #16213e);
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
   opacity: 0.7;
   transform-origin: center center;
   animation-name: floatCard;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
+  overflow: hidden;
 }
 
-.animated-card::before {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
-  background: linear-gradient(135deg, transparent, rgba(255, 215, 0, 0.1));
-  border-radius: 3px;
-}
-
-.animated-card::after {
-  content: '';
-  position: absolute;
-  width: 70%;
-  height: 70%;
-  top: 15%;
-  left: 15%;
-  background-image: url('../images/tarot-pattern.svg');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.3;
+.animated-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
+  filter: drop-shadow(0 0 5px rgba(0, 255, 0, 0.5));
 }
 
 .card-1 {

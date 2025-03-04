@@ -237,7 +237,7 @@ const DailyFrequenciesPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [getToken]);
+  }, [getToken, error]);
 
   useEffect(() => {
     fetchData(selectedDate);

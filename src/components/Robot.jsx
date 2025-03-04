@@ -272,7 +272,7 @@ const Robot = memo((props) => {
       
       return newState;
     });
-  }, [isExpanded, isMobile]);
+  }, [isMobile]);
   
   // Effect to handle mobile-specific layout adjustments
   useEffect(() => {
@@ -365,7 +365,7 @@ const Robot = memo((props) => {
     return null;
   };
   
-  const anonTimeRemaining = getAnonTimeRemaining();
+  // Removed unused anonTimeRemaining variable
 
   return (
     <motion.div

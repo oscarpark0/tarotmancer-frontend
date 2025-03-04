@@ -2,18 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { IKImage } from 'imagekitio-react';
 import './CardReveal.css';
 
-// Add debounce function for better mobile performance
-function debounce(func: Function, wait: number) {
-  let timeout: ReturnType<typeof setTimeout>;
-  return function executedFunction(...args: any[]) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
+// Removed unused debounce function
 
 interface Card {
   name: string;
@@ -120,19 +109,7 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
     setTappedCard(null);
   }, [cards]);
 
-  const getTooltipPosition = (index: number, totalCards: number, orientation: string): TooltipPosition => {
-    if (totalCards === 3) {
-      return index === 1 ? 'bottom' : 'top';
-    } else {
-      // Celtic Cross positioning
-      if (index === 0 || index === 1) return orientation === 'reversed' ? 'top' : 'bottom';
-      if (index === 2) return 'left';
-      if (index === 3) return 'left';
-      if (index === 4) return orientation === 'reversed' ? 'top' : 'bottom';
-      if (index === 5) return orientation === 'reversed' ? 'bottom' : 'top';
-      return index % 2 === 0 ? 'left' : 'left';
-    }
-  };
+  // Removed unused getTooltipPosition function
 
   return (
     <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''} ${localShowCards ? 'show' : ''} ${insideMonitor ? 'inside-monitor' : ''} ${inTerminal ? 'in-terminal' : ''} ${className}`}>

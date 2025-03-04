@@ -64,7 +64,6 @@ function AppContent({ isAuthenticated }) {
     return savedMode ? JSON.parse(savedMode) : false;
   });
   const [canDraw, setCanDraw] = useState(true);
-  const [userDraws, setUserDraws] = useState([]);
   const [isPastDrawsModalOpen, setIsPastDrawsModalOpen] = useState(false);
   const [currentDrawId, setCurrentDrawId] = useState(null);
   const [remainingDrawsToday, setRemainingDrawsToday] = useState(isAuthenticated ? 5 : 1);
@@ -182,31 +181,7 @@ function AppContent({ isAuthenticated }) {
     )
   }, [isDarkMode, toggleDarkMode, getTranslation]);
 
-  const makeAuthenticatedRequest = useCallback(async (endpoint, errorMessage) => {
-    try {
-      const token = await getToken();
-      const userId = user?.id;
-      if (!userId) {
-        throw new Error("User ID not available");
-      }
-      
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'User-ID': userId,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      };
-      
-      // Fix path construction and try both direct and /api-prefixed routes
-      const path = endpoint.startsWith('/') ? endpoint.substring(1) : endpoint;
-      const url = USE_DIRECT_API 
-          ? `${API_BASE_URL}/${path}` 
-          : `${API_BASE_URL}/api/${path}`;
-      console.log(`Making request to: ${url}`);
-      console.log('Request headers:', headers);
-      
-      const response = await fetch(url, {
-        method: 'GET',
+  // Removed unused function: makeAuthenticatedRequest
         credentials: 'include',
         headers: headers,
         mode: 'cors'

@@ -21,7 +21,7 @@ interface CardRevealProps {
   className?: string;
 }
 
-type TooltipPosition = 'top' | 'bottom' | 'left' | 'right';
+// Removed unused type: TooltipPosition
 
 const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, insideMonitor = false, inTerminal = false, className = '' }) => {
   const [localShowCards, setLocalShowCards] = useState<boolean>(showCards);

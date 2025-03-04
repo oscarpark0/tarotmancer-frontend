@@ -25,7 +25,7 @@ import ResourcesPage from './components/ResourcesPage';
 import { useTranslation } from './utils/translations';
 import HowItWorks from './components/HowItWorks';
 import { IKContext } from 'imagekitio-react';
-import { IMAGEKIT_PUBLIC_KEY, API_BASE_URL, USE_DIRECT_API } from './utils/config';
+import { IMAGEKIT_PUBLIC_KEY } from './utils/config';
 // MaintenanceBanner removed
 
 const SpreadComponent = lazy(() => import('./SpreadComponent').then(module => ({ default: module.default })));
@@ -181,27 +181,6 @@ function AppContent({ isAuthenticated }) {
     )
   }, [isDarkMode, toggleDarkMode, getTranslation]);
 
-  // Removed unused function: makeAuthenticatedRequest
-        credentials: 'include',
-        headers: headers,
-        mode: 'cors'
-      });
-      
-      console.log(`Response status: ${response.status}`);
-      console.log('Response headers:', Object.fromEntries([...response.headers]));
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Error response from server: ${errorText}`);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error(`${errorMessage}:`, error);
-      throw error;
-    }
-  }, [getToken, user]);
-
   const checkCanDraw = useCallback(async () => {
     try {
       const userId = isAuthenticated ? user?.id : anonymousUserId;
@@ -254,7 +233,6 @@ function AppContent({ isAuthenticated }) {
       
       if (!userId) {
         console.error("User ID not available");
-        setUserDraws([]);
         return;
       }
       
@@ -264,20 +242,12 @@ function AppContent({ isAuthenticated }) {
       try {
         const draws = await fetchUserDraws(userId, token);
         console.log('User draws data:', draws);
-        setUserDraws(draws || []);
       } catch (error) {
         // Error is already handled in the API function with fallback data
         console.error('Frontend error fetching user draws:', error);
       }
     } catch (error) {
       console.error('Error initializing API call:', error);
-      // Set mock data as fallback
-      setUserDraws([{
-        id: 12345,
-        spread_type: "three-card",
-        created_at: new Date().toISOString(),
-        response: "This is a mock tarot reading. The past card shows challenges you've overcome. The present indicates you're in a period of growth. The future suggests new opportunities coming your way."
-      }]);
     }
   }, [user, getToken]);
 

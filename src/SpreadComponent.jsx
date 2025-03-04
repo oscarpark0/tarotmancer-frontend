@@ -4,7 +4,8 @@ import AnimatedGridPattern from './components/AnimatedGridPattern.tsx';
 import CardReveal from './components/CardReveal';
 import FloatingCards from './components/FloatingCards';
 import Robot from './components/Robot';
-import AnonymousDrawLimitInfo from './components/AnonymousDrawLimitInfo.tsx';
+// We don't need this component
+// import AnonymousDrawLimitInfo from './components/AnonymousDrawLimitInfo.tsx';
 import { API_BASE_URL } from './utils/config.tsx';
 import { generateCelticCrossPositions, generateThreeCardPositions } from './utils/cardPositions.js';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -29,7 +30,7 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  const { user, login } = useKindeAuth();
+  const { user } = useKindeAuth();
   const { selectedLanguage } = useLanguage();
   const { getTranslation } = useTranslation();
 
@@ -186,8 +187,8 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
           if (imgPath && !imgPath.includes('://') && !imgPath.startsWith('/')) {
             // For guest users, ensure the path includes 'tarot/' prefix
             if (!imgPath.startsWith('tarot/') && isAnonymousUser) {
-              // Keep the tarot/ prefix for guest users
-              imgPath = imgPath;
+              // Keep the existing path for guest users
+              // No self-assignment needed
             } else if (!isAnonymousUser) {
               // For authenticated users, follow the existing pattern
               imgPath = imgPath.replace(/^tarot\//, ''); // Remove 'tarot/' prefix if present
@@ -238,7 +239,7 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
         setShouldDrawNewSpread(false);
       }
     }, 300), // 300ms debounce time
-    [user, canDraw, timeUntilNextDraw, getToken, selectedSpread, setError, setCards, setPositions, setDealCards, setMostCommonCards, setCurrentDrawId, onDrawComplete, setRemainingDrawsToday, setLastResetTime, drawCount, setDrawCount]
+    [user, canDraw, timeUntilNextDraw, getToken, selectedSpread, setError, setCards, setPositions, setDealCards, setMostCommonCards, setCurrentDrawId, onDrawComplete, setRemainingDrawsToday, setLastResetTime, drawCount, setDrawCount, getTranslation]
   );
 
   const drawSpread = useCallback(async () => {
@@ -408,7 +409,7 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
       setIsDrawing={setIsDrawing}
       onAnimationComplete={handleAnimationComplete}
     />
-  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, debouncedFetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, user, remainingDrawsToday, setRemainingDrawsToday, onDrawComplete, drawCount, setDrawCount, isRobotExpanded, handleToggleRobotExpand, isDrawing, setIsDrawing, handleAnimationComplete]);
+  ), [dealCards, positions, revealedCards, handleExitComplete, handleRevealCards, shouldDrawNewSpread, handleMonitorOutput, drawSpread, handleDealingComplete, mostCommonCards, handleSubmitInput, isMobile, cards, selectedSpread, onSpreadSelect, debouncedFetchSpread, handleNewResponse, handleResponseComplete, animationsComplete, isDarkMode, handleAnimationStart, handleStreamingStateChange, isStreaming, canDraw, timeUntilNextDraw, currentDrawId, handleOpenPastDraws, onDraw, selectedLanguage, getTranslation, lastDrawTime, user, remainingDrawsToday, setRemainingDrawsToday, onDrawComplete, drawCount, setDrawCount, isRobotExpanded, handleToggleRobotExpand, isDrawing, setIsDrawing, handleAnimationComplete, showCards]);
 
   const memoizedFloatingCards = useMemo(() => (
     <FloatingCards
@@ -427,11 +428,9 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
     />
   ), [dealCards, positions, handleExitComplete, handleRevealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart, selectedSpread, handleAnimationComplete]);
 
-  // Check if user is anonymous
+  // Define isAnonymousUser for use in the component
   const isAnonymousUser = !user || !user.id || user.id.startsWith('anon_');
-  
-  // Check if anonymous user hasn't drawn yet (no draw data in localStorage)
-  const hasNoDrawHistory = isAnonymousUser && !localStorage.getItem('anonDrawData');
+  // This is used in image path logic and other logic in the component
 
   return (
     <ErrorBoundary>

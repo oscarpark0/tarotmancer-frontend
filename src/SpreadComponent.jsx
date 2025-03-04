@@ -447,7 +447,7 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
           isPaused={isStreaming}
         />
         <div className="relative w-full h-screen" 
-             style={{ overflowY: 'auto', overflowX: 'hidden', paddingBottom: isMobile ? '150px' : '0' }}>
+             style={{ overflowY: 'auto', overflowX: 'hidden', paddingBottom: isMobile ? '200px' : '0' }}>
           {isLoading ? (
             <p className="text-2xl text-green-600 text-center animate-pulse" style={{ zIndex: 9999, position: 'relative' }}>
               {getTranslation('processing')}

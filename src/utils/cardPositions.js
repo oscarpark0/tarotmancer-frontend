@@ -1,25 +1,41 @@
 export const generateCelticCrossPositions = (numCards, width, height) => {
+  // Create a consistent layout that works on all screen sizes
+  const center = width * 0.5;
+  const verticalCenter = height * 0.25;
+  
+  // Standard layout for Celtic Cross - matches CSS positions for consistency
   const positions = [
-    { left: width * 0.45, top: height * 0.3 },
-    { left: width * 0.45, top: height * 0.3, transform: 'rotate(90deg)' },
-    { left: width * 0.45, top: height * 0 },
-    { left: width * 0.45, top: height * 0.6 },
-    { left: width * 0.32, top: height * 0.3 },
-    { left: width * 0.59, top: height * 0.3 },
-    { left: width * 0.75, top: height * -0.03 },
-    { left: width * 0.75, top: height * 0.21 },
-    { left: width * 0.75, top: height * 0.44 },
-    { left: width * 0.75, top: height * 0.68 },
+    // Center card
+    { left: center - 62.5, top: verticalCenter + 70 },
+    // Crossing card
+    { left: center - 62.5, top: verticalCenter + 70, transform: 'rotate(90deg)' },
+    // Below center
+    { left: center - 62.5, top: verticalCenter + 220 },
+    // Above center
+    { left: center - 62.5, top: verticalCenter - 80 },
+    // Left of center
+    { left: center - 250, top: verticalCenter + 70 },
+    // Right of center
+    { left: center + 125, top: verticalCenter + 70 },
+    // Staff positions - right column
+    { left: center + 300, top: verticalCenter - 80 },
+    { left: center + 300, top: verticalCenter + 20 },
+    { left: center + 300, top: verticalCenter + 120 },
+    { left: center + 300, top: verticalCenter + 220 },
   ];
 
   return positions.slice(0, numCards);
 };
 
 export const generateThreeCardPositions = (numCards, width, height) => {
+  // Create a more spread out position for the three cards
+  const center = width * 0.5;
+  const cardSpacing = Math.min(width * 0.2, 250); // More consistent spacing between cards
+  
   const positions = [
-    { left: width * 0.25, top: height * 0.3 },
-    { left: width * 0.5, top: height * 0.3 },
-    { left: width * 0.75, top: height * 0.3 },
+    { left: center - cardSpacing, top: height * 0.25 },
+    { left: center, top: height * 0.25 },
+    { left: center + cardSpacing, top: height * 0.25 },
   ];
 
   return positions.slice(0, numCards);

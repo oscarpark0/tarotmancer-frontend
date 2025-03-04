@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   height: auto; /* Change to auto */
-  max-height: 100vh; /* Limit the height to 50% of the viewport height */
+  max-height: 100vh; /* Take full viewport height if needed */
   overflow-y: auto; /* Add scrolling if content exceeds max-height */
 }
 
@@ -31,7 +31,7 @@
     transform: none;
     height: auto; /* Auto height to accommodate cards */
     min-height: 300px; /* Ensure minimum height on mobile */
-    max-height: 90vh; /* Increased maximum height to use more screen space */
+    max-height: 100vh; /* Use full viewport height when needed */
     margin-top: 0;
     padding: 10px;
     border-top: 2px solid rgba(51, 255, 51, 0.5); /* Green border to match terminal */
@@ -47,8 +47,9 @@
   
   /* Terminal card container specific mobile styles */
   .terminal-card-reveal-container {
-    height: 420px; /* Increased height for better card display */
-    min-height: 420px;
+    height: auto; /* Auto height to fit content */
+    min-height: 420px; /* Minimum height for better card display */
+    max-height: calc(100vh - 150px); /* Limit height to fit in viewport minus margins */
     margin: 10px 0;
     background: rgba(0, 20, 0, 0.8);
     border: 1px solid rgba(51, 255, 51, 0.5);
@@ -94,7 +95,7 @@
   /* When cards are shown, ensure the terminal expands */
   .command-terminal:has(.terminal-card-reveal-container) {
     height: auto;
-    max-height: 70vh;
+    max-height: 100vh; /* Allow terminal to use full viewport height */
     padding-bottom: 20px;
   }
   

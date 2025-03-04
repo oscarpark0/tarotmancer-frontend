@@ -115,7 +115,7 @@ const TarotSpreadContent = React.memo(({ isMobile, isDarkMode, spreadType }) => 
                 </div>
               )}
               {isStreaming && (
-                <div className="fixed bottom-0 left-0 right-0 bg-white p-4 overflow-y-auto max-h-60">
+                <div className="fixed bottom-0 left-0 right-0 bg-white p-4 overflow-y-auto max-h-screen">
                   <p>{currentResponse || fullResponse}</p>
                 </div>
               )}

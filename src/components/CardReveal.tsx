@@ -48,25 +48,12 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
     }
   }, [cards]);
   
-  // Enhanced logging for debugging
+  // Less verbose logging
   useEffect(() => {
-    console.log('CardReveal: cards or showCards changed', { 
-      cards: cards.length, 
-      cardObjects: cards,
-      showCards, 
-      localShowCards 
-    });
-    
-    // Check if cards have all required properties
-    if (cards.length > 0) {
-      const cardCheck = cards.map(card => ({
-        hasName: !!card.name,
-        hasImg: !!card.img,
-        hasOrientation: !!card.orientation,
-        hasPosition: !!card.position,
-        hasTooltip: !!card.tooltip
-      }));
-      console.log('Card property check:', cardCheck);
+    if (cards.length > 0 && !cards.every(card => 
+      card.name && card.img && card.orientation && card.position && card.tooltip
+    )) {
+      console.error('CardReveal: Some cards missing required properties', cards);
     }
   }, [cards, showCards, localShowCards]);
 
@@ -119,22 +106,22 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
 
   return (
     <div className={`card-reveal ${cards.length === 3 ? 'three-card' : 'celtic-cross'} ${isMobile ? 'mobile' : ''} ${localShowCards ? 'show' : ''} ${insideMonitor ? 'inside-monitor' : ''} ${inTerminal ? 'in-terminal' : ''} ${className}`}>
-      {/* Use a more unique key that changes with each draw */}
-      {/* Removed AnimatePresence to prevent animations */}
+      {/* Use a more unique key that changes with each draw but without Math.random() which causes unnecessary rerenders */}
         {localShowCards && cards.length > 0 ? (
           <div key={`card-container-${cards.map(c => c.name).join('-')}`} className="cards-container">
             {cards.map((card, index) => (
               <div
-                key={`${card.name}-${index}-${Math.random()}`}
+                key={`${card.name}-${index}-${card.position}`}
                 className={`card ${card.orientation === 'reversed' ? 'reversed' : ''} ${tappedCard === index ? 'tapped' : ''} ${inTerminal ? 'in-terminal-card' : ''}`}
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => handleTap(index)}
-                style={tappedCard === index && (insideMonitor || inTerminal) ? { 
-                  animation: inTerminal ? 'terminalCardPulse 2s infinite, terminalBorderGlow 3s infinite ease-in-out' : 'cardPulse 2s infinite',
-                  transform: inTerminal ? 'scale(1.1)' : undefined,
-                  zIndex: inTerminal ? 30 : undefined
-                } : undefined}
+                style={{
+                  willChange: 'transform', // Improves performance with hardware acceleration
+                  ...(tappedCard === index && (insideMonitor || inTerminal) ? { 
+                    zIndex: inTerminal ? 30 : 10
+                  } : {})
+                }}
               >
                 <IKImage
                   path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}

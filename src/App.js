@@ -329,11 +329,31 @@ function AppContent({ isAuthenticated }) {
     });
   }, []);
 
-  // Check if user is a guest (has anonymousUserId in localStorage)
-  const isGuestUser = !isAuthenticated && localStorage.getItem('anonymousUserId');
+  // Check if user is a guest (has anonymousUserId in localStorage and has explicitly logged in as guest)
+  const isGuestUser = !isAuthenticated && localStorage.getItem('anonymousUserId') && localStorage.getItem('guestLoggedIn') === 'true';
   
-  // Treat authenticated users and guest users similarly
+  // Treat authenticated users and guest users similarly, but ensure users can't bypass login
   const shouldShowSpreadComponent = isAuthenticated || isGuestUser;
+  
+  // Listen for window resize events and redirect to home if not authenticated
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      // Always redirect to welcome page if not authenticated or a guest
+      if (!isAuthenticated && !isGuestUser) {
+        navigate('/');
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    // Initial check - always redirect to welcome page if not authenticated or a guest
+    if (!isAuthenticated && !isGuestUser) {
+      navigate('/');
+    }
+    
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isAuthenticated, isGuestUser, navigate]);
 
   return (
     <div className={`App main-content ${isMobileScreen ? 'mobile' : ''} ${isDarkMode ? 'dark-mode' : ''}`} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

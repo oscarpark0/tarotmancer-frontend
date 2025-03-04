@@ -195,6 +195,7 @@ Draw connections between cards that have symbolic, elemental, or numerical relat
           <button 
             className="ct-expand-button" 
             onClick={toggleExpand}
+            aria-label="Toggle terminal expansion"
           >
             {isExpanded ? '▲' : '▼'}
           </button>

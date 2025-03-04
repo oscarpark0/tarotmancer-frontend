@@ -15,6 +15,9 @@ const GuestLoginButton: React.FC = () => {
         localStorage.setItem('anonymousUserId', anonymousUserId);
       }
       
+      // Set flag to indicate user has explicitly logged in as guest
+      localStorage.setItem('guestLoggedIn', 'true');
+      
       // Navigate to the main page
       navigate('/');
       

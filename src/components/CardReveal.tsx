@@ -96,7 +96,13 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
       // Add vibration feedback for mobile if available
       if ('vibrate' in navigator) {
         try {
-          navigator.vibrate(50); // Short vibration
+          // Enhanced vibration pattern for better feedback
+          if (inTerminal) {
+            // Terminal-specific vibration pattern - more pronounced
+            navigator.vibrate([30, 20, 50]); // Pattern: vibrate, pause, vibrate longer
+          } else {
+            navigator.vibrate(50); // Standard vibration
+          }
         } catch (e) {
           console.log('Vibration not supported');
         }
@@ -124,7 +130,11 @@ const CardReveal: React.FC<CardRevealProps> = ({ cards, showCards, isMobile, ins
                 onMouseEnter={() => handleMouseEnter(index)}
                 onMouseLeave={handleMouseLeave}
                 onClick={() => handleTap(index)}
-                style={tappedCard === index && (insideMonitor || inTerminal) ? { animation: inTerminal ? 'terminalCardPulse 2s infinite' : 'cardPulse 2s infinite' } : undefined}
+                style={tappedCard === index && (insideMonitor || inTerminal) ? { 
+                  animation: inTerminal ? 'terminalCardPulse 2s infinite, terminalBorderGlow 3s infinite ease-in-out' : 'cardPulse 2s infinite',
+                  transform: inTerminal ? 'scale(1.1)' : undefined,
+                  zIndex: inTerminal ? 30 : undefined
+                } : undefined}
               >
                 <IKImage
                   path={card.img.startsWith('http') ? card.img.split('tarotmancer/')[1] : card.img}

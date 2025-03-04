@@ -87,6 +87,9 @@
     .footer {
         padding: 0.1rem 0; /* Reduced padding for mobile */
         font-size: 0.6rem; /* Adjusted font size for mobile */
+        z-index: 9; /* Lower z-index to ensure command terminal appears above */
+        position: relative; /* Ensure proper stacking */
+        margin-top: 20px; /* Add space above footer */
     }
 
     .footerContent {

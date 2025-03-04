@@ -78,6 +78,15 @@
   animation: none !important; /* Explicitly prevent animations */
 }
 
+/* Terminal-specific card name overlay styling */
+.in-terminal .card-name-overlay {
+  color: #33ff33;
+  text-shadow: 0 0 5px rgba(51, 255, 51, 0.6);
+  background-color: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(51, 255, 51, 0.3);
+  box-shadow: inset 0 0 5px rgba(51, 255, 51, 0.2);
+}
+
 @media (max-width: 768px) {
   .card-name-overlay {
     font-size: 0.7rem;
@@ -176,10 +185,11 @@
 .card-reveal.celtic-cross.in-terminal .card:nth-child(4) { left: calc(50% - 62.5px); top: 40px; } /* Above */
 .card-reveal.celtic-cross.in-terminal .card:nth-child(5) { left: calc(50% - 170px); top: 150px; } /* Left */
 .card-reveal.celtic-cross.in-terminal .card:nth-child(6) { left: calc(50% + 75px); top: 150px; } /* Right */
-.card-reveal.celtic-cross.in-terminal .card:nth-child(7) { left: calc(50% + 180px); top: 40px; } /* Staff 1 (top) */
-.card-reveal.celtic-cross.in-terminal .card:nth-child(8) { left: calc(50% + 180px); top: 120px; } /* Staff 2 */
-.card-reveal.celtic-cross.in-terminal .card:nth-child(9) { left: calc(50% + 180px); top: 200px; } /* Staff 3 */
-.card-reveal.celtic-cross.in-terminal .card:nth-child(10) { left: calc(50% + 180px); top: 280px; } /* Staff 4 (bottom) */
+/* Staff column with increased z-index for better visibility */
+.card-reveal.celtic-cross.in-terminal .card:nth-child(7) { left: calc(50% + 180px); top: 40px; z-index: 3; } /* Staff 1 (top) */
+.card-reveal.celtic-cross.in-terminal .card:nth-child(8) { left: calc(50% + 180px); top: 120px; z-index: 3; } /* Staff 2 */
+.card-reveal.celtic-cross.in-terminal .card:nth-child(9) { left: calc(50% + 180px); top: 200px; z-index: 3; } /* Staff 3 */
+.card-reveal.celtic-cross.in-terminal .card:nth-child(10) { left: calc(50% + 180px); top: 280px; z-index: 3; } /* Staff 4 (bottom) */
 
 @media (max-width: 768px) {
   .card-reveal {
@@ -193,6 +203,61 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  
+  /* Terminal-specific card styling for mobile */
+  .card-reveal.in-terminal .card {
+    border: 2px solid #33ff33;
+    box-shadow: 0 0 10px #33ff33, inset 0 0 5px #33ff33;
+    background-color: rgba(0, 0, 0, 0.7);
+    transform-origin: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    filter: brightness(1.1) contrast(1.1);
+  }
+  
+  /* Terminal card hover/active effect */
+  .card-reveal.in-terminal .card:hover,
+  .card-reveal.in-terminal .card:active {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #33ff33, inset 0 0 8px #33ff33;
+    cursor: pointer;
+    filter: brightness(1.2) contrast(1.2);
+  }
+  
+  /* Terminal card scan line effect */
+  .card-reveal.in-terminal .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent, rgba(51, 255, 51, 0.05) 50%, transparent);
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 2;
+    animation: scanline 2s linear infinite;
+  }
+  
+  @keyframes scanline {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 100px; }
+  }
+  
+  /* Tapped card effect for terminal */
+  .card-reveal.in-terminal .card.tapped {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #33ff33, inset 0 0 10px #33ff33;
+    z-index: 10;
+    filter: brightness(1.3) contrast(1.3);
+    animation: pulse-glow 1.5s infinite alternate;
+  }
+  
+  @keyframes pulse-glow {
+    0% { box-shadow: 0 0 15px #33ff33, inset 0 0 8px #33ff33; }
+    100% { box-shadow: 0 0 25px #33ff33, inset 0 0 15px #33ff33; }
   }
   
   .card {
@@ -248,26 +313,26 @@
     z-index: 1; 
   } /* Right */
   
-  /* Staff Column - Now positioned on the right side */
+  /* Staff Column - Now positioned on the right side with better visibility */
   .card-reveal.celtic-cross .card:nth-child(7) { 
-    right: 15px; 
+    right: 20px; 
     top: calc(50% - 170px); 
-    z-index: 1; 
+    z-index: 3; 
   } /* Staff top */
   .card-reveal.celtic-cross .card:nth-child(8) { 
-    right: 15px; 
+    right: 20px; 
     top: calc(50% - 55px); 
-    z-index: 1; 
+    z-index: 3; 
   } /* Staff 2 */
   .card-reveal.celtic-cross .card:nth-child(9) { 
-    right: 15px; 
+    right: 20px; 
     top: calc(50% + 55px); 
-    z-index: 1; 
+    z-index: 3; 
   } /* Staff 3 */
   .card-reveal.celtic-cross .card:nth-child(10) { 
-    right: 15px; 
+    right: 20px; 
     top: calc(50% + 170px); 
-    z-index: 1; 
+    z-index: 3; 
   } /* Staff bottom */
   
   /* Celtic Cross Spread - Mobile - In Terminal - Match desktop layout but scaled */
@@ -304,26 +369,26 @@
     z-index: 1; 
   } /* Right */
   
-  /* Staff Column - Now positioned on the right side */
+  /* Staff Column - Now positioned on the right side with better visibility */
   .card-reveal.celtic-cross.in-terminal .card:nth-child(7) { 
-    right: 15px; 
+    right: 20px; 
     top: calc(50% - 170px); 
-    z-index: 1; 
+    z-index: 3; 
   } /* Staff top */
   .card-reveal.celtic-cross.in-terminal .card:nth-child(8) { 
-    right: 15px; 
+    right: 20px; 
     top: calc(50% - 55px); 
-    z-index: 1; 
+    z-index: 3; 
   } /* Staff 2 */
   .card-reveal.celtic-cross.in-terminal .card:nth-child(9) { 
-    right: 15px; 
+    right: 20px; 
     top: calc(50% + 55px); 
-    z-index: 1; 
+    z-index: 3; 
   } /* Staff 3 */
   .card-reveal.celtic-cross.in-terminal .card:nth-child(10) { 
-    right: 15px; 
+    right: 20px; 
     top: calc(50% + 170px); 
-    z-index: 1; 
+    z-index: 3; 
   } /* Staff bottom */
 
   /* Ensure cards are visible in mobile view */
@@ -354,6 +419,7 @@
     height: 100%;
     z-index: 11;
     padding: 5px;
+    padding-bottom: 30px; /* Add extra padding at the bottom */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -370,6 +436,7 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background-color: rgba(0, 10, 0, 0.6);
     backdrop-filter: blur(2px);
+    position: absolute; /* Ensure absolute positioning works properly */
   }
 
   .card-reveal.in-terminal .card:hover {

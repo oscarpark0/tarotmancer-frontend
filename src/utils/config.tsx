@@ -8,9 +8,9 @@ const BACKEND_URLS = [
 
 // Function to detect deployment environment and set appropriate backend URL
 const getBackendUrl = (): string => {
-  // Check if we're in local development (localhost)
-  const isLocalDev = window.location.hostname === 'localhost' || 
-                     window.location.hostname === '127.0.0.1';
+  // We could check if we're in local development, but we're using a fixed URL anyway
+  // const isLocalDev = window.location.hostname === 'localhost' || 
+  //                    window.location.hostname === '127.0.0.1';
   
   // Use primary Heroku app in production
   return BACKEND_URLS[0];

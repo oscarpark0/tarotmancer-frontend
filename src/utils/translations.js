@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 // Import the Language type definition but don't use it in runtime code
 // This is just for documentation
 // @ts-check

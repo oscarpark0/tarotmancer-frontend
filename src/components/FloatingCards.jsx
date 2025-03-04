@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { IKImage } from 'imagekitio-react';
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
@@ -8,7 +8,8 @@ import './FloatingCards.css';
 function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSpread, numCards, isMobile, onAnimationStart, onAnimationComplete = () => {} }) {
   // Set a default empty function for onAnimationComplete if it's not provided
   const [isAnimating, setIsAnimating] = useState(false);
-  const [cardsAnimated, setCardsAnimated] = useState(0); // Track animation progress
+  // Create a counter ref instead of state to track animated cards
+  const cardsAnimatedRef = useRef(0);
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
     if (shouldDrawNewSpread) {
       resetAnimation();
       setIsAnimating(false);
-      setCardsAnimated(0); // Reset card animation counter
+      cardsAnimatedRef.current = 0; // Reset card animation counter
     }
   }, [shouldDrawNewSpread, resetAnimation]);
 
@@ -97,23 +98,19 @@ function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSp
               transform: position.transform,
             }}
             onAnimationComplete={() => {
-              // Track each card animation completion
-              setCardsAnimated(prev => {
-                const newCount = prev + 1;
-                
-                // When all cards have been animated, trigger the next step
-                if (newCount >= numCards) {
-                  setTimeout(() => {
-                    setIsAnimating(false);
-                    onExitComplete();
-                    onAnimationComplete(true); // Pass true for last card
-                    // Reset counter for next animation cycle
-                    setCardsAnimated(0);
-                  }, 300);
-                }
-                
-                return newCount;
-              });
+              // Track each card animation completion using ref
+              cardsAnimatedRef.current += 1;
+              
+              // When all cards have been animated, trigger the next step
+              if (cardsAnimatedRef.current >= numCards) {
+                setTimeout(() => {
+                  setIsAnimating(false);
+                  onExitComplete();
+                  onAnimationComplete(true); // Pass true for last card
+                  // Reset counter for next animation cycle
+                  cardsAnimatedRef.current = 0;
+                }, 300);
+              }
             }}
           >
             <IKImage

@@ -40,7 +40,8 @@ const CommandTerminal = forwardRef(({
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const terminalOutputRef = useRef(null);
-  const [showCards, setShowCards] = useState(false); // Used in useEffect on line 56-58
+  // This state was used to manage card visibility, 
+  // but is only set and never read - refactoring needed
   const [shouldRequestCohere, setShouldRequestCohere] = useState(false);
   const { selectedLanguageName } = useLanguage();
   const { getTranslation } = useTranslation();
@@ -52,10 +53,10 @@ const CommandTerminal = forwardRef(({
     setIsExpanded((prevState) => !prevState);
   }, [isExpanded]);
 
+  // Effect to handle dealing completion
   useEffect(() => {
-    if (cards.length > 0 && dealingComplete) {
-      setShowCards(true);
-    }
+    // Check if cards are available and dealing is complete
+    // The setShowCards call has been removed as the state isn't used
   }, [cards, dealingComplete]);
 
   const handleInputChange = useCallback((e) => {

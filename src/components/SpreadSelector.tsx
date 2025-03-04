@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { useTranslation, TranslationKey } from '../utils/translations';
+import { useTranslation } from '../utils/translations';
 
 type SpreadType = 'threeCard' | 'celtic';
 

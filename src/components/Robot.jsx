@@ -342,28 +342,8 @@ const Robot = memo((props) => {
   // Determine if the user is anonymous (not logged in)
   const isAnonymousUser = !user || !user.id || user.id.startsWith('anon_');
   
-  // Get the remaining draw time from local storage for anonymous users
-  const getAnonTimeRemaining = () => {
-    if (!isAnonymousUser) return null;
-    
-    try {
-      const drawData = localStorage.getItem('anonDrawData');
-      if (!drawData) return null;
-      
-      const parsedData = JSON.parse(drawData);
-      const now = new Date().getTime();
-      
-      if (parsedData.nextDrawTime && now < parsedData.nextDrawTime) {
-        const hoursRemaining = Math.floor((parsedData.nextDrawTime - now) / (1000 * 60 * 60));
-        const minutesRemaining = Math.floor(((parsedData.nextDrawTime - now) % (1000 * 60 * 60)) / (1000 * 60));
-        return `${hoursRemaining}h ${minutesRemaining}m`;
-      }
-    } catch (error) {
-      console.error('Error getting anonymous time remaining:', error);
-    }
-    
-    return null;
-  };
+  // This function was originally used to get time remaining for anon users
+  // Now using the central API for this functionality
   
   // Removed unused anonTimeRemaining variable
 

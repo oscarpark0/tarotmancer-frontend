@@ -1,6 +1,6 @@
 import { cn } from "../utils";
 import React, { ButtonHTMLAttributes, forwardRef, CSSProperties } from "react";
-import { useTranslation, TranslationKey } from '../utils/translations';
+import { useTranslation } from '../utils/translations';
 
 interface ShimmerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   shimmerColor?: string;

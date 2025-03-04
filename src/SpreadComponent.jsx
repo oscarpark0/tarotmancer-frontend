@@ -428,9 +428,8 @@ const SpreadComponent = React.memo(({ isMobile: propIsMobile, onSpreadSelect, se
     />
   ), [dealCards, positions, handleExitComplete, handleRevealCards, handleDealingComplete, shouldDrawNewSpread, isMobile, cards, handleAnimationStart, selectedSpread, handleAnimationComplete]);
 
-  // Define isAnonymousUser for use in the component
-  const isAnonymousUser = !user || !user.id || user.id.startsWith('anon_');
-  // This is used in image path logic and other logic in the component
+  // Define isAnonymousUser for path resolution in SimulateGuestDraw (line 104-111)
+  // Used in imgPath logic (line 189)
 
   return (
     <ErrorBoundary>

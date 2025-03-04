@@ -8,7 +8,7 @@ import './FloatingCards.css';
 function FloatingCards({ dealCards, onExitComplete, revealCards, shouldDrawNewSpread, numCards, isMobile, onAnimationStart, onAnimationComplete = () => {} }) {
   // Set a default empty function for onAnimationComplete if it's not provided
   const [isAnimating, setIsAnimating] = useState(false);
-  const [cardsAnimated, setCardsAnimated] = useState(0);
+  const [cardsAnimated, setCardsAnimated] = useState(0); // Track animation progress
   const { resetAnimation } = useCardAnimation(numCards, dealCards, revealCards, shouldDrawNewSpread);
 
   useEffect(() => {

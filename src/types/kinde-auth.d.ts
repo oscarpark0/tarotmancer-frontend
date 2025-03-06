@@ -6,6 +6,7 @@ declare module '@kinde-oss/kinde-auth-react' {
     isLoading: boolean;
     user: any;
     getToken: () => Promise<string>;
+    login: () => void;
   }
 
   export function useKindeAuth(): KindeAuth;
